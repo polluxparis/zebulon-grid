@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     axe = require('../orb.axe'),
     domUtils = require('../orb.utils.dom');
 
@@ -12,13 +12,13 @@ module.exports = React.createClass({
   componentDidMount: function() {
     for(var i = 0; i < this._toInit.length; i++){
       var btn = this._toInit[i];
-      btn.init(this.props.pivotTableComp, this.refs[btn.ref]);      
+      btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
   },
   componentDidUpdate: function() {
     for(var i = 0; i < this._toInit.length; i++){
       var btn = this._toInit[i];
-      btn.init(this.props.pivotTableComp, this.refs[btn.ref]);      
+      btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
   },
   createCallback: function(action) {
@@ -35,7 +35,7 @@ module.exports = React.createClass({
     var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
     if(config.toolbar && config.toolbar.visible) {
-      
+
       var configButtons = config.toolbar.buttons ?
         defaultToolbarConfig.buttons.concat(config.toolbar.buttons) :
         defaultToolbarConfig.buttons;
@@ -105,7 +105,7 @@ var defaultToolbarConfig = {
       classToAdd = 'subtotals-hidden';
       classToRemove = 'subtotals-visible';
     }
-    
+
     domUtils.removeClass(button, classToRemove);
     domUtils.addClass(button, classToAdd);
   },
@@ -135,7 +135,7 @@ var defaultToolbarConfig = {
       classToAdd = 'grndtotal-hidden';
       classToRemove = 'grndtotal-visible';
     }
-    
+
     domUtils.removeClass(button, classToRemove);
     domUtils.addClass(button, classToAdd);
   },
@@ -158,17 +158,17 @@ defaultToolbarConfig.buttons = [
   { type: 'label', text: 'Rows:'},
   { type: 'button', tooltip: 'Expand all rows', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllRows},
   { type: 'button', tooltip: 'Collapse all rows', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllRows},
-  { type: 'button', tooltip: 'Toggle rows sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.ROWS), 
+  { type: 'button', tooltip: 'Toggle rows sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.ROWS),
                                                        action: defaultToolbarConfig.toggleSubtotals(axe.Type.ROWS)},
-  { type: 'button', tooltip: 'Toggle rows grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.ROWS), 
+  { type: 'button', tooltip: 'Toggle rows grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.ROWS),
                                                         action: defaultToolbarConfig.toggleGrandtotal(axe.Type.ROWS)},
   { type: 'separator'},
   { type: 'label', text: 'Columns:'},
   { type: 'button', tooltip: 'Expand all columns', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllColumns},
   { type: 'button', tooltip: 'Collapse all columns', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllColumns},
-  { type: 'button', tooltip: 'Toggle columns sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS), 
+  { type: 'button', tooltip: 'Toggle columns sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS),
                                                           action: defaultToolbarConfig.toggleSubtotals(axe.Type.COLUMNS)},
-  { type: 'button', tooltip: 'Toggle columns grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.COLUMNS), 
+  { type: 'button', tooltip: 'Toggle columns grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.COLUMNS),
                                                            action: defaultToolbarConfig.toggleGrandtotal(axe.Type.COLUMNS)},
   { type: 'separator'},
   { type: 'label', text: 'Export:'},

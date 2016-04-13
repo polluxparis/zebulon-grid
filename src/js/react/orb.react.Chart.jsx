@@ -2,8 +2,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM;
+var React = require('react'),
+    ReactDOM = require('react-dom');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -19,8 +19,8 @@ module.exports = React.createClass({
   drawChart: function() {
     if(this.canRender()) {
       var chartData = this.props.pivotTableComp.pgridwidget.pgrid.getChartData();
-      var data = new google.visualization.DataTable();        
-          
+      var data = new google.visualization.DataTable();
+
       data.addColumn('string', chartData.hAxisLabel);
       for(var ri=0; ri < chartData.colNames.length; ri++) {
         data.addColumn('number', chartData.colNames[ri]);

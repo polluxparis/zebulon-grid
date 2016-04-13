@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     utils = require('../orb.utils');
 
 module.exports = React.createClass({

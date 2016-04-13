@@ -3,8 +3,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     utils = require('../orb.utils'),
     domUtils = require('../orb.utils.dom');
 
@@ -95,7 +95,7 @@ var scrollBarMixin = {
     this.scrollEvent.callback = scrollCallback;
   },
   getScrollPercent: function() {
-    var maxOffset = this.getScrollSize() - this.state.size;    
+    var maxOffset = this.getScrollSize() - this.state.size;
     return maxOffset <= 0 ? 0 : this.state.thumbOffset/maxOffset;
   },
   refresh: function() {
@@ -107,7 +107,7 @@ var scrollBarMixin = {
 
       var scrollBarContainerSize = this.getScrollSize();
       var newSize = clientSize[this.sizeProp] >= elementSize[this.sizeProp] ? 0 : (clientSize[this.sizeProp]/elementSize[this.sizeProp]) * scrollBarContainerSize;
-      
+
       this.setState(
         {
           containerSize: scrollBarContainerSize,
@@ -134,7 +134,7 @@ var scrollBarMixin = {
           this.scrollEvent.raise
         );
         return true;
-      }      
+      }
     }
     return false;
   },
@@ -145,7 +145,7 @@ var scrollBarMixin = {
   },
   render: function() {
     var self = this;
-    
+
     var thumbStyle = {padding: 0};
     thumbStyle[this.sizeProp] = this.state.size;
     thumbStyle[this.offsetCssProp] = this.state.thumbOffset;
@@ -156,7 +156,7 @@ var scrollBarMixin = {
     var thumbClass = "orb-scrollthumb " + this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().scrollBar;
 
     var scrollThumb = this.state.size <= 0 ?
-      null : 
+      null :
       <div className={thumbClass} style={thumbStyle}
            ref="scrollThumb"
            onMouseDown={this.onMouseDown}>

@@ -3,9 +3,9 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     DragManager = require('./orb.react.DragManager.jsx'),
-    DropIndicator = require('./orb.react.DropIndicator.jsx'),    
+    DropIndicator = require('./orb.react.DropIndicator.jsx'),
     axe = require('../orb.axe'),
     dtid = 0;
 
@@ -40,10 +40,10 @@ module.exports = React.createClass({
 			callback();
 		}
 	},
-	render: function() {	
+	render: function() {
 		var self = this;
 
-		var buttons = this.props.buttons.map(function(button, index) {			
+		var buttons = this.props.buttons.map(function(button, index) {
 			if(index < self.props.buttons.length - 1) {
 				return [
 					<td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></td>,

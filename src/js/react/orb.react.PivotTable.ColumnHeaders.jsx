@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     axe = require('../orb.axe'),
     PivotRow = require('./orb.react.PivotRow.jsx');
 
@@ -12,7 +12,7 @@ module.exports = React.createClass({
     var pgridwidget = this.props.pivotTableComp.pgridwidget;
     var cntrClass = pgridwidget.columns.headers.length === 0 ? '' : ' columns-cntr';
 
-    var layoutInfos = { 
+    var layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
@@ -24,7 +24,7 @@ module.exports = React.createClass({
                        pivotTableComp={self.props.pivotTableComp}
                        layoutInfos={layoutInfos}>
       </PivotRow>;
-    });              
+    });
 
     return  <div className={'inner-table-container' + cntrClass} onWheel={this.props.pivotTableComp.onWheel}>
       <table className="inner-table">

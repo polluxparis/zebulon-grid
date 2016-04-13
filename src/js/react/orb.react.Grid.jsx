@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     utils = require('../orb.utils');
 
 
@@ -21,7 +21,7 @@ module.exports = React.createClass({
       }
       rows.push(<tr key={'h'}>{ headerRow }</tr>);
     }
-    
+
     if(data && data.length > 0) {
       for(var i = 0; i < data.length; i++) {
         var row = [];

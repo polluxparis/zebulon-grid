@@ -7,3 +7,6 @@ tmp
 project.*
 orb.xproj*
 orb.sln
+.node_libraries
+*.sublime-*
+dist

@@ -3,13 +3,13 @@
 
 'use strict';
 
-var ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var ReactDOM = require('react-dom'),
     utils = require('../orb.utils');
 
 module.exports = (function() {
-	
+
 	var _pivotComp = null;
-	
+
 	var _currDragElement = null;
 	var _currDropTarget = null;
 	var _currDropIndicator = null;
@@ -19,9 +19,9 @@ module.exports = (function() {
 	var _dropIndicators = [];
 
 	function doElementsOverlap(elem1Rect, elem2Rect) {
-		return !(elem1Rect.right < elem2Rect.left || 
-                elem1Rect.left > elem2Rect.right || 
-                elem1Rect.bottom < elem2Rect.top || 
+		return !(elem1Rect.right < elem2Rect.left ||
+                elem1Rect.left > elem2Rect.right ||
+                elem1Rect.bottom < elem2Rect.top ||
                 elem1Rect.top > elem2Rect.bottom);
 	}
 
@@ -89,7 +89,7 @@ module.exports = (function() {
 			_pivotComp = pivotComp;
 		},
 		setDragElement: function(elem) {
-			
+
 			var prevDragElement = _currDragElement;
 			_currDragElement = elem;
 			if(_currDragElement != prevDragElement) {
@@ -176,7 +176,7 @@ module.exports = (function() {
 														  indicator.component.props.position === _currDragElement.props.position;
 
 								var targetIndicator = indicator.component.props.axetype === foundTarget.component.props.axetype;
-								if(targetIndicator && !elementOwnIndicator) {	
+								if(targetIndicator && !elementOwnIndicator) {
 								    var tnodeRect = ReactDOM.findDOMNode(indicator.component).getBoundingClientRect();
 									var isOverlap = doElementsOverlap(dragNodeRect, tnodeRect);
 									if(isOverlap) {

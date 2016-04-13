@@ -2,8 +2,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     PivotRow = require('./orb.react.PivotRow.jsx'),
     axe = require('../orb.axe');
 
@@ -25,8 +25,8 @@ module.exports = React.createClass({
     var self = this;
     var pgridwidget = this.props.pivotTableComp.pgridwidget;
     var cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
-    
-    var layoutInfos = { 
+
+    var layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };

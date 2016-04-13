@@ -3,8 +3,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     uiheaders = require('../orb.ui.header'),
     domUtils = require('../orb.utils.dom'),
     _paddingLeft = null,
@@ -153,18 +153,18 @@ function getClassname(compProps) {
     var isEmpty = cell.template === 'cell-template-empty';
 
     if(!cell.visible()) {
-      classname += ' cell-hidden'; 
+      classname += ' cell-hidden';
     }
 
     if(cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
-      classname += ' header-st-exp'; 
+      classname += ' header-st-exp';
     }
 
     if(cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
       if(cell.dim.depth === 1) {
-        classname += ' header-nofields'; 
+        classname += ' header-nofields';
       } else if(cell.dim.depth > 2) {
-        classname += ' header-gt-exp'; 
+        classname += ' header-gt-exp';
       }
     }
 

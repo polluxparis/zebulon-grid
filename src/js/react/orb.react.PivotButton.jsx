@@ -3,8 +3,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     FilterPanel = require('./orb.react.FilterPanel.jsx'),
     DragManager = require('./orb.react.DragManager.jsx'),
     utils = require('../orb.utils'),
@@ -80,7 +80,7 @@ module.exports = React.createClass({
 
 		    var thispos = domUtils.getOffset(ReactDOM.findDOMNode(this));
 			var mousePageXY = utils.getMousePageXY(e);
-			
+
 			// inform mousedown, save start pos
 			this.setState({
 				mousedown: true,
@@ -94,13 +94,13 @@ module.exports = React.createClass({
 				}
 			});
 		}
-		
+
 		// prevent event bubbling (to prevent text selection while dragging for example)
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
 	},
 	onMouseUp: function(e) {
-		
+
 		var isdragged = this.state.dragging;
 
 		this.setState({
@@ -112,7 +112,7 @@ module.exports = React.createClass({
 				y: 0
 			}
 		});
-		
+
 		if(!e.ctrlKey && !isdragged) {
 			// if button was not dragged, proceed as a click
 			this.props.pivotTableComp.sort(this.props.axetype, this.props.field);
@@ -165,7 +165,7 @@ module.exports = React.createClass({
 			divstyle.width = self.state.size.width + 'px';
 		}
 
-		var sortDirectionClass = self.props.field.sort.order === 'asc' ? 
+		var sortDirectionClass = self.props.field.sort.order === 'asc' ?
 			'sort-asc' :
 			//' \u2191' :
 			(self.props.field.sort.order === 'desc' ?
@@ -178,7 +178,7 @@ module.exports = React.createClass({
 			fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
 		}
 
-		return <div key={self.props.field.name} 
+		return <div key={self.props.field.name}
 		            className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
 		            onMouseDown={this.onMouseDown}
 		            onMouseUp={this.onMouseUp}

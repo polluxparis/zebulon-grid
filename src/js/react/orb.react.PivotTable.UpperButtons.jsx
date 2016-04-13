@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     PivotButton = require('./orb.react.PivotButton.jsx'),
     DropTarget = require('./orb.react.DropTarget.jsx'),
     axe = require('../orb.axe');
@@ -11,7 +11,7 @@ module.exports = React.createClass({
   render: function() {
     var self = this;
     var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
-    
+
     var fieldsDropTarget;
     if(config.canMoveFields) {
       var fieldsButtons = config.availablefields().map(function(field, index) {

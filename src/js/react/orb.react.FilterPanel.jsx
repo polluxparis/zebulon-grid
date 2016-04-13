@@ -3,8 +3,8 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
-    ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     Dropdown = require('./orb.react.Dropdown.jsx'),
     utils = require('../orb.utils'),
     filtering = require('../orb.filtering'),
@@ -41,7 +41,7 @@ module.exports = React.createClass({
 		this.destroy();
 	},
 	onMouseWheel: function(e) {
-		var valuesTable = this.refs.valuesTable;		
+		var valuesTable = this.refs.valuesTable;
 		var target = e.target || e.srcElement;
 		while(target != null) {
 			if(target == valuesTable) {
@@ -124,7 +124,7 @@ module.exports = React.createClass({
 								<td><div className="srchclear-btn" onClick={this.clearFilter}>x</div></td>
 							</tr>
 						</tbody>
-					</table>					
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -228,9 +228,9 @@ function FilterManager(reactComp, initialFilterObject) {
 				toExclude: initialFilterObject.excludeStatic
 			};
 
-			if(initialFilterObject.term) {				
+			if(initialFilterObject.term) {
 				isSearchMode = true;
-				
+
 				operator = initialFilterObject.operator;
 				self.toggleRegexpButtonVisibility();
 
@@ -261,12 +261,12 @@ function FilterManager(reactComp, initialFilterObject) {
 		utils.addEventListener(elems.searchBox, 'keyup', self.searchChanged);
 
 		utils.addEventListener(elems.clearSearchButton, 'click', self.clearSearchBox);
-		
-		utils.addEventListener(elems.okButton, 'click', function() { 
+
+		utils.addEventListener(elems.okButton, 'click', function() {
 			var checkedObj = self.getCheckedValues();
-			reactComp.onFilter(operator.name, operator.regexpSupported && isSearchMode && isRegexMode ? new RegExp(lastSearchTerm, 'i') : lastSearchTerm, checkedObj.values, checkedObj.toExclude); 
+			reactComp.onFilter(operator.name, operator.regexpSupported && isSearchMode && isRegexMode ? new RegExp(lastSearchTerm, 'i') : lastSearchTerm, checkedObj.values, checkedObj.toExclude);
 		});
-		utils.addEventListener(elems.cancelButton, 'click', function() { reactComp.destroy(); });		
+		utils.addEventListener(elems.cancelButton, 'click', function() { reactComp.destroy(); });
 	}
 
 	function ResizeManager(outerContainerElem, valuesTableElem, resizeGripElem) {
@@ -353,7 +353,7 @@ function FilterManager(reactComp, initialFilterObject) {
 		if(operator.regexpSupported) {
 			utils.addEventListener(elems.enableRegexButton, 'click', self.regexpActiveChanged);
 			domUtils.removeClass(elems.enableRegexButton, 'srchtyp-col-hidden');
-			
+
 		} else {
 			utils.removeEventListener(elems.enableRegexButton, 'click', self.regexpActiveChanged);
 			domUtils.addClass(elems.enableRegexButton, 'srchtyp-col-hidden');
@@ -369,7 +369,7 @@ function FilterManager(reactComp, initialFilterObject) {
 		}
 	};
 
-	this.regexpActiveChanged = function() { 
+	this.regexpActiveChanged = function() {
 		isRegexMode = !isRegexMode;
 		self.toggleRegexpButtonState();
 		self.searchChanged('regexModeChanged');
@@ -386,7 +386,7 @@ function FilterManager(reactComp, initialFilterObject) {
 		}
 	};
 
-	this.applyFilterTerm = function(operator, term) {		
+	this.applyFilterTerm = function(operator, term) {
 		var defaultVisible = term ? false : true;
 		var opterm = operator.regexpSupported && isSearchMode ? (isRegexMode ? term : utils.escapeRegex(term)) : term;
 		checkboxVisible(elems.allCheckbox, defaultVisible);
@@ -403,7 +403,7 @@ function FilterManager(reactComp, initialFilterObject) {
 		var search = (elems.searchBox.value || '').trim();
 		if(e === 'operatorChanged' || (e === 'regexModeChanged' && search) || search != lastSearchTerm) {
 			lastSearchTerm = search;
-			
+
 			var previousIsSearchMode = isSearchMode;
 			isSearchMode = search !== '';
 
@@ -434,7 +434,7 @@ function FilterManager(reactComp, initialFilterObject) {
 			var staticValue;
 			var i,
 				val,
-				checkbox;				
+				checkbox;
 			var valuesCount = 0,
 				checkedCount = 0;
 
@@ -482,7 +482,7 @@ function FilterManager(reactComp, initialFilterObject) {
 			null :
 			(values == null || values === filtering.ALL ?
 				true :
-				(values === filtering.NONE ? 
+				(values === filtering.NONE ?
 					false :
 					!!values
 				)

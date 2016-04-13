@@ -2,7 +2,7 @@
 
 'use strict';
 
-var ReactDOM = typeof window === 'undefined' ? require('react-dom') : window.ReactDOM,
+var ReactDOM = require('react-dom'),
     domUtils = require('../orb.utils.dom');
 
 var SizingManager = module.exports = {
@@ -57,7 +57,7 @@ var SizingManager = module.exports = {
         dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w),
 
         pivotHeight = pivotComp.pgridwidget.pgrid.config.height,
-        dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)), 
+        dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)),
         dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
 
 
@@ -110,7 +110,7 @@ function ComponentSizeInfo(component, isWrapper, childType) {
   size = domUtils.getSize(this.node);
   this.w = size.width;
   this.h = size.height;
-  
+
   this.setStyle = function(styleProp, value) {
     self.node.style[styleProp] = value + 'px';
   };
@@ -245,7 +245,7 @@ function setTableWidths(tblObject, colWidths) {
 
     // for each row, set its cells width
     for(var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
-      
+
       // current row
       var currRow = tbl.rows[rowIndex];
       // index in colWidths
@@ -254,7 +254,7 @@ function setTableWidths(tblObject, colWidths) {
 
       // set width of each cell
       for(var cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
-        
+
         // current cell
         var currCell = currRow.cells[cellIndex];
         if(currCell.__orb._visible) {

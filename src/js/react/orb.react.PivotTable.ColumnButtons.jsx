@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = typeof window === 'undefined' ? require('react') : window.React,
+var React = require('react'),
     axe = require('../orb.axe'),
     PivotButton = require('./orb.react.PivotButton.jsx'),
     DropTarget = require('./orb.react.DropTarget.jsx');
