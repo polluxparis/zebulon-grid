@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     axe = require('../orb.axe'),
     domUtils = require('../orb.utils.dom');
 

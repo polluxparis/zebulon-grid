@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     ReactDOM = require('react-dom'),
     uiheaders = require('../orb.ui.header'),
     domUtils = require('../orb.utils.dom'),

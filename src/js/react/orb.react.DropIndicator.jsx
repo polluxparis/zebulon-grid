@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     DragManager = require('./orb.react.DragManager.jsx');
 
 module.exports = React.createClass({

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     PivotButton = require('./orb.react.PivotButton.jsx'),
     DropTarget = require('./orb.react.DropTarget.jsx'),
     DropTargetVertical = require('./orb.react.DropTargetVertical.jsx'),

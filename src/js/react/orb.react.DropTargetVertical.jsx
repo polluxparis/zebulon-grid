@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     DragManager = require('./orb.react.DragManager.jsx'),
     DropIndicator = require('./orb.react.DropIndicator.jsx'),
     dtid = 0;

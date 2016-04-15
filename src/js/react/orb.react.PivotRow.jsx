@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     PivotCell = require('./orb.react.PivotCell.jsx'),
     axe = require('../orb.axe');
 

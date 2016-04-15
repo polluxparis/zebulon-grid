@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     ReactDOM = require('react-dom'),
     Dropdown = require('./orb.react.Dropdown.jsx'),
     utils = require('../orb.utils'),

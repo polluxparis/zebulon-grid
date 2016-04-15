@@ -2,7 +2,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     ReactDOM = require('react-dom'),
     DragManager = require('./orb.react.DragManager.jsx'),
     SizingManager = require('./orb.react.PivotTable.SizingManager.jsx'),

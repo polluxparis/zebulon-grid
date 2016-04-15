@@ -3,7 +3,7 @@
 
 'use strict';
 
-var React = require('react'),
+const React = require('react'),
     ReactDOM = require('react-dom'),
     FilterPanel = require('./orb.react.FilterPanel.jsx'),
     DragManager = require('./orb.react.DragManager.jsx'),
