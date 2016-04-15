@@ -32,8 +32,8 @@
     "node": ">=4.2.4"
   },
   "dependencies": {
-    "react": "~0.14.3",
-    "react-dom": "~0.14.3"
+    "react": "~15.0.1",
+    "react-dom": "~15.0.1"
   },
   "devDependencies": {
     "babel-eslint": "latest",
@@ -63,6 +63,7 @@
     "gulp-uglify": "latest",
     "jasmine": "latest",
     "less": "latest",
+    "react-addons-perf": "^15.0.1",
     "run-sequence": "latest",
     "vinyl-buffer": "latest",
     "vinyl-source-stream": "latest"

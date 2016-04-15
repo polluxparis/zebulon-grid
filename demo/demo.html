@@ -16,15 +16,16 @@
 
     <!-- DEBUG -->
 	<link rel="stylesheet" type="text/css" href="../dist/orb.css" />
-	<script type="text/javascript" src="../deps/react-0.14.3.js"></script>
-    <script type="text/javascript" src="../deps/react-dom-0.14.3.js"></script>
-	<script type="text/javascript" src="../dist/orb.js"></script>
-	<!-- ***** -->
+            <!-- <script src="https://fb.me/react-15.0.1.js"></script> -->
+            <script src="https://fb.me/react-with-addons-15.0.1.js"></script>
+            <script src="https://fb.me/react-dom-15.0.1.js"></script>
+            <script type="text/javascript" src="../dist/orb.js"></script>
+    <!-- ***** -->
 
     <script type="text/javascript" src="demo.data.js"></script>
 
     <style type="text/css">
-    body {        
+    body {
         font-size: 1.2em;
     }
     </style>
@@ -35,7 +36,7 @@
     <button onclick="refreshData()">Refresh</button>
     <button onclick="changeTheme()">Theme</button>
     <a download="orbpivotgrid.xls" href="#" onclick="return exportToExcel(this);">Export to Excel</a>
-    
+
     <div id="rr" style="padding: 7px;"></div>
     <div id="export" style="padding: 7px;"></div>
 
@@ -56,7 +57,7 @@
 
     var config = {
         dataSource: window.demo.data,
-        canMoveFields: true, 
+        canMoveFields: true,
         dataHeadersLocation: 'columns',
         width: 1099,
         height: 611,
@@ -89,7 +90,7 @@
         },
         fields: [
             {
-                name: '6',
+                name: '1',
                 caption: 'Amount',
                 dataSettings: {
                     aggregateFunc: 'sum',
@@ -101,53 +102,53 @@
             },
             {
                 name: '0',
-                caption: 'Entity'
+                caption: 'Toto'
             },
-            {
-                name: '1',
-                caption: 'Product',
-            },
+            // {
+            //     name: '1',
+            //     caption: 'Product',
+            // },
+            // {
+            //     name: '2',
+            //     caption: 'Manufacturer',
+            //     sort: {
+            //         order: 'asc'
+            //     },
+            //     rowSettings: {
+            //         subTotal: {
+            //             visible: false,
+            //             collapsed: true,
+            //             collapsible: true
+            //         }
+            //     },
+            // },
+            // {
+            //     name: '3',
+            //     caption: 'Class'
+            // },
+            // {
+            //     name: '4',
+            //     caption: 'Category',
+            //     sort: {
+            //         customfunc: function(a, b) {
+            //             if(a.trim() == 'Touch Screen Phones'){
+            //              return -1;
+            //             }
+            //             if(a < b) return -1;
+            //             if(a > b) return 1;
+            //             return 0;
+            //         }
+            //     }
+            // },
             {
                 name: '2',
-                caption: 'Manufacturer',
-                sort: {
-                    order: 'asc'
-                },
-                rowSettings: {
-                    subTotal: {
-                        visible: false,
-                        collapsed: true,
-                        collapsible: true
-                    }
-                },
-            },
-            {
-                name: '3',
-                caption: 'Class'
-            },
-            {
-                name: '4',
-                caption: 'Category',
-                sort: {
-                    customfunc: function(a, b) {
-                        if(a.trim() == 'Touch Screen Phones'){
-                         return -1;
-                        }
-                        if(a < b) return -1;
-                        if(a > b) return 1;
-                        return 0;
-                    }
-                }
-            },
-            {
-                name: '5',
                 caption: 'Quantity',
                 aggregateFunc: 'sum'
             }
         ],
-        rows    : [ 'Manufacturer'],//, 'Category' ],
-        columns : [ 'Class', 'Category' ],
-        data    : [ 'Quantity', 'Amount' ],
+        // rows    : [ 'Manufacturer'],//, 'Category' ],
+        // columns : [ 'Class', 'Category' ],
+        // data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
             'Manufacturer': { 'Matches': /^a|^c/ },
@@ -189,12 +190,12 @@
     var rowLeafs = pgridwidget.pgrid.rows.dimensionsByDepth[1];
     var colLeafs = pgridwidget.pgrid.columns.dimensionsByDepth[1];
 
-    
+
 
     //console.log(extractValues(croot, '', []));
-    console.log(pgridwidget.pgrid.columns.dimensionsByDepth[1].sort(function(a,b){
-        return a.field.sort.customfunc(a.value, b.value);
-    }));
+    // console.log(pgridwidget.pgrid.columns.dimensionsByDepth[1].sort(function(a,b){
+    //     return a.field.sort.customfunc(a.value, b.value);
+    // }));
 
 
     </script>
