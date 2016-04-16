@@ -8,7 +8,7 @@
  /* global module, require */
  /*jshint eqnull: true*/
 
-var utils = require('./orb.utils');
+import * as utils from './orb.utils';
 var uiheaders = require('./orb.ui.header');
 var themeManager = require('./orb.themes');
 
@@ -52,7 +52,7 @@ var docFooter = '</body></html>';
 
  	var buttonTextColor = override ? 'black' : 'white';
  	var themeColor = themeManager.themes[currTheme];
- 	var themeFadeout = themeManager.utils.fadeoutColor(themeColor, 0.1);    
+ 	var themeFadeout = themeManager.utils.fadeoutColor(themeColor, 0.1);
 
  	var buttonStyle = 'style="font-weight: bold; color: ' + buttonTextColor + '; background-color: ' + themeColor + ';" bgcolor="' + themeColor + '"';
  	var headerStyle = 'style="background-color: ' + themeFadeout + ';" bgcolor="' + themeFadeout + '"';
@@ -80,7 +80,7 @@ var docFooter = '</body></html>';
 
  	var cellsHorizontalCount = Math.max(config.dataFields.length + 1, pgridwidget.layout.pivotTable.width);
 
- 	var dataFields = createButtons(config.dataFields, 
+ 	var dataFields = createButtons(config.dataFields,
  		0,
  		cellsHorizontalCount - config.dataFields.length,
  		'<tr><td><font color="#ccc">Data</font></td>'

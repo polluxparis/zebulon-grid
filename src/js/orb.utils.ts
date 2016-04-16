@@ -2,13 +2,13 @@
  * @fileOverview Utility functions
  * @author Najmeddine Nouri <najmno@gmail.com>
  */
-"use strict";
+
 /**
  * Creates a namespcae hierarchy if not exists
  * @param  {string} identifier - namespace identifier
  * @return {object}
  */
-function ns(identifier, parent) {
+export function ns(identifier, parent) {
     var parts = identifier.split('.');
     var i = 0;
     parent = parent || window;
@@ -19,13 +19,12 @@ function ns(identifier, parent) {
     }
     return parent;
 }
-exports.ns = ns;
 /**
  * Returns an array of object own properties
  * @param  {Object} obj
  * @return {Array}
  */
-function ownProperties(obj) {
+export function ownProperties(obj) {
     var arr = [];
     for (var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
@@ -34,7 +33,6 @@ function ownProperties(obj) {
     }
     return arr;
 }
-exports.ownProperties = ownProperties;
 /**
  * Iterates over the list object and executes the callback on each item
  * if the callback returns a value that can be evaluated ti true,
@@ -45,87 +43,79 @@ exports.ownProperties = ownProperties;
  * @param {Boolean} forceContinue - Do not stop if the callback return value is true.
  * @return {Array}
  */
-function forEach(list, callback, forceContinue) {
+export function forEach(list, callback, forceContinue?) {
     var ret;
-    if (list) {
-        for (var i = 0, l = list.length; i < l; i++) {
+    if(list) {
+        for(var i = 0, l = list.length; i < l; i++) {
             ret = callback(list[i], i);
-            if (ret && forceContinue !== true) {
+            if(ret && forceContinue !== true) {
                 break;
             }
         }
     }
     return ret;
 }
-exports.forEach = forEach;
 /**
  * Returns whether or not obj is a javascript array.
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isArray(obj) {
+export function isArray(obj) {
     return Object.prototype.toString.apply(obj) === '[object Array]';
 }
-exports.isArray = isArray;
 /**
  * Returns whether or not obj is a number
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isNumber(obj) {
+export function isNumber(obj) {
     return Object.prototype.toString.apply(obj) === '[object Number]';
 }
-exports.isNumber = isNumber;
 /**
  * Returns whether or not obj is a Date object.
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isDate(obj) {
+export function isDate(obj) {
     return Object.prototype.toString.apply(obj) === '[object Date]';
 }
-exports.isDate = isDate;
 /**
  * Returns whether or not obj is a string
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isString(obj) {
+export function isString(obj) {
     return Object.prototype.toString.apply(obj) === '[object String]';
 }
-exports.isString = isString;
 /**
  * Returns whether or not obj is a regular expression object
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isRegExp(obj) {
+export function isRegExp(obj) {
     return Object.prototype.toString.apply(obj) === '[object RegExp]';
 }
-exports.isRegExp = isRegExp;
 /**
  * Returns whether or not obj is a function object
  * @param  {object}  obj
  * @return {Boolean}
  */
-function isFunction(obj) {
+export function isFunction(obj) {
     return Object.prototype.toString.apply(obj) === '[object Function]';
 }
-exports.isFunction = isFunction;
 /**
  * Escapes all RegExp special characters.
  */
-function escapeRegex(re) {
+export function escapeRegex(re) {
     return re.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
-exports.escapeRegex = escapeRegex;
 /**
  * Returns the first element in the array that satisfies the given predicate
  * @param  {Array} array     the array to search
  * @param  {function} predicate Function to apply to each element until it returns true
  * @return {Object}           The first object in the array that satisfies the predicate or undefined.
  */
-function findInArray(array, predicate) {
+export function findInArray(array, predicate) {
     if (this.isArray(array) && predicate) {
         for (var i = 0; i < array.length; i++) {
             var item = array[i];
@@ -136,76 +126,66 @@ function findInArray(array, predicate) {
     }
     return undefined;
 }
-exports.findInArray = findInArray;
 /**
  * Returns a JSON string represenation of an object
  * @param {object} obj
  * @return {string}
  */
-function jsonStringify(obj, censorKeywords) {
+export function jsonStringify(obj, censorKeywords) {
     function censor(key, value) {
         return censorKeywords && censorKeywords.indexOf(key) > -1 ? undefined : value;
     }
     return JSON.stringify(obj, censor, 2);
 }
-exports.jsonStringify = jsonStringify;
-function addEventListener(element, eventName, handler) {
-    if (element.addEventListener) {
+export function addEventListener(element, eventName, handler) {
+    if (element.addEventListener){
         element.addEventListener(eventName, handler, false);
-    }
-    else if (element.attachEvent) {
+    } else if (element.attachEvent) {
         element.attachEvent('on' + eventName, handler);
-    }
-    else {
+    } else {
         element["on" + eventName] = handler;
     }
 }
-exports.addEventListener = addEventListener;
-function removeEventListener(element, eventName, handler) {
+export function removeEventListener(element, eventName, handler) {
     if (element.removeEventListener) {
         element.removeEventListener(eventName, handler, false);
-    }
-    else if (element.detachEvent) {
+    } else if (element.detachEvent) {
         element.detachEvent("on" + eventName, handler);
-    }
-    else {
+    } else {
         element["on" + eventName] = null;
     }
 }
-exports.removeEventListener = removeEventListener;
-function preventDefault(e) {
+export function preventDefault(e) {
     e = e || window.event;
-    if (e.preventDefault) {
+
+    if(e.preventDefault) {
         e.preventDefault();
-    }
-    else {
+    } else {
         e.returnValue = false;
     }
 }
-exports.preventDefault = preventDefault;
-function stopPropagation(e) {
+export function stopPropagation(e) {
     e = e || window.event;
-    if (e.stopPropagation) {
+
+    if(e.stopPropagation) {
         e.stopPropagation();
-    }
-    else {
+    } else {
         e.cancelBubble = true;
     }
 }
-exports.stopPropagation = stopPropagation;
-function getEventButton(e) {
+export function getEventButton(e) {
     var button = e.button;
     if ('which' in e) {
         return button;
     }
     // IE 8
-    return button === 1 ? 0 :
-        button === 4 ? 1 :
-            2; // right
+    return button === 1 ? 0 :    // left
+        button === 4 ? 1 :       // middle
+        2;                       // right
 }
-exports.getEventButton = getEventButton;
-function getMousePageXY(e) {
+export function getMousePageXY(e) {
     e = e || window.event;
+
     var pageX = e.pageX;
     var pageY = e.pageY;
     if (pageX === undefined) {
@@ -217,10 +197,13 @@ function getMousePageXY(e) {
         pageY: pageY
     };
 }
-exports.getMousePageXY = getMousePageXY;
+
+
 // // from: https://github.com/davidchambers/Base64.js
+
 // (function(object) {
 //     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
 //     function InvalidCharacterError(message) {
 //         this.message = message;
 //     }
@@ -249,6 +232,7 @@ exports.getMousePageXY = getMousePageXY;
 //             }
 //             return output;
 //         };
+
 //     // decoder
 //     // [https://gist.github.com/1020396] by [https://github.com/atk]
 //     object.atob = global && global.atob ? function(str) { return global.atob(str); } :

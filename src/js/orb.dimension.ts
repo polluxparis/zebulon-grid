@@ -2,9 +2,12 @@
  * @fileOverview Pivot Grid dimension viewmodel
  * @author Najmeddine Nouri <najmno@gmail.com>
  */
+
 'use strict';
+
 /* global module */
 /*jshint eqnull: true*/
+
 /**
  * Creates a new container for a row/column dimension values.<br/>
  * This object will have all informations related to a dimension: its values, depth, width and subdimensions.
@@ -15,19 +18,58 @@
  * @param  {int} fieldindex - index of this dimension field in fields array
  * @param  {Boolean} isRoot - whether or not this is the root dimension for a given axe (row/column)
  */
-var Dimension = (function () {
-    function Dimension(id, parent, value, field, depth, isRoot, isLeaf) {
-        /**
-         * Dimension's set of all values
-         * @type {Array}
-         */
-        this.values = [];
-        /**
-         * Direct descendant subdimensions dictionary
-         * @type {Object}
-         */
-        this.subdimvals = {};
-        this.rowIndexes = null;
+export class Dimension{
+
+    /**
+     * unique id within parent orb.axe instance.
+     * @type {Number}
+     */
+    public id;
+    /**
+     * parent subdimension
+     * @type {orb.dimension}
+     */
+    public parent;
+    /**
+     * This instance dimension value
+     * @type {object}
+     */
+    public value;
+    /**
+     * Whether or not this is the root dimension for a given axe (row/column)
+     * @type {Boolean}
+     */
+    public isRoot;
+    /**
+     * Whether or not this is the leaf (deepest) dimension for a given axe (row/column)
+     * @type {Boolean}
+     */
+    public isLeaf;
+    /**
+     * Dimension's data field
+     * @type {Array}
+     */
+    public field;
+    /**
+     * Dimension's depth (to the deepest sub-dimension)
+     * @type {Number}
+     */
+    public depth;
+    /**
+     * Dimension's set of all values
+     * @type {Array}
+     */
+    public values = [];
+    /**
+     * Direct descendant subdimensions dictionary
+     * @type {Object}
+     */
+    public subdimvals = {};
+
+    public rowIndexes = null;
+
+
+    constructor(id, parent, value, field, depth, isRoot, isLeaf) {
         this.id = id;
         this.parent = parent;
         this.value = value;
@@ -35,9 +77,9 @@ var Dimension = (function () {
         this.isLeaf = isLeaf;
         this.field = field;
         this.depth = depth;
-    }
-    ;
-    Dimension.prototype.getRowIndexes = function (result) {
+    };
+
+    getRowIndexes(result?) {
         if (this.rowIndexes == null) {
             this.rowIndexes = [];
             for (var i = 0; i < this.values.length; i++) {
@@ -49,12 +91,8 @@ var Dimension = (function () {
                 result.push(this.rowIndexes[j]);
             }
             return result;
-        }
-        else {
+        } else {
             return this.rowIndexes;
         }
-    };
-    return Dimension;
-}());
-exports.Dimension = Dimension;
-;
+    }
+};

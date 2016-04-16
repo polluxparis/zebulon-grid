@@ -8,10 +8,10 @@
 /* global module, require, React, window */
 /*jshint eqnull: true*/
 
-const React = require('react'),
-    ReactDOM = require('react-dom'),
-    axe = require('./orb.axe'),
-    pgrid = require('./orb.pgrid'),
+import React = require('react');
+import ReactDOM = require('react-dom');
+import {Axe, AxeType}from './orb.axe';
+import {PGrid}from './orb.pgrid';
     uiheaders = require('./orb.ui.header'),
     uirows = require('./orb.ui.rows'),
     uicols = require('./orb.ui.cols'),

@@ -2,252 +2,284 @@
  * @fileOverview Pivot Grid viewmodel
  * @author Najmeddine Nouri <najmno@gmail.com>
  */
+
 'use strict';
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+
 /* global module, require */
 /*jshint eqnull: true*/
-var orb_pubsub_1 = require('./orb.pubsub');
-var orb_axe_1 = require('./orb.axe');
-var orb_config_1 = require('./orb.config');
-var orb_filtering_1 = require('./orb.filtering');
-var orb_query_1 = require('./orb.query');
-var utils = require('./orb.utils');
+
+import {PubSub} from './orb.pubsub';
+import {Axe, AxeType} from './orb.axe';
+import {Config} from './orb.config';
+import {ExpressionFilter} from './orb.filtering';
+import {Query} from './orb.query';
+import * as utils from'./orb.utils';
+import {Dimension} from './orb.dimension';
+
+
+
+
 /**
  * Creates a new instance of pgrid
  * @class
  * @memberOf orb
  * @param  {object} config - configuration object
  */
-var PGrid = (function (_super) {
-    __extends(PGrid, _super);
-    function PGrid(config) {
+export class PGrid extends PubSub{
+
+    // pgrid events
+    public EVENT_UPDATED = 'pgrid:updated';
+    public EVENT_SORT_CHANGED = 'pgrid:sort-changed';
+    public EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
+
+    public defaultfield = {
+        name: '#undefined#'
+    };
+    private _iCache;
+    public config: Config;
+    public filters;
+    public filteredDataSource;
+    public rows;
+    public columns;
+    public dataMatrix;
+    public query: Query;
+
+    constructor(config){
         // inherit PubSub
-        _super.call(this);
-        // pgrid events
-        this.EVENT_UPDATED = 'pgrid:updated';
-        this.EVENT_SORT_CHANGED = 'pgrid:sort-changed';
-        this.EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
-        this.defaultfield = {
-            name: '#undefined#'
-        };
-        this.config = new orb_config_1.Config(config);
+        super();
+        this.config = new Config(config);
         this.filters = this.config.getPreFilters();
         this.filteredDataSource = this.config.dataSource;
-        this.rows = new orb_axe_1.Axe(this, orb_axe_1.AxeType.ROWS);
-        this.columns = new orb_axe_1.Axe(this, orb_axe_1.AxeType.COLUMNS);
+
+        this.rows = new Axe(this, AxeType.ROWS);
+        this.columns = new Axe(this, AxeType.COLUMNS);
         this.dataMatrix = {};
-        this.query = new orb_query_1.Query(this);
+
+        this.query = new Query(this);
+
         this.refresh();
+
     }
-    PGrid.prototype.refresh = function (refreshFilters) {
-        if (refreshFilters !== false) {
+
+    refresh(refreshFilters?) {
+        if(refreshFilters !== false) {
             this.refreshFilteredDataSource();
         }
         this.rows.update();
         this.columns.update();
-        this.computeValues();
+       this.computeValues();
+
         // publish updated event
         this.publish(this.EVENT_UPDATED);
-    };
-    PGrid.prototype.refreshFilteredDataSource = function () {
+    }
+
+    refreshFilteredDataSource() {
         var filterFields = utils.ownProperties(this.filters);
-        if (filterFields.length > 0) {
+        if(filterFields.length > 0) {
             this.filteredDataSource = [];
-            for (var i = 0; i < this.config.dataSource.length; i++) {
+
+            for(var i = 0; i < this.config.dataSource.length; i++) {
                 var row = this.config.dataSource[i];
                 var exclude = false;
-                for (var fi = 0; fi < filterFields.length; fi++) {
+                for(var fi = 0; fi < filterFields.length; fi++) {
                     var fieldname = filterFields[fi];
                     var fieldFilter = this.filters[fieldname];
-                    if (fieldFilter && !fieldFilter.test(row[fieldname])) {
+
+                    if(fieldFilter && !fieldFilter.test(row[fieldname])) {
                         exclude = true;
                         break;
                     }
                 }
-                if (!exclude) {
+                if(!exclude) {
                     this.filteredDataSource.push(row);
                 }
             }
-        }
-        else {
+        } else {
             this.filteredDataSource = this.config.dataSource;
         }
-    };
-    PGrid.prototype.sort = function (axetype, field) {
-        if (axetype === axe.Type.ROWS) {
+    }
+
+    sort(axetype, field) {
+        if (axetype === AxeType.ROWS) {
             this.rows.sort(field);
-        }
-        else if (axetype === axe.Type.COLUMNS) {
+        } else if (axetype === AxeType.COLUMNS) {
             this.columns.sort(field);
-        }
-        else {
+        } else {
             return;
         }
+
         this.publish(this.EVENT_SORT_CHANGED);
     };
-    ;
-    PGrid.prototype.moveField = function (fieldname, oldaxetype, newaxetype, position) {
+
+    moveField(fieldname, oldaxetype, newaxetype, position) {
         if (this.config.moveField(fieldname, oldaxetype, newaxetype, position)) {
             this.refresh(false);
             return true;
         }
         return false;
     };
-    ;
-    PGrid.prototype.applyFilter = function (fieldname, operator, term, staticValue, excludeStatic) {
-        this.filters[fieldname] = new orb_filtering_1.ExpressionFilter(operator, term, staticValue, excludeStatic);
+
+    applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
+        this.filters[fieldname] = new ExpressionFilter(operator, term, staticValue, excludeStatic);
         this.refresh();
     };
-    ;
-    PGrid.prototype.refreshData = function (data) {
+
+    refreshData(data) {
         this.config.dataSource = data;
         this.refresh();
     };
-    ;
-    PGrid.prototype.toggleSubtotals = function (axetype) {
-        if (this.config.toggleSubtotals(axetype)) {
+
+    toggleSubtotals(axetype) {
+        if(this.config.toggleSubtotals(axetype)) {
             this.publish(this.EVENT_CONFIG_CHANGED);
         }
     };
-    ;
-    PGrid.prototype.toggleGrandtotal = function (axetype) {
-        if (this.config.toggleGrandtotal(axetype)) {
+
+    toggleGrandtotal(axetype) {
+        if(this.config.toggleGrandtotal(axetype)) {
             this.publish(this.EVENT_CONFIG_CHANGED);
         }
     };
-    ;
-    PGrid.prototype.areSubtotalsVisible = function (axetype) {
+
+    areSubtotalsVisible(axetype) {
         return this.config.areSubtotalsVisible(axetype);
     };
-    ;
-    PGrid.prototype.isGrandtotalVisible = function (axetype) {
+
+    isGrandtotalVisible(axetype) {
         return this.config.isGrandtotalVisible(axetype);
     };
-    ;
-    PGrid.prototype.getFieldValues = function (field, filterFunc) {
+
+    getFieldValues(field, filterFunc) {
         var values1 = [];
         var values = [];
         var containsBlank = false;
-        for (var i = 0; i < this.config.dataSource.length; i++) {
+        for(var i = 0; i < this.config.dataSource.length; i++) {
             var row = this.config.dataSource[i];
             var val = row[field];
-            if (filterFunc !== undefined) {
-                if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
+            if(filterFunc !== undefined) {
+                if(filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
                     values1.push(val);
                 }
-            }
-            else {
-                if (val != null) {
+            } else {
+                if(val != null) {
                     values1.push(val);
-                }
-                else {
+                } else {
                     containsBlank = true;
                 }
             }
         }
-        if (values1.length > 1) {
-            if (utils.isNumber(values1[0]) || utils.isDate(values1[0])) {
-                values1.sort(function (a, b) { return a ? (b ? a - b : 1) : (b ? -1 : 0); });
-            }
-            else {
+        if(values1.length > 1) {
+            if(utils.isNumber(values1[0]) || utils.isDate(values1[0])) {
+                values1.sort(function(a, b) { return a ? (b ? a - b : 1) : (b ? -1 : 0); });
+            } else {
                 values1.sort();
             }
-            for (var vi = 0; vi < values1.length; vi++) {
-                if (vi === 0 || values1[vi] !== values[values.length - 1]) {
+
+            for(var vi = 0; vi < values1.length; vi++) {
+                if(vi === 0 || values1[vi] !== values[values.length - 1]) {
                     values.push(values1[vi]);
                 }
             }
-        }
-        else {
+        } else {
             values = values1;
         }
-        if (containsBlank) {
+        if(containsBlank) {
             values.unshift(null);
         }
         return values;
     };
-    ;
-    PGrid.prototype.getFieldFilter = function (field) {
+
+    getFieldFilter(field) {
         return this.filters[field];
     };
-    ;
-    PGrid.prototype.isFieldFiltered = function (field) {
+
+    isFieldFiltered(field) {
         var filter = this.getFieldFilter(field);
         return filter != null && !filter.isAlwaysTrue();
     };
-    ;
-    PGrid.prototype.getData = function (field, rowdim, coldim, aggregateFunc) {
+
+    getData(field, rowdim, coldim, aggregateFunc?) {
         var value;
         if (rowdim && coldim) {
+
             var datafieldName = field || (this.config.dataFields[0] || this.defaultfield).name;
             var datafield = this.config.getDataField(datafieldName);
-            if (!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
-                value = this.calcAggregation(rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0), coldim.isRoot ? null : coldim.getRowIndexes().slice(0), [datafieldName], aggregateFunc)[datafieldName];
-            }
-            else {
+
+            if(!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
+                value = this.calcAggregation(
+                    rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
+                    coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
+                    [datafieldName],
+                    aggregateFunc)[datafieldName];
+            } else {
                 if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id]) {
                     value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
-                }
-                else {
+                } else {
                     value = null;
                 }
             }
         }
+
         return value === undefined ? null : value;
     };
-    ;
-    PGrid.prototype.calcAggregation = function (rowIndexes, colIndexes, fieldNames, aggregateFunc) {
-        return this.this.computeValue(rowIndexes, colIndexes, rowIndexes, fieldNames, aggregateFunc);
+
+    calcAggregation(rowIndexes, colIndexes, fieldNames, aggregateFunc) {
+        return this.computeValue(rowIndexes, colIndexes, rowIndexes, fieldNames, aggregateFunc);
     };
-    ;
-    PGrid.prototype.getAxisLabel = function (axisFields) {
+
+    getAxisLabel(axisFields) {
         var str = '';
         for (var ti = 0; ti < axisFields.length; ti++) {
             str += (ti > 0 ? ' - ' : '') + axisFields[ti].caption;
         }
         return str;
-    };
-    PGrid.prototype.getChartData = function () {
+    }
+
+    getChartData() {
+
         var config = this.config;
+
+
         var hAxisLabel = this.getAxisLabel(config.columnFields);
         var vAxisLabel = config.dataFields[0].aggregateFuncName + '(' + config.dataFields[0].caption + ')';
         var legendsLabel = this.getAxisLabel(config.rowFields);
+
         var rowLeafDimensions = this.rows.flattenValues();
         var colLeafDimensions = this.columns.flattenValues();
         var data = [];
-        for (var ci = 0; ci < colLeafDimensions.length; ci++) {
+
+        for(var ci=0; ci < colLeafDimensions.length; ci++) {
             var cdim = colLeafDimensions[ci];
             var currData = [cdim.name];
-            for (var rri = 0; rri < rowLeafDimensions.length; rri++) {
+            for(var rri=0; rri < rowLeafDimensions.length; rri++) {
                 currData.push(this.getData(config.dataFields[0].name, rowLeafDimensions[rri].dim, cdim.dim));
             }
             data.push(currData);
         }
+
         return {
             title: vAxisLabel + ': ' + hAxisLabel + ' by ' + legendsLabel,
             hAxisLabel: hAxisLabel,
             vAxisLabel: vAxisLabel,
             legendsLabel: legendsLabel,
-            colNames: rowLeafDimensions.map(function (d) { return d.name; }),
+            colNames: rowLeafDimensions.map(function(d) { return d.name; }),
             dataTable: data
         };
     };
-    ;
-    PGrid.prototype.computeValue = function (rowIndexes, colIndexes, origRowIndexes, fieldNames, aggregateFunc) {
+
+    computeValue(rowIndexes, colIndexes?, origRowIndexes?, fieldNames?, aggregateFunc?) {
+
         var res = {};
+
         if (this.config.dataFieldsCount > 0) {
+
             var intersection;
+
             if (rowIndexes == null) {
                 intersection = colIndexes;
-            }
-            else if (colIndexes == null) {
+            } else if (colIndexes == null) {
                 intersection = rowIndexes;
-            }
-            else {
+            } else {
                 intersection = [];
                 for (var ri = 0; ri < rowIndexes.length; ri++) {
                     var rowindex = rowIndexes[ri];
@@ -260,63 +292,71 @@ var PGrid = (function (_super) {
                     }
                 }
             }
+
             var emptyIntersection = intersection && intersection.length === 0;
             var datasource = this.filteredDataSource;
             var datafield;
             var datafields = [];
-            if (fieldNames) {
+
+            if(fieldNames) {
                 for (var fieldnameIndex = 0; fieldnameIndex < fieldNames.length; fieldnameIndex++) {
                     datafield = this.config.getDataField(fieldNames[fieldnameIndex]);
-                    if (!aggregateFunc) {
-                        if (!datafield) {
+                    if(!aggregateFunc) {
+                        if(!datafield) {
                             datafield = this.config.getField(fieldNames[fieldnameIndex]);
-                            if (datafield) {
+                            if(datafield) {
                                 aggregateFunc = datafield.dataSettings ? datafield.dataSettings.aggregateFunc() : datafield.aggregateFunc();
                             }
-                        }
-                        else {
+                        } else {
                             aggregateFunc = datafield.aggregateFunc();
                         }
                     }
-                    if (datafield && aggregateFunc) {
-                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc });
+
+                    if (datafield &&  aggregateFunc) {
+                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc});
                     }
                 }
-            }
-            else {
+            } else {
                 for (var datafieldIndex = 0; datafieldIndex < this.config.dataFieldsCount; datafieldIndex++) {
                     datafield = this.config.dataFields[datafieldIndex] || this.defaultfield;
                     if (aggregateFunc || datafield.aggregateFunc) {
-                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc() });
+                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc()});
                     }
                 }
             }
-            for (var dfi = 0; dfi < datafields.length; dfi++) {
+
+            for(var dfi = 0; dfi < datafields.length; dfi++) {
                 datafield = datafields[dfi];
                 // no data
-                if (emptyIntersection) {
+                if(emptyIntersection) {
                     res[datafield.field.name] = null;
-                }
-                else {
+                } else {
                     res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', this.filteredDataSource, origRowIndexes || rowIndexes, colIndexes);
                 }
             }
         }
+
         return res;
-    };
-    PGrid.prototype.computeRowValues = function (rowDim) {
+    }
+
+    computeRowValues(rowDim: Dimension) {
+
         if (rowDim) {
             var data = {};
             var rid = 'r' + rowDim.id;
+
             // set cached row indexes for current row dimension
             if (this._iCache[rid] === undefined) {
                 this._iCache[rid] = rowDim.isRoot ? null : (this._iCache[rowDim.parent.id] || rowDim.getRowIndexes());
             }
+
             // calc grand-total cell
             data[this.columns.root.id] = this.computeValue(rowDim.isRoot ? null : this._iCache[rid].slice(0), null);
+
             if (this.columns.dimensionsCount > 0) {
                 var p = 0;
                 var parents = [this.columns.root];
+
                 while (p < parents.length) {
                     var parent = parents[p];
                     var rowindexes = rowDim.isRoot ?
@@ -324,14 +364,18 @@ var PGrid = (function (_super) {
                         (parent.isRoot ?
                             this._iCache[rid].slice(0) :
                             this._iCache['c' + parent.id].slice(0));
+
                     for (var i = 0; i < parent.values.length; i++) {
                         var subdim = parent.subdimvals[parent.values[i]];
                         var cid = 'c' + subdim.id;
+
                         // set cached row indexes for this column leaf dimension
                         if (this._iCache[cid] === undefined) {
                             this._iCache[cid] = this._iCache[cid] || subdim.getRowIndexes().slice(0);
                         }
+
                         data[subdim.id] = this.computeValue(rowindexes, this._iCache[cid], rowDim.isRoot ? null : rowDim.getRowIndexes());
+
                         if (!subdim.isLeaf) {
                             parents.push(subdim);
                             if (rowindexes) {
@@ -350,14 +394,18 @@ var PGrid = (function (_super) {
                     p++;
                 }
             }
+
             return data;
         }
-    };
-    PGrid.prototype.computeValues = function () {
+    }
+
+    computeValues() {
         this.dataMatrix = {};
         this._iCache = {};
+
         // calc grand total row
         this.dataMatrix[this.rows.root.id] = this.computeRowValues(this.rows.root);
+
         if (this.rows.dimensionsCount > 0) {
             var parents = [this.rows.root];
             var p = 0;
@@ -378,8 +426,6 @@ var PGrid = (function (_super) {
                 p++;
             }
         }
-    };
-    return PGrid;
-}(orb_pubsub_1.PubSub));
-exports.PGrid = PGrid;
-;
+    }
+};
+

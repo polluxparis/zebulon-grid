@@ -1,83 +1,120 @@
 /* global module */
 /*jshint eqnull: true*/
-
 'use strict';
-
-module.exports = (function() {
-
-    var currentTheme = 'blue';
-    var themeManager = {};
-
-    function isBootstrap() {
-        return currentTheme === 'bootstrap';
+var ThemeManager = (function () {
+    function ThemeManager() {
+        this.themes = {
+            red: '#C72C48',
+            blue: '#5bc0de',
+            green: '#3fb618',
+            orange: '#df691a',
+            flower: '#A74AC7',
+            gray: '#808080',
+            black: '#000000',
+            white: '#FFFFFF'
+        };
+        this.currentTheme = 'blue';
+        this.utils = {
+            hexToRgb: function (hex) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            },
+            rgbaToHex: function (rgba) {
+                var matches = rgba.match(/rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+(?:\.\d+)?)\s*\)/);
+                if (matches) {
+                    var alpha = parseFloat(matches[4]);
+                    return '#' +
+                        this.applyAlphaAndToHex(matches[1], alpha) +
+                        this.applyAlphaAndToHex(matches[2], alpha) +
+                        this.applyAlphaAndToHex(matches[3], alpha);
+                }
+                return null;
+            },
+            rgbaToHexA: function (rgba) {
+                var matches = rgba.match(/rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+(?:\.\d+)?)\s*\)/);
+                if (matches) {
+                    var alpha = parseFloat(matches[4]);
+                    return '#' +
+                        this.applyAlphaAndToHex(0, alpha) +
+                        this.applyAlphaAndToHex(matches[1], 1) +
+                        this.applyAlphaAndToHex(matches[2], 1) +
+                        this.applyAlphaAndToHex(matches[3], 1);
+                }
+                return null;
+            },
+            applyAlphaAndToHex: function (value, alpha) {
+                return (Math.floor(alpha * parseInt(value) + (1 - alpha) * 255) + 256).toString(16).substr(1, 2);
+            },
+            fadeoutColor: function (color, alpha) {
+                color = this.hexToRgb(color);
+                return '#' +
+                    this.applyAlphaAndToHex(color.r, alpha) +
+                    this.applyAlphaAndToHex(color.g, alpha) +
+                    this.applyAlphaAndToHex(color.b, alpha);
+            }
+        };
     }
-
-    themeManager.themes = {
-        red: '#C72C48',
-        blue: '#5bc0de',
-        green: '#3fb618',
-        orange: '#df691a',
-        flower: '#A74AC7',
-        gray: '#808080',
-        black: '#000000',
-        white: '#FFFFFF'
+    ThemeManager.prototype.isBootstrap = function () {
+        return this.currentTheme === 'bootstrap';
     };
-
-    themeManager.current = function(newTheme) {
+    ThemeManager.prototype.current = function (newTheme) {
         if (newTheme) {
-            currentTheme = themeManager.validateTheme(newTheme);
+            this.currentTheme = this.validateTheme(newTheme);
         }
-
-        return currentTheme;
+        return this.currentTheme;
     };
-
-    themeManager.validateTheme = function(themeName) {
+    ;
+    ThemeManager.prototype.validateTheme = function (themeName) {
         themeName = (themeName || '').toString().trim();
-        if (!themeManager.themes[themeName] && themeName !== 'bootstrap') {
+        if (!this.themes[themeName] && themeName !== 'bootstrap') {
             return 'blue';
-        } else {
+        }
+        else {
             return themeName;
         }
     };
-
-    themeManager.getPivotClasses = function() {
+    ;
+    ThemeManager.prototype.getPivotClasses = function () {
         return {
-            container: 'orb-container orb-' + currentTheme,
-            table: 'orb' + (isBootstrap() ? ' table' : '')
+            container: 'orb-container orb-' + this.currentTheme,
+            table: 'orb' + (this.isBootstrap() ? ' table' : '')
         };
     };
-
-    themeManager.getButtonClasses = function() {
+    ;
+    ThemeManager.prototype.getButtonClasses = function () {
         return {
-            pivotButton: 'fld-btn' + (isBootstrap() ? ' btn btn-default btn-xs' : ''),
-            orbButton: 'orb-btn' + (isBootstrap() ? ' btn btn-default btn-xs' : ''),
-            scrollBar: isBootstrap() ? ' btn btn-default btn-xs' : ''
+            pivotButton: 'fld-btn' + (this.isBootstrap() ? ' btn btn-default btn-xs' : ''),
+            orbButton: 'orb-btn' + (this.isBootstrap() ? ' btn btn-default btn-xs' : ''),
+            scrollBar: this.isBootstrap() ? ' btn btn-default btn-xs' : ''
         };
     };
-
-    themeManager.getFilterClasses = function() {
+    ;
+    ThemeManager.prototype.getFilterClasses = function () {
         return {
-            container: 'orb-' + currentTheme + ' orb fltr-cntnr'
+            container: 'orb-' + this.currentTheme + ' orb fltr-cntnr'
         };
     };
-
-    themeManager.getGridClasses = function() {
+    ;
+    ThemeManager.prototype.getGridClasses = function () {
         return {
-            table: isBootstrap() ? 'table table-condensed' : 'orb-table'
+            table: this.isBootstrap() ? 'table table-condensed' : 'orb-table'
         };
     };
-
-    themeManager.getDialogClasses = function(visible) {
+    ;
+    ThemeManager.prototype.getDialogClasses = function (visible) {
         var classes = {
-            overlay: 'orb-overlay orb-overlay-' + (visible ? 'visible' : 'hidden') + ' orb-' + currentTheme,
+            overlay: 'orb-overlay orb-overlay-' + (visible ? 'visible' : 'hidden') + ' orb-' + this.currentTheme,
             dialog: 'orb-dialog',
             content: '',
             header: 'orb-dialog-header',
             title: '',
             body: 'orb-dialog-body'
         };
-
-        if (isBootstrap()) {
+        if (this.isBootstrap()) {
             classes.overlay += ' modal';
             classes.dialog += ' modal-dialog';
             classes.content = 'modal-content';
@@ -87,50 +124,8 @@ module.exports = (function() {
         }
         return classes;
     };
-
-    var utils = themeManager.utils = {
-        hexToRgb: function(hex) {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : null;
-        },
-        rgbaToHex: function(rgba) {
-            var matches = rgba.match(/rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+(?:\.\d+)?)\s*\)/);
-            if(matches) {
-                var alpha = parseFloat(matches[4]);
-                return '#' +
-                    utils.applyAlphaAndToHex(matches[1], alpha) +
-                    utils.applyAlphaAndToHex(matches[2], alpha) +
-                    utils.applyAlphaAndToHex(matches[3], alpha);
-            }
-            return null;
-        },
-        rgbaToHexA: function(rgba) {
-            var matches = rgba.match(/rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+(?:\.\d+)?)\s*\)/);
-            if(matches) {
-                var alpha = parseFloat(matches[4]);
-                return '#' +
-                    utils.applyAlphaAndToHex(0, alpha) +
-                    utils.applyAlphaAndToHex(matches[1], 1) +
-                    utils.applyAlphaAndToHex(matches[2], 1) +
-                    utils.applyAlphaAndToHex(matches[3], 1);
-            }
-            return null;
-        },
-        applyAlphaAndToHex: function(value, alpha) {
-           return (Math.floor(alpha*parseInt(value) + (1-alpha)*255) + 256).toString(16).substr(1,2);
-        },
-        fadeoutColor: function(color, alpha) {
-            color = utils.hexToRgb(color);
-            return '#' +
-               utils.applyAlphaAndToHex(color.r, alpha) +
-               utils.applyAlphaAndToHex(color.g, alpha) +
-               utils.applyAlphaAndToHex(color.b, alpha);
-        }
-     };
-
-    return themeManager;
+    ;
+    return ThemeManager;
 }());
+exports.ThemeManager = ThemeManager;
+;

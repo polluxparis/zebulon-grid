@@ -2,14 +2,18 @@
  * @fileOverview Pivot Grid axe viewmodel
  * @author Najmeddine Nouri <najmno@gmail.com>
  */
+
 'use strict';
+
 /* global module, require */
 /*jshint eqnull: true*/
-var utils = require('./orb.utils');
-var orb_axe_1 = require('./orb.axe');
-var aggregation = require('./orb.aggregation');
-var filtering = require('./orb.filtering');
-var orb_themes_1 = require('./orb.themes');
+
+import * as utils from './orb.utils';
+import {Axe, AxeType} from './orb.axe';
+import * as aggregation from './orb.aggregation';
+import * as filtering from './orb.filtering';
+import {ThemeManager} from './orb.themes';
+
 function getpropertyvalue(property, configs, defaultvalue) {
     for (var i = 0; i < configs.length; i++) {
         if (configs[i][property] != null) {
@@ -18,17 +22,16 @@ function getpropertyvalue(property, configs, defaultvalue) {
     }
     return defaultvalue;
 }
-function mergefieldconfigs() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
-    }
+
+function mergefieldconfigs(...args) {
+
     var merged = {
         configs: [],
         sorts: [],
         subtotals: [],
         functions: []
     };
+
     for (var i = 0; i < args.length; i++) {
         var nnconfig = args[i] || {};
         merged.configs.push(nnconfig);
@@ -40,22 +43,26 @@ function mergefieldconfigs() {
             formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null)
         });
     }
+
     return merged;
 }
+
 function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
+
     var axeconfig;
     var fieldAxeconfig;
+
     if (defaultfieldconfig) {
         switch (axetype) {
-            case orb_axe_1.AxeType.ROWS:
+            case AxeType.ROWS:
                 axeconfig = rootconfig.rowSettings;
                 fieldAxeconfig = defaultfieldconfig.rowSettings;
                 break;
-            case orb_axe_1.AxeType.COLUMNS:
+            case AxeType.COLUMNS:
                 axeconfig = rootconfig.columnSettings;
                 fieldAxeconfig = defaultfieldconfig.columnSettings;
                 break;
-            case orb_axe_1.AxeType.DATA:
+            case AxeType.DATA:
                 axeconfig = rootconfig.dataSettings;
                 fieldAxeconfig = defaultfieldconfig.dataSettings;
                 break;
@@ -64,15 +71,18 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
                 fieldAxeconfig = null;
                 break;
         }
-    }
-    else {
+    } else {
         axeconfig = null;
         fieldAxeconfig = null;
     }
+
     var merged = mergefieldconfigs(fieldconfig, fieldAxeconfig, axeconfig, defaultfieldconfig, rootconfig);
+
     return new Field({
         name: getpropertyvalue('name', merged.configs, ''),
+
         caption: getpropertyvalue('caption', merged.configs, ''),
+
         sort: {
             order: getpropertyvalue('order', merged.sorts, null),
             customfunc: getpropertyvalue('customfunc', merged.sorts, null)
@@ -82,92 +92,130 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
             collapsible: getpropertyvalue('collapsible', merged.subtotals, true),
             collapsed: getpropertyvalue('collapsed', merged.subtotals, false) && getpropertyvalue('collapsible', merged.subtotals, true)
         },
+
         aggregateFuncName: getpropertyvalue('aggregateFuncName', merged.functions, 'sum'),
         aggregateFunc: getpropertyvalue('aggregateFunc', merged.functions, aggregation.sum),
         formatFunc: getpropertyvalue('formatFunc', merged.functions, null)
     }, false);
 }
-var GrandTotalConfig = (function () {
-    function GrandTotalConfig(options) {
+
+class GrandTotalConfig {
+
+    public rowsvisible;
+    public columnsvisible;
+
+    constructor(options){
         options = options || {};
+
         this.rowsvisible = options.rowsvisible !== undefined ? options.rowsvisible : true;
         this.columnsvisible = options.columnsvisible !== undefined ? options.columnsvisible : true;
     }
-    return GrandTotalConfig;
-}());
-var SubTotalConfig = (function () {
-    function SubTotalConfig(options, setdefaults) {
-        var defaults = {
+}
+
+class SubTotalConfig{
+
+    public visible;
+    public collapsible;
+    public collapsed;
+    constructor(options, setdefaults?) {
+
+        const defaults = {
             visible: setdefaults === true ? true : undefined,
             collapsible: setdefaults === true ? true : undefined,
             collapsed: setdefaults === true ? false : undefined
         };
         options = options || {};
+
         this.visible = options.visible !== undefined ? options.visible : defaults.visible;
         this.collapsible = options.collapsible !== undefined ? options.collapsible : defaults.collapsible;
         this.collapsed = options.collapsed !== undefined ? options.collapsed : defaults.collapsed;
     }
-    return SubTotalConfig;
-}());
+}
+
 function SortConfig(options) {
     options = options || {};
+
     this.order = options.order || (options.customfunc ? 'asc' : null);
     this.customfunc = options.customfunc;
 }
+
 function ChartConfig(options) {
     options = options || {};
+
     this.enabled = options.enabled || false;
     // type can be: 'LineChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
     this.type = options.type || 'LineChart';
 }
-var Field = (function () {
-    function Field(options, createSubOptions) {
+
+class Field{
+
+    public name;
+    public caption;
+    public sort;
+    public subTotal;
+    public aggregateFuncName;
+
+    public rowSettings;
+    public columnSettings;
+    public dataSettings;
+
+    // data settings
+    private _aggregatefunc;
+    private _formatfunc;
+
+    constructor(options, createSubOptions?) {
         options = options || {};
+
         // field name
         this.name = options.name;
+
         // shared settings
         this.caption = options.caption || this.name;
+
         // rows & columns settings
         this.sort = new SortConfig(options.sort);
         this.subTotal = new SubTotalConfig(options.subTotal);
+
         this.aggregateFuncName = options.aggregateFuncName ||
             (options.aggregateFunc ?
                 (utils.isString(options.aggregateFunc) ?
                     options.aggregateFunc :
                     'custom') :
                 null);
+
         this.aggregateFunc(options.aggregateFunc);
         this.formatFunc(options.formatFunc || this.defaultFormatFunc);
+
         if (createSubOptions !== false) {
             (this.rowSettings = new Field(options.rowSettings, false)).name = this.name;
             (this.columnSettings = new Field(options.columnSettings, false)).name = this.name;
             (this.dataSettings = new Field(options.dataSettings, false)).name = this.name;
         }
     }
-    Field.prototype.defaultFormatFunc = function (val) {
+
+    defaultFormatFunc(val) {
         return val != null ? val.toString() : '';
-    };
-    Field.prototype.aggregateFunc = function (func) {
+    }
+
+    aggregateFunc(func) {
         if (func) {
             this._aggregatefunc = aggregation.toAggregateFunc(func);
-        }
-        else {
+        } else {
             return this._aggregatefunc;
         }
     };
-    ;
-    Field.prototype.formatFunc = function (func) {
+
+    formatFunc(func) {
         if (func) {
             this._formatfunc = func;
-        }
-        else {
+        } else {
             return this._formatfunc;
         }
     };
-    ;
-    return Field;
-}());
-;
+
+
+};
+
 /**
  * Creates a new instance of pgrid config
  * @class
@@ -175,13 +223,36 @@ var Field = (function () {
  * @param  {object} config - configuration object
  */
 // module.config(config) {
-var Config = (function () {
-    function Config(config) {
-        var _this = this;
-        // datasource field names
-        this.dataSourceFieldNames = [];
-        // datasource field captions
-        this.dataSourceFieldCaptions = [];
+export class Config{
+
+    private config;
+
+   public dataSource;
+   public canMoveFields;
+   public dataHeadersLocation;
+   public grandTotal;
+   public subTotal;
+   public width;
+   public height;
+   public toolbar;
+   public theme;
+   public chartMode;
+   public rowSettings;
+   public columnSettings;
+   public dataSettings;
+    // datasource field names
+    public dataSourceFieldNames = [];
+    // datasource field captions
+    public dataSourceFieldCaptions = [];
+    public allFields;
+    public rowFields;
+    public columnFields;
+    public dataFields;
+    public dataFieldsCount;
+
+    public runtimeVisibility;
+
+    constructor(config) {
         this.config = config;
         this.dataSource = config.dataSource || [];
         this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true;
@@ -191,173 +262,198 @@ var Config = (function () {
         this.width = config.width;
         this.height = config.height;
         this.toolbar = config.toolbar;
-        this.theme = new orb_themes_1.ThemeManager();
+        this.theme = new ThemeManager();
         this.chartMode = new ChartConfig(config.chartMode);
+
         this.rowSettings = new Field(config.rowSettings, false);
         this.columnSettings = new Field(config.columnSettings, false);
         this.dataSettings = new Field(config.dataSettings, false);
-        this.allFields = (config.fields || []).map(function (fieldconfig) {
+
+        this.allFields = (config.fields || []).map(fieldconfig => {
             var f = new Field(fieldconfig);
             // map fields names to captions
-            _this.dataSourceFieldNames.push(f.name);
-            _this.dataSourceFieldCaptions.push(f.caption);
+            this.dataSourceFieldNames.push(f.name);
+            this.dataSourceFieldCaptions.push(f.caption);
             return f;
         });
-        this.rowFields = (config.rows || []).map(function (fieldconfig) {
+
+        this.rowFields = (config.rows || []).map(function(fieldconfig) {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
-            return createfield(this, orb_axe_1.AxeType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+            return createfield(this, AxeType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
-        this.columnFields = (config.columns || []).map(function (fieldconfig) {
+
+        this.columnFields = (config.columns || []).map(function(fieldconfig) {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
-            return createfield(this, orb_axe_1.AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+            return createfield(this, AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
-        this.dataFields = (config.data || []).map(function (fieldconfig) {
+
+        this.dataFields = (config.data || []).map(function(fieldconfig) {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
-            return createfield(this, orb_axe_1.AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+            return createfield(this, AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
+
         this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
+
         this.runtimeVisibility = {
             subtotals: {
                 rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
                 columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
             }
         };
+
+
     }
-    Config.prototype.captionToName = function (caption) {
+
+    captionToName(caption) {
         var fcaptionIndex = this.dataSourceFieldCaptions.indexOf(caption);
         return fcaptionIndex >= 0 ? this.dataSourceFieldNames[fcaptionIndex] : caption;
     };
-    ;
-    Config.prototype.nameToCaption = function (name) {
+
+    nameToCaption(name) {
         var fnameIndex = this.dataSourceFieldNames.indexOf(name);
         return fnameIndex >= 0 ? this.dataSourceFieldCaptions[fnameIndex] : name;
     };
-    ;
-    Config.prototype.setTheme = function (newTheme) {
+
+    setTheme(newTheme) {
         return this.theme.current() !== this.theme.current(newTheme);
     };
-    ;
-    Config.prototype.ensureFieldConfig = function (obj) {
-        if (typeof obj === 'string') {
+
+
+    ensureFieldConfig(obj) {
+        if(typeof obj === 'string') {
             return {
                 name: this.captionToName(obj)
             };
         }
         return obj;
-    };
-    Config.prototype.getfield = function (axefields, fieldname) {
+    }
+
+
+    getfield(axefields, fieldname) {
         var fieldindex = this.getfieldindex(axefields, fieldname);
         if (fieldindex > -1) {
             return axefields[fieldindex];
         }
         return null;
-    };
-    Config.prototype.getfieldindex = function (axefields, fieldname) {
+    }
+
+    getfieldindex(axefields, fieldname) {
         for (var fi = 0; fi < axefields.length; fi++) {
             if (axefields[fi].name === fieldname) {
                 return fi;
             }
         }
         return -1;
-    };
-    Config.prototype.getField = function (fieldname) {
+    }
+
+    getField(fieldname) {
         return this.getfield(this.allFields, fieldname);
     };
-    ;
-    Config.prototype.getRowField = function (fieldname) {
+
+    getRowField(fieldname) {
         return this.getfield(this.rowFields, fieldname);
     };
-    ;
-    Config.prototype.getColumnField = function (fieldname) {
+
+    getColumnField(fieldname) {
         return this.getfield(this.columnFields, fieldname);
     };
-    ;
-    Config.prototype.getDataField = function (fieldname) {
+
+    getDataField(fieldname) {
         return this.getfield(this.dataFields, fieldname);
     };
-    ;
-    Config.prototype.availablefields = function () {
-        var _this = this;
-        return this.allFields.filter(function (field) {
+
+    availablefields() {
+        return this.allFields.filter(field => {
             function notequalfield(otherfield) {
-                return field.name !== otherfield.name;
-            }
-            ;
-            return _this.dataFields.every(notequalfield) &&
-                _this.rowFields.every(notequalfield) &&
-                _this.columnFields.every(notequalfield);
+                            return field.name !== otherfield.name;
+                        };
+
+            return this.dataFields.every(notequalfield) &&
+                this.rowFields.every(notequalfield) &&
+                this.columnFields.every(notequalfield);
         });
     };
-    ;
-    Config.prototype.getDataSourceFieldCaptions = function () {
+
+    getDataSourceFieldCaptions() {
         var row0;
-        if (this.dataSource && (row0 = this.dataSource[0])) {
+        if(this.dataSource && (row0 = this.dataSource[0])) {
             var fieldNames = utils.ownProperties(row0);
             var headers = [];
-            for (var i = 0; i < fieldNames.length; i++) {
+            for(var i = 0; i < fieldNames.length; i++) {
                 headers.push(this.nameToCaption(fieldNames[i]));
             }
             return headers;
         }
         return null;
     };
-    ;
-    Config.prototype.getPreFilters = function () {
+
+    getPreFilters() {
         var prefilters = {};
-        if (this.config.preFilters) {
-            utils.forEach(utils.ownProperties(this.config.preFilters), function (filteredField) {
-                var prefilterConfig = this.config.preFilters[filteredField];
-                if (utils.isArray(prefilterConfig)) {
-                    prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(null, null, prefilterConfig, false);
-                }
-                else {
-                    var opname = utils.ownProperties(prefilterConfig)[0];
-                    if (opname) {
-                        prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(opname, prefilterConfig[opname]);
+        if(this.config.preFilters) {
+            utils.forEach(
+                utils.ownProperties(this.config.preFilters),
+                    function(filteredField) {
+                    var prefilterConfig = this.config.preFilters[filteredField];
+                    if(utils.isArray(prefilterConfig)) {
+                        prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(null, null, prefilterConfig, false);
+                    } else {
+                        var opname = utils.ownProperties(prefilterConfig)[0];
+                        if(opname) {
+                            prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(opname, prefilterConfig[opname]);
+                        }
                     }
-                }
-            });
+                } );
         }
+
         return prefilters;
     };
-    ;
-    Config.prototype.moveField = function (fieldname, oldaxetype, newaxetype, position) {
+
+
+
+    moveField(fieldname, oldaxetype, newaxetype, position) {
+
         var oldaxe, oldposition;
         var newaxe;
         var fieldConfig;
         var defaultFieldConfig = this.getfield(this.allFields, fieldname);
+
         if (defaultFieldConfig) {
+
             switch (oldaxetype) {
-                case orb_axe_1.AxeType.ROWS:
+                case AxeType.ROWS:
                     oldaxe = this.rowFields;
                     break;
-                case orb_axe_1.AxeType.COLUMNS:
+                case AxeType.COLUMNS:
                     oldaxe = this.columnFields;
                     break;
-                case orb_axe_1.AxeType.DATA:
+                case AxeType.DATA:
                     oldaxe = this.dataFields;
                     break;
                 default:
                     break;
             }
+
             switch (newaxetype) {
-                case orb_axe_1.AxeType.ROWS:
+                case AxeType.ROWS:
                     newaxe = this.rowFields;
                     fieldConfig = this.getRowField(fieldname);
                     break;
-                case orb_axe_1.AxeType.COLUMNS:
+                case AxeType.COLUMNS:
                     newaxe = this.columnFields;
                     fieldConfig = this.getColumnField(fieldname);
                     break;
-                case orb_axe_1.AxeType.DATA:
+                case AxeType.DATA:
                     newaxe = this.dataFields;
                     fieldConfig = this.getDataField(fieldname);
                     break;
                 default:
                     break;
             }
+
             if (oldaxe || newaxe) {
+
                 var newAxeSubtotalsState = this.areSubtotalsVisible(newaxetype);
+
                 if (oldaxe) {
                     oldposition = this.getfieldindex(oldaxe, fieldname);
                     if (oldaxetype === newaxetype) {
@@ -369,88 +465,89 @@ var Config = (function () {
                     }
                     oldaxe.splice(oldposition, 1);
                 }
-                var field = createfield(this, newaxetype, fieldConfig, defaultFieldConfig);
-                if (!newAxeSubtotalsState && field.subTotal.visible !== false) {
+
+                var field = createfield(
+                    this,
+                    newaxetype,
+                    fieldConfig,
+                    defaultFieldConfig);
+
+                if(!newAxeSubtotalsState && field.subTotal.visible !== false) {
                     field.subTotal.visible = null;
                 }
+
                 if (newaxe) {
                     if (position != null) {
                         newaxe.splice(position, 0, field);
-                    }
-                    else {
+                    } else {
                         newaxe.push(field);
                     }
                 }
+
                 // update data fields count
                 this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
+
                 return true;
             }
         }
     };
-    ;
-    Config.prototype.toggleSubtotals = function (axetype) {
+
+    toggleSubtotals(axetype) {
+
         var i;
         var axeFields;
         var newState = !this.areSubtotalsVisible(axetype);
-        if (axetype === orb_axe_1.AxeType.ROWS) {
+
+        if(axetype === AxeType.ROWS) {
             this.runtimeVisibility.subtotals.rows = newState;
             axeFields = this.rowFields;
-        }
-        else if (axetype === orb_axe_1.AxeType.COLUMNS) {
+        } else if(axetype === AxeType.COLUMNS) {
             this.runtimeVisibility.subtotals.columns = newState;
             axeFields = this.columnFields;
-        }
-        else {
+        } else {
             return false;
         }
+
         newState = newState === false ? null : true;
-        for (i = 0; i < axeFields.length; i++) {
-            if (axeFields[i].subTotal.visible !== false) {
+        for(i = 0; i < axeFields.length; i++) {
+            if(axeFields[i].subTotal.visible !== false) {
                 axeFields[i].subTotal.visible = newState;
             }
         }
         return true;
     };
-    ;
-    Config.prototype.areSubtotalsVisible = function (axetype) {
-        if (axetype === orb_axe_1.AxeType.ROWS) {
+
+    areSubtotalsVisible(axetype) {
+        if(axetype === AxeType.ROWS) {
             return this.runtimeVisibility.subtotals.rows;
-        }
-        else if (axetype === orb_axe_1.AxeType.COLUMNS) {
+        } else if(axetype === AxeType.COLUMNS) {
             return this.runtimeVisibility.subtotals.columns;
-        }
-        else {
+        } else {
             return null;
         }
     };
-    ;
-    Config.prototype.toggleGrandtotal = function (axetype) {
+
+
+    toggleGrandtotal(axetype) {
         var newState = !this.isGrandtotalVisible(axetype);
-        if (axetype === orb_axe_1.AxeType.ROWS) {
+
+        if(axetype === AxeType.ROWS) {
             this.grandTotal.rowsvisible = newState;
-        }
-        else if (axetype === orb_axe_1.AxeType.COLUMNS) {
+        } else if(axetype === AxeType.COLUMNS) {
             this.grandTotal.columnsvisible = newState;
-        }
-        else {
+        } else {
             return false;
         }
         return true;
     };
-    ;
-    Config.prototype.isGrandtotalVisible = function (axetype) {
-        if (axetype === orb_axe_1.AxeType.ROWS) {
+
+    isGrandtotalVisible(axetype) {
+        if(axetype === AxeType.ROWS) {
             return this.grandTotal.rowsvisible;
-        }
-        else if (axetype === orb_axe_1.AxeType.COLUMNS) {
+        } else if(axetype === AxeType.COLUMNS) {
             return this.grandTotal.columnsvisible;
-        }
-        else {
+        } else {
             return false;
         }
     };
-    ;
-    return Config;
-}());
-exports.Config = Config;
-;
+};

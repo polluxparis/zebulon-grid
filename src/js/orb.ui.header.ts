@@ -9,8 +9,8 @@
 /*jshint eqnull: true*/
 
 
-var axe = require('./orb.axe'),
-    state = new (require('./orb.state'))();
+import {Axe, AxeType} from './orb.axe';
+import {Store} from './orb.store';
 
 var HeaderType = module.exports.HeaderType = {
     EMPTY: 1,
@@ -22,7 +22,7 @@ var HeaderType = module.exports.HeaderType = {
     SUB_TOTAL: 7,
     GRAND_TOTAL: 8,
     getHeaderClass: function(headerType, axetype) {
-        var cssclass = axetype === axe.Type.ROWS ? 'header-row' : (axetype === axe.Type.COLUMNS ? 'header-col' : '');
+        var cssclass = axetype === AxeType.ROWS ? 'header-row' : (axetype === AxeType.COLUMNS ? 'header-col' : '');
         switch (headerType) {
             case HeaderType.EMPTY:
             case HeaderType.FIELD_BUTTON:
@@ -70,62 +70,75 @@ var HeaderType = module.exports.HeaderType = {
     }
 };
 
-function CellBase(options) {
+abstract class CellBase {
+
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
-     * @type {orb.axe.Type}
+     * @type {orb.AxeType}
      */
-    this.axetype = options.axetype;
+    public axetype;
     /**
      * cell type (EMPTY, DATA_VALUE, FIELD_BUTTON, INNER, WRAPPER, SUB_TOTAL, GRAND_TOTAL, ...)
      * @type {HeaderType}
      */
-    this.type = options.type;
+    public type;
     /**
      * header cell template
      * @type {String}
      */
-    this.template = options.template;
+    public template;
     /**
      * header cell value
      * @type {Object}
      */
-    this.value = options.value;
+    public value;
     /**
      * is header cell expanded
      * @type {Boolean}
      */
-    this.expanded = true;
+    public expanded = true;
     /**
      * header cell css class(es)
      * @type {String}
      */
-    this.cssclass = options.cssclass;
+    public cssclass;
     /**
      * header cell width
      * @type {Number}
      */
-    this.hspan = options.hspan || function() {
-        return 1;
-    };
+    public hspan;
     /**
      * gets header cell's height
      * @return {Number}
      */
-    this.vspan = options.vspan || function() {
-        return 1;
-    };
+    public vspan;
     /**
      * gets wether header cell is visible
      * @return {Boolean}
      */
-    this.visible = options.isvisible || function() {
-        return true;
-    };
+    public visible;
 
-    this.key = this.axetype + this.type + this.value;
-    this.getState = function() { return state.get(this.key); };
-    this.setState = function(newState) { state.set(this.key, newState); };
+    public key;
+
+    private store: Store;
+
+    constructor(options){
+        this.axetype = options.axetype;
+        this.type = options.type;
+        this.template = options.template;
+        this.value = options.value;
+        this.cssclass = options.cssclass;
+        this.hspan = options.hspan || (() => 1);
+        this.vspan = options.vspan || (() => 1);
+        this.visible = options.isvisible || (() => true);
+
+        this.key = this.axetype + this.type + this.value;
+
+        this.store = new Store();
+    }
+
+    getState() { return this.store.get(this.key); };
+    setState(newState) { this.store.set(this.key, newState); };
 }
 
 /**
@@ -145,7 +158,7 @@ module.exports.header = function(axetype, headerType, dim, parent, datafieldscou
     var vspan;
     var value;
 
-    var isRowsAxe = axetype === axe.Type.ROWS;
+    var isRowsAxe = axetype === AxeType.ROWS;
     headerType = headerType || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
 
     switch (headerType) {

@@ -2,17 +2,29 @@
  * @fileOverview Pivot Grid axe viewmodel
  * @author Najmeddine Nouri <najmno@gmail.com>
  */
+
 'use strict';
+
 /* global module, require */
 /*jshint eqnull: true*/
-var utils = require('./orb.utils');
-exports.ALL = '#All#';
-exports.NONE = '#None#';
-exports.BLANK = '#Blank#"';
-var ExpressionFilter = (function () {
-    function ExpressionFilter(operator, term, staticValue, excludeStatic) {
-        this.regexpMode = false;
-        this.operator = exports.Operators.get(operator);
+
+import * as utils from './orb.utils';
+
+export const ALL = '#All#';
+export const NONE = '#None#';
+export const BLANK = '#Blank#"';
+
+export class ExpressionFilter {
+
+    public operator;
+    public term;
+    public staticValue;
+    public excludeStatic;
+    public regexpMode = false;
+
+
+    constructor(operator, term, staticValue?, excludeStatic?) {
+        this.operator = Operators.get(operator);
         this.term = term || null;
         if (this.term && this.operator && this.operator.regexpSupported) {
             if (utils.isRegExp(this.term)) {
@@ -22,38 +34,33 @@ var ExpressionFilter = (function () {
                 }
             }
         }
+
         this.staticValue = staticValue;
         this.excludeStatic = excludeStatic;
     }
-    ExpressionFilter.prototype.test = function (value) {
+
+    test(value) {
         if (utils.isArray(this.staticValue)) {
             var found = this.staticValue.indexOf(value) >= 0;
             return (this.excludeStatic && !found) || (!this.excludeStatic && found);
-        }
-        else if (this.term) {
+        } else if (this.term) {
             return this.operator.func(value, this.term);
-        }
-        else if (this.staticValue === true || this.staticValue === exports.ALL) {
+        } else if (this.staticValue === true || this.staticValue === ALL) {
             return true;
-        }
-        else if (this.staticValue === false || this.staticValue === exports.NONE) {
+        } else if (this.staticValue === false || this.staticValue === NONE) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     };
-    ;
-    ExpressionFilter.prototype.isAlwaysTrue = function () {
-        return !(this.term || utils.isArray(this.staticValue) || this.staticValue === exports.NONE || this.staticValue === false);
+
+    isAlwaysTrue() {
+        return !(this.term || utils.isArray(this.staticValue) || this.staticValue === NONE || this.staticValue === false);
     };
-    ;
-    return ExpressionFilter;
-}());
-exports.ExpressionFilter = ExpressionFilter;
-;
-exports.Operators = {
-    get: function (opname) {
+};
+
+export const Operators = {
+    get: function(opname) {
         switch (opname) {
             case this.MATCH.name: return this.MATCH;
             case this.NOTMATCH.name: return this.NOTMATCH;
@@ -69,11 +76,10 @@ exports.Operators = {
     NONE: null,
     MATCH: {
         name: 'Matches',
-        func: function (value, term) {
+        func: function(value, term) {
             if (value) {
                 return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
-            }
-            else {
+            } else {
                 return !(!!term);
             }
         },
@@ -81,11 +87,10 @@ exports.Operators = {
     },
     NOTMATCH: {
         name: 'Does Not Match',
-        func: function (value, term) {
+        func: function(value, term) {
             if (value) {
                 return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
-            }
-            else {
+            } else {
                 return !!term;
             }
         },
@@ -93,42 +98,42 @@ exports.Operators = {
     },
     EQ: {
         name: '=',
-        func: function (value, term) {
+        func: function(value, term) {
             return value == term;
         },
         regexpSupported: false
     },
     NEQ: {
         name: '<>',
-        func: function (value, term) {
+        func: function(value, term) {
             return value != term;
         },
         regexpSupported: false
     },
     GT: {
         name: '>',
-        func: function (value, term) {
+        func: function(value, term) {
             return value > term;
         },
         regexpSupported: false
     },
     GTE: {
         name: '>=',
-        func: function (value, term) {
+        func: function(value, term) {
             return value >= term;
         },
         regexpSupported: false
     },
     LT: {
         name: '<',
-        func: function (value, term) {
+        func: function(value, term) {
             return value < term;
         },
         regexpSupported: false
     },
     LTE: {
         name: '<=',
-        func: function (value, term) {
+        func: function(value, term) {
             return value <= term;
         },
         regexpSupported: false
