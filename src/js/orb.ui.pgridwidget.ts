@@ -11,12 +11,12 @@
 import React = require('react');
 import ReactDOM = require('react-dom');
 import {Axe, AxeType}from './orb.axe';
-import {PGrid}from './orb.pgrid';
-    uiheaders = require('./orb.ui.header'),
-    uirows = require('./orb.ui.rows'),
-    uicols = require('./orb.ui.cols'),
+import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED}from './orb.pgrid';
+import {HeaderType, DataCell, CellBase} from './orb.ui.header';
+import {UiRows} from './orb.ui.rows';
+import {UiCols} from './orb.ui.cols';
 
-    Dialog = require('./react/orb.react.Dialog.jsx'),
+const Dialog = require('./react/orb.react.Dialog.jsx'),
     PivotChart = require('./react/orb.react.PivotChart.jsx'),
     PivotTable = require('./react/orb.react.PivotTable.jsx'),
     Grid = require('./react/orb.react.Grid.jsx');
@@ -32,37 +32,32 @@ import {PGrid}from './orb.pgrid';
  * @memberOf orb.ui
  * @param  {object} pgrid - pivot grid instance
  */
-module.exports = function(config) {
-
-    var self = this;
-    var renderElement;
-    var pivotComponent;
-    var dialog = Dialog.create();
+export class  PGridWidget {
 
     /**
      * Parent pivot grid
      * @type {orb.pgrid}
      */
-    this.pgrid = new pgrid(config);
+    public pgrid: PGrid;
 
     /**
      * Control rows headers
      * @type {orb.ui.rows}
      */
-    this.rows = null;
+    public rows = null;
     /**
      * Control columns headers
      * @type {orb.ui.cols}
      */
-    this.columns = null;
+    public columns = null;
 
     /**
      * Control data rows
      * @type {orb.ui.CellBase}
      */
-    this.dataRows = [];
+    public dataRows;
 
-    this.layout = {
+    public layout = {
         rowHeaders: {
             /**
              * Total number of horizontal row headers.
@@ -100,156 +95,184 @@ module.exports = function(config) {
             height: null
         }
     };
+    public renderElement;
+    public pivotComponent;
+    public dialog;
 
-    this.expandRow = function(cell) {
+    constructor(config) {
+        this.dialog = Dialog.create();
+
+        this.pgrid = new PGrid(config);
+
+        this.rows = null;
+        this.columns = null;
+
+        this.dataRows = [];
+
+        this.layout = {
+            rowHeaders: {
+                width: null,
+                height: null
+            },
+            columnHeaders: {
+                width: null,
+                height: null
+            },
+            pivotTable: {
+                width: null,
+                height: null
+            }
+        };
+        this.init();
+    };
+
+    expandRow(cell) {
         cell.expand();
         this.render();
     };
 
-    this.collapseRow = function(cell) {
+    collapseRow(cell) {
         cell.subtotalHeader.collapse();
         this.render();
     };
 
-    this.sort = function(axetype, field) {
-        self.pgrid.sort(axetype, field);
+    sort(axetype, field) {
+        this.pgrid.sort(axetype, field);
     };
 
-    this.refreshData = function(data) {
-        self.pgrid.refreshData(data);
+    refreshData(data) {
+        this.pgrid.refreshData(data);
     };
 
-    this.applyFilter = function(fieldname, operator, term, staticValue, excludeStatic) {
-        self.pgrid.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
+    applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
+        this.pgrid.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
     };
 
-    this.moveField = function(field, oldAxeType, newAxeType, position) {
-        self.pgrid.moveField(field, oldAxeType, newAxeType, position);
+    moveField(field, oldAxeType, newAxeType, position) {
+        this.pgrid.moveField(field, oldAxeType, newAxeType, position);
     };
 
-    this.toggleFieldExpansion = function (axetype, field, newState) {
+    toggleFieldExpansion (axetype, field, newState) {
         var axeToExpand =
-            axetype === axe.Type.ROWS
-            ? self.rows
-            : (axetype === axe.Type.COLUMNS
-            ? self.columns
+            axetype === AxeType.ROWS
+            ? this.rows
+            : (axetype === AxeType.COLUMNS
+            ? this.columns
             : null);
 
         if (axeToExpand && axeToExpand.toggleFieldExpansion(field, newState)) {
-            self.render();
+            this.render();
         }
     };
 
-    this.toggleSubtotals = function(axetype) {
-        self.pgrid.toggleSubtotals(axetype);
+    toggleSubtotals(axetype) {
+        this.pgrid.toggleSubtotals(axetype);
     };
 
-    this.areSubtotalsVisible = function(axetype) {
-        return self.pgrid.areSubtotalsVisible(axetype);
+    areSubtotalsVisible(axetype) {
+        return this.pgrid.areSubtotalsVisible(axetype);
     };
 
-    this.toggleGrandtotal = function(axetype) {
-        self.pgrid.toggleGrandtotal(axetype);
+    toggleGrandtotal(axetype) {
+        this.pgrid.toggleGrandtotal(axetype);
     };
 
-    this.isGrandtotalVisible = function(axetype) {
-        return self.pgrid.isGrandtotalVisible(axetype);
+    isGrandtotalVisible(axetype) {
+        return this.pgrid.isGrandtotalVisible(axetype);
     };
 
-    this.changeTheme = function(newTheme) {
-        pivotComponent.changeTheme(newTheme);
+    changeTheme(newTheme) {
+        this.pivotComponent.changeTheme(newTheme);
     };
 
-    this.render = function(element) {
-        renderElement = element || renderElement;
-        if(renderElement) {
+    render(element?) {
+        this.renderElement = element || this.renderElement;
+        if(this.renderElement) {
             var pivotTableFactory = React.createFactory(
-                self.pgrid.config.chartMode.enabled ?
+                this.pgrid.config.chartMode.enabled ?
                     PivotChart :
                     PivotTable);
             var pivottable = pivotTableFactory({
-                pgridwidget: self
+                pgridwidget: this
             });
-            pivotComponent = ReactDOM.render(pivottable, renderElement);
+            this.pivotComponent = ReactDOM.render(pivottable, this.renderElement);
         }
     };
 
-    this.unmount = function() {
-        ReactDOM.unmountComponentAtNode(renderElement);
+    unmount() {
+        ReactDOM.unmountComponentAtNode(this.renderElement);
     };
 
-    this.drilldown = function(dataCell, pivotId) {
+    drilldown(dataCell, pivotId) {
         if(dataCell) {
             var colIndexes = dataCell.columnDimension.getRowIndexes();
             var data = dataCell.rowDimension.getRowIndexes().filter(function(index) {
                 return colIndexes.indexOf(index) >= 0;
             }).map(function(index) {
-                return self.pgrid.filteredDataSource[index];
+                return this.pgrid.filteredDataSource[index];
             });
 
             var title;
-            if(dataCell.rowType === uiheaders.HeaderType.GRAND_TOTAL && dataCell.colType === uiheaders.HeaderType.GRAND_TOTAL) {
+            if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {
                 title = 'Grand total';
             } else {
-                if(dataCell.rowType === uiheaders.HeaderType.GRAND_TOTAL) {
+                if(dataCell.rowType === HeaderType.GRAND_TOTAL) {
                     title = dataCell.columnDimension.value + '/Grand total ';
-                } else if(dataCell.colType === uiheaders.HeaderType.GRAND_TOTAL) {
+                } else if(dataCell.colType === HeaderType.GRAND_TOTAL) {
                     title = dataCell.rowDimension.value + '/Grand total ';
                 } else {
                     title = dataCell.rowDimension.value + '/' + dataCell.columnDimension.value;
                 }
             }
 
-            dialog.show({
+            this.dialog.show({
                 title: title,
                 comp: {
                     type: Grid,
                     props: {
-                        headers: self.pgrid.config.getDataSourceFieldCaptions(),
+                        headers: this.pgrid.config.getDataSourceFieldCaptions(),
                         data: data,
-                        theme: self.pgrid.config.theme
+                        theme: this.pgrid.config.theme
                     }
                 },
-                theme: self.pgrid.config.theme,
-                style: pivotComponent.fontStyle
+                theme: this.pgrid.config.theme,
+                style: this.pivotComponent.fontStyle
             });
         }
     };
 
-    function init() {
-        self.pgrid.subscribe(pgrid.EVENT_UPDATED, buildUiAndRender);
-        self.pgrid.subscribe(pgrid.EVENT_SORT_CHANGED, buildUiAndRender);
-        self.pgrid.subscribe(pgrid.EVENT_CONFIG_CHANGED, buildUiAndRender);
+    init() {
+        this.pgrid.subscribe(EVENT_UPDATED, this.buildUiAndRender);
+        this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUiAndRender);
+        this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUiAndRender);
 
-        buildUi();
+        this.buildUi();
     }
 
-    function buildUi() {
+    buildUi() {
 
         // build row and column headers
-        self.rows = new uirows(self.pgrid.rows);
-        self.columns = new uicols(self.pgrid.columns);
+        this.rows = new UiRows(this.pgrid.rows);
+        this.columns = new UiCols(this.pgrid.columns);
 
-        var rowsHeaders = self.rows.headers;
-        var columnsLeafHeaders = self.columns.leafsHeaders;
+        var rowsHeaders = this.rows.headers;
+        var columnsLeafHeaders = this.columns.leafsHeaders;
 
         // set control layout infos
-        self.layout = {
-            rowHeaders: {
-                width: (self.pgrid.rows.fields.length || 1) +
-                       (self.pgrid.config.dataHeadersLocation === 'rows' && self.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-                height: rowsHeaders.length
-            },
-            columnHeaders: {
-                width: self.columns.leafsHeaders.length,
-                height: (self.pgrid.columns.fields.length || 1) +
-                        (self.pgrid.config.dataHeadersLocation === 'columns' && self.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
-            }
+        this.layout.rowHeaders = {
+            width: (this.pgrid.rows.fields.length || 1) +
+            (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
+            height: rowsHeaders.length
+        };
+        this.layout.columnHeaders = {
+            width: this.columns.leafsHeaders.length,
+            height: (this.pgrid.columns.fields.length || 1) +
+            (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
         };
 
-        self.layout.pivotTable = {
-            width: self.layout.rowHeaders.width + self.layout.columnHeaders.width,
-            height: self.layout.rowHeaders.height + self.layout.columnHeaders.height
+        this.layout.pivotTable = {
+            width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
+            height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
         };
 
         var dataRows = [];
@@ -269,18 +292,17 @@ module.exports = function(config) {
                 for (var colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
                     var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
                     var isvisible = createVisibleFunc(rowLeafHeader.visible, columnLeafHeader.visible);
-                    arr[colHeaderIndex] = new uiheaders.dataCell(self.pgrid, isvisible, rowLeafHeader, columnLeafHeader);
+                    arr[colHeaderIndex] = new DataCell(this.pgrid, isvisible, rowLeafHeader, columnLeafHeader);
                 }
                 dataRows.push(arr);
             }
         }
-        self.dataRows = dataRows;
+        this.dataRows = dataRows;
     }
 
-    function buildUiAndRender() {
-        buildUi();
-        self.render();
+    buildUiAndRender() {
+        this.buildUi();
+        this.render();
     }
 
-    init();
 };

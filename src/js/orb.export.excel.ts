@@ -9,11 +9,12 @@
  /*jshint eqnull: true*/
 
 import * as utils from './orb.utils';
-var uiheaders = require('./orb.ui.header');
-var themeManager = require('./orb.themes');
+import {PGridWidget} from './orb.ui.pgridwidget';
+import {HeaderType} from './orb.ui.header';
+import {ThemeManager} from './orb.themes';
 
-var uriHeader = 'data:application/vnd.ms-excel;base64,';
-var docHeader = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
+const uriHeader = 'data:application/vnd.ms-excel;base64,';
+const docHeader = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
  	'<head>' +
  	'<meta http-equiv=Content-Type content="text/html; charset=UTF-8">' +
  	'<!--[if gte mso 9]><xml>' +
@@ -34,7 +35,7 @@ var docHeader = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x
  	'</xml><![endif]-->' +
  	'</head>' +
  	'<body>';
-var docFooter = '</body></html>';
+const docFooter = '</body></html>';
 
 /**
  * Creates a new instance of rows ui properties.
@@ -42,10 +43,11 @@ var docFooter = '</body></html>';
  * @memberOf orb.ui
  * @param  {orb.axe} rowsAxe - axe containing all rows dimensions.
  */
- module.exports = function(pgridwidget) {
+export default (pgridwidget: PGridWidget) => {
 
  	var config = pgridwidget.pgrid.config;
 
+	const themeManager = config.theme;
  	var currTheme = themeManager.current();
  	currTheme = currTheme === 'bootstrap' ? 'white' : currTheme;
  	var override = currTheme === 'white';
@@ -61,7 +63,7 @@ var docFooter = '</body></html>';
  		return '<td ' + buttonStyle + '><font color="' + buttonTextColor + '">' + caption + '</font></td>';
  	}
 
- 	function createButtons(buttons, cellsCountBefore, cellsCountAfter, prefix) {
+ 	function createButtons(buttons, cellsCountBefore, cellsCountAfter, prefix?) {
  		var i;
  		var str = prefix || '<tr>';
  		for(i = 0; i < cellsCountBefore; i++) {
@@ -110,7 +112,7 @@ var docFooter = '</body></html>';
  			}
 
  			rowStr += currRow.reduce(function(tr, header) {
- 				var value = header.type === uiheaders.HeaderType.DATA_HEADER ? header.value.caption : header.value;
+ 				var value = header.type === HeaderType.DATA_HEADER ? header.value.caption : header.value;
  				return (tr += '<td ' + headerStyle + ' colspan="' + header.hspan(true) + '" rowspan="' + header.vspan(true) + '">' + value + '</td>');
  			}, '');
  			str += rowStr + '</tr>';
@@ -139,7 +141,8 @@ var docFooter = '</body></html>';
  	}());
 
  	function toBase64(str) {
- 		return utils.btoa(unescape(encodeURIComponent(str)));
+ 		const btoaFunc = utils.btoa()
+ 		return btoaFunc(unescape(encodeURIComponent(str)));
  	}
 
  	return uriHeader +

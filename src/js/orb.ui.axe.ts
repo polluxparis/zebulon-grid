@@ -8,8 +8,8 @@
 /* global module, require */
 /*jshint eqnull: true*/
 
-var axe = require('./orb.axe');
-var uiheaders = require('./orb.ui.header');
+import {Axe, AxeType} from './orb.axe';
+import {Header, HeaderType} from './orb.ui.header';
 
 /**
  * Creates a new instance of rows/columns ui properties.
@@ -17,34 +17,36 @@ var uiheaders = require('./orb.ui.header');
  * @memberOf orb.ui
  * @param  {orb.axe} axe - axe containing all dimensions.
  */
-module.exports = function(axeModel) {
-
-    var self = this;
+export class AxeUi{
 
     /**
      * Dimensions axe
      * @type {orb.axe}
      */
-    this.axe = axeModel;
+    public axe: Axe;
 
     /**
      * Headers render properties
      * @type {Array}
      */
-    this.headers = [];
+    public headers: Array<Array<Header>>;
+    constructor(axeModel){
+        this.axe = axeModel;
+        this.headers = [];
+    }
 
-    this.dataFieldsCount = function() {
-        return (self.axe.pgrid.config.dataHeadersLocation === 'columns' && self.axe.type === axe.Type.COLUMNS) ||
-               (self.axe.pgrid.config.dataHeadersLocation === 'rows' && self.axe.type === axe.Type.ROWS) ?
-                     self.axe.pgrid.config.dataFieldsCount :
+    dataFieldsCount() {
+        return (this.axe.pgrid.config.dataHeadersLocation === 'columns' && this.axe.type === AxeType.COLUMNS) ||
+               (this.axe.pgrid.config.dataHeadersLocation === 'rows' && this.axe.type === AxeType.ROWS) ?
+                     this.axe.pgrid.config.dataFieldsCount :
                      1;
     };
 
-    this.isMultiDataFields = function() {
-        return self.dataFieldsCount() > 1;
+    isMultiDataFields() {
+        return this.dataFieldsCount() > 1;
     };
 
-    this.toggleFieldExpansion = function(field, newState) {
+    toggleFieldExpansion(field, newState) {
         var toToggle = [];
         var allExpanded = true;
         var hIndex;
@@ -52,7 +54,7 @@ module.exports = function(axeModel) {
         for(var i = 0; i < this.headers.length; i++) {
             for(hIndex = 0; hIndex < this.headers[i].length; hIndex++) {
                 var header = this.headers[i][hIndex];
-                if(header.type === uiheaders.HeaderType.SUB_TOTAL && (field == null || header.dim.field.name == field.name)) {
+                if(header.type === HeaderType.SUB_TOTAL && (field == null || header.dim.field.name == field.name)) {
                     toToggle.push(header);
                     allExpanded = allExpanded && header.expanded;
                 }
@@ -75,5 +77,5 @@ module.exports = function(axeModel) {
         }
 
         return false;
-    };    
+    };
 };

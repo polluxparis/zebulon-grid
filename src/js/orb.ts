@@ -27,11 +27,9 @@
 'use strict';
 
 import * as utils from './orb.utils';
+import {PGrid} from './orb.pgrid';
+import {PGridWidget} from './orb.ui.pgridwidget';
+import {Query} from './orb.query';
+import exportExcel from './orb.export.excel';
 
-export default utils
-
-// module.exports.utils = require('./orb.utils');
-// module.exports.pgrid = require('./orb.pgrid');
-// module.exports.pgridwidget = require('./orb.ui.pgridwidget');
-// module.exports.query = require('./orb.query');
-// module.exports['export'] = require('./orb.export.excel');
+export = { utils, PGrid, PGridWidget, Query, exportExcel };

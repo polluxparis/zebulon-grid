@@ -8,9 +8,10 @@
 /* global module, require */
 /*jshint eqnull: true*/
 
-var axe = require('./orb.axe');
-var axeUi = require('./orb.ui.axe');
-var uiheaders = require('./orb.ui.header');
+import {Axe, AxeType} from './orb.axe';
+import {AxeUi} from './orb.ui.axe';
+import {Header, DataHeader, HeaderType} from './orb.ui.header';
+import {Dimension} from './orb.dimension';
 
 /**
  * Creates a new instance of columns ui properties.
@@ -18,41 +19,46 @@ var uiheaders = require('./orb.ui.header');
  * @memberOf orb.ui
  * @param  {orb.axe} columnsAxe - axe containing all columns dimensions.
  */
-module.exports = function(columnsAxe) {
+export class UiCols extends AxeUi{
 
-    var self = this;
+    public leafsHeaders: any[];
 
-    axeUi.call(self, columnsAxe);
+    constructor(columnsAxe) {
 
-    this.leafsHeaders = null;
+        super(columnsAxe);
 
-    this.build = function() {
-        self.headers = [];
+        this.leafsHeaders = null;
+        this.build();
+    }
 
-        if (self.axe != null) {
+    build() {
+        this.headers = [];
+
+        if (this.axe != null) {
             // Fill columns layout infos
-            if(self.axe.root.values.length > 0 || self.axe.pgrid.config.grandTotal.columnsvisible) {
-                for (var depth = self.axe.root.depth; depth > 1; depth--) {
-                    self.headers.push([]);
-                    getUiInfo(depth, self.headers);
+            if(this.axe.root.values.length > 0 || this.axe.pgrid.config.grandTotal.columnsvisible) {
+                for (var depth = this.axe.root.depth; depth > 1; depth--) {
+                    this.headers.push([]);
+                    this.getUiInfo(depth, this.headers);
                 }
 
-                if (self.axe.pgrid.config.grandTotal.columnsvisible) {
+                if (this.axe.pgrid.config.grandTotal.columnsvisible) {
                     // add grandtotal header
-                    (self.headers[0] = self.headers[0] || []).push(new uiheaders.header(axe.Type.COLUMNS, uiheaders.HeaderType.GRAND_TOTAL, self.axe.root, null, self.dataFieldsCount()));
+                    this.headers[0] = this.headers[0] || [];
+                    this.headers[0].push(new Header(AxeType.COLUMNS, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount()));
                 }
             }
 
-            if (self.headers.length === 0) {
-                self.headers.push([new uiheaders.header(axe.Type.COLUMNS, uiheaders.HeaderType.INNER, self.axe.root, null, self.dataFieldsCount())]);
+            if (this.headers.length === 0) {
+                this.headers.push([new Header(AxeType.COLUMNS, HeaderType.INNER, this.axe.root, null, this.dataFieldsCount())]);
             }
-            
+
             // generate leafs headers
-            generateLeafsHeaders();
+            this.generateLeafsHeaders();
         }
     };
 
-    function generateLeafsHeaders() {
+    generateLeafsHeaders() {
 
         var leafsHeaders = [];
 
@@ -62,9 +68,9 @@ module.exports = function(columnsAxe) {
             }
         }
 
-        if (self.headers.length > 0) {
+        if (this.headers.length > 0) {
             // last headers row
-            var infos = self.headers[self.headers.length - 1];
+            var infos = this.headers[this.headers.length - 1];
             var header = infos[0];
 
             if(header) {
@@ -79,7 +85,7 @@ module.exports = function(columnsAxe) {
                     if (currparent != prevpar) {
                         pushsubtotal(prevpar);
                         if (currparent != null) {
-                            // walk up parent hierarchy and add grand parents if different 
+                            // walk up parent hierarchy and add grand parents if different
                             // than current header grand parents
                             var grandpar = currparent.parent;
                             var prevgrandpar = prevpar ? prevpar.parent : null;
@@ -104,28 +110,26 @@ module.exports = function(columnsAxe) {
                     }
                 }
                 // grandtotal is visible for columns and if there is more than one dimension in this axe
-                if (self.axe.pgrid.config.grandTotal.columnsvisible && self.axe.dimensionsCount > 1) {
+                if (this.axe.pgrid.config.grandTotal.columnsvisible && this.axe.dimensionsCount > 1) {
                     // push also grand total header
-                    leafsHeaders.push(self.headers[0][self.headers[0].length - 1]);
+                    leafsHeaders.push(this.headers[0][this.headers[0].length - 1]);
                 }
             }
         }
 
         // add data headers if more than 1 data field and they willbe the leaf headers
-        if (self.isMultiDataFields()) {
-            self.leafsHeaders = [];
+        if (this.isMultiDataFields()) {
+            this.leafsHeaders = [];
             for (var leafIndex = 0; leafIndex < leafsHeaders.length; leafIndex++) {
-                for (var datafieldindex = 0; datafieldindex < self.dataFieldsCount(); datafieldindex++) {
-                    self.leafsHeaders.push(new uiheaders.dataHeader(self.axe.pgrid.config.dataFields[datafieldindex], leafsHeaders[leafIndex]));
+                for (var datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
+                    this.leafsHeaders.push(new DataHeader(this.axe.pgrid.config.dataFields[datafieldindex], leafsHeaders[leafIndex]));
                 }
             }
-            self.headers.push(self.leafsHeaders);
+            this.headers.push(this.leafsHeaders);
         } else {
-            self.leafsHeaders = leafsHeaders;
+            this.leafsHeaders = leafsHeaders;
         }
     }
-
-    this.build();
 
     /**
      * Fills the infos array given in argument with the dimension layout infos as column.
@@ -133,18 +137,18 @@ module.exports = function(columnsAxe) {
      * @param  {int}  depth - the depth of the dimension that it's subdimensions will be returned
      * @param  {object}  infos - array to fill with ui dimension info
      */
-    function getUiInfo(depth, headers) {
+    getUiInfo(depth, headers) {
 
         var infos = headers[headers.length - 1];
-        var parents = self.axe.root.depth === depth ? [null] :
-            headers[self.axe.root.depth - depth - 1].filter(function(p) {
-                return p.type !== uiheaders.HeaderType.SUB_TOTAL;
+        var parents = this.axe.root.depth === depth ? [null] :
+            headers[this.axe.root.depth - depth - 1].filter(function(p) {
+                return p.type !== HeaderType.SUB_TOTAL;
             });
 
         for (var pi = 0; pi < parents.length; pi++) {
 
             var parent = parents[pi];
-            var parentDim = parent == null ? self.axe.root : parent.dim;
+            var parentDim = parent == null ? this.axe.root : parent.dim;
 
             for (var di = 0; di < parentDim.values.length; di++) {
 
@@ -153,12 +157,12 @@ module.exports = function(columnsAxe) {
 
                 var subtotalHeader;
                 if (!subdim.isLeaf && subdim.field.subTotal.visible) {
-                    subtotalHeader = new uiheaders.header(axe.Type.COLUMNS, uiheaders.HeaderType.SUB_TOTAL, subdim, parent, self.dataFieldsCount());
+                    subtotalHeader = new Header(AxeType.COLUMNS, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount());
                 } else {
                     subtotalHeader = null;
                 }
 
-                var header = new uiheaders.header(axe.Type.COLUMNS, null, subdim, parent, self.dataFieldsCount(), subtotalHeader);
+                var header = new Header(AxeType.COLUMNS, null, subdim, parent, this.dataFieldsCount(), subtotalHeader);
                 infos.push(header);
 
                 if (!subdim.isLeaf && subdim.field.subTotal.visible) {

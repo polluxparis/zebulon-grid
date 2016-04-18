@@ -18,6 +18,11 @@ import {Dimension} from './orb.dimension';
 
 
 
+// pgrid events
+export const EVENT_UPDATED = 'pgrid:updated';
+export const EVENT_SORT_CHANGED = 'pgrid:sort-changed';
+export const EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
+
 
 /**
  * Creates a new instance of pgrid
@@ -26,11 +31,6 @@ import {Dimension} from './orb.dimension';
  * @param  {object} config - configuration object
  */
 export class PGrid extends PubSub{
-
-    // pgrid events
-    public EVENT_UPDATED = 'pgrid:updated';
-    public EVENT_SORT_CHANGED = 'pgrid:sort-changed';
-    public EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
 
     public defaultfield = {
         name: '#undefined#'
@@ -70,7 +70,7 @@ export class PGrid extends PubSub{
        this.computeValues();
 
         // publish updated event
-        this.publish(this.EVENT_UPDATED);
+        this.publish(EVENT_UPDATED);
     }
 
     refreshFilteredDataSource() {
@@ -108,7 +108,7 @@ export class PGrid extends PubSub{
             return;
         }
 
-        this.publish(this.EVENT_SORT_CHANGED);
+        this.publish(EVENT_SORT_CHANGED);
     };
 
     moveField(fieldname, oldaxetype, newaxetype, position) {
@@ -131,13 +131,13 @@ export class PGrid extends PubSub{
 
     toggleSubtotals(axetype) {
         if(this.config.toggleSubtotals(axetype)) {
-            this.publish(this.EVENT_CONFIG_CHANGED);
+            this.publish(EVENT_CONFIG_CHANGED);
         }
     };
 
     toggleGrandtotal(axetype) {
         if(this.config.toggleGrandtotal(axetype)) {
-            this.publish(this.EVENT_CONFIG_CHANGED);
+            this.publish(EVENT_CONFIG_CHANGED);
         }
     };
 
