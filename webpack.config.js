@@ -23,7 +23,7 @@ module.exports = {
    *
    * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
    */
-  extensions: ['', '.ts', '.js'],
+  extensions: ['', '.ts', '.js', '.tsx'],
   },
   module: {
     loaders: [
@@ -32,6 +32,11 @@ module.exports = {
       {
         test: /\.jsx$/,
         loaders: ['react-hot', 'babel'],
+        include: path.join(__dirname, 'src')
+      },
+      {
+        test: /\.tsx$/,
+        loaders: ['react-hot', 'babel', 'awesome-typescript-loader'],
         include: path.join(__dirname, 'src')
       },
       {test: /\.ts$/,

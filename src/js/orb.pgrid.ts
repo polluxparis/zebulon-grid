@@ -331,6 +331,8 @@ export class PGrid extends PubSub{
                 if(emptyIntersection) {
                     res[datafield.field.name] = null;
                 } else {
+                    console.log('datafield');
+                    console.log(datafield);
                     res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', this.filteredDataSource, origRowIndexes || rowIndexes, colIndexes);
                 }
             }

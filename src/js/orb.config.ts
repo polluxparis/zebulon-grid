@@ -277,17 +277,17 @@ export class Config{
             return f;
         });
 
-        this.rowFields = (config.rows || []).map(function(fieldconfig) {
+        this.rowFields = (config.rows || []).map(fieldconfig => {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
             return createfield(this, AxeType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
 
-        this.columnFields = (config.columns || []).map(function(fieldconfig) {
+        this.columnFields = (config.columns || []).map(fieldconfig => {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
             return createfield(this, AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
 
-        this.dataFields = (config.data || []).map(function(fieldconfig) {
+        this.dataFields = (config.data || []).map(fieldconfig => {
             fieldconfig = this.ensureFieldConfig(fieldconfig);
             return createfield(this, AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
         });
@@ -491,7 +491,6 @@ export class Config{
             }
         }
     };
-
     toggleSubtotals(axetype) {
 
         var i;

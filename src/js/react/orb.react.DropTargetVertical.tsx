@@ -1,6 +1,6 @@
-import React from 'react';
-import DragManager from './orb.react.DragManager.jsx';
-import DropIndicator from './orb.react.DropIndicator.jsx';
+import * as React from 'react';
+import DragManager from './orb.react.DragManager';
+import DropIndicator from './orb.react.DropIndicator';
 let dtid = 0;
 
 export default React.createClass({

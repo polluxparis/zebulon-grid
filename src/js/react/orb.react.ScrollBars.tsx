@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import utils from '../orb.utils';
-import domUtils from '../orb.utils.dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as utils from '../orb.utils';
+import * as domUtils from '../orb.utils.dom';
 
 const scrollBarMixin = {
   scrollEvent: null,

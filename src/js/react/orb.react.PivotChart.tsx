@@ -1,13 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import DragManager from './orb.react.DragManager.jsx';
-import SizingManager from './orb.react.PivotTable.SizingManager.jsx';
-import Toolbar from './orb.react.Toolbar.jsx';
-import UpperButtons from './orb.react.PivotTable.UpperButtons.jsx';
-import ColumnButtons from './orb.react.PivotTable.ColumnButtons.jsx';
-import RowButtons from './orb.react.PivotTable.RowButtons.jsx';
-import Chart from './orb.react.Chart.jsx';
-import domUtils from '../orb.utils.dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import DragManager from './orb.react.DragManager';
+import {synchronizeWidths} from './orb.react.PivotTable.SizingManager';
+import Toolbar from './orb.react.Toolbar';
+import UpperButtons from './orb.react.PivotTable.UpperButtons';
+import ColumnButtons from './orb.react.PivotTable.ColumnButtons';
+import RowButtons from './orb.react.PivotTable.RowButtons';
+import Chart from './orb.react.Chart';
+import * as domUtils from '../orb.utils.dom';
 let pivotId = 1;
 const themeChangeCallbacks = {};
 
@@ -73,7 +73,7 @@ export default React.createClass({
     this.synchronizeWidths();
   },
   synchronizeWidths() {
-    const chartStyle = SizingManager.synchronizeWidths(this);
+    const chartStyle = synchronizeWidths(this);
     chartStyle.fontFamily = this.fontStyle.fontFamily;
     chartStyle.fontSize = this.fontStyle.fontSize;
 

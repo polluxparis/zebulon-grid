@@ -3,7 +3,7 @@
 
 'use strict';
 
-module.exports.removeClass = function(element, classname) {
+export function removeClass(element, classname) {
 	if(element && classname) {
 		while(element.className.indexOf(classname) >= 0) {
 			element.className = element.className.replace(classname, '');
@@ -11,7 +11,7 @@ module.exports.removeClass = function(element, classname) {
 	}
 };
 
-module.exports.addClass = function(element, classname) {
+export function addClass(element, classname) {
 	if(element && classname) {
 		if(element.className.indexOf(classname) < 0) {
 			element.className += ' ' + classname;
@@ -19,7 +19,7 @@ module.exports.addClass = function(element, classname) {
 	}
 };
 
-module.exports.getOffset = function(element) {
+export function getOffset(element) {
 	if(element) {
 	    var rect = element.getBoundingClientRect();
 	    return { x: rect.left, y: rect.top };
@@ -27,7 +27,7 @@ module.exports.getOffset = function(element) {
     return { x: 0, y: 0 };
 };
 
-module.exports.getParentOffset = function(element) {
+export function getParentOffset(element) {
 	if(element) {
 	    var rect = element.getBoundingClientRect();
 	    var rectParent = element.parentNode != null ? element.parentNode.getBoundingClientRect() : { top: 0, left: 0} ;
@@ -36,7 +36,7 @@ module.exports.getParentOffset = function(element) {
     return { x: 0, y: 0 };
 };
 
-module.exports.getSize = function(element) {
+export function getSize(element) {
 	if(element) {
 	    var rect = element.getBoundingClientRect();
 	    return { width: rect.right - rect.left, height: rect.bottom - rect.top};
@@ -51,7 +51,7 @@ function replaceHyphenByUcase(val) {
 	});
 }
 
-module.exports.getStyle = function(element, styleProps, keepString)
+export function getStyle(element, styleProps, keepString)
 {
 	var values = [];
 	if(element && styleProps) {
@@ -73,14 +73,14 @@ module.exports.getStyle = function(element, styleProps, keepString)
 	return values;
 };
 
-module.exports.isVisible = function(element) {
+export function isVisible(element) {
 	if(element) {
 		return element.style.display !== 'none' && (element.offsetWidth !== 0 || element.offsetHeight !== 0);
 	}
 	return false;
 };
 
-module.exports.updateTableColGroup = function(tableNode, widths) {
+export function updateTableColGroup(tableNode, widths) {
 	if(tableNode) {
 	    var colGroupNode = tableNode.firstChild;
 	    if(colGroupNode && colGroupNode.nodeName === 'COLGROUP') {

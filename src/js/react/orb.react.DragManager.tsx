@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom';
-import utils from '../orb.utils';
+import * as ReactDOM from 'react-dom';
+import * as utils from '../orb.utils';
 
 export default (() => {
 
@@ -20,7 +20,7 @@ export default (() => {
                 elem1Rect.top > elem2Rect.bottom);
 	}
 
-	function setCurrDropTarget(dropTarget, callback) {
+	function setCurrDropTarget(dropTarget, callback?) {
 		if(_currDropTarget) {
 			signalDragEnd(_currDropTarget, () => {
 				_currDropTarget = dropTarget;
@@ -44,7 +44,7 @@ export default (() => {
 		}
 	}
 
-	function signalDragOver(target, callback) {
+	function signalDragOver(target, callback?) {
 		if(target && target.onDragOver) {
 			target.onDragOver(callback);
 		} else if(callback) {

@@ -1,10 +1,10 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
-const orb = require('./js/orb');
+import {PGridWidget} from './js/orb';
 
 
-getData = (i) => {
+function getData(i) {
 	var res = [];
 	for(var k=0; k<10*i;k++){
 		res[k]=[];
@@ -18,7 +18,7 @@ getData = (i) => {
 		}
 	}
 	return res;
-}
+    }
 
 const data = getData(100);
 console.log(data);
@@ -127,5 +127,5 @@ console.log(data);
 
  const elem = document.getElementById('grid');
 
-const myWidget = new orb.pgridwidget(config);
+const myWidget = new PGridWidget(config);
 myWidget.render(elem);

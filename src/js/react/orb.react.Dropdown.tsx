@@ -1,7 +1,15 @@
-import React from 'react';
-import utils from '../orb.utils';
+import * as React from 'react';
+import {addEventListener, removeEventListener} from '../orb.utils';
 
-export default React.createClass({
+export default class DropdownComponent extends React.Component<any,any>{
+
+	constructor(props){
+		super(props);
+		this.onMouseEnter = this.onMouseEnter.bind(this);
+		this.onMouseLeave = this.onMouseLeave.bind(this);
+		this.selectValue = this.selectValue.bind(this);
+	}
+
 	openOrClose(e) {
 		const valueNode = this.refs.valueElement;
 		const valuesListNode = this.refs.valuesList;
@@ -12,21 +20,21 @@ export default React.createClass({
 		} else {
 			valuesListNode.style.display = 'none';
 		}
-	},
+	}
 	onMouseEnter() {
 		const valueNode = this.refs.valueElement;
 		valueNode.className = "orb-tgl-btn-down";
 		valueNode.style.backgroundPosition = 'right center';
-	},
+	}
 	onMouseLeave() {
 		this.refs.valueElement.className = "";
-	},
+	}
 	componentDidMount() {
-		utils.addEventListener(document, 'click', this.openOrClose);
-	},
+		addEventListener(document, 'click', this.openOrClose);
+	}
 	componentWillUnmount() {
-		utils.removeEventListener(document, 'click', this.openOrClose);
-	},
+		removeEventListener(document, 'click', this.openOrClose);
+	}
 	selectValue(e) {
 		const listNode = this.refs.valuesList;
 		let target = e.target || e.srcElement;
@@ -49,7 +57,7 @@ export default React.createClass({
 				}
 			}
 		}
-	},
+	}
 	render() {
 		function createSelectValueFunc(value) {
 			return function() {

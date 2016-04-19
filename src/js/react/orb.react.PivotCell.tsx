@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import uiheaders from '../orb.ui.header';
-import domUtils from '../orb.utils.dom';
+import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
 export default React.createClass({

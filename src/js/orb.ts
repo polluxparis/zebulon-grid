@@ -26,10 +26,8 @@
 
 'use strict';
 
-import * as utils from './orb.utils';
-import {PGrid} from './orb.pgrid';
-import {PGridWidget} from './orb.ui.pgridwidget';
-import {Query} from './orb.query';
-import exportExcel from './orb.export.excel';
-
-export = { utils, PGrid, PGridWidget, Query, exportExcel };
+export * from './orb.utils';
+export {PGrid} from './orb.pgrid';
+export {PGridWidget} from './orb.ui.pgridwidget';
+export {Query} from './orb.query';
+export * from './orb.export.excel';

@@ -1,7 +1,7 @@
-import React from 'react';
-import PivotButton from './orb.react.PivotButton.jsx';
-import DropTarget from './orb.react.DropTarget.jsx';
-import axe from '../orb.axe';
+import * as React from 'react';
+import PivotButton from './orb.react.PivotButton';
+import DropTarget from './orb.react.DropTarget';
+import {AxeType} from '../orb.axe';
 
 export default React.createClass({
   render() {
@@ -34,7 +34,7 @@ export default React.createClass({
     const dataButtons = config.dataFields.map((field, index) => {
       return <PivotButton key={field.name}
                           field={field}
-                          axetype={axe.Type.DATA}
+                          axetype={AxeType.DATA}
                           position={index}
                           pivotTableComp={self.props.pivotTableComp}>
              </PivotButton>;
@@ -45,7 +45,7 @@ export default React.createClass({
         <div>Data</div>
       </td>
       <td className="empty">
-        <DropTarget buttons={dataButtons} axetype={axe.Type.DATA}>
+        <DropTarget buttons={dataButtons} axetype={AxeType.DATA}>
         </DropTarget>
       </td>
     </tr>;

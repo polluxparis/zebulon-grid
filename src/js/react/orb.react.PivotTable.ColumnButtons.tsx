@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import axe from '../orb.axe';
-import PivotButton from './orb.react.PivotButton.jsx';
-import DropTarget from './orb.react.DropTarget.jsx';
+import PivotButton from './orb.react.PivotButton';
+import DropTarget from './orb.react.DropTarget';
 
 export default React.createClass({
   render() {

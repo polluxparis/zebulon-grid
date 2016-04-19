@@ -1,6 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import utils from '../orb.utils';
+// /// <reference path="../../../typings/browser/ambient/react-dom/index.d.ts" />
+// /// <reference path="../../../typings/browser/ambient/react/index.d.ts" />
+
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as utils from '../orb.utils';
 
 function createOverlay() {
   const overlayElement = document.createElement('div');
@@ -9,7 +12,7 @@ function createOverlay() {
   return overlayElement;
 }
 
-const Dialog = module.exports = React.createClass({
+export const Dialog = React.createClass({
   statics: {
     create() {
         const dialogFactory = React.createFactory(Dialog);

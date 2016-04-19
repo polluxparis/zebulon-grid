@@ -1,5 +1,5 @@
-import React from 'react';
-import utils from '../orb.utils';
+import * as React from 'react';
+import * as utils from '../orb.utils';
 
 export default React.createClass({
   render() {

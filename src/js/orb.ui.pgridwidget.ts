@@ -8,23 +8,23 @@
 /* global module, require, React, window */
 /*jshint eqnull: true*/
 
-import React = require('react');
-import ReactDOM = require('react-dom');
-import {Axe, AxeType}from './orb.axe';
-import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED}from './orb.pgrid';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import {Axe, AxeType} from './orb.axe';
+import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED} from './orb.pgrid';
 import {HeaderType, DataCell, CellBase} from './orb.ui.header';
 import {UiRows} from './orb.ui.rows';
 import {UiCols} from './orb.ui.cols';
 
-const Dialog = require('./react/orb.react.Dialog.jsx'),
-    PivotChart = require('./react/orb.react.PivotChart.jsx'),
-    PivotTable = require('./react/orb.react.PivotTable.jsx'),
-    Grid = require('./react/orb.react.Grid.jsx');
+import {Dialog} from './react/orb.react.Dialog';
+import PivotChart from './react/orb.react.PivotChart';
+import PivotTable from './react/orb.react.PivotTable';
+import Grid from './react/orb.react.Grid';
 
-    // CSS files
-    // Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
-    require('../../dist/orb.css');
-    require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
+// CSS files
+// Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
+require('../../dist/orb.css');
+require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 /**
  * Creates a new instance of pivot grid control

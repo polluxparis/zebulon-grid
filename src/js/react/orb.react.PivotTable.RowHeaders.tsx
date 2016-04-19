@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import PivotRow from './orb.react.PivotRow.jsx';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import PivotRow from './orb.react.PivotRow';
 import axe from '../orb.axe';
 
 export default React.createClass({

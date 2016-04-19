@@ -1,5 +1,5 @@
-import React from 'react';
-import PivotCell from './orb.react.PivotCell.jsx';
+import * as React from 'react';
+import PivotCell from './orb.react.PivotCell';
 import axe from '../orb.axe';
 
 export default React.createClass({

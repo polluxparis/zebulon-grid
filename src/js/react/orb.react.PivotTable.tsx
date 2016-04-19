@@ -1,19 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import DragManager from './orb.react.DragManager.jsx';
-import SizingManager from './orb.react.PivotTable.SizingManager.jsx';
-import Toolbar from './orb.react.Toolbar.jsx';
-import UpperButtons from './orb.react.PivotTable.UpperButtons.jsx';
-import ColumnButtons from './orb.react.PivotTable.ColumnButtons.jsx';
-import RowButtons from './orb.react.PivotTable.RowButtons.jsx';
-import RowHeaders from './orb.react.PivotTable.RowHeaders.jsx';
-import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders.jsx';
-import DataCells from './orb.react.PivotTable.DataCells.jsx';
-import ScrollBars from './orb.react.ScrollBars.jsx';
-const HorizontalScrollBar = ScrollBars.HorizontalScrollBar;
-const VerticalScrollBar = ScrollBars.VerticalScrollBar;
-import utils from '../orb.utils';
-import domUtils from '../orb.utils.dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import DragManager from './orb.react.DragManager';
+import * as SizingManager from './orb.react.PivotTable.SizingManager';
+import Toolbar from './orb.react.Toolbar';
+import UpperButtons from './orb.react.PivotTable.UpperButtons';
+import ColumnButtons from './orb.react.PivotTable.ColumnButtons';
+import RowButtons from './orb.react.PivotTable.RowButtons';
+import RowHeaders from './orb.react.PivotTable.RowHeaders';
+import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders';
+import DataCells from './orb.react.PivotTable.DataCells';
+import {HorizontalScrollBar, VerticalScrollBar} from './orb.react.ScrollBars';
+import * as utils from '../orb.utils';
+import * as domUtils from '../orb.utils.dom';
 let pivotId = 1;
 const themeChangeCallbacks = {};
 
@@ -146,56 +144,6 @@ export default React.createClass({
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 
-    return 'toto';
-    return (
-    <div className={classes.container} style={tblStyle} ref="pivot">
-      <table id={'tbl-' + self.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
-        <tbody>
-          <tr ref="upperButtons">
-            <td colSpan="4">
-              <UpperButtons pivotTableComp={self}></UpperButtons>
-            </td>
-          </tr>
-          <tr ref="colButtons">
-            <td></td>
-            <td style={{padding: '11px 4px !important'}}>
-              <ColumnButtons pivotTableComp={self}></ColumnButtons>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td style={{ position: 'relative'}}>
-              <RowButtons pivotTableComp={self} ref="rowButtons"></RowButtons>
-            </td>
-            <td>
-              <ColumnHeaders pivotTableComp={self} ref="colHeaders"></ColumnHeaders>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td>
-              <RowHeaders pivotTableComp={self} ref="rowHeaders"></RowHeaders>
-            </td>
-            <td>
-              <DataCells pivotTableComp={self} ref="dataCells"></DataCells>
-            </td>
-            <td>
-              <VerticalScrollBar pivotTableComp={self} ref="verticalScrollBar"></VerticalScrollBar>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <HorizontalScrollBar pivotTableComp={self} ref="horizontalScrollBar"></HorizontalScrollBar>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + self.id}></div>
-    </div>
-    );
     return (
     <div className={classes.container} style={tblStyle} ref="pivot">
       {config.toolbar && config.toolbar.visible ? <div ref="toolbar" className="orb-toolbar">

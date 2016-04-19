@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import FilterPanel from './orb.react.FilterPanel.jsx';
-import DragManager from './orb.react.DragManager.jsx';
-import utils from '../orb.utils';
-import axe from '../orb.axe';
-import domUtils from '../orb.utils.dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import FilterPanel from './orb.react.FilterPanel';
+import DragManager from './orb.react.DragManager';
+import * as utils from '../orb.utils';
+import {AxeType} from '../orb.axe';
+import * as domUtils from '../orb.utils.dom';
 let pbid = 0;
 
 export default React.createClass({
@@ -169,7 +169,7 @@ export default React.createClass({
 				'' );
 		const filterClass = (self.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
 		var fieldAggFunc = '';
-		if(self.props.axetype === axe.Type.DATA) {
+		if(self.props.axetype === AxeType.DATA) {
 			fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
 		};
 

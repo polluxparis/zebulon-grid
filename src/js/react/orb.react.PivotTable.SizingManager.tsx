@@ -1,117 +1,128 @@
-import ReactDOM from 'react-dom';
-import domUtils from '../orb.utils.dom';
+// /// <reference path="../../../typings/browser/ambient/react-dom/index.d.ts" />
+// /// <reference path="../../../typings/browser/ambient/react/index.d.ts" />
 
-const SizingManager = module.exports = {
-  synchronizeWidths(pivotComp) {
-    if(pivotComp.pgridwidget.pgrid.config.chartMode.enabled) {
-      return SizingManager.synchronizePivotChartWidths(pivotComp);
-    } else {
-      SizingManager.synchronizePivotTableWidths(pivotComp);
-    }
-  },
-  synchronizePivotChartWidths(pivotComp) {
-      const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons), chart = new ComponentSizeInfo(pivotComp.refs.chart), rBtnsWidth = Math.max(rBtnsTbl.w, 67), chartWidth = pivot.w - rBtnsWidth, pivotHeight = pivotComp.pgridwidget.pgrid.config.height, chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
+import * as ReactDOM from 'react-dom';
+import {updateTableColGroup, getSize} from '../orb.utils.dom';
 
-    // set pivotWrapperTable columns width to fixed value
-    domUtils.updateTableColGroup(pivotWrapperTable, [
-        rBtnsWidth,
-        chartWidth
-    ]);
-
-    return {
-      width: chartWidth,
-      height: chartHeight
-    };
-  },
-  synchronizePivotTableWidths(pivotComp) {
-
-    const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar), cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table'), rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table'), dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table'), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true), hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar), vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar), dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl), rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67), dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w), pivotHeight = pivotComp.pgridwidget.pgrid.config.height, dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)), dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
-
-
-    // get rowHeaders table width to match with rowButtons table width
-    rHeadersTbl.addToWidth(rHeadersWidth - rHeadersTbl.w);
-
-    // Set dataCellsTable cells widths according to the computed dataCellsWidths
-    domUtils.updateTableColGroup(dataCellsTbl.node, dataCellsWidths.max);
-
-    // Set colHeadersTable cells widths according to the computed dataCellsWidths
-    domUtils.updateTableColGroup(cHeadersTbl.node, dataCellsWidths.max);
-
-    // Set rowHeadersTable cells widths
-    domUtils.updateTableColGroup(rHeadersTbl.node, rHeadersTbl.colWidths);
-
-    dataCellsTbl.setStyle('width', dataCellsWidths.total);
-    cHeadersTbl.setStyle('width', dataCellsWidths.total);
-    rHeadersTbl.setStyle('width', rHeadersWidth);
-
-    // Adjust data cells container and column headers container width
-    dataCellsTbl.setParentStyle('width', dataCellsContainerWidth);
-    cHeadersTbl.setParentStyle('width', dataCellsContainerWidth);
-
-    if(dataCellsTableHeight) {
-      // Adjust data cells container and row headers container height
-      dataCellsTbl.setParentStyle('height', dataCellsTableHeight);
-      rHeadersTbl.setParentStyle('height', dataCellsTableHeight);
-    }
-
-    // set pivotWrapperTable columns width to fixed value
-    domUtils.updateTableColGroup(pivotWrapperTable, [
-        rHeadersWidth,
-        dataCellsContainerWidth,
-        vScroll.w,
-        Math.max(pivot.w - (rHeadersWidth + dataCellsContainerWidth + vScroll.w), 0)
-    ]);
-
-    pivotComp.refs.horizontalScrollBar.refresh();
-    pivotComp.refs.verticalScrollBar.refresh();
+export function synchronizeWidths(pivotComp) {
+  if(pivotComp.pgridwidget.pgrid.config.chartMode.enabled) {
+    return this.synchronizePivotChartWidths(pivotComp);
+  } else {
+    this.synchronizePivotTableWidths(pivotComp);
   }
 };
 
-function ComponentSizeInfo(component, isWrapper, childType) {
-  const self = this;
-  const node = ReactDOM.findDOMNode(component);
-  let size;
+export function synchronizePivotChartWidths(pivotComp) {
+    const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons), chart = new ComponentSizeInfo(pivotComp.refs.chart), rBtnsWidth = Math.max(rBtnsTbl.w, 67), chartWidth = pivot.w - rBtnsWidth, pivotHeight = pivotComp.pgridwidget.pgrid.config.height, chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
 
-  this.node = isWrapper ? node.children[0] : node;
+  // set pivotWrapperTable columns width to fixed value
+  updateTableColGroup(pivotWrapperTable, [
+      rBtnsWidth,
+      chartWidth
+  ]);
 
-  size = domUtils.getSize(this.node);
-  this.w = size.width;
-  this.h = size.height;
+  return {
+    width: chartWidth,
+    height: chartHeight
+  };
+};
 
-  this.setStyle = (styleProp, value) => {
-    self.node.style[styleProp] = `${value}px`;
+export function synchronizePivotTableWidths(pivotComp) {
+
+  const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar), cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table'), rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table'), dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table'), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true), hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar), vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar), dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl), rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67), dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w), pivotHeight = pivotComp.pgridwidget.pgrid.config.height, dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)), dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
+
+
+  // get rowHeaders table width to match with rowButtons table width
+  rHeadersTbl.addToWidth(rHeadersWidth - rHeadersTbl.w);
+
+  // Set dataCellsTable cells widths according to the computed dataCellsWidths
+  updateTableColGroup(dataCellsTbl.node, dataCellsWidths.max);
+
+  // Set colHeadersTable cells widths according to the computed dataCellsWidths
+  updateTableColGroup(cHeadersTbl.node, dataCellsWidths.max);
+
+  // Set rowHeadersTable cells widths
+  updateTableColGroup(rHeadersTbl.node, rHeadersTbl.colWidths);
+
+  dataCellsTbl.setStyle('width', dataCellsWidths.total);
+  cHeadersTbl.setStyle('width', dataCellsWidths.total);
+  rHeadersTbl.setStyle('width', rHeadersWidth);
+
+  // Adjust data cells container and column headers container width
+  dataCellsTbl.setParentStyle('width', dataCellsContainerWidth);
+  cHeadersTbl.setParentStyle('width', dataCellsContainerWidth);
+
+  if(dataCellsTableHeight) {
+    // Adjust data cells container and row headers container height
+    dataCellsTbl.setParentStyle('height', dataCellsTableHeight);
+    rHeadersTbl.setParentStyle('height', dataCellsTableHeight);
+  }
+
+  // set pivotWrapperTable columns width to fixed value
+  updateTableColGroup(pivotWrapperTable, [
+      rHeadersWidth,
+      dataCellsContainerWidth,
+      vScroll.w,
+      Math.max(pivot.w - (rHeadersWidth + dataCellsContainerWidth + vScroll.w), 0)
+  ]);
+
+  pivotComp.refs.horizontalScrollBar.refresh();
+  pivotComp.refs.verticalScrollBar.refresh();
+}
+
+
+class ComponentSizeInfo {
+
+  public myNode;
+  public w;
+  public h;
+  public colWidths;
+
+  constructor(component, isWrapper?, childType?) {
+    const myNode = ReactDOM.findDOMNode(component);
+    let size;
+
+    this.myNode = isWrapper ? myNode.children[0] : myNode;
+
+    size = getSize(this.myNode);
+    this.w = size.width;
+    this.h = size.height;
+
+    if(childType === 'table') {
+      // get array of column widths
+      getAllColumnsWidth(this);
+    }
+   }
+
+  setStyle (styleProp, value){
+    this.myNode.style[styleProp] = `${value}px`;
   };
 
-  this.setParentStyle = (styleProp, value) => {
-    self.node.parentNode.style[styleProp] = `${value}px`;
+  setParentStyle (styleProp, value){
+    this.myNode.parentNode.style[styleProp] = `${value}px`;
   };
 
-  this.getLargestWidths = otherCompInfo => {
+  getLargestWidths (otherCompInfo){
     const result = {
       max: [],
       total: 0
     };
 
     // get the array of max widths between dataCellsTable and colHeadersTable
-    for(let i = 0; i < self.colWidths.length; i++) {
-      result.max.push(Math.max(self.colWidths[i], otherCompInfo.colWidths[i]));
+    for(let i = 0; i < this.colWidths.length; i++) {
+      result.max.push(Math.max(this.colWidths[i], otherCompInfo.colWidths[i]));
       result.total += result.max[i];
     }
 
     return result;
   };
 
-  this.addToWidth = value => {
+  addToWidth (value){
     if(value > 0) {
-      self.w += value;
-      self.colWidths[self.colWidths.length - 1] += value;
+      this.w += value;
+      this.colWidths[this.colWidths.length - 1] += value;
     }
   };
-
-  if(childType === 'table') {
-    // get array of column widths
-    getAllColumnsWidth(this);
-  }
 }
 
 /**
