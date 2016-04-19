@@ -93,34 +93,34 @@ export default React.createClass({
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 
-    // return (<div className={classes.container} style={tblStyle} ref="pivot">
-    //   <table id={'tbl-' + self.id} ref="pivotWrapperTable" className={classes.table}>
-    //     <colgroup>
-    //       <col ref="column1"></col>
-    //       <col ref="column2"></col>
-    //     </colgroup>
-    //     <tbody>
-    //       <tr ref="upperButtons">
-    //         <td colSpan="2">
-    //           <UpperButtons pivotTableComp={self}></UpperButtons>
-    //         </td>
-    //       </tr>
-    //       <tr ref="colButtons">
-    //         <td></td>
-    //         <td style={{padding: '11px 4px !important'}}>
-    //           <ColumnButtons pivotTableComp={self}></ColumnButtons>
-    //         </td>
-    //       </tr>
-    //       <tr>
-    //         <td style={{ position: 'relative'}}>
-    //           <RowButtons pivotTableComp={self} ref="rowButtons"></RowButtons>
-    //         </td>
-    //         <td>
-    //           <Chart pivotTableComp={self} chartMode={config.chartMode} ref="chart"></Chart>
-    //         </td>
-    //       </tr>
-    //     </tbody>
-    //   </table>
-    // </div>);
+    return (<div className={classes.container} style={tblStyle} ref="pivot">
+      <table id={'tbl-' + self.id} ref="pivotWrapperTable" className={classes.table}>
+        <colgroup>
+          <col ref="column1"></col>
+          <col ref="column2"></col>
+        </colgroup>
+        <tbody>
+          <tr ref="upperButtons">
+            <td colSpan="2">
+              <UpperButtons pivotTableComp={self}></UpperButtons>
+            </td>
+          </tr>
+          <tr ref="colButtons">
+            <td></td>
+            <td style={{padding: '11px 4px !important'}}>
+              <ColumnButtons pivotTableComp={self}></ColumnButtons>
+            </td>
+          </tr>
+          <tr>
+            <td style={{ position: 'relative'}}>
+              <RowButtons pivotTableComp={self} ref="rowButtons"></RowButtons>
+            </td>
+            <td>
+              <Chart pivotTableComp={self} chartMode={config.chartMode} ref="chart"></Chart>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>);
   }
 });

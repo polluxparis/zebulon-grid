@@ -38,26 +38,26 @@ export default React.createClass({
 		const self = this;
 
 		const buttons = this.props.buttons.map((button, index) => {
-			// var currButton = [
-			// 		<tr><td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>,
-			// 		<tr><td>{ button }</td></tr>
-			// 	];
+			var currButton = [
+					<tr><td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>,
+					<tr><td>{ button }</td></tr>
+				];
 
 			if(index == self.props.buttons.length - 1) {
-				// currButton.push(
-				// 	<tr><td><DropIndicator isLast={true} position={null} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>
-				// );
+				currButton.push(
+					<tr><td><DropIndicator isLast={true} position={null} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>
+				);
 			}
 
 			return currButton;
 		});
 
-		// return <div className={'drp-trgt-vertical' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-vertical-empty' : '')}>
-		// 	<table>
-		// 	<tbody>
-		// 		{buttons}
-		// 	</tbody>
-		// 	</table>
-		// </div>;
+		return <div className={'drp-trgt-vertical' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-vertical-empty' : '')}>
+			<table>
+			<tbody>
+				{buttons}
+			</tbody>
+			</table>
+		</div>;
 	}
 });

@@ -60,14 +60,14 @@ const Dialog = module.exports = React.createClass({
       const comp = React.createElement(this.props.comp.type, this.props.comp.props);
       const classes = this.props.theme.getDialogClasses();
 
-      // return <div className={classes.dialog} style={ this.props.style || {} }>
-      // <div className={classes.content}>
-      //     <div className={classes.header}><div className="button-close" onClick={ this.close }></div><div className={classes.title}>{ this.props.title }</div></div>
-      //     <div className={classes.body}>
-      //     { comp }
-      //     </div>
-      //     </div>
-      //   </div>;
+      return <div className={classes.dialog} style={ this.props.style || {} }>
+      <div className={classes.content}>
+          <div className={classes.header}><div className="button-close" onClick={ this.close }></div><div className={classes.title}>{ this.props.title }</div></div>
+          <div className={classes.body}>
+          { comp }
+          </div>
+          </div>
+        </div>;
     }
   }
 });

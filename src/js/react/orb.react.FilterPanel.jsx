@@ -70,12 +70,12 @@ export default React.createClass({
 		this.values = this.pgridwidget.pgrid.getFieldValues(this.props.field);
 
 		function addCheckboxRow(value, text) {
-			// return checkboxes.push(<tr key={value}>
-			// 	<td className="fltr-chkbox">
-			// 		<input type="checkbox" value={value} defaultChecked="checked"/>
-			// 	</td>
-			// 	<td className="fltr-val" title={text || value}>{text || value}</td>
-			// 	</tr>);
+			return checkboxes.push(<tr key={value}>
+				<td className="fltr-chkbox">
+					<input type="checkbox" value={value} defaultChecked="checked"/>
+				</td>
+				<td className="fltr-val" title={text || value}>{text || value}</td>
+				</tr>);
 		}
 
 		addCheckboxRow(filtering.ALL, '(Show All)');
@@ -93,54 +93,54 @@ export default React.createClass({
 
         const currentFilter = this.pgridwidget.pgrid.getFieldFilter(this.props.field);
 
-		// return <table className="fltr-scntnr" style={style}>
-		// <tbody>
-		// 	<tr>
-		// 		<td className="srchop-col">
-		// 			<Dropdown values={[
-		// 						filtering.Operators.MATCH.name,
-		// 						filtering.Operators.NOTMATCH.name,
-		// 						filtering.Operators.EQ.name,
-		// 						filtering.Operators.NEQ.name,
-		// 						filtering.Operators.GT.name,
-		// 						filtering.Operators.GTE.name,
-		// 						filtering.Operators.LT.name,
-		// 						filtering.Operators.LTE.name
-		// 				]} selectedValue={currentFilter && currentFilter.operator ? currentFilter.operator.name : filtering.Operators.MATCH.name} onValueChanged={ this.filterManager.onOperatorChanged }>
-		// 			</Dropdown>
-		// 		</td>
-		// 		<td className="srchtyp-col" title="Enable/disable Regular expressions">.*</td>
-		// 		<td className="srchbox-col">
-		// 			<table style={{width: '100%'}}>
-		// 				<tbody>
-		// 					<tr>
-		// 						<td><input type="text" placeholder="search"/></td>
-		// 						<td><div className="srchclear-btn" onClick={this.clearFilter}>x</div></td>
-		// 					</tr>
-		// 				</tbody>
-		// 			</table>
-		// 		</td>
-		// 	</tr>
-		// 	<tr>
-		// 		<td colSpan="3" className="fltr-vals-col">
-		// 			<table className="fltr-vals-tbl" ref="valuesTable">
-		// 			<tbody>
-		// 				{checkboxes}
-		// 			</tbody>
-		// 			</table>
-		// 		</td>
-		// 	</tr>
-		// 	<tr className="bottom-row">
-		// 		<td className="cnfrm-btn-col" colSpan="2">
-		// 			<input type="button" className={buttonClass} value="Ok" style={{ float: 'left' }}/>
-		// 			<input type="button" className={buttonClass} value="Cancel" style={{ float: 'left' }}/>
-		// 		</td>
-		// 		<td className="resize-col">
-		// 			<div></div>
-		// 		</td>
-		// 	</tr>
-		// </tbody>
-		// </table>;
+		return <table className="fltr-scntnr" style={style}>
+		<tbody>
+			<tr>
+				<td className="srchop-col">
+					<Dropdown values={[
+								filtering.Operators.MATCH.name,
+								filtering.Operators.NOTMATCH.name,
+								filtering.Operators.EQ.name,
+								filtering.Operators.NEQ.name,
+								filtering.Operators.GT.name,
+								filtering.Operators.GTE.name,
+								filtering.Operators.LT.name,
+								filtering.Operators.LTE.name
+						]} selectedValue={currentFilter && currentFilter.operator ? currentFilter.operator.name : filtering.Operators.MATCH.name} onValueChanged={ this.filterManager.onOperatorChanged }>
+					</Dropdown>
+				</td>
+				<td className="srchtyp-col" title="Enable/disable Regular expressions">.*</td>
+				<td className="srchbox-col">
+					<table style={{width: '100%'}}>
+						<tbody>
+							<tr>
+								<td><input type="text" placeholder="search"/></td>
+								<td><div className="srchclear-btn" onClick={this.clearFilter}>x</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colSpan="3" className="fltr-vals-col">
+					<table className="fltr-vals-tbl" ref="valuesTable">
+					<tbody>
+						{checkboxes}
+					</tbody>
+					</table>
+				</td>
+			</tr>
+			<tr className="bottom-row">
+				<td className="cnfrm-btn-col" colSpan="2">
+					<input type="button" className={buttonClass} value="Ok" style={{ float: 'left' }}/>
+					<input type="button" className={buttonClass} value="Cancel" style={{ float: 'left' }}/>
+				</td>
+				<td className="resize-col">
+					<div></div>
+				</td>
+			</tr>
+		</tbody>
+		</table>;
 	}
 });
 
@@ -405,7 +405,7 @@ function FilterManager(reactComp, initialFilterObject) {
 				savedCheckedValues = self.getCheckedValues();
 			}
 
-			//var searchTerm = operator.regexpSupported && isSearchMode ? new RegExp(isRegexMode ? search : utils.escapeRegex(search), 'i') : search;
+			var searchTerm = operator.regexpSupported && isSearchMode ? new RegExp(isRegexMode ? search : utils.escapeRegex(search), 'i') : search;
 			if(e !== 'operatorChanged' || isSearchMode) {
 				self.applyFilterTerm(operator, search);
 			}

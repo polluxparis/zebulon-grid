@@ -12,9 +12,9 @@ export default React.createClass({
     if(headers && headers.length > 0) {
       const headerRow = [];
       for(let h = 0; h < headers.length; h++) {
-        // headerRow.push(<th key={'h' + h}>{ headers[h] }</th>);
+        headerRow.push(<th key={'h' + h}>{ headers[h] }</th>);
       }
-      // rows.push(<tr key={'h'}>{ headerRow }</tr>);
+      rows.push(<tr key={'h'}>{ headerRow }</tr>);
     }
 
     if(data && data.length > 0) {
@@ -22,23 +22,23 @@ export default React.createClass({
         const row = [];
         if(utils.isArray(data[i])) {
           for(let j = 0; j < data[i].length; j++) {
-            // row.push(<td key={i + '' + j}>{ data[i][j] }</td>);
+            row.push(<td key={i + '' + j}>{ data[i][j] }</td>);
           }
         } else {
           for (const prop in data[i]) {
               if (data[i].hasOwnProperty(prop)) {
-                // row.push(<td key={i + '' + prop}>{ data[i][prop] }</td>);
+                row.push(<td key={i + '' + prop}>{ data[i][prop] }</td>);
               }
           }
         }
-        // rows.push(<tr key={i}>{ row }</tr>);
+        rows.push(<tr key={i}>{ row }</tr>);
       }
     }
 
-    // return <table className={tableClasses.table}>
-    // <tbody>
-    // { rows }
-    // </tbody>
-    // </table>;
+    return <table className={tableClasses.table}>
+    <tbody>
+    { rows }
+    </tbody>
+    </table>;
   }
 });

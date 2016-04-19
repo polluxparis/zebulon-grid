@@ -9,15 +9,15 @@ export default React.createClass({
     const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
     const columnButtons = config.columnFields.map((field, index) => {
-      // return <PivotButton key={field.name}
-      //                     field={field}
-      //                     axetype={axe.Type.COLUMNS}
-      //                     position={index}
-      //                     pivotTableComp={self.props.pivotTableComp}>
-      //        </PivotButton>;
+      return <PivotButton key={field.name}
+                          field={field}
+                          axetype={axe.Type.COLUMNS}
+                          position={index}
+                          pivotTableComp={self.props.pivotTableComp}>
+             </PivotButton>;
     });
 
-    // return  <DropTarget buttons={columnButtons} axetype={axe.Type.COLUMNS}>
-    //         </DropTarget>;
+    return  <DropTarget buttons={columnButtons} axetype={axe.Type.COLUMNS}>
+            </DropTarget>;
   }
 });

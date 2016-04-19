@@ -41,11 +41,11 @@ export default React.createClass({
         const refName = `btn${i}`;
 
         if(btnConfig.type == 'separator') {
-          // buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
+          buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
         } else if(btnConfig.type == 'label') {
-          // buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
+          buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
         } else {
-          // buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
+          buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
         }
         if(btnConfig.init) {
           this._toInit.push({
@@ -55,12 +55,12 @@ export default React.createClass({
         }
       }
 
-      // return <div>
-      //   { buttons }
-      //   </div>;
+      return <div>
+        { buttons }
+        </div>;
     }
 
-    // return <div></div>;
+    return <div></div>;
   }
 });
 

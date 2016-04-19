@@ -168,27 +168,27 @@ export default React.createClass({
 				//' \u2193' :
 				'' );
 		const filterClass = (self.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
-		const fieldAggFunc = '';
+		var fieldAggFunc = '';
 		if(self.props.axetype === axe.Type.DATA) {
-			// fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
-		}
+			fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
+		};
 
-		// return <div key={self.props.field.name}
-		//             className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
-		//             onMouseDown={this.onMouseDown}
-		//             onMouseUp={this.onMouseUp}
-		//             style={divstyle}>
-		//             <table>
-		//             	<tbody>
-		//             		<tr>
-		//             			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
-		//             			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
-		//             			<td className="filter">
-		//             				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>
-		//             			</td>
-		//             		</tr>
-		//             	</tbody>
-		//             </table>
-		//         </div>;
+		return <div key={self.props.field.name}
+		            className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
+		            onMouseDown={this.onMouseDown}
+		            onMouseUp={this.onMouseUp}
+		            style={divstyle}>
+		            <table>
+		            	<tbody>
+		            		<tr>
+		            			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
+		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
+		            			<td className="filter">
+		            				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>
+		            			</td>
+		            		</tr>
+		            	</tbody>
+		            </table>
+		        </div>;
 	}
 });

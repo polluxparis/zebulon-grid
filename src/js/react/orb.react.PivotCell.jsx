@@ -94,11 +94,11 @@ export default React.createClass({
         if(isWrapper || isSubtotal) {
           headerPushed = true;
 
-          // divcontent.push(<table key="header-value" ref="cellContent">
-          //   <tbody>
-          //   <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
-          //   <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
-          //   </tbody></table>);
+          divcontent.push(<table key="header-value" ref="cellContent">
+            <tbody>
+            <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
+            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
+            </tbody></table>);
         } else {
           value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' Total' : '');
         }
@@ -127,17 +127,17 @@ export default React.createClass({
           headerClassName = 'hdr-val';
         }
       }
-      // divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
+      divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    // return <td className={getClassname(this.props)}
-    //            onDoubleClick={ cellClick }
-    //            colSpan={cell.hspan()}
-    //            rowSpan={cell.vspan()}>
-    //             <div>
-    //               {divcontent}
-    //             </div>
-    //        </td>;
+    return <td className={getClassname(this.props)}
+               onDoubleClick={ cellClick }
+               colSpan={cell.hspan()}
+               rowSpan={cell.vspan()}>
+                <div>
+                  {divcontent}
+                </div>
+           </td>;
   }
 });
 

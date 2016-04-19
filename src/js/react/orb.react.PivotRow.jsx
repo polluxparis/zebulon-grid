@@ -41,12 +41,12 @@ export default React.createClass({
         }
       }
 
-    //   return <PivotCell key={index}
-    //                     cell={cell}
-    //                     leftmost={isleftmost}
-    //                     topmost={istopmost}
-    //                     pivotTableComp={self.props.pivotTableComp}>
-    //          </PivotCell>;
+      return <PivotCell key={index}
+                        cell={cell}
+                        leftmost={isleftmost}
+                        topmost={istopmost}
+                        pivotTableComp={self.props.pivotTableComp}>
+             </PivotCell>;
     });
 
     // decrement lastLeftMostCellVSpan
@@ -54,10 +54,10 @@ export default React.createClass({
       layoutInfos.lastLeftMostCellVSpan--;
     }
 
-    // return (
-    //   <tr style={rowstyle}>
-    //     {cells}
-    //   </tr>
-    // );
+    return (
+      <tr style={rowstyle}>
+        {cells}
+      </tr>
+    );
   }
 });

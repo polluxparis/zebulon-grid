@@ -150,16 +150,16 @@ const scrollBarMixin = {
 
     const thumbClass = `orb-scrollthumb ${this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().scrollBar}`;
 
-    // var scrollThumb = this.state.size <= 0 ?
-    //   null :
-    //   <div className={thumbClass} style={thumbStyle}
-    //        ref="scrollThumb"
-    //        onMouseDown={this.onMouseDown}>
-    //   </div>;
+    var scrollThumb = this.state.size <= 0 ?
+      null :
+      <div className={thumbClass} style={thumbStyle}
+           ref="scrollThumb"
+           onMouseDown={this.onMouseDown}>
+      </div>;
 
-    // return  <div className={this.cssClass} style={thisStyle} onWheel={this.onWheel}>
-    //     { scrollThumb }
-    //   </div>;
+    return  <div className={this.cssClass} style={thisStyle} onWheel={this.onWheel}>
+        { scrollThumb }
+      </div>;
   }
 };
 

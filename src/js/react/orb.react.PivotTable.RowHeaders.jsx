@@ -28,22 +28,22 @@ export default React.createClass({
     };
 
     const rowHeaders = pgridwidget.rows.headers.map((headerRow, index) => {
-      // return <PivotRow key={index}
-      //                  row={headerRow}
-      //                  axetype={axe.Type.ROWS}
-      //                  layoutInfos={layoutInfos}
-      //                  pivotTableComp={self.props.pivotTableComp}>
-      // </PivotRow>;
+      return <PivotRow key={index}
+                       row={headerRow}
+                       axetype={axe.Type.ROWS}
+                       layoutInfos={layoutInfos}
+                       pivotTableComp={self.props.pivotTableComp}>
+      </PivotRow>;
     });
 
-    // return  <div className={ 'inner-table-container' + cntrClass } onWheel={this.props.pivotTableComp.onWheel}>
-    //   <table className="inner-table">
-    //     <colgroup ref="colgroup">
-    //     </colgroup>
-    //     <tbody>
-    //       {rowHeaders}
-    //     </tbody>
-    //   </table>
-    // </div>;
+    return  <div className={ 'inner-table-container' + cntrClass } onWheel={this.props.pivotTableComp.onWheel}>
+      <table className="inner-table">
+        <colgroup ref="colgroup">
+        </colgroup>
+        <tbody>
+          {rowHeaders}
+        </tbody>
+      </table>
+    </div>;
   }
 });

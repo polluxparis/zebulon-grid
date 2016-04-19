@@ -46,6 +46,6 @@ export default React.createClass({
 			classname += ' drp-indic-over';
 		}
 
-		// return <div style={style} className={classname}></div>;
+		return <div style={style} className={classname}></div>;
 	}
 });
