@@ -16,6 +16,15 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
+  resolve: {
+
+  /*
+   * An array of extensions that should be used to resolve modules.
+   *
+   * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
+   */
+  extensions: ['', '.ts', '.js'],
+  },
   module: {
     loaders: [
       // {test: /\.js$/,
@@ -24,6 +33,9 @@ module.exports = {
         test: /\.jsx$/,
         loaders: ['react-hot', 'babel'],
         include: path.join(__dirname, 'src')
+      },
+      {test: /\.ts$/,
+        loaders: ['awesome-typescript-loader']
       },
       {test: /\.css$/,
         loaders:['style','css']

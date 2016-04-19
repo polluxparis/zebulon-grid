@@ -6,8 +6,8 @@
 const React = require('react'),
     ReactDOM = require('react-dom'),
     uiheaders = require('../orb.ui.header'),
-    domUtils = require('../orb.utils.dom'),
-    _paddingLeft = null,
+    domUtils = require('../orb.utils.dom');
+var _paddingLeft = null,
     _borderLeft = null;
 
 module.exports = React.createClass({

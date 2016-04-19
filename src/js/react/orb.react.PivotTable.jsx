@@ -2,7 +2,7 @@
 
 'use strict';
 
-const React = require('react'),
+var React = require('react'),
     ReactDOM = require('react-dom'),
     DragManager = require('./orb.react.DragManager.jsx'),
     SizingManager = require('./orb.react.PivotTable.SizingManager.jsx'),
@@ -152,55 +152,56 @@ module.exports = React.createClass({
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 
-    return (
-    <div className={classes.container} style={tblStyle} ref="pivot">
-      <table id={'tbl-' + self.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
-        <tbody>
-          <tr ref="upperButtons">
-            <td colSpan="4">
-              <UpperButtons pivotTableComp={self}></UpperButtons>
-            </td>
-          </tr>
-          <tr ref="colButtons">
-            <td></td>
-            <td style={{padding: '11px 4px !important'}}>
-              <ColumnButtons pivotTableComp={self}></ColumnButtons>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td style={{ position: 'relative'}}>
-              <RowButtons pivotTableComp={self} ref="rowButtons"></RowButtons>
-            </td>
-            <td>
-              <ColumnHeaders pivotTableComp={self} ref="colHeaders"></ColumnHeaders>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td>
-              <RowHeaders pivotTableComp={self} ref="rowHeaders"></RowHeaders>
-            </td>
-            <td>
-              <DataCells pivotTableComp={self} ref="dataCells"></DataCells>
-            </td>
-            <td>
-              <VerticalScrollBar pivotTableComp={self} ref="verticalScrollBar"></VerticalScrollBar>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <HorizontalScrollBar pivotTableComp={self} ref="horizontalScrollBar"></HorizontalScrollBar>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + self.id}></div>
-    </div>
-    );
+    return 'toto';
+    // return (
+    // <div className={classes.container} style={tblStyle} ref="pivot">
+    //   <table id={'tbl-' + self.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
+    //     <tbody>
+    //       <tr ref="upperButtons">
+    //         <td colSpan="4">
+    //           <UpperButtons pivotTableComp={self}></UpperButtons>
+    //         </td>
+    //       </tr>
+    //       <tr ref="colButtons">
+    //         <td></td>
+    //         <td style={{padding: '11px 4px !important'}}>
+    //           <ColumnButtons pivotTableComp={self}></ColumnButtons>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //       <tr>
+    //         <td style={{ position: 'relative'}}>
+    //           <RowButtons pivotTableComp={self} ref="rowButtons"></RowButtons>
+    //         </td>
+    //         <td>
+    //           <ColumnHeaders pivotTableComp={self} ref="colHeaders"></ColumnHeaders>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //       <tr>
+    //         <td>
+    //           <RowHeaders pivotTableComp={self} ref="rowHeaders"></RowHeaders>
+    //         </td>
+    //         <td>
+    //           <DataCells pivotTableComp={self} ref="dataCells"></DataCells>
+    //         </td>
+    //         <td>
+    //           <VerticalScrollBar pivotTableComp={self} ref="verticalScrollBar"></VerticalScrollBar>
+    //         </td>
+    //         <td></td>
+    //       </tr>
+    //       <tr>
+    //         <td></td>
+    //         <td>
+    //           <HorizontalScrollBar pivotTableComp={self} ref="horizontalScrollBar"></HorizontalScrollBar>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //     </tbody>
+    //   </table>
+    //   <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + self.id}></div>
+    // // </div>
+    // );
     // return (
     // <div className={classes.container} style={tblStyle} ref="pivot">
     //   {config.toolbar && config.toolbar.visible ? <div ref="toolbar" className="orb-toolbar">

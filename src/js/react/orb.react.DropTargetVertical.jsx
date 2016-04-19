@@ -5,8 +5,8 @@
 
 const React = require('react'),
     DragManager = require('./orb.react.DragManager.jsx'),
-    DropIndicator = require('./orb.react.DropIndicator.jsx'),
-    dtid = 0;
+    DropIndicator = require('./orb.react.DropIndicator.jsx');
+var dtid = 0;
 
 module.exports = React.createClass({
 	getInitialState: function () {

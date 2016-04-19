@@ -11,9 +11,9 @@ const React = require('react'),
     ColumnButtons = require('./orb.react.PivotTable.ColumnButtons.jsx'),
     RowButtons = require('./orb.react.PivotTable.RowButtons.jsx'),
     Chart = require('./orb.react.Chart.jsx'),
-    domUtils = require('../orb.utils.dom'),
+    domUtils = require('../orb.utils.dom');
 
-    pivotId = 1,
+var pivotId = 1,
     themeChangeCallbacks = {};
 
 module.exports = React.createClass({

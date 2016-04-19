@@ -9,8 +9,8 @@ const React = require('react'),
     DragManager = require('./orb.react.DragManager.jsx'),
     utils = require('../orb.utils'),
     axe = require('../orb.axe'),
-    domUtils = require('../orb.utils.dom'),
-    pbid = 0;
+    domUtils = require('../orb.utils.dom');
+var pbid = 0;
 
 module.exports = React.createClass({
 	displayName: 'PivotButton',
