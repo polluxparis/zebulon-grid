@@ -1,27 +1,22 @@
-/* global module, require, react */
-/*jshint eqnull: true*/
+import React from 'react';
+import DragManager from './orb.react.DragManager.jsx';
+import DropIndicator from './orb.react.DropIndicator.jsx';
+let dtid = 0;
 
-'use strict';
-
-const React = require('react'),
-    DragManager = require('./orb.react.DragManager.jsx'),
-    DropIndicator = require('./orb.react.DropIndicator.jsx');
-var dtid = 0;
-
-module.exports = React.createClass({
-	getInitialState: function () {
+export default React.createClass({
+	getInitialState() {
 		this.dtid = ++dtid;
 		return {
 			isover: false
 		};
 	},
-  	componentDidMount: function() {
+  	componentDidMount() {
   		DragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
   	},
-	componentWillUnmount : function() {
+	componentWillUnmount() {
 		DragManager.unregisterTarget(this);
 	},
-	onDragOver: function(callback) {
+	onDragOver(callback) {
 		if(this.isMounted()) {
 			this.setState({
 				isover: true
@@ -30,7 +25,7 @@ module.exports = React.createClass({
 			callback();
 		}
 	},
-	onDragEnd: function(callback) {
+	onDragEnd(callback) {
 		if(this.isMounted()) {
 			this.setState({
 				isover: false
@@ -39,30 +34,30 @@ module.exports = React.createClass({
 			callback();
 		}
 	},
-	render: function() {
-		var self = this;
+	render() {
+		const self = this;
 
-		var buttons = this.props.buttons.map(function(button, index) {
-			var currButton = [
-					<tr><td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>,
-					<tr><td>{ button }</td></tr>
-				];
+		const buttons = this.props.buttons.map((button, index) => {
+			// var currButton = [
+			// 		<tr><td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>,
+			// 		<tr><td>{ button }</td></tr>
+			// 	];
 
 			if(index == self.props.buttons.length - 1) {
-				currButton.push(
-					<tr><td><DropIndicator isLast={true} position={null} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>
-				);
+				// currButton.push(
+				// 	<tr><td><DropIndicator isLast={true} position={null} axetype={self.props.axetype} isVertical={true}></DropIndicator></td></tr>
+				// );
 			}
 
 			return currButton;
 		});
 
-		return <div className={'drp-trgt-vertical' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-vertical-empty' : '')}>
-			<table>
-			<tbody>
-				{buttons}
-			</tbody>
-			</table>
-		</div>;
+		// return <div className={'drp-trgt-vertical' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-vertical-empty' : '')}>
+		// 	<table>
+		// 	<tbody>
+		// 		{buttons}
+		// 	</tbody>
+		// 	</table>
+		// </div>;
 	}
 });

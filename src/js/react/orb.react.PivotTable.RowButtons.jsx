@@ -1,33 +1,29 @@
-/* global module, require, React */
+import React from 'react';
+import PivotButton from './orb.react.PivotButton.jsx';
+import DropTarget from './orb.react.DropTarget.jsx';
+import DropTargetVertical from './orb.react.DropTargetVertical.jsx';
+import axe from '../orb.axe';
 
-'use strict';
+export default React.createClass({
+  render() {
+    const self = this;
+    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
-const React = require('react'),
-    PivotButton = require('./orb.react.PivotButton.jsx'),
-    DropTarget = require('./orb.react.DropTarget.jsx'),
-    DropTargetVertical = require('./orb.react.DropTargetVertical.jsx'),
-    axe = require('../orb.axe');
-
-module.exports = React.createClass({
-  render: function() {
-    var self = this;
-    var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
-
-    var rowButtons = config.rowFields.map(function(field, index) {
-      return <PivotButton key={field.name}
-                          field={field}
-                          axetype={axe.Type.ROWS}
-                          position={index}
-                          pivotTableComp={self.props.pivotTableComp}>
-             </PivotButton>;
+    const rowButtons = config.rowFields.map((field, index) => {
+      // return <PivotButton key={field.name}
+      //                     field={field}
+      //                     axetype={axe.Type.ROWS}
+      //                     position={index}
+      //                     pivotTableComp={self.props.pivotTableComp}>
+      //        </PivotButton>;
     });
 
     if(config.chartMode.enabled) {
-      return  <DropTargetVertical buttons={rowButtons} axetype={axe.Type.ROWS}>
-              </DropTargetVertical>;
+      // return  <DropTargetVertical buttons={rowButtons} axetype={axe.Type.ROWS}>
+      //         </DropTargetVertical>;
     } else {
-      return  <DropTarget buttons={rowButtons} axetype={axe.Type.ROWS}>
-              </DropTarget>;
+      // return  <DropTarget buttons={rowButtons} axetype={axe.Type.ROWS}>
+      //         </DropTarget>;
     }
   }
 });

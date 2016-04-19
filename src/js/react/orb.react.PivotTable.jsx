@@ -1,34 +1,28 @@
-/* global module, require, React */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import DragManager from './orb.react.DragManager.jsx';
+import SizingManager from './orb.react.PivotTable.SizingManager.jsx';
+import Toolbar from './orb.react.Toolbar.jsx';
+import UpperButtons from './orb.react.PivotTable.UpperButtons.jsx';
+import ColumnButtons from './orb.react.PivotTable.ColumnButtons.jsx';
+import RowButtons from './orb.react.PivotTable.RowButtons.jsx';
+import RowHeaders from './orb.react.PivotTable.RowHeaders.jsx';
+import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders.jsx';
+import DataCells from './orb.react.PivotTable.DataCells.jsx';
+import ScrollBars from './orb.react.ScrollBars.jsx';
+const HorizontalScrollBar = ScrollBars.HorizontalScrollBar;
+const VerticalScrollBar = ScrollBars.VerticalScrollBar;
+import utils from '../orb.utils';
+import domUtils from '../orb.utils.dom';
+let pivotId = 1;
+const themeChangeCallbacks = {};
 
-'use strict';
-
-var React = require('react'),
-    ReactDOM = require('react-dom'),
-    DragManager = require('./orb.react.DragManager.jsx'),
-    SizingManager = require('./orb.react.PivotTable.SizingManager.jsx'),
-    Toolbar = require('./orb.react.Toolbar.jsx'),
-    UpperButtons =  require('./orb.react.PivotTable.UpperButtons.jsx'),
-    ColumnButtons = require('./orb.react.PivotTable.ColumnButtons.jsx'),
-    RowButtons = require('./orb.react.PivotTable.RowButtons.jsx'),
-    RowHeaders = require('./orb.react.PivotTable.RowHeaders.jsx'),
-    ColumnHeaders = require('./orb.react.PivotTable.ColumnHeaders.jsx'),
-    DataCells = require('./orb.react.PivotTable.DataCells.jsx'),
-    ScrollBars = require('./orb.react.ScrollBars.jsx'),
-    HorizontalScrollBar = ScrollBars.HorizontalScrollBar,
-    VerticalScrollBar = ScrollBars.VerticalScrollBar,
-
-    utils = require('../orb.utils'),
-    domUtils = require('../orb.utils.dom'),
-
-    pivotId = 1,
-    themeChangeCallbacks = {};
-
-module.exports = React.createClass({
+export default React.createClass({
   id: pivotId++,
   pgrid: null,
   pgridwidget: null,
   fontStyle: null,
-  getInitialState: function() {
+  getInitialState() {
     DragManager.init(this);
 
     themeChangeCallbacks[this.id] = [];
@@ -38,63 +32,63 @@ module.exports = React.createClass({
     this.pgrid = this.pgridwidget.pgrid;
     return {};
   },
-  sort: function(axetype, field) {
+  sort(axetype, field) {
     this.pgridwidget.sort(axetype, field);
   },
-  moveButton: function(button, newAxeType, position) {
+  moveButton(button, newAxeType, position) {
     this.pgridwidget.moveField(button.props.field.name, button.props.axetype, newAxeType, position);
   },
-  toggleSubtotals: function(axetype) {
+  toggleSubtotals(axetype) {
     this.pgridwidget.toggleSubtotals(axetype);
   },
-  toggleGrandtotal: function(axetype) {
+  toggleGrandtotal(axetype) {
     this.pgridwidget.toggleGrandtotal(axetype);
   },
-  applyFilter: function(fieldname, operator, term, staticValue, excludeStatic) {
+  applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
     this.pgridwidget.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
   },
-  registerThemeChanged: function(compCallback) {
+  registerThemeChanged(compCallback) {
     if(compCallback) {
       themeChangeCallbacks[this.id].push(compCallback);
     }
   },
-  unregisterThemeChanged: function(compCallback) {
-    var i;
+  unregisterThemeChanged(compCallback) {
+    let i;
     if(compCallback && (i = themeChangeCallbacks[this.id].indexOf(compCallback)) >= 0) {
       themeChangeCallbacks[this.id].splice(i, 1);
     }
   },
-  changeTheme: function(newTheme) {
+  changeTheme(newTheme) {
     if(this.pgridwidget.pgrid.config.setTheme(newTheme)) {
       // notify self/sub-components of the theme change
-      for(var i = 0; i < themeChangeCallbacks[this.id].length; i++) {
+      for(let i = 0; i < themeChangeCallbacks[this.id].length; i++) {
         themeChangeCallbacks[this.id][i]();
       }
     }
   },
-  updateClasses: function() {
-      var thisnode = ReactDOM.findDOMNode(this);
-      var classes = this.pgridwidget.pgrid.config.theme.getPivotClasses();
+  updateClasses() {
+      const thisnode = ReactDOM.findDOMNode(this);
+      const classes = this.pgridwidget.pgrid.config.theme.getPivotClasses();
       thisnode.className = classes.container;
       thisnode.children[1].className = classes.table;
   },
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.synchronizeWidths();
   },
-  componentDidMount: function() {
-    var fontInfos = domUtils.getStyle(ReactDOM.findDOMNode(this), ['font-family', 'font-size'], true);
+  componentDidMount() {
+    const fontInfos = domUtils.getStyle(ReactDOM.findDOMNode(this), ['font-family', 'font-size'], true);
     this.fontStyle = {
       fontFamily: fontInfos[0],
       fontSize: fontInfos[1]
     };
 
-    var dataCellsNode = ReactDOM.findDOMNode(this.refs.dataCells);
-    var dataCellsTableNode = dataCellsNode.children[0];
-    var colHeadersNode = ReactDOM.findDOMNode(this.refs.colHeaders);
-    var rowHeadersNode = ReactDOM.findDOMNode(this.refs.rowHeaders);
+    const dataCellsNode = ReactDOM.findDOMNode(this.refs.dataCells);
+    const dataCellsTableNode = dataCellsNode.children[0];
+    const colHeadersNode = ReactDOM.findDOMNode(this.refs.colHeaders);
+    const rowHeadersNode = ReactDOM.findDOMNode(this.refs.rowHeaders);
 
-    this.refs.horizontalScrollBar.setScrollClient(dataCellsNode, function(scrollPercent) {
-      var scrollAmount = Math.ceil(
+    this.refs.horizontalScrollBar.setScrollClient(dataCellsNode, scrollPercent => {
+      const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).width -
           domUtils.getSize(dataCellsNode).width
@@ -104,8 +98,8 @@ module.exports = React.createClass({
       dataCellsNode.scrollLeft = scrollAmount;
     });
 
-    this.refs.verticalScrollBar.setScrollClient(dataCellsNode, function(scrollPercent) {
-      var scrollAmount = Math.ceil(
+    this.refs.verticalScrollBar.setScrollClient(dataCellsNode, scrollPercent => {
+      const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).height -
           domUtils.getSize(dataCellsNode).height
@@ -117,10 +111,10 @@ module.exports = React.createClass({
 
     this.synchronizeWidths();
   },
-  onWheel: function(e) {
-    var elem;
-    var scrollbar;
-    var amount;
+  onWheel(e) {
+    let elem;
+    let scrollbar;
+    let amount;
 
     if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.colHeaders))) {
       scrollbar = this.refs.horizontalScrollBar;
@@ -136,19 +130,19 @@ module.exports = React.createClass({
       utils.preventDefault(e);
     }
   },
-  synchronizeWidths: function() {
+  synchronizeWidths() {
     SizingManager.synchronizeWidths(this);
     this.refs.horizontalScrollBar.refresh();
     this.refs.verticalScrollBar.refresh();
   },
-  render: function() {
+  render() {
 
-    var self = this;
+    const self = this;
 
-    var config = this.pgridwidget.pgrid.config;
-    var classes = config.theme.getPivotClasses();
+    const config = this.pgridwidget.pgrid.config;
+    const classes = config.theme.getPivotClasses();
 
-    var tblStyle = {};
+    const tblStyle = {};
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 

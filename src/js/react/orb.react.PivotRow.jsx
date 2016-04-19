@@ -1,28 +1,24 @@
-/* global module, require, React */
+import React from 'react';
+import PivotCell from './orb.react.PivotCell.jsx';
+import axe from '../orb.axe';
 
-'use strict';
+export default React.createClass({
+  render() {
+    const self = this;
 
-const React = require('react'),
-    PivotCell = require('./orb.react.PivotCell.jsx'),
-    axe = require('../orb.axe');
+    const lastCellIndex = this.props.row.length - 1;
+    const cell0 = this.props.row[0];
+    let leftmostCellFound = false;
+    const layoutInfos = self.props.layoutInfos;
+    let cells;
 
-module.exports = React.createClass({
-  render: function() {
-    var self = this;
+    const rowstyle = {};
 
-    var lastCellIndex = this.props.row.length - 1;
-    var cell0 = this.props.row[0];
-    var leftmostCellFound = false;
-    var layoutInfos = self.props.layoutInfos;
-    var cells;
+    let istopmost = false;
 
-    var rowstyle = {};
+    cells = this.props.row.map((cell, index) => {
 
-    var istopmost = false;
-
-    cells = this.props.row.map(function(cell, index) {
-
-      var isleftmost = false;
+      let isleftmost = false;
 
       // If current cells are column/data headers and left most cell is not found yet
       // and last row left most cell does not span vertically over the current one and current one is visible
@@ -45,12 +41,12 @@ module.exports = React.createClass({
         }
       }
 
-      return <PivotCell key={index}
-                        cell={cell}
-                        leftmost={isleftmost}
-                        topmost={istopmost}
-                        pivotTableComp={self.props.pivotTableComp}>
-             </PivotCell>;
+    //   return <PivotCell key={index}
+    //                     cell={cell}
+    //                     leftmost={isleftmost}
+    //                     topmost={istopmost}
+    //                     pivotTableComp={self.props.pivotTableComp}>
+    //          </PivotCell>;
     });
 
     // decrement lastLeftMostCellVSpan
@@ -58,10 +54,10 @@ module.exports = React.createClass({
       layoutInfos.lastLeftMostCellVSpan--;
     }
 
-    return (
-      <tr style={rowstyle}>
-        {cells}
-      </tr>
-    );
+    // return (
+    //   <tr style={rowstyle}>
+    //     {cells}
+    //   </tr>
+    // );
   }
 });

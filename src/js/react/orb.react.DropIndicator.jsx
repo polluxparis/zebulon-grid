@@ -1,23 +1,18 @@
-/* global module, require, react */
-/*jshint eqnull: true*/
+import React from 'react';
+import DragManager from './orb.react.DragManager.jsx';
 
-'use strict';
-
-const React = require('react'),
-    DragManager = require('./orb.react.DragManager.jsx');
-
-module.exports = React.createClass({
+export default React.createClass({
 	displayName: 'DropIndicator',
-	getInitialState: function () {
+	getInitialState() {
 		DragManager.registerIndicator(this, this.props.axetype, this.props.position, this.onDragOver, this.onDragEnd);
 		return {
 			isover: false
 		};
 	},
-	componentWillUnmount : function() {
+	componentWillUnmount() {
 		DragManager.unregisterIndicator(this);
 	},
-	onDragOver: function(callback) {
+	onDragOver(callback) {
 		if(this.isMounted()) {
 			this.setState({
 				isover: true
@@ -26,7 +21,7 @@ module.exports = React.createClass({
 			callback();
 		}
 	},
-	onDragEnd: function(callback) {
+	onDragEnd(callback) {
 		if(this.isMounted()) {
 			this.setState({
 				isover: false
@@ -35,8 +30,8 @@ module.exports = React.createClass({
 			callback();
 		}
 	},
-	render: function() {
-		var classname = 'drp-indic' + (this.props.isVertical ? '-vertical' : '');
+	render() {
+		let classname = `drp-indic${this.props.isVertical ? '-vertical' : ''}`;
 
 		if(this.props.isFirst) {
 			classname += ' drp-indic-first';
@@ -46,11 +41,11 @@ module.exports = React.createClass({
 			classname += ' drp-indic-last';
 		}
 
-		var style = {};
+		const style = {};
 		if(this.state.isover) {
 			classname += ' drp-indic-over';
 		}
 
-		return <div style={style} className={classname}></div>;
+		// return <div style={style} className={classname}></div>;
 	}
 });

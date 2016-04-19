@@ -1,56 +1,51 @@
-/* global module, require, react */
-/*jshint node: true, eqnull: true*/
+import React from 'react';
+import axe from '../orb.axe';
+import domUtils from '../orb.utils.dom';
 
-'use strict';
-
-const React = require('react'),
-    axe = require('../orb.axe'),
-    domUtils = require('../orb.utils.dom');
-
-module.exports = React.createClass({
+export default React.createClass({
   _toInit: [],
-  componentDidMount: function() {
-    for(var i = 0; i < this._toInit.length; i++){
-      var btn = this._toInit[i];
+  componentDidMount() {
+    for(let i = 0; i < this._toInit.length; i++){
+      const btn = this._toInit[i];
       btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
   },
-  componentDidUpdate: function() {
-    for(var i = 0; i < this._toInit.length; i++){
-      var btn = this._toInit[i];
+  componentDidUpdate() {
+    for(let i = 0; i < this._toInit.length; i++){
+      const btn = this._toInit[i];
       btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
   },
-  createCallback: function(action) {
+  createCallback(action) {
     if(action != null) {
-      var pgridComponent = this.props.pivotTableComp;
-      return function(e) {
+      const pgridComponent = this.props.pivotTableComp;
+      return e => {
         action(pgridComponent, e.target || e.srcElement);
       };
     }
     return null;
   },
-  render: function() {
+  render() {
 
-    var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
     if(config.toolbar && config.toolbar.visible) {
 
-      var configButtons = config.toolbar.buttons ?
+      const configButtons = config.toolbar.buttons ?
         defaultToolbarConfig.buttons.concat(config.toolbar.buttons) :
         defaultToolbarConfig.buttons;
 
-      var buttons = [];
-      for(var i = 0; i < configButtons.length; i++) {
-        var btnConfig = configButtons[i];
-        var refName = 'btn' + i;
+      const buttons = [];
+      for(let i = 0; i < configButtons.length; i++) {
+        const btnConfig = configButtons[i];
+        const refName = `btn${i}`;
 
         if(btnConfig.type == 'separator') {
-          buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
+          // buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
         } else if(btnConfig.type == 'label') {
-          buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
+          // buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
         } else {
-          buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
+          // buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
         }
         if(btnConfig.init) {
           this._toInit.push({
@@ -60,44 +55,44 @@ module.exports = React.createClass({
         }
       }
 
-      return <div>
-        { buttons }
-        </div>;
+      // return <div>
+      //   { buttons }
+      //   </div>;
     }
 
-    return <div></div>;
+    // return <div></div>;
   }
 });
 
-var excelExport = require('../orb.export.excel');
+import excelExport from '../orb.export.excel';
 
 var defaultToolbarConfig = {
-  exportToExcel: function(pgridComponent, button) {
-    var a = document.createElement('a');
+  exportToExcel(pgridComponent, button) {
+    const a = document.createElement('a');
     a.download = "orbpivotgrid.xls";
     a.href =  excelExport(pgridComponent.props.pgridwidget);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   },
-  expandAllRows: function(pgridComponent, button) {
+  expandAllRows(pgridComponent, button) {
       pgridComponent.pgridwidget.toggleFieldExpansion(axe.Type.ROWS, null, true);
   },
-  collapseAllRows: function(pgridComponent, button) {
+  collapseAllRows(pgridComponent, button) {
       pgridComponent.pgridwidget.toggleFieldExpansion(axe.Type.ROWS, null, false);
   },
-  expandAllColumns: function(pgridComponent, button) {
+  expandAllColumns(pgridComponent, button) {
       pgridComponent.pgridwidget.toggleFieldExpansion(axe.Type.COLUMNS, null, true);
   },
-  collapseAllColumns: function(pgridComponent, button) {
+  collapseAllColumns(pgridComponent, button) {
       pgridComponent.pgridwidget.toggleFieldExpansion(axe.Type.COLUMNS, null, false);
   },
-  updateSubtotalsButton: function(axetype, pgridComponent, button) {
-    var subTotalsState = pgridComponent.pgridwidget.areSubtotalsVisible(axetype);
+  updateSubtotalsButton(axetype, pgridComponent, button) {
+    const subTotalsState = pgridComponent.pgridwidget.areSubtotalsVisible(axetype);
     button.style.display = subTotalsState === null ? 'none' : '';
 
-    var classToAdd = '';
-    var classToRemove = '';
+    let classToAdd = '';
+    let classToRemove = '';
     if(subTotalsState) {
       classToAdd = 'subtotals-visible';
       classToRemove = 'subtotals-hidden';
@@ -109,25 +104,25 @@ var defaultToolbarConfig = {
     domUtils.removeClass(button, classToRemove);
     domUtils.addClass(button, classToAdd);
   },
-  initSubtotals: function(axetype) {
-    var self = this;
-    return function(pgridComponent, button) {
+  initSubtotals(axetype) {
+    const self = this;
+    return (pgridComponent, button) => {
       self.updateSubtotalsButton(axetype, pgridComponent, button);
     };
   },
-  toggleSubtotals: function(axetype) {
-    var self = this;
-    return function(pgridComponent, button) {
+  toggleSubtotals(axetype) {
+    const self = this;
+    return (pgridComponent, button) => {
       pgridComponent.toggleSubtotals(axetype);
       self.updateSubtotalsButton(axetype, pgridComponent, button);
     };
   },
-  updateGrandtotalButton: function(axetype, pgridComponent, button) {
-    var subTotalsState = pgridComponent.pgridwidget.isGrandtotalVisible(axetype);
+  updateGrandtotalButton(axetype, pgridComponent, button) {
+    const subTotalsState = pgridComponent.pgridwidget.isGrandtotalVisible(axetype);
     button.style.display = subTotalsState === null ? 'none' : '';
 
-    var classToAdd = '';
-    var classToRemove = '';
+    let classToAdd = '';
+    let classToRemove = '';
     if(subTotalsState) {
       classToAdd = 'grndtotal-visible';
       classToRemove = 'grndtotal-hidden';
@@ -139,15 +134,15 @@ var defaultToolbarConfig = {
     domUtils.removeClass(button, classToRemove);
     domUtils.addClass(button, classToAdd);
   },
-  initGrandtotal: function(axetype) {
-    var self = this;
-    return function(pgridComponent, button) {
+  initGrandtotal(axetype) {
+    const self = this;
+    return (pgridComponent, button) => {
       self.updateGrandtotalButton(axetype, pgridComponent, button);
     };
   },
-  toggleGrandtotal: function(axetype) {
-    var self = this;
-    return function(pgridComponent, button) {
+  toggleGrandtotal(axetype) {
+    const self = this;
+    return (pgridComponent, button) => {
       pgridComponent.toggleGrandtotal(axetype);
       self.updateGrandtotalButton(axetype, pgridComponent, button);
     };

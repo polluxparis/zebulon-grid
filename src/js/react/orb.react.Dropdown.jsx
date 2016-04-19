@@ -1,16 +1,11 @@
-/* global module, react, React */
-/*jshint eqnull: true*/
+import React from 'react';
+import utils from '../orb.utils';
 
-'use strict';
-
-const React = require('react'),
-    utils = require('../orb.utils');
-
-module.exports = React.createClass({
-	openOrClose: function(e) {
-		var valueNode = this.refs.valueElement;
-		var valuesListNode = this.refs.valuesList;
-		var target = e.target || e.srcElement;
+export default React.createClass({
+	openOrClose(e) {
+		const valueNode = this.refs.valueElement;
+		const valuesListNode = this.refs.valuesList;
+		const target = e.target || e.srcElement;
 
 		if(target === valueNode && valuesListNode.style.display === 'none') {
 			valuesListNode.style.display = 'block';
@@ -18,24 +13,24 @@ module.exports = React.createClass({
 			valuesListNode.style.display = 'none';
 		}
 	},
-	onMouseEnter: function() {
-		var valueNode = this.refs.valueElement;
+	onMouseEnter() {
+		const valueNode = this.refs.valueElement;
 		valueNode.className = "orb-tgl-btn-down";
 		valueNode.style.backgroundPosition = 'right center';
 	},
-	onMouseLeave: function() {
+	onMouseLeave() {
 		this.refs.valueElement.className = "";
 	},
-	componentDidMount: function() {
+	componentDidMount() {
 		utils.addEventListener(document, 'click', this.openOrClose);
 	},
-	componentWillUnmount : function() {
+	componentWillUnmount() {
 		utils.removeEventListener(document, 'click', this.openOrClose);
 	},
-	selectValue: function(e) {
-		var listNode = this.refs.valuesList;
-		var target = e.target || e.srcElement;
-		var isli = false;
+	selectValue(e) {
+		const listNode = this.refs.valuesList;
+		let target = e.target || e.srcElement;
+		let isli = false;
 		while(!isli && target != null) {
 			if(target.parentNode == listNode) {
 				isli = true;
@@ -45,8 +40,8 @@ module.exports = React.createClass({
 		}
 
 		if(isli) {
-			var value = target.textContent;
-			var valueElement = this.refs.valueElement;
+			const value = target.textContent;
+			const valueElement = this.refs.valueElement;
 			if(valueElement.textContent != value) {
 				valueElement.textContent = value;
 				if(this.props.onValueChanged) {
@@ -55,23 +50,23 @@ module.exports = React.createClass({
 			}
 		}
 	},
-	render: function() {
+	render() {
 		function createSelectValueFunc(value) {
 			return function() {
 				this.selectValue(value);
 			};
 		}
 
-		var values = [];
-		for(var i=0; i < this.props.values.length; i++) {
-			values.push(<li key={'item' + i} dangerouslySetInnerHTML={{__html: this.props.values[i]}}></li>);
+		const values = [];
+		for(let i=0; i < this.props.values.length; i++) {
+			// values.push(<li key={'item' + i} dangerouslySetInnerHTML={{__html: this.props.values[i]}}></li>);
 		}
 
-		return <div className="orb-select">
-				<div ref="valueElement" dangerouslySetInnerHTML={{__html: this.props.selectedValue}} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></div>
-				<ul ref="valuesList" style={{ display: 'none' }} onClick={ this.selectValue }>
-					{values}
-				</ul>
-			</div>;
+		// return <div className="orb-select">
+		// 		<div ref="valueElement" dangerouslySetInnerHTML={{__html: this.props.selectedValue}} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></div>
+		// 		<ul ref="valuesList" style={{ display: 'none' }} onClick={ this.selectValue }>
+		// 			{values}
+		// 		</ul>
+		// 	</div>;
 	}
 });

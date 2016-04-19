@@ -1,34 +1,30 @@
-/* global module, require, React */
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-'use strict';
-
-const React = require('react'),
-    ReactDOM = require('react-dom');
-
-module.exports = React.createClass({
-  getInitialState: function() {
+export default React.createClass({
+  getInitialState() {
     return {
       canRender: false
     };
   },
-  canRender: function() {
+  canRender() {
     return this.state.canRender &&
       typeof this.props.chartMode.type === 'string' &&
       typeof google.visualization[this.props.chartMode.type] === 'function';
   },
-  drawChart: function() {
+  drawChart() {
     if(this.canRender()) {
-      var chartData = this.props.pivotTableComp.pgridwidget.pgrid.getChartData();
-      var data = new google.visualization.DataTable();
+      const chartData = this.props.pivotTableComp.pgridwidget.pgrid.getChartData();
+      const data = new google.visualization.DataTable();
 
       data.addColumn('string', chartData.hAxisLabel);
-      for(var ri=0; ri < chartData.colNames.length; ri++) {
+      for(let ri=0; ri < chartData.colNames.length; ri++) {
         data.addColumn('number', chartData.colNames[ri]);
       }
 
       data.addRows(chartData.dataTable);
 
-      var options = {
+      const options = {
         title: chartData.title,
         //isStacked: true,
         fontName: this.state.chartStyle.fontFamily,
@@ -42,18 +38,18 @@ module.exports = React.createClass({
       };
 
       if(typeof google.visualization[this.props.chartMode.type] === 'function') {
-          var chart = new google.visualization[this.props.chartMode.type](ReactDOM.findDOMNode(this));
+          const chart = new google.visualization[this.props.chartMode.type](ReactDOM.findDOMNode(this));
         chart.draw(data, options);
       }
     }
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.drawChart();
   },
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.drawChart();
   },
-  render: function() {
+  render() {
     if(this.canRender()) {
       return <div className="chart" style={this.state.chartStyle}></div>;
     }

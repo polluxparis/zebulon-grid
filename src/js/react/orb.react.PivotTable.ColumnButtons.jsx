@@ -1,27 +1,23 @@
-/* global module, require, React */
+import React from 'react';
+import axe from '../orb.axe';
+import PivotButton from './orb.react.PivotButton.jsx';
+import DropTarget from './orb.react.DropTarget.jsx';
 
-'use strict';
+export default React.createClass({
+  render() {
+    const self = this;
+    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
-const React = require('react'),
-    axe = require('../orb.axe'),
-    PivotButton = require('./orb.react.PivotButton.jsx'),
-    DropTarget = require('./orb.react.DropTarget.jsx');
-
-module.exports = React.createClass({
-  render: function() {
-    var self = this;
-    var config = this.props.pivotTableComp.pgridwidget.pgrid.config;
-
-    var columnButtons = config.columnFields.map(function(field, index) {
-      return <PivotButton key={field.name}
-                          field={field}
-                          axetype={axe.Type.COLUMNS}
-                          position={index}
-                          pivotTableComp={self.props.pivotTableComp}>
-             </PivotButton>;
+    const columnButtons = config.columnFields.map((field, index) => {
+      // return <PivotButton key={field.name}
+      //                     field={field}
+      //                     axetype={axe.Type.COLUMNS}
+      //                     position={index}
+      //                     pivotTableComp={self.props.pivotTableComp}>
+      //        </PivotButton>;
     });
 
-    return  <DropTarget buttons={columnButtons} axetype={axe.Type.COLUMNS}>
-            </DropTarget>;
+    // return  <DropTarget buttons={columnButtons} axetype={axe.Type.COLUMNS}>
+    //         </DropTarget>;
   }
 });

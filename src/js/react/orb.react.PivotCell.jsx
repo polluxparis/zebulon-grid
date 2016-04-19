@@ -1,25 +1,19 @@
-/* global module, require, React */
-/*jshint eqnull: true*/
+import React from 'react';
+import ReactDOM from 'react-dom';
+import uiheaders from '../orb.ui.header';
+import domUtils from '../orb.utils.dom';
+let _paddingLeft = null, _borderLeft = null;
 
-'use strict';
-
-const React = require('react'),
-    ReactDOM = require('react-dom'),
-    uiheaders = require('../orb.ui.header'),
-    domUtils = require('../orb.utils.dom');
-var _paddingLeft = null,
-    _borderLeft = null;
-
-module.exports = React.createClass({
-  expand: function() {
+export default React.createClass({
+  expand() {
       this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);
   },
-  collapse: function() {
+  collapse() {
       this.props.pivotTableComp.pgridwidget.collapseRow(this.props.cell);
   },
-  updateCellInfos: function() {
-    var node = ReactDOM.findDOMNode(this);
-    var cell = this.props.cell;
+  updateCellInfos() {
+    const node = ReactDOM.findDOMNode(this);
+    const cell = this.props.cell;
     node.__orb = node.__orb || {};
 
     if(!cell.visible()) {
@@ -27,12 +21,12 @@ module.exports = React.createClass({
       node.__orb._visible = false;
 
     } else {
-      var cellContentNode = this.refs.cellContent;
+      const cellContentNode = this.refs.cellContent;
 
-      var propList = [];
-      var retPaddingLeft = _paddingLeft == null;
-      var retBorderLeft = !this.props.leftmost && _borderLeft == null;
-      var text = node.textContent || node.innerText;
+      const propList = [];
+      const retPaddingLeft = _paddingLeft == null;
+      const retBorderLeft = !this.props.leftmost && _borderLeft == null;
+      const text = node.textContent || node.innerText;
 
       if(retPaddingLeft) {
         propList.push('padding-left');
@@ -43,7 +37,7 @@ module.exports = React.createClass({
       }
 
       if(propList.length > 0) {
-        var nodeStyle = domUtils.getStyle(node, propList, true);
+        const nodeStyle = domUtils.getStyle(node, propList, true);
 
         if(retPaddingLeft) {
           _paddingLeft = parseFloat(nodeStyle[0]);
@@ -69,42 +63,42 @@ module.exports = React.createClass({
       node.__orb._borderRightWidth = 0;
     }
   },
-  componentDidMount: function() {
+  componentDidMount() {
     this.updateCellInfos();
   },
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this.updateCellInfos();
   },
-  shouldComponentUpdate: function(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     if(nextProps.cell && nextProps.cell == this.props.cell && !this._latestVisibleState && !nextProps.cell.visible()) {
       return false;
     }
     return true;
   },
   _latestVisibleState: false,
-  render: function() {
-    var self = this;
-    var cell = this.props.cell;
-    var divcontent = [];
-    var value;
-    var cellClick;
-    var headerPushed = false;
+  render() {
+    const self = this;
+    const cell = this.props.cell;
+    const divcontent = [];
+    let value;
+    let cellClick;
+    let headerPushed = false;
 
     this._latestVisibleState = cell.visible();
 
     switch(cell.template) {
       case 'cell-template-row-header':
       case 'cell-template-column-header':
-        var isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
-        var isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
+        const isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
+        const isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
           headerPushed = true;
 
-          divcontent.push(<table key="header-value" ref="cellContent">
-            <tbody>
-            <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
-            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
-            </tbody></table>);
+          // divcontent.push(<table key="header-value" ref="cellContent">
+          //   <tbody>
+          //   <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
+          //   <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
+          //   </tbody></table>);
         } else {
           value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' Total' : '');
         }
@@ -114,7 +108,7 @@ module.exports = React.createClass({
         break;
       case 'cell-template-datavalue':
         value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = function() {
+        cellClick = () => {
           self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
         };
         break;
@@ -123,7 +117,7 @@ module.exports = React.createClass({
     }
 
     if(!headerPushed) {
-      var headerClassName;
+      let headerClassName;
       switch(cell.template){
         case 'cell-template-datavalue':
           headerClassName = 'cell-data';
@@ -133,24 +127,24 @@ module.exports = React.createClass({
           headerClassName = 'hdr-val';
         }
       }
-      divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
+      // divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    return <td className={getClassname(this.props)}
-               onDoubleClick={ cellClick }
-               colSpan={cell.hspan()}
-               rowSpan={cell.vspan()}>
-                <div>
-                  {divcontent}
-                </div>
-           </td>;
+    // return <td className={getClassname(this.props)}
+    //            onDoubleClick={ cellClick }
+    //            colSpan={cell.hspan()}
+    //            rowSpan={cell.vspan()}>
+    //             <div>
+    //               {divcontent}
+    //             </div>
+    //        </td>;
   }
 });
 
 function getClassname(compProps) {
-    var cell = compProps.cell;
-    var classname = cell.cssclass;
-    var isEmpty = cell.template === 'cell-template-empty';
+    const cell = compProps.cell;
+    let classname = cell.cssclass;
+    const isEmpty = cell.template === 'cell-template-empty';
 
     if(!cell.visible()) {
       classname += ' cell-hidden';
@@ -169,7 +163,7 @@ function getClassname(compProps) {
     }
 
     if(compProps.leftmost) {
-      classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
+      classname += ` ${cell.template === 'cell-template-datavalue' ? 'cell' : 'header'}-leftmost`;
     }
 
     if(compProps.topmost) {

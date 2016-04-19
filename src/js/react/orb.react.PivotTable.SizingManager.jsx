@@ -1,31 +1,16 @@
-/* global module, domUtils */
+import ReactDOM from 'react-dom';
+import domUtils from '../orb.utils.dom';
 
-'use strict';
-
-var ReactDOM = require('react-dom'),
-    domUtils = require('../orb.utils.dom');
-
-var SizingManager = module.exports = {
-  synchronizeWidths: function(pivotComp) {
+const SizingManager = module.exports = {
+  synchronizeWidths(pivotComp) {
     if(pivotComp.pgridwidget.pgrid.config.chartMode.enabled) {
       return SizingManager.synchronizePivotChartWidths(pivotComp);
     } else {
       SizingManager.synchronizePivotTableWidths(pivotComp);
     }
   },
-  synchronizePivotChartWidths: function(pivotComp) {
-      var pivotWrapperTable = pivotComp.refs.pivotWrapperTable,
-        pivot = new ComponentSizeInfo(pivotComp.refs.pivot),
-        topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons),
-        cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons),
-        rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons),
-        chart = new ComponentSizeInfo(pivotComp.refs.chart),
-
-        rBtnsWidth = Math.max(rBtnsTbl.w, 67),
-        chartWidth = pivot.w - rBtnsWidth,
-
-        pivotHeight = pivotComp.pgridwidget.pgrid.config.height,
-        chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
+  synchronizePivotChartWidths(pivotComp) {
+      const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons), chart = new ComponentSizeInfo(pivotComp.refs.chart), rBtnsWidth = Math.max(rBtnsTbl.w, 67), chartWidth = pivot.w - rBtnsWidth, pivotHeight = pivotComp.pgridwidget.pgrid.config.height, chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
 
     // set pivotWrapperTable columns width to fixed value
     domUtils.updateTableColGroup(pivotWrapperTable, [
@@ -38,27 +23,9 @@ var SizingManager = module.exports = {
       height: chartHeight
     };
   },
-  synchronizePivotTableWidths: function(pivotComp) {
+  synchronizePivotTableWidths(pivotComp) {
 
-    var pivotWrapperTable = pivotComp.refs.pivotWrapperTable,
-        pivot = new ComponentSizeInfo(pivotComp.refs.pivot),
-        toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar),
-        cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table'),
-        rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table'),
-        dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table'),
-        topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons),
-        cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons),
-        rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true),
-        hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar),
-        vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar),
-
-        dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl),
-        rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67),
-        dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w),
-
-        pivotHeight = pivotComp.pgridwidget.pgrid.config.height,
-        dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)),
-        dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
+    const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar), cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table'), rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table'), dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table'), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true), hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar), vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar), dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl), rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67), dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w), pivotHeight = pivotComp.pgridwidget.pgrid.config.height, dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)), dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
 
 
     // get rowHeaders table width to match with rowButtons table width
@@ -101,9 +68,9 @@ var SizingManager = module.exports = {
 };
 
 function ComponentSizeInfo(component, isWrapper, childType) {
-  var self = this,
-      node = ReactDOM.findDOMNode(component),
-      size;
+  const self = this;
+  const node = ReactDOM.findDOMNode(component);
+  let size;
 
   this.node = isWrapper ? node.children[0] : node;
 
@@ -111,22 +78,22 @@ function ComponentSizeInfo(component, isWrapper, childType) {
   this.w = size.width;
   this.h = size.height;
 
-  this.setStyle = function(styleProp, value) {
-    self.node.style[styleProp] = value + 'px';
+  this.setStyle = (styleProp, value) => {
+    self.node.style[styleProp] = `${value}px`;
   };
 
-  this.setParentStyle = function(styleProp, value) {
-    self.node.parentNode.style[styleProp] = value + 'px';
+  this.setParentStyle = (styleProp, value) => {
+    self.node.parentNode.style[styleProp] = `${value}px`;
   };
 
-  this.getLargestWidths = function(otherCompInfo) {
-    var result = {
+  this.getLargestWidths = otherCompInfo => {
+    const result = {
       max: [],
       total: 0
     };
 
     // get the array of max widths between dataCellsTable and colHeadersTable
-    for(var i = 0; i < self.colWidths.length; i++) {
+    for(let i = 0; i < self.colWidths.length; i++) {
       result.max.push(Math.max(self.colWidths[i], otherCompInfo.colWidths[i]));
       result.total += result.max[i];
     }
@@ -134,7 +101,7 @@ function ComponentSizeInfo(component, isWrapper, childType) {
     return result;
   };
 
-  this.addToWidth = function(value) {
+  this.addToWidth = value => {
     if(value > 0) {
       self.w += value;
       self.colWidths[self.colWidths.length - 1] += value;
@@ -157,30 +124,30 @@ function ComponentSizeInfo(component, isWrapper, childType) {
 function getAllColumnsWidth(tblObject) {
   if(tblObject && tblObject.node) {
 
-    var tbl = tblObject.node;
-    var colWidths = [];
+    const tbl = tblObject.node;
+    const colWidths = [];
 
-    for(var rowIndex = 0; rowIndex < tbl.rows.length ; rowIndex++) {
+    for(let rowIndex = 0; rowIndex < tbl.rows.length ; rowIndex++) {
       // current row
-      var currRow = tbl.rows[rowIndex];
+      const currRow = tbl.rows[rowIndex];
       // reset colWidths index
-      var arrayIndex = 0;
-      var currWidth = null;
+      let arrayIndex = 0;
+      let currWidth = null;
 
       // get the width of each cell within current row
-      for(var cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
+      for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
         // current cell
-        var currCell = currRow.cells[cellIndex];
+        const currCell = currRow.cells[cellIndex];
 
         if(currCell.__orb._visible) {
           // cell width
           //var cellwidth = Math.ceil(domUtils.getSize(currCell.children[0]).width/currCell.colSpan);
-          var cellwidth = Math.ceil((currCell.__orb._textWidth/currCell.__orb._colSpan) + currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth);
+          const cellwidth = Math.ceil((currCell.__orb._textWidth/currCell.__orb._colSpan) + currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth);
           // whether current cell spans vertically to the last row
-          var rowsSpan = currCell.__orb._rowSpan > 1 && currCell.__orb._rowSpan >= tbl.rows.length - rowIndex;
+          const rowsSpan = currCell.__orb._rowSpan > 1 && currCell.__orb._rowSpan >= tbl.rows.length - rowIndex;
 
           // if current cell spans over more than one column, add its width (its) 'colSpan' number of times
-          for(var cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
+          for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
             // If cell span over more than 1 row: insert its width into colWidths at arrayIndex
             // Else: either expand colWidths if necessary or replace the width if its smaller than current cell width
 
@@ -221,7 +188,7 @@ function getAllColumnsWidth(tblObject) {
 
     // set colWidths to the tblObject
     tblObject.w = 0;
-    tblObject.colWidths = colWidths.map(function(item, index) {
+    tblObject.colWidths = colWidths.map((item, index) => {
       tblObject.w += item.width;
       return item.width;
     });
@@ -241,31 +208,31 @@ function setTableWidths(tblObject, colWidths) {
     // reset table width
     (tblObject.size = (tblObject.size || {})).width = 0;
 
-    var tbl = tblObject.node;
+    const tbl = tblObject.node;
 
     // for each row, set its cells width
-    for(var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
+    for(let rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
 
       // current row
-      var currRow = tbl.rows[rowIndex];
+      const currRow = tbl.rows[rowIndex];
       // index in colWidths
-      var arrayIndex = 0;
-      var currWidth = null;
+      let arrayIndex = 0;
+      let currWidth = null;
 
       // set width of each cell
-      for(var cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
+      for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
 
         // current cell
-        var currCell = currRow.cells[cellIndex];
+        const currCell = currRow.cells[cellIndex];
         if(currCell.__orb._visible) {
           // cell width
-          var newCellWidth = 0;
+          let newCellWidth = 0;
           // whether current cell spans vertically more than 1 row
-          var rowsSpan = currCell.__orb._rowSpan > 1 && rowIndex < tbl.rows.length - 1;
+          const rowsSpan = currCell.__orb._rowSpan > 1 && rowIndex < tbl.rows.length - 1;
 
           // current cell width is the sum of (its) "colspan" items in colWidths starting at 'arrayIndex'
           // 'arrayIndex' should be incremented by an amount equal to current cell 'colspan' but should also skip 'inhibited' cells
-          for(var cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
+          for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
             currWidth = colWidths[arrayIndex];
             // skip inhibited widths (width that belongs to an upper cell than spans vertically to current row)
             while(currWidth && currWidth.inhibit > 0) {
@@ -287,11 +254,11 @@ function setTableWidths(tblObject, colWidths) {
             }
           }
 
-          currCell.children[0].style.width = newCellWidth + 'px';
+          currCell.children[0].style.width = `${newCellWidth}px`;
 
           // set table width (only in first iteration)
           if(rowIndex === 0) {
-            var outerCellWidth = 0;
+            let outerCellWidth = 0;
             if(currCell.__orb) {
               outerCellWidth = currCell.__orb._colSpan * (Math.ceil(currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth));
             }

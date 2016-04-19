@@ -1,37 +1,33 @@
-/* global module, require, React */
+import React from 'react';
+import axe from '../orb.axe';
+import PivotRow from './orb.react.PivotRow.jsx';
 
-'use strict';
-
-const React = require('react'),
-    axe = require('../orb.axe'),
-    PivotRow = require('./orb.react.PivotRow.jsx');
-
-module.exports = React.createClass({
-  render: function() {
-    var self = this;
-    var pgridwidget = this.props.pivotTableComp.pgridwidget;
-    var layoutInfos = {
+export default React.createClass({
+  render() {
+    const self = this;
+    const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
 
-    var dataCells = pgridwidget.dataRows.map(function(dataRow, index) {
-      return <PivotRow key={index}
-                       row={dataRow}
-                       axetype={axe.Type.DATA}
-                       layoutInfos={layoutInfos}
-                       pivotTableComp={self.props.pivotTableComp}>
-      </PivotRow>;
+    const dataCells = pgridwidget.dataRows.map((dataRow, index) => {
+      // return <PivotRow key={index}
+      //                  row={dataRow}
+      //                  axetype={axe.Type.DATA}
+      //                  layoutInfos={layoutInfos}
+      //                  pivotTableComp={self.props.pivotTableComp}>
+      // </PivotRow>;
     });
 
-    return <div className="inner-table-container data-cntr" onWheel={this.props.pivotTableComp.onWheel}>
-        <table className="inner-table">
-            <colgroup>
-            </colgroup>
-            <tbody>
-              {dataCells}
-            </tbody>
-          </table>
-      </div>;
+    // return <div className="inner-table-container data-cntr" onWheel={this.props.pivotTableComp.onWheel}>
+    //     <table className="inner-table">
+    //         <colgroup>
+    //         </colgroup>
+    //         <tbody>
+    //           {dataCells}
+    //         </tbody>
+    //       </table>
+    //   </div>;
   }
 });

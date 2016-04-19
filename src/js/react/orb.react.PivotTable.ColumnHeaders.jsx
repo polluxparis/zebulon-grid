@@ -1,39 +1,35 @@
-/* global module, require, React */
+import React from 'react';
+import axe from '../orb.axe';
+import PivotRow from './orb.react.PivotRow.jsx';
 
-'use strict';
+export default React.createClass({
+  render() {
+    const self = this;
+    const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const cntrClass = pgridwidget.columns.headers.length === 0 ? '' : ' columns-cntr';
 
-const React = require('react'),
-    axe = require('../orb.axe'),
-    PivotRow = require('./orb.react.PivotRow.jsx');
-
-module.exports = React.createClass({
-  render: function() {
-    var self = this;
-    var pgridwidget = this.props.pivotTableComp.pgridwidget;
-    var cntrClass = pgridwidget.columns.headers.length === 0 ? '' : ' columns-cntr';
-
-    var layoutInfos = {
+    const layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
 
-    var columnHeaders = pgridwidget.columns.headers.map(function(headerRow, index) {
-      return <PivotRow key={index}
-                       row={headerRow}
-                       axetype={axe.Type.COLUMNS}
-                       pivotTableComp={self.props.pivotTableComp}
-                       layoutInfos={layoutInfos}>
-      </PivotRow>;
+    const columnHeaders = pgridwidget.columns.headers.map((headerRow, index) => {
+      // return <PivotRow key={index}
+      //                  row={headerRow}
+      //                  axetype={axe.Type.COLUMNS}
+      //                  pivotTableComp={self.props.pivotTableComp}
+      //                  layoutInfos={layoutInfos}>
+      // </PivotRow>;
     });
 
-    return  <div className={'inner-table-container' + cntrClass} onWheel={this.props.pivotTableComp.onWheel}>
-      <table className="inner-table">
-        <colgroup>
-        </colgroup>
-        <tbody>
-          {columnHeaders}
-        </tbody>
-      </table>
-    </div>;
+    // return  <div className={'inner-table-container' + cntrClass} onWheel={this.props.pivotTableComp.onWheel}>
+    //   <table className="inner-table">
+    //     <colgroup>
+    //     </colgroup>
+    //     <tbody>
+    //       {columnHeaders}
+    //     </tbody>
+    //   </table>
+    // </div>;
   }
 });

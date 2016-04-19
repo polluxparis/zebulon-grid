@@ -1,20 +1,15 @@
-/* global module, require, react */
-/*jshint eqnull: true*/
+import React from 'react';
+import ReactDOM from 'react-dom';
+import FilterPanel from './orb.react.FilterPanel.jsx';
+import DragManager from './orb.react.DragManager.jsx';
+import utils from '../orb.utils';
+import axe from '../orb.axe';
+import domUtils from '../orb.utils.dom';
+let pbid = 0;
 
-'use strict';
-
-const React = require('react'),
-    ReactDOM = require('react-dom'),
-    FilterPanel = require('./orb.react.FilterPanel.jsx'),
-    DragManager = require('./orb.react.DragManager.jsx'),
-    utils = require('../orb.utils'),
-    axe = require('../orb.axe'),
-    domUtils = require('../orb.utils.dom');
-var pbid = 0;
-
-module.exports = React.createClass({
+export default React.createClass({
 	displayName: 'PivotButton',
-	getInitialState: function () {
+	getInitialState() {
 		this.pbid = ++pbid;
 
 		// initial state, all zero.
@@ -25,23 +20,23 @@ module.exports = React.createClass({
 			dragging: false
 		};
 	},
-	onFilterMouseDown: function(e) {
+	onFilterMouseDown(e) {
 		// left mouse button only
 		if (e.button !== 0) return;
 
-		var filterButton = this.refs.filterButton;
-		var filterButtonPos = domUtils.getOffset(filterButton);
-		var filterContainer = document.createElement('div');
+		const filterButton = this.refs.filterButton;
+		const filterButtonPos = domUtils.getOffset(filterButton);
+		const filterContainer = document.createElement('div');
 
-        var filterPanelFactory = React.createFactory(FilterPanel);
-        var filterPanel = filterPanelFactory({
+        const filterPanelFactory = React.createFactory(FilterPanel);
+        const filterPanel = filterPanelFactory({
             field: this.props.field.name,
             pivotTableComp: this.props.pivotTableComp
         });
 
         filterContainer.className = this.props.pivotTableComp.pgrid.config.theme.getFilterClasses().container;
-        filterContainer.style.top = filterButtonPos.y + 'px';
-        filterContainer.style.left = filterButtonPos.x + 'px';
+        filterContainer.style.top = `${filterButtonPos.y}px`;
+        filterContainer.style.left = `${filterButtonPos.x}px`;
         document.body.appendChild(filterContainer);
 
         ReactDOM.render(filterPanel, filterContainer);
@@ -50,7 +45,7 @@ module.exports = React.createClass({
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
 	},
-	componentDidUpdate: function () {
+	componentDidUpdate() {
 		if (this.props.pivotTableComp.pgrid.config.canMoveFields) {
 			if (!this.state.mousedown) {
 				// mouse not down, don't care about mouse up/move events.
@@ -63,14 +58,14 @@ module.exports = React.createClass({
 			}
 		}
 	},
-	componentDidMount: function() {
+	componentDidMount() {
 		this.props.pivotTableComp.registerThemeChanged(this.updateClasses);
 	},
-	componentWillUnmount : function() {
+	componentWillUnmount() {
 		this.props.pivotTableComp.unregisterThemeChanged(this.updateClasses);
 		utils.removeEventListener(document, 'mousemove', this.onMouseMove);
 	},
-	onMouseDown: function(e) {
+	onMouseDown(e) {
 		// drag/sort with left mouse button
 		if (e.button !== 0) return;
 
@@ -78,8 +73,8 @@ module.exports = React.createClass({
 		    this.props.pivotTableComp.pgridwidget.toggleFieldExpansion(this.props.axetype, this.props.field);
 		} else {
 
-		    var thispos = domUtils.getOffset(ReactDOM.findDOMNode(this));
-			var mousePageXY = utils.getMousePageXY(e);
+		    const thispos = domUtils.getOffset(ReactDOM.findDOMNode(this));
+			const mousePageXY = utils.getMousePageXY(e);
 
 			// inform mousedown, save start pos
 			this.setState({
@@ -99,9 +94,9 @@ module.exports = React.createClass({
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
 	},
-	onMouseUp: function(e) {
+	onMouseUp(e) {
 
-		var isdragged = this.state.dragging;
+		const isdragged = this.state.dragging;
 
 		this.setState({
 			mousedown: false,
@@ -118,12 +113,12 @@ module.exports = React.createClass({
 			this.props.pivotTableComp.sort(this.props.axetype, this.props.field);
 		}
 	},
-	onMouseMove: function (e) {
+	onMouseMove(e) {
 		// if the mouse is not down while moving, return (no drag)
 		if (!this.props.pivotTableComp.pgrid.config.canMoveFields || !this.state.mousedown) return;
 
-		var size = null;
-		var mousePageXY = utils.getMousePageXY(e);
+		let size = null;
+		const mousePageXY = utils.getMousePageXY(e);
 
 		if(!this.state.dragging) {
 		    size = domUtils.getSize(ReactDOM.findDOMNode(this));
@@ -131,7 +126,7 @@ module.exports = React.createClass({
 			size = this.state.size;
 		}
 
-		var newpos = {
+		const newpos = {
 			x: mousePageXY.pageX + this.state.mouseoffset.x,
 			y: mousePageXY.pageY + this.state.mouseoffset.y
 		};
@@ -139,7 +134,7 @@ module.exports = React.createClass({
 		if(!this.state.dragging || newpos.x != this.state.pos.x || newpos.y != this.state.pos.y) {
 			this.setState({
 				dragging: true,
-				size: size,
+				size,
 				pos: newpos
 			});
 
@@ -149,51 +144,51 @@ module.exports = React.createClass({
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
 	},
-	updateClasses: function() {
+	updateClasses() {
 	    ReactDOM.findDOMNode(this).className = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton;
 	},
-	render: function() {
-		var self = this;
-		var divstyle = {
-			left: self.state.pos.x + 'px',
-			top: self.state.pos.y + 'px',
+	render() {
+		const self = this;
+		const divstyle = {
+			left: `${self.state.pos.x}px`,
+			top: `${self.state.pos.y}px`,
 			position: self.state.dragging ? 'fixed' : '',
 			zIndex: 101
 		};
 
 		if(self.state.size) {
-			divstyle.width = self.state.size.width + 'px';
+			divstyle.width = `${self.state.size.width}px`;
 		}
 
-		var sortDirectionClass = self.props.field.sort.order === 'asc' ?
+		const sortDirectionClass = self.props.field.sort.order === 'asc' ?
 			'sort-asc' :
 			//' \u2191' :
 			(self.props.field.sort.order === 'desc' ?
 				'sort-desc' :
 				//' \u2193' :
 				'' );
-		var filterClass = (self.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
-		var fieldAggFunc = '';
+		const filterClass = (self.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
+		const fieldAggFunc = '';
 		if(self.props.axetype === axe.Type.DATA) {
-			fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
+			// fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
 		}
 
-		return <div key={self.props.field.name}
-		            className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
-		            onMouseDown={this.onMouseDown}
-		            onMouseUp={this.onMouseUp}
-		            style={divstyle}>
-		            <table>
-		            	<tbody>
-		            		<tr>
-		            			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
-		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
-		            			<td className="filter">
-		            				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>
-		            			</td>
-		            		</tr>
-		            	</tbody>
-		            </table>
-		        </div>;
+		// return <div key={self.props.field.name}
+		//             className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
+		//             onMouseDown={this.onMouseDown}
+		//             onMouseUp={this.onMouseUp}
+		//             style={divstyle}>
+		//             <table>
+		//             	<tbody>
+		//             		<tr>
+		//             			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
+		//             			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
+		//             			<td className="filter">
+		//             				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>
+		//             			</td>
+		//             		</tr>
+		//             	</tbody>
+		//             </table>
+		//         </div>;
 	}
 });
