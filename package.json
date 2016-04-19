@@ -5,6 +5,10 @@
   "description": "Pivot table javascript library",
   "author": "Najmeddine Nouri <devnajm@gmail.com>",
   "homepage": "http://orbjs.net/",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint src"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/nnajm/orb.git"
@@ -36,36 +40,22 @@
     "react-dom": "~15.0.1"
   },
   "devDependencies": {
-    "babel-eslint": "latest",
-    "babel-plugin-transform-runtime": "latest",
-    "babel-preset-es2015": "latest",
-    "babel-preset-react": "latest",
-    "babel-preset-stage-0": "^6.3.13",
-    "babel-register": "latest",
-    "babelify": "latest",
-    "browserify": "latest",
-    "del": "latest",
-    "eslint-plugin-react": "^3.13.1",
-    "gulp": "latest",
-    "gulp-babel": "latest",
-    "gulp-concat": "latest",
-    "gulp-cssnano": "latest",
-    "gulp-derequire": "latest",
-    "gulp-eslint": "^1.1.1",
-    "gulp-header": "latest",
-    "gulp-jasmine": "latest",
-    "gulp-jsbeautifier": "latest",
-    "gulp-less": "latest",
-    "gulp-rename": "latest",
-    "gulp-replace": "latest",
-    "gulp-sourcemaps": "latest",
-    "gulp-tap": "latest",
-    "gulp-uglify": "latest",
-    "jasmine": "latest",
-    "less": "latest",
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^4.1.3",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babel-preset-stage-0": "^6.0.15",
+    "css-loader": "^0.23.1",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.6.2",
+    "expose-loader": "^0.7.1",
+    "file-loader": "^0.8.5",
     "react-addons-perf": "^15.0.1",
-    "run-sequence": "latest",
-    "vinyl-buffer": "latest",
-    "vinyl-source-stream": "latest"
+    "react-hot-loader": "^1.3.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
   }
 }

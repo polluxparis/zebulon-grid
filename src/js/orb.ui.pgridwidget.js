@@ -163,18 +163,14 @@ module.exports = function(config) {
     this.render = function(element) {
         renderElement = element || renderElement;
         if(renderElement) {
-            console.log(`rendering 0`)
             var pivotTableFactory = React.createFactory(
                 self.pgrid.config.chartMode.enabled ?
                     PivotChart :
                     PivotTable);
-            console.log(`rendering 1`)
             var pivottable = pivotTableFactory({
                 pgridwidget: self
             });
-            console.log(`rendering 2`)
             pivotComponent = ReactDOM.render(pivottable, renderElement);
-            console.log(`rendering 3`)
         }
     };
 
