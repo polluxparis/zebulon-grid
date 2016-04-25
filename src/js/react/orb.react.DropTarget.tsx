@@ -42,24 +42,23 @@ export default class DropTarget extends React.Component<any,any>{
 		}
 	}
 	render() {
-		const self = this;
 
 		const buttons = this.props.buttons.map((button, index) => {
-			if(index < self.props.buttons.length - 1) {
+			if(index < this.props.buttons.length - 1) {
 				return [
-					<td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></td>,
+					<td><DropIndicator isFirst={index === 0} position={index} axetype={this.props.axetype}></DropIndicator></td>,
 					<td>{ button }</td>
 				];
 			} else {
 				return [
-					<td><DropIndicator isFirst={index === 0} position={index} axetype={self.props.axetype}></DropIndicator></td>,
+					<td><DropIndicator isFirst={index === 0} position={index} axetype={this.props.axetype}></DropIndicator></td>,
 					<td>{ button }</td>,
-					<td><DropIndicator isLast={true} position={null} axetype={self.props.axetype}></DropIndicator></td>
+					<td><DropIndicator isLast={true} position={null} axetype={this.props.axetype}></DropIndicator></td>
 				];
 			}
 		});
 
-		const style = self.props.axetype === AxeType.ROWS ? { position: 'absolute', left: 0, bottom: 11 } : null;
+		const style = this.props.axetype === AxeType.ROWS ? { position: 'absolute', left: 0, bottom: 11 } : null;
 
 		return <div className={'drp-trgt' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-empty' : '')} style={style}>
 			<table>

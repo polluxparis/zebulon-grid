@@ -77,4 +77,4 @@ export default class DropdownComponent extends React.Component<any,any>{
 				</ul>
 			</div>;
 	}
-});
+};

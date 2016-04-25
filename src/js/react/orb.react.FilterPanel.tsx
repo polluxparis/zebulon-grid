@@ -5,7 +5,7 @@ import * as utils from '../orb.utils';
 import * as filtering from '../orb.filtering';
 import * as domUtils from '../orb.utils.dom';
 
-export default class FilterPanelComponenent extends React.Component<any,any>{
+export default class FilterPanelComponent extends React.Component<any,any>{
 
 	public pgridwidget = null;
 	public values = null;

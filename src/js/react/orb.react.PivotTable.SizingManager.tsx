@@ -61,13 +61,13 @@ export function synchronizePivotTableWidths(pivotComp) {
   rHeadersTbl.addToWidth(rHeadersWidth - rHeadersTbl.w);
 
   // Set dataCellsTable cells widths according to the computed dataCellsWidths
-  updateTableColGroup(dataCellsTbl.node, dataCellsWidths.max);
+  updateTableColGroup(dataCellsTbl.myNode, dataCellsWidths.max);
 
   // Set colHeadersTable cells widths according to the computed dataCellsWidths
-  updateTableColGroup(cHeadersTbl.node, dataCellsWidths.max);
+  updateTableColGroup(cHeadersTbl.myNode, dataCellsWidths.max);
 
   // Set rowHeadersTable cells widths
-  updateTableColGroup(rHeadersTbl.node, rHeadersTbl.colWidths);
+  updateTableColGroup(rHeadersTbl.myNode, rHeadersTbl.colWidths);
 
   dataCellsTbl.setStyle('width', dataCellsWidths.total);
   cHeadersTbl.setStyle('width', dataCellsWidths.total);
@@ -97,7 +97,7 @@ export function synchronizePivotTableWidths(pivotComp) {
 
 
 class ComponentSizeInfo {
-
+    size: { width: number; height: number; };
   public myNode;
   public w;
   public h;
@@ -109,13 +109,13 @@ class ComponentSizeInfo {
 
     this.myNode = isWrapper ? myNode.children[0] : myNode;
 
-    size = getSize(this.myNode);
-    this.w = size.width;
-    this.h = size.height;
+    this.size = getSize(this.myNode);
+    this.w = this.size.width;
+    this.h = this.size.height;
 
     if(childType === 'table') {
       // get array of column widths
-      getAllColumnsWidth(this);
+      this.getAllColumnsWidth();
     }
    }
 
@@ -148,169 +148,170 @@ class ComponentSizeInfo {
       this.colWidths[this.colWidths.length - 1] += value;
     }
   };
-}
 
-/**
- * Gets the width of all columns (maximum width of all column cells) of a html table element
- * @param  {Object}  tblObject - object having a table element in its 'node' property
- * @returns {Array} An array of numeric values representing the width of each column.
- *                  Its length is equal to the greatest number of cells of all rows
- *                  (in case of cells having colSpan/rowSpan greater than 1.)
- */
-function getAllColumnsWidth(tblObject) {
-  if(tblObject && tblObject.node) {
 
-    const tbl = tblObject.node;
-    const colWidths = [];
+  /**
+   * Gets the width of all columns (maximum width of all column cells) of a html table element
+   * @param  {Object}  tblObject - object having a table element in its 'myNode' property
+   * @returns {Array} An array of numeric values representing the width of each column.
+   *                  Its length is equal to the greatest number of cells of all rows
+   *                  (in case of cells having colSpan/rowSpan greater than 1.)
+   */
+   getAllColumnsWidth() {
+    if(this.myNode) {
 
-    for(let rowIndex = 0; rowIndex < tbl.rows.length ; rowIndex++) {
-      // current row
-      const currRow = tbl.rows[rowIndex];
-      // reset colWidths index
-      let arrayIndex = 0;
-      let currWidth = null;
+      const tbl = this.myNode;
+      const colWidths = [];
 
-      // get the width of each cell within current row
-      for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
-        // current cell
-        const currCell = currRow.cells[cellIndex];
+      for(let rowIndex = 0; rowIndex < tbl.rows.length ; rowIndex++) {
+        // current row
+        const currRow = tbl.rows[rowIndex];
+        // reset colWidths index
+        let arrayIndex = 0;
+        let currWidth = null;
 
-        if(currCell.__orb._visible) {
-          // cell width
-          //var cellwidth = Math.ceil(domUtils.getSize(currCell.children[0]).width/currCell.colSpan);
-          const cellwidth = Math.ceil((currCell.__orb._textWidth/currCell.__orb._colSpan) + currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth);
-          // whether current cell spans vertically to the last row
-          const rowsSpan = currCell.__orb._rowSpan > 1 && currCell.__orb._rowSpan >= tbl.rows.length - rowIndex;
+        // get the width of each cell within current row
+        for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
+          // current cell
+          const currCell = currRow.cells[cellIndex];
 
-          // if current cell spans over more than one column, add its width (its) 'colSpan' number of times
-          for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
-            // If cell span over more than 1 row: insert its width into colWidths at arrayIndex
-            // Else: either expand colWidths if necessary or replace the width if its smaller than current cell width
+          if(currCell.__orb._visible) {
+            // cell width
+            //var cellwidth = Math.ceil(domUtils.getSize(currCell.children[0]).width/currCell.colSpan);
+            const cellwidth = Math.ceil((currCell.__orb._textWidth/currCell.__orb._colSpan) + currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth);
+            // whether current cell spans vertically to the last row
+            const rowsSpan = currCell.__orb._rowSpan > 1 && currCell.__orb._rowSpan >= tbl.rows.length - rowIndex;
 
-            currWidth = colWidths[arrayIndex];
-            // skip inhibited widths (width that belongs to an upper cell than spans vertically to current row)
-            while(currWidth && currWidth.inhibit > 0) {
-              currWidth.inhibit--;
-              arrayIndex++;
+            // if current cell spans over more than one column, add its width (its) 'colSpan' number of times
+            for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
+              // If cell span over more than 1 row: insert its width into colWidths at arrayIndex
+              // Else: either expand colWidths if necessary or replace the width if its smaller than current cell width
+
               currWidth = colWidths[arrayIndex];
-            }
-
-            if(colWidths.length - 1 < arrayIndex) {
-              colWidths.push({
-                width: cellwidth
-              });
-            } else if(cellwidth > colWidths[arrayIndex].width) {
-              colWidths[arrayIndex].width = cellwidth;
-            }
-
-            colWidths[arrayIndex].inhibit = currCell.__orb._rowSpan - 1;
-
-            // increment colWidths index
-            arrayIndex++;
-          }
-        }
-      }
-
-      // decrement inhibited state of all widths unsed in colWidths (not reached by current row cells)
-      currWidth = colWidths[arrayIndex];
-      while(currWidth) {
-        if(currWidth.inhibit > 0) {
-          currWidth.inhibit--;
-        }
-        arrayIndex++;
-        currWidth = colWidths[arrayIndex];
-      }
-    }
-
-    // set colWidths to the tblObject
-    tblObject.w = 0;
-    tblObject.colWidths = colWidths.map((item, index) => {
-      tblObject.w += item.width;
-      return item.width;
-    });
-  }
-}
-
-/**
- * Sets the width of all cells of a html table element
- * @param  {Object}  tblObject - object having a table element in its 'node' property
- * @param  {Array}  colWidths - an array of numeric values representing the width of each individual cell.
- *                                  Its length is equal to the greatest number of cells of all rows
- *                                  (in case of cells having colSpan/rowSpan greater than 1.)
- */
-function setTableWidths(tblObject, colWidths) {
-  if(tblObject && tblObject.node) {
-
-    // reset table width
-    (tblObject.size = (tblObject.size || {})).width = 0;
-
-    const tbl = tblObject.node;
-
-    // for each row, set its cells width
-    for(let rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
-
-      // current row
-      const currRow = tbl.rows[rowIndex];
-      // index in colWidths
-      let arrayIndex = 0;
-      let currWidth = null;
-
-      // set width of each cell
-      for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
-
-        // current cell
-        const currCell = currRow.cells[cellIndex];
-        if(currCell.__orb._visible) {
-          // cell width
-          let newCellWidth = 0;
-          // whether current cell spans vertically more than 1 row
-          const rowsSpan = currCell.__orb._rowSpan > 1 && rowIndex < tbl.rows.length - 1;
-
-          // current cell width is the sum of (its) "colspan" items in colWidths starting at 'arrayIndex'
-          // 'arrayIndex' should be incremented by an amount equal to current cell 'colspan' but should also skip 'inhibited' cells
-          for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
-            currWidth = colWidths[arrayIndex];
-            // skip inhibited widths (width that belongs to an upper cell than spans vertically to current row)
-            while(currWidth && currWidth.inhibit > 0) {
-              currWidth.inhibit--;
-              arrayIndex++;
-              currWidth = colWidths[arrayIndex];
-            }
-
-            if(currWidth) {
-              // add width of cells participating in the span
-              newCellWidth += currWidth.width;
-              // if current cell spans vertically more than 1 row, mark its width as inhibited for all cells participating in this span
-              if(rowsSpan) {
-                currWidth.inhibit = currCell.__orb._rowSpan - 1;
+              // skip inhibited widths (width that belongs to an upper cell than spans vertically to current row)
+              while(currWidth && currWidth.inhibit > 0) {
+                currWidth.inhibit--;
+                arrayIndex++;
+                currWidth = colWidths[arrayIndex];
               }
 
-              // advance colWidths index
+              if(colWidths.length - 1 < arrayIndex) {
+                colWidths.push({
+                  width: cellwidth
+                });
+              } else if(cellwidth > colWidths[arrayIndex].width) {
+                colWidths[arrayIndex].width = cellwidth;
+              }
+
+              colWidths[arrayIndex].inhibit = currCell.__orb._rowSpan - 1;
+
+              // increment colWidths index
               arrayIndex++;
             }
           }
+        }
 
-          currCell.children[0].style.width = `${newCellWidth}px`;
-
-          // set table width (only in first iteration)
-          if(rowIndex === 0) {
-            let outerCellWidth = 0;
-            if(currCell.__orb) {
-              outerCellWidth = currCell.__orb._colSpan * (Math.ceil(currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth));
-            }
-            tblObject.w += newCellWidth + outerCellWidth;
+        // decrement inhibited state of all widths unsed in colWidths (not reached by current row cells)
+        currWidth = colWidths[arrayIndex];
+        while(currWidth) {
+          if(currWidth.inhibit > 0) {
+            currWidth.inhibit--;
           }
+          arrayIndex++;
+          currWidth = colWidths[arrayIndex];
         }
       }
 
-      // decrement inhibited state of all widths unsed in colWidths (not reached by current row cells)
-      currWidth = colWidths[arrayIndex];
-      while(currWidth) {
-        if(currWidth.inhibit > 0) {
-          currWidth.inhibit--;
+      // set colWidths to the tblObject
+      this.w = 0;
+      this.colWidths = colWidths.map((item, index) => {
+        this.w += item.width;
+        return item.width;
+      });
+    }
+  }
+
+/**
+   * Sets the width of all cells of a html table element
+   * @param  {Object}  tblObject - object having a table element in its 'myNode' property
+   * @param  {Array}  colWidths - an array of numeric values representing the width of each individual cell.
+   *                                  Its length is equal to the greatest number of cells of all rows
+   *                                  (in case of cells having colSpan/rowSpan greater than 1.)
+   */
+   setTableWidths(tblObject) {
+    if(this.myNode) {
+
+      // reset table width
+      (this.size = (this.size || {width:0, height: 0})).width = 0;
+
+      const tbl = this.myNode;
+
+      // for each row, set its cells width
+      for(let rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
+
+        // current row
+        const currRow = tbl.rows[rowIndex];
+        // index in colWidths
+        let arrayIndex = 0;
+        let currWidth = null;
+
+        // set width of each cell
+        for(let cellIndex = 0; cellIndex < currRow.cells.length; cellIndex++) {
+
+          // current cell
+          const currCell = currRow.cells[cellIndex];
+          if(currCell.__orb._visible) {
+            // cell width
+            let newCellWidth = 0;
+            // whether current cell spans vertically more than 1 row
+            const rowsSpan = currCell.__orb._rowSpan > 1 && rowIndex < tbl.rows.length - 1;
+
+            // current cell width is the sum of (its) "colspan" items in colWidths starting at 'arrayIndex'
+            // 'arrayIndex' should be incremented by an amount equal to current cell 'colspan' but should also skip 'inhibited' cells
+            for(let cspan = 0; cspan < currCell.__orb._colSpan; cspan++) {
+              currWidth = this.colWidths[arrayIndex];
+              // skip inhibited widths (width that belongs to an upper cell than spans vertically to current row)
+              while(currWidth && currWidth.inhibit > 0) {
+                currWidth.inhibit--;
+                arrayIndex++;
+                currWidth = this.colWidths[arrayIndex];
+              }
+
+              if(currWidth) {
+                // add width of cells participating in the span
+                newCellWidth += currWidth.width;
+                // if current cell spans vertically more than 1 row, mark its width as inhibited for all cells participating in this span
+                if(rowsSpan) {
+                  currWidth.inhibit = currCell.__orb._rowSpan - 1;
+                }
+
+                // advance colWidths index
+                arrayIndex++;
+              }
+            }
+
+            currCell.children[0].style.width = `${newCellWidth}px`;
+
+            // set table width (only in first iteration)
+            if(rowIndex === 0) {
+              let outerCellWidth = 0;
+              if(currCell.__orb) {
+                outerCellWidth = currCell.__orb._colSpan * (Math.ceil(currCell.__orb._paddingLeft + currCell.__orb._paddingRight + currCell.__orb._borderLeftWidth + currCell.__orb._borderRightWidth));
+              }
+              this.w += newCellWidth + outerCellWidth;
+            }
+          }
         }
-        arrayIndex++;
-        currWidth = colWidths[arrayIndex];
+
+        // decrement inhibited state of all widths unsed in colWidths (not reached by current row cells)
+        currWidth = this.colWidths[arrayIndex];
+        while(currWidth) {
+          if(currWidth.inhibit > 0) {
+            currWidth.inhibit--;
+          }
+          arrayIndex++;
+          currWidth = this.colWidths[arrayIndex];
+        }
       }
     }
   }

@@ -29,7 +29,7 @@ export class PubSub {
         if(utils.isString(topic)) {
             utils.forEach(
                 this._topics[topic],
-                (callback, ...args) => callback.apply(null, [topic].concat(Array.prototype.slice.call(args, 1)))
+                (callback, ...args) => callback.apply(null, [topic].concat(args.slice(1)))
                 )
         };
     }

@@ -141,7 +141,7 @@ export default class PivotTableComponent extends React.Component<any,any>{
     const config = this.pgridwidget.pgrid.config;
     const classes = config.theme.getPivotClasses();
 
-    const tblStyle = {};
+    const tblStyle = {width:undefined, height:undefined};
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 
