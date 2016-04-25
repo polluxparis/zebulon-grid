@@ -6,14 +6,23 @@ import {updateTableColGroup, getSize} from '../orb.utils.dom';
 
 export function synchronizeWidths(pivotComp) {
   if(pivotComp.pgridwidget.pgrid.config.chartMode.enabled) {
-    return this.synchronizePivotChartWidths(pivotComp);
+    return synchronizePivotChartWidths(pivotComp);
   } else {
-    this.synchronizePivotTableWidths(pivotComp);
+    synchronizePivotTableWidths(pivotComp);
   }
 };
 
 export function synchronizePivotChartWidths(pivotComp) {
-    const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons), chart = new ComponentSizeInfo(pivotComp.refs.chart), rBtnsWidth = Math.max(rBtnsTbl.w, 67), chartWidth = pivot.w - rBtnsWidth, pivotHeight = pivotComp.pgridwidget.pgrid.config.height, chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
+  const pivotWrapperTable = pivotComp.refs.pivotWrapperTable;
+  const pivot = new ComponentSizeInfo(pivotComp.refs.pivot);
+  const topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons);
+  const cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons);
+  const rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons);
+  const chart = new ComponentSizeInfo(pivotComp.refs.chart);
+  const rBtnsWidth = Math.max(rBtnsTbl.w, 67);
+  const chartWidth = pivot.w - rBtnsWidth;
+  const pivotHeight = pivotComp.pgridwidget.pgrid.config.height;
+  const chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
 
   // set pivotWrapperTable columns width to fixed value
   updateTableColGroup(pivotWrapperTable, [
@@ -29,7 +38,23 @@ export function synchronizePivotChartWidths(pivotComp) {
 
 export function synchronizePivotTableWidths(pivotComp) {
 
-  const pivotWrapperTable = pivotComp.refs.pivotWrapperTable, pivot = new ComponentSizeInfo(pivotComp.refs.pivot), toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar), cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table'), rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table'), dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table'), topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons), cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons), rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true), hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar), vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar), dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl), rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67), dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w), pivotHeight = pivotComp.pgridwidget.pgrid.config.height, dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h)), dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
+  const pivotWrapperTable = pivotComp.refs.pivotWrapperTable;
+  const pivot = new ComponentSizeInfo(pivotComp.refs.pivot);
+  const toolbar = new ComponentSizeInfo(pivotComp.refs.toolbar);
+  const cHeadersTbl = new ComponentSizeInfo(pivotComp.refs.colHeaders, true, 'table');
+  const rHeadersTbl = new ComponentSizeInfo(pivotComp.refs.rowHeaders, true, 'table');
+  const dataCellsTbl = new ComponentSizeInfo(pivotComp.refs.dataCells, true, 'table');
+  const topBtns = new ComponentSizeInfo(pivotComp.refs.upperButtons);
+  const cBtns = new ComponentSizeInfo(pivotComp.refs.colButtons);
+  const rBtnsTbl = new ComponentSizeInfo(pivotComp.refs.rowButtons, true);
+  const hScroll = new ComponentSizeInfo(pivotComp.refs.horizontalScrollBar);
+  const vScroll = new ComponentSizeInfo(pivotComp.refs.verticalScrollBar);
+  const dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl);
+  const rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67);
+  const dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w);
+  const pivotHeight = pivotComp.pgridwidget.pgrid.config.height;
+  const dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h));
+  const dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
 
 
   // get rowHeaders table width to match with rowButtons table width

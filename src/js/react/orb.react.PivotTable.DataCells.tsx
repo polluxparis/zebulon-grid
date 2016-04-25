@@ -1,10 +1,9 @@
 import * as React from 'react';
-import axe from '../orb.axe';
+import {AxeType} from '../orb.axe';
 import PivotRow from './orb.react.PivotRow';
 
-export default React.createClass({
+export default class DataCellsComponent extends React.Component<any,any>{
   render() {
-    const self = this;
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const layoutInfos = {
       lastLeftMostCellVSpan: 0,
@@ -14,9 +13,9 @@ export default React.createClass({
     const dataCells = pgridwidget.dataRows.map((dataRow, index) => {
       return <PivotRow key={index}
                        row={dataRow}
-                       axetype={axe.Type.DATA}
+                       axetype={AxeType.DATA}
                        layoutInfos={layoutInfos}
-                       pivotTableComp={self.props.pivotTableComp}>
+                       pivotTableComp={this.props.pivotTableComp}>
       </PivotRow>;
     });
 
@@ -30,4 +29,4 @@ export default React.createClass({
           </table>
       </div>;
   }
-});
+};

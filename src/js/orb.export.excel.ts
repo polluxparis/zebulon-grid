@@ -141,8 +141,8 @@ export default (pgridwidget: PGridWidget) => {
  	}());
 
  	function toBase64(str) {
- 		const btoaFunc = utils.btoa()
- 		return btoaFunc(unescape(encodeURIComponent(str)));
+ 		const btoaFunc = utils.btoa
+ 		return btoaFunc(decodeURIComponent(encodeURIComponent(str)));
  	}
 
  	return uriHeader +

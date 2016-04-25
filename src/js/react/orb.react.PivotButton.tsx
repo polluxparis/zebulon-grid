@@ -7,20 +7,20 @@ import {AxeType} from '../orb.axe';
 import * as domUtils from '../orb.utils.dom';
 let pbid = 0;
 
-export default React.createClass({
-	displayName: 'PivotButton',
-	getInitialState() {
-		this.pbid = ++pbid;
-
-		// initial state, all zero.
-		return {
-			pos: { x: 0, y: 0 },
-			startpos: { x: 0, y: 0 },
-			mousedown: false,
-			dragging: false
+export default class PivotButtonComponent extends React.Component<any,any>{
+	constructor(props){
+    super(props)
+    this.state = {
+      pbid: props.pbid+1,
+    // initial state, all zero.
+      pos: { x: 0, y: 0 },
+      startpos: { x: 0, y: 0 },
+      mousedown: false,
+      dragging: false
+    }
 		};
-	},
-	onFilterMouseDown(e) {
+
+	onFilterMouseDown(e){
 		// left mouse button only
 		if (e.button !== 0) return;
 
@@ -44,7 +44,8 @@ export default React.createClass({
 		// prevent event bubbling (to prevent text selection while dragging for example)
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
-	},
+	}
+
 	componentDidUpdate() {
 		if (this.props.pivotTableComp.pgrid.config.canMoveFields) {
 			if (!this.state.mousedown) {
@@ -57,14 +58,14 @@ export default React.createClass({
 				utils.addEventListener(document, 'mousemove', this.onMouseMove);
 			}
 		}
-	},
+	}
 	componentDidMount() {
 		this.props.pivotTableComp.registerThemeChanged(this.updateClasses);
-	},
+	}
 	componentWillUnmount() {
 		this.props.pivotTableComp.unregisterThemeChanged(this.updateClasses);
 		utils.removeEventListener(document, 'mousemove', this.onMouseMove);
-	},
+	}
 	onMouseDown(e) {
 		// drag/sort with left mouse button
 		if (e.button !== 0) return;
@@ -93,7 +94,7 @@ export default React.createClass({
 		// prevent event bubbling (to prevent text selection while dragging for example)
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
-	},
+	}
 	onMouseUp(e) {
 
 		const isdragged = this.state.dragging;
@@ -112,7 +113,7 @@ export default React.createClass({
 			// if button was not dragged, proceed as a click
 			this.props.pivotTableComp.sort(this.props.axetype, this.props.field);
 		}
-	},
+	}
 	onMouseMove(e) {
 		// if the mouse is not down while moving, return (no drag)
 		if (!this.props.pivotTableComp.pgrid.config.canMoveFields || !this.state.mousedown) return;
@@ -143,37 +144,37 @@ export default React.createClass({
 
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
-	},
+	}
 	updateClasses() {
 	    ReactDOM.findDOMNode(this).className = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton;
-	},
+	}
 	render() {
-		const self = this;
 		const divstyle = {
-			left: `${self.state.pos.x}px`,
-			top: `${self.state.pos.y}px`,
-			position: self.state.dragging ? 'fixed' : '',
-			zIndex: 101
+			left: `${this.state.pos.x}px`,
+			top: `${this.state.pos.y}px`,
+			position: this.state.dragging ? 'fixed' : '',
+			zIndex: 101,
+      width:''
 		};
 
-		if(self.state.size) {
-			divstyle.width = `${self.state.size.width}px`;
+		if(this.state.size) {
+			divstyle.width = `${this.state.size.width}px`;
 		}
 
-		const sortDirectionClass = self.props.field.sort.order === 'asc' ?
+		const sortDirectionClass = this.props.field.sort.order === 'asc' ?
 			'sort-asc' :
 			//' \u2191' :
-			(self.props.field.sort.order === 'desc' ?
+			(this.props.field.sort.order === 'desc' ?
 				'sort-desc' :
 				//' \u2193' :
 				'' );
-		const filterClass = (self.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
-		var fieldAggFunc = '';
-		if(self.props.axetype === AxeType.DATA) {
-			fieldAggFunc = <small>{' (' + self.props.field.aggregateFuncName + ')' }</small>;
+		const filterClass = (this.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
+		var fieldAggFunc = undefined;
+		if(this.props.axetype === AxeType.DATA) {
+			fieldAggFunc = <small>{' (' + this.props.field.aggregateFuncName + ')' }</small>;
 		};
 
-		return <div key={self.props.field.name}
+		return <div key={this.props.field.name}
 		            className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
 		            onMouseDown={this.onMouseDown}
 		            onMouseUp={this.onMouseUp}
@@ -181,14 +182,14 @@ export default React.createClass({
 		            <table>
 		            	<tbody>
 		            		<tr>
-		            			<td className="caption">{self.props.field.caption}{fieldAggFunc}</td>
+		            			<td className="caption">{this.props.field.caption}{fieldAggFunc}</td>
 		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
 		            			<td className="filter">
-		            				<div ref="filterButton" className={filterClass} onMouseDown={self.state.dragging ? null : this.onFilterMouseDown}></div>
+		            				<div ref="filterButton" className={filterClass} onMouseDown={this.state.dragging ? null : this.onFilterMouseDown}></div>
 		            			</td>
 		            		</tr>
 		            	</tbody>
 		            </table>
 		        </div>;
 	}
-});
+}

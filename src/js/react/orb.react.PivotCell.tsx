@@ -1,16 +1,22 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import uiheaders from '../orb.ui.header';
+import {HeaderType} from '../orb.ui.header';
 import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
-export default React.createClass({
+export default class PivotCellComponent extends React.Component<any,any>{
+  _latestVisibleState: boolean;
+
+  constructor(props){
+    super(props);
+    this._latestVisibleState = false;
+  }
   expand() {
       this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);
-  },
+  }
   collapse() {
       this.props.pivotTableComp.pgridwidget.collapseRow(this.props.cell);
-  },
+  }
   updateCellInfos() {
     const node = ReactDOM.findDOMNode(this);
     const cell = this.props.cell;
@@ -62,20 +68,19 @@ export default React.createClass({
       node.__orb._borderLeftWidth = this.props.leftmost ? 0 : _borderLeft;
       node.__orb._borderRightWidth = 0;
     }
-  },
+  }
   componentDidMount() {
     this.updateCellInfos();
-  },
+  }
   componentDidUpdate() {
     this.updateCellInfos();
-  },
+  }
   shouldComponentUpdate(nextProps, nextState) {
     if(nextProps.cell && nextProps.cell == this.props.cell && !this._latestVisibleState && !nextProps.cell.visible()) {
       return false;
     }
     return true;
-  },
-  _latestVisibleState: false,
+  }
   render() {
     const self = this;
     const cell = this.props.cell;
@@ -89,8 +94,8 @@ export default React.createClass({
     switch(cell.template) {
       case 'cell-template-row-header':
       case 'cell-template-column-header':
-        const isWrapper = cell.type === uiheaders.HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
-        const isSubtotal = cell.type === uiheaders.HeaderType.SUB_TOTAL && !cell.expanded;
+        const isWrapper = cell.type === HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
+        const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
           headerPushed = true;
 
@@ -100,7 +105,7 @@ export default React.createClass({
             <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
             </tbody></table>);
         } else {
-          value = (cell.value || '&#160;') + (cell.type === uiheaders.HeaderType.SUB_TOTAL ? ' Total' : '');
+          value = (cell.value || '&#160;') + (cell.type === HeaderType.SUB_TOTAL ? ' Total' : '');
         }
         break;
       case 'cell-template-dataheader':
@@ -123,7 +128,7 @@ export default React.createClass({
           headerClassName = 'cell-data';
         break;
         default:
-        if(cell.template != 'cell-template-dataheader' && cell.type !== uiheaders.HeaderType.GRAND_TOTAL) {
+        if(cell.template != 'cell-template-dataheader' && cell.type !== HeaderType.GRAND_TOTAL) {
           headerClassName = 'hdr-val';
         }
       }
@@ -139,7 +144,7 @@ export default React.createClass({
                 </div>
            </td>;
   }
-});
+};
 
 function getClassname(compProps) {
     const cell = compProps.cell;
@@ -150,11 +155,11 @@ function getClassname(compProps) {
       classname += ' cell-hidden';
     }
 
-    if(cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
+    if(cell.type === HeaderType.SUB_TOTAL && cell.expanded) {
       classname += ' header-st-exp';
     }
 
-    if(cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
+    if(cell.type === HeaderType.GRAND_TOTAL) {
       if(cell.dim.depth === 1) {
         classname += ' header-nofields';
       } else if(cell.dim.depth > 2) {

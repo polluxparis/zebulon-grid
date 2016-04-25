@@ -210,9 +210,11 @@ InvalidCharacterError.prototype = new Error();
 InvalidCharacterError.prototype.name = 'InvalidCharacterError';
 // encoder
 // [https://gist.github.com/999166] by [https://github.com/nignag]
-export function btoa() {
-    global && global.btoa ? function(str) { return global.btoa(str); } :
-        function(input) {
+export function btoa(input) {
+    if (window && window.btoa){
+      return window.btoa(input)
+    }
+    else {
             var str = String(input);
             for (
                 // initialize result and counter
@@ -236,9 +238,11 @@ export function btoa() {
 
 // decoder
 // [https://gist.github.com/1020396] by [https://github.com/atk]
-export function atob(){
- global && global.atob ? function(str) { return global.atob(str); } :
-    function(input) {
+export function atob(input){
+ if (window && window.atob){
+   return window.atob(input)
+ }
+else {
         var str = String(input).replace(/=+$/, '');
         if (str.length % 4 == 1) {
             throw new InvalidCharacterError("'atob' failed: The string to be decoded is not correctly encoded.");

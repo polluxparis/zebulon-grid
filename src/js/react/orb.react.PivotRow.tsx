@@ -1,15 +1,18 @@
 import * as React from 'react';
 import PivotCell from './orb.react.PivotCell';
-import axe from '../orb.axe';
+import {AxeType} from '../orb.axe';
 
-export default React.createClass({
+export default class PivotRowComponent extends React.Component<any,any>{
+
+  constructor(){
+    super()
+  }
+
   render() {
-    const self = this;
-
     const lastCellIndex = this.props.row.length - 1;
     const cell0 = this.props.row[0];
     let leftmostCellFound = false;
-    const layoutInfos = self.props.layoutInfos;
+    const layoutInfos = this.props.layoutInfos;
     let cells;
 
     const rowstyle = {};
@@ -33,7 +36,7 @@ export default React.createClass({
           istopmost = layoutInfos.topMostCells['0'] = true;
         }
 
-        if(!leftmostCellFound && (self.props.axetype === axe.Type.DATA || self.props.axetype === axe.Type.COLUMNS) &&
+        if(!leftmostCellFound && (this.props.axetype === AxeType.DATA || this.props.axetype === AxeType.COLUMNS) &&
             layoutInfos.lastLeftMostCellVSpan === 0) {
 
           isleftmost = leftmostCellFound = true;
@@ -45,7 +48,7 @@ export default React.createClass({
                         cell={cell}
                         leftmost={isleftmost}
                         topmost={istopmost}
-                        pivotTableComp={self.props.pivotTableComp}>
+                        pivotTableComp={this.props.pivotTableComp}>
              </PivotCell>;
     });
 
@@ -60,4 +63,4 @@ export default React.createClass({
       </tr>
     );
   }
-});
+};

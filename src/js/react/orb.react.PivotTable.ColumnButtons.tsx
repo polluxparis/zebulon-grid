@@ -1,23 +1,25 @@
 import * as React from 'react';
-import axe from '../orb.axe';
+import {AxeType} from '../orb.axe';
 import PivotButton from './orb.react.PivotButton';
 import DropTarget from './orb.react.DropTarget';
 
-export default React.createClass({
+export default class ColumnButtonComponent extends React.Component<any,any>{
+  constructor(props){
+    super(props)
+  }
   render() {
-    const self = this;
     const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
     const columnButtons = config.columnFields.map((field, index) => {
       return <PivotButton key={field.name}
                           field={field}
-                          axetype={axe.Type.COLUMNS}
+                          axetype={AxeType.COLUMNS}
                           position={index}
-                          pivotTableComp={self.props.pivotTableComp}>
+                          pivotTableComp={this.props.pivotTableComp}>
              </PivotButton>;
     });
 
-    return  <DropTarget buttons={columnButtons} axetype={axe.Type.COLUMNS}>
+    return  <DropTarget buttons={columnButtons} axetype={AxeType.COLUMNS}>
             </DropTarget>;
   }
-});
+};

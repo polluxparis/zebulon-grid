@@ -1,9 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import PivotRow from './orb.react.PivotRow';
-import axe from '../orb.axe';
+import {AxeType} from '../orb.axe';
 
-export default React.createClass({
+export default class RowHeadersComponent extends React.Component<any,any>{
+  constructor(){
+    super();
+  }
   setColGroup(widths) {
       const node = ReactDOM.findDOMNode(this);
     const colGroupNode = this.refs.colgroup;
@@ -16,9 +19,8 @@ export default React.createClass({
       colGroupNode.appendChild(col);
     }
     node.style.tableLayout = 'fixed';
-  },
+  }
   render() {
-    const self = this;
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 
@@ -30,9 +32,9 @@ export default React.createClass({
     const rowHeaders = pgridwidget.rows.headers.map((headerRow, index) => {
       return <PivotRow key={index}
                        row={headerRow}
-                       axetype={axe.Type.ROWS}
+                       axetype={AxeType.ROWS}
                        layoutInfos={layoutInfos}
-                       pivotTableComp={self.props.pivotTableComp}>
+                       pivotTableComp={this.props.pivotTableComp}>
       </PivotRow>;
     });
 
@@ -46,4 +48,4 @@ export default React.createClass({
       </table>
     </div>;
   }
-});
+};

@@ -3,9 +3,8 @@ import PivotButton from './orb.react.PivotButton';
 import DropTarget from './orb.react.DropTarget';
 import {AxeType} from '../orb.axe';
 
-export default React.createClass({
+export default class UpperButtonsComponent extends React.Component<any,any>{
   render() {
-    const self = this;
     const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
 
     let fieldsDropTarget;
@@ -15,7 +14,7 @@ export default React.createClass({
                             field={field}
                             axetype={null}
                             position={index}
-                            pivotTableComp={self.props.pivotTableComp}>
+                            pivotTableComp={this.props.pivotTableComp}>
                </PivotButton>;
       });
       fieldsDropTarget = <tr>
@@ -36,7 +35,7 @@ export default React.createClass({
                           field={field}
                           axetype={AxeType.DATA}
                           position={index}
-                          pivotTableComp={self.props.pivotTableComp}>
+                          pivotTableComp={this.props.pivotTableComp}>
              </PivotButton>;
     });
 
@@ -57,4 +56,4 @@ export default React.createClass({
         </tbody>
     </table>;
   }
-});
+}

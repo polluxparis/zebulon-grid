@@ -12,9 +12,9 @@ function createOverlay() {
   return overlayElement;
 }
 
-export const Dialog = React.createClass({
-  statics: {
-    create() {
+export class Dialog extends React.Component<any, any>{
+
+    static create() {
         const dialogFactory = React.createFactory(Dialog);
         const overlay = createOverlay();
 
@@ -24,11 +24,15 @@ export const Dialog = React.createClass({
           }
         };
     }
-  },
-  overlayElement: null,
+    overlayElement= null;
+
+  constructor(props){
+    super(props);
+  }
   setOverlayClass(visible) {
     this.overlayElement.className = this.props.theme.getDialogClasses(visible).overlay;
-  },
+  }
+
   componentDidMount() {
       this.overlayElement = ReactDOM.findDOMNode(this).parentNode;
     this.setOverlayClass(true);
@@ -49,7 +53,8 @@ export const Dialog = React.createClass({
     dialogElement.style.height = `${dHeight}px`;
     dialogBodyElement.style.width = `${dWidth}px`;
     dialogBodyElement.style.height = `${dHeight - 45}px`;
-  },
+  }
+
   close(e) {
     const target = e.target || e.srcElement;
     if(target == this.overlayElement || target.className === 'button-close') {
@@ -57,7 +62,8 @@ export const Dialog = React.createClass({
       ReactDOM.unmountComponentAtNode(this.overlayElement);
       this.setOverlayClass(false);
     }
-  },
+  }
+
   render() {
     if(this.props.comp) {
       const comp = React.createElement(this.props.comp.type, this.props.comp.props);
@@ -73,4 +79,4 @@ export const Dialog = React.createClass({
         </div>;
     }
   }
-});
+}

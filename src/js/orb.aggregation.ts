@@ -10,8 +10,8 @@
 
 export function toAggregateFunc(func) {
     if (func) {
-        if (typeof func === 'string' && func) {
-            return func;
+        if (typeof func === 'string' && eval(func)) {
+            return eval(func);
         } else if (typeof func === 'function') {
             return func;
         } else {
@@ -21,6 +21,7 @@ export function toAggregateFunc(func) {
         return sum;
     }
 }
+
 export function count(datafield, intersection, datasource) {
     return intersection === 'all' ? datasource.length : intersection.length;
 }

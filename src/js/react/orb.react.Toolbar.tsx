@@ -1,21 +1,21 @@
 import * as React from 'react';
 import {Axe, AxeType} from '../orb.axe';
-import {removeClass, addClass} from '../orb.utils.dom';
+import * as defaultToolbarConfig from './defaultToolbarConfig';
 
-export default React.createClass({
-  _toInit: [],
+export default class ToolbarComponent extends React.Component<any,any>{
+  _toInit = [];
   componentDidMount() {
     for(let i = 0; i < this._toInit.length; i++){
       const btn = this._toInit[i];
       btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
-  },
+  }
   componentDidUpdate() {
     for(let i = 0; i < this._toInit.length; i++){
       const btn = this._toInit[i];
       btn.init(this.props.pivotTableComp, this.refs[btn.ref]);
     }
-  },
+  }
   createCallback(action) {
     if(action != null) {
       const pgridComponent = this.props.pivotTableComp;
@@ -24,7 +24,7 @@ export default React.createClass({
       };
     }
     return null;
-  },
+  }
   render() {
 
     const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
@@ -62,110 +62,4 @@ export default React.createClass({
 
     return <div></div>;
   }
-});
-
-import excelExport from '../orb.export.excel';
-
-var defaultToolbarConfig = {
-  exportToExcel(pgridComponent, button) {
-    const a = document.createElement('a');
-    a.download = "orbpivotgrid.xls";
-    a.href =  excelExport(pgridComponent.props.pgridwidget);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  },
-  expandAllRows(pgridComponent, button) {
-      pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.ROWS, null, true);
-  },
-  collapseAllRows(pgridComponent, button) {
-      pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.ROWS, null, false);
-  },
-  expandAllColumns(pgridComponent, button) {
-      pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.COLUMNS, null, true);
-  },
-  collapseAllColumns(pgridComponent, button) {
-      pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.COLUMNS, null, false);
-  },
-  updateSubtotalsButton(axetype, pgridComponent, button) {
-    const subTotalsState = pgridComponent.pgridwidget.areSubtotalsVisible(axetype);
-    button.style.display = subTotalsState === null ? 'none' : '';
-
-    let classToAdd = '';
-    let classToRemove = '';
-    if(subTotalsState) {
-      classToAdd = 'subtotals-visible';
-      classToRemove = 'subtotals-hidden';
-    } else {
-      classToAdd = 'subtotals-hidden';
-      classToRemove = 'subtotals-visible';
-    }
-
-    removeClass(button, classToRemove);
-    addClass(button, classToAdd);
-  },
-  initSubtotals(axetype) {
-    const self = this;
-    return (pgridComponent, button) => {
-      self.updateSubtotalsButton(axetype, pgridComponent, button);
-    };
-  },
-  toggleSubtotals(axetype) {
-    const self = this;
-    return (pgridComponent, button) => {
-      pgridComponent.toggleSubtotals(axetype);
-      self.updateSubtotalsButton(axetype, pgridComponent, button);
-    };
-  },
-  updateGrandtotalButton(axetype, pgridComponent, button) {
-    const subTotalsState = pgridComponent.pgridwidget.isGrandtotalVisible(axetype);
-    button.style.display = subTotalsState === null ? 'none' : '';
-
-    let classToAdd = '';
-    let classToRemove = '';
-    if(subTotalsState) {
-      classToAdd = 'grndtotal-visible';
-      classToRemove = 'grndtotal-hidden';
-    } else {
-      classToAdd = 'grndtotal-hidden';
-      classToRemove = 'grndtotal-visible';
-    }
-
-    removeClass(button, classToRemove);
-    addClass(button, classToAdd);
-  },
-  initGrandtotal(axetype) {
-    const self = this;
-    return (pgridComponent, button) => {
-      self.updateGrandtotalButton(axetype, pgridComponent, button);
-    };
-  },
-  toggleGrandtotal(axetype) {
-    const self = this;
-    return (pgridComponent, button) => {
-      pgridComponent.toggleGrandtotal(axetype);
-      self.updateGrandtotalButton(axetype, pgridComponent, button);
-    };
-  }
-};
-
-defaultToolbarConfig.buttons = [
-  { type: 'label', text: 'Rows:'},
-  { type: 'button', tooltip: 'Expand all rows', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllRows},
-  { type: 'button', tooltip: 'Collapse all rows', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllRows},
-  { type: 'button', tooltip: 'Toggle rows sub totals', init: defaultToolbarConfig.initSubtotals(AxeType.ROWS),
-                                                       action: defaultToolbarConfig.toggleSubtotals(AxeType.ROWS)},
-  { type: 'button', tooltip: 'Toggle rows grand total', init: defaultToolbarConfig.initGrandtotal(AxeType.ROWS),
-                                                        action: defaultToolbarConfig.toggleGrandtotal(AxeType.ROWS)},
-  { type: 'separator'},
-  { type: 'label', text: 'Columns:'},
-  { type: 'button', tooltip: 'Expand all columns', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllColumns},
-  { type: 'button', tooltip: 'Collapse all columns', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllColumns},
-  { type: 'button', tooltip: 'Toggle columns sub totals', init: defaultToolbarConfig.initSubtotals(AxeType.COLUMNS),
-                                                          action: defaultToolbarConfig.toggleSubtotals(AxeType.COLUMNS)},
-  { type: 'button', tooltip: 'Toggle columns grand total', init: defaultToolbarConfig.initGrandtotal(AxeType.COLUMNS),
-                                                           action: defaultToolbarConfig.toggleGrandtotal(AxeType.COLUMNS)},
-  { type: 'separator'},
-  { type: 'label', text: 'Export:'},
-  { type: 'button', tooltip: 'Export to Excel', cssClass: 'export-xls', action: defaultToolbarConfig.exportToExcel}
-];
+}
