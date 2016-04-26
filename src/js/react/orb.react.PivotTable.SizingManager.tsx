@@ -1,6 +1,3 @@
-// /// <reference path="../../../typings/browser/ambient/react-dom/index.d.ts" />
-// /// <reference path="../../../typings/browser/ambient/react/index.d.ts" />
-
 import * as ReactDOM from 'react-dom';
 import {updateTableColGroup, getSize} from '../orb.utils.dom';
 
@@ -107,7 +104,7 @@ class ComponentSizeInfo {
     const myNode = ReactDOM.findDOMNode(component);
     let size;
 
-    this.myNode = isWrapper ? myNode.children[0] : myNode;
+    this.myNode = isWrapper ? myNode['children'][0] : myNode;
 
     this.size = getSize(this.myNode);
     this.w = this.size.width;

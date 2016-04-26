@@ -26,7 +26,6 @@ export class ResizeManager {
 
 
 	resizeMouseDown(e) {
-		console.log('resizeMouseDown');
 		// drag/sort with left mouse button
 		if (utils.getEventButton(e) !== 0) return;
 
@@ -44,7 +43,6 @@ export class ResizeManager {
 	};
 
 	resizeMouseUp() {
-		console.log('resizeMouseUp');
 		this.isMouseDown = false;
 		document.body.style.cursor = 'auto';
 		return true;
@@ -53,8 +51,6 @@ export class ResizeManager {
 	resizeMouseMove(e) {
 		// if the mouse is not down while moving, return (no drag)
 		if (!this.isMouseDown) return;
-		console.log('resizeMouseMove');
-		console.log(this);
 		const mousePageXY = utils.getMousePageXY(e);
 
 		const resizeGripSize = this.resizeGripElem.getBoundingClientRect();
@@ -68,11 +64,9 @@ export class ResizeManager {
 			x: outerContainerWidth <= this.minContainerWidth && mousePageXY.pageX < resizeGripSize.left ? 0 : mousePageXY.pageX - this.mousedownpos.x,
 			y: outerContainerHeight <= this.minContainerHeight && mousePageXY.pageY < resizeGripSize.top ? 0 : mousePageXY.pageY - this.mousedownpos.y
 		};
-		console.log(offset);
 
 		const newContainerWidth = outerContainerWidth  + offset.x;
 		const newContainerHeight = outerContainerHeight  + offset.y;
-		console.log(newContainerHeight);
 
 		this.mousedownpos.x = mousePageXY.pageX;
 		this.mousedownpos.y = mousePageXY.pageY;

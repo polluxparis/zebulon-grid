@@ -182,9 +182,9 @@ class ScrollEvent {
   }
 
   raise(){
-      if(SVGPathSegCurvetoCubicAbs['callback']) {
-        SVGPathSegCurvetoCubicAbs['callback'](this.scrollBarComp.getScrollPercent());
-      }
+      // if(SVGPathSegCurvetoCubicAbs['callback']) {
+      //   SVGPathSegCurvetoCubicAbs['callback'](this.scrollBarComp.getScrollPercent());
+      // }
   };
 
 

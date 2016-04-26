@@ -1,6 +1,3 @@
-// /// <reference path="../../../typings/browser/ambient/react-dom/index.d.ts" />
-// /// <reference path="../../../typings/browser/ambient/react/index.d.ts" />
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as utils from '../orb.utils';
@@ -34,7 +31,7 @@ export class Dialog extends React.Component<any, any>{
   }
 
   componentDidMount() {
-      this.overlayElement = ReactDOM.findDOMNode(this).parentNode;
+    this.overlayElement = ReactDOM.findDOMNode(this).parentNode;
     this.setOverlayClass(true);
     utils.addEventListener(this.overlayElement, 'click', this.close);
 

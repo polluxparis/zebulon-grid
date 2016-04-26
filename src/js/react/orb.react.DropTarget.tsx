@@ -14,6 +14,8 @@ export default class DropTarget extends React.Component<any,any>{
 		this.state = {
 			isover: false
 		};
+    this.onDragOver = this.onDragOver.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
 	}
   	componentDidMount() {
 			this._isMounted = true;

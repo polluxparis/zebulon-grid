@@ -75,10 +75,13 @@ export class Axe {
         switch (type){
              case AxeType.COLUMNS:
                 this.fields = this.pgrid.config.columnFields;
+                break;
             case AxeType.ROWS:
                 this.fields = this.pgrid.config.rowFields;
+                break;
             case AxeType.DATA:
                 this.fields = this.pgrid.config.dataFields;
+                break;
             default:
                 this.fields = [];
         }

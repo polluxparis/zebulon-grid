@@ -7,6 +7,8 @@ export default class DropIndicatorComponent extends React.Component<any,any>{
 
 	constructor(props) {
 		super(props);
+		this.onDragOver = this.onDragOver.bind(this);
+		this.onDragEnd = this.onDragEnd.bind(this);
 		DragManager.registerIndicator(this, this.props.axetype, this.props.position, this.onDragOver, this.onDragEnd);
 		this.state = {
 			isover: false

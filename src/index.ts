@@ -21,7 +21,6 @@ function getData(i) {
     }
 
 const data = getData(100);
-console.log(data);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -113,9 +112,9 @@ console.log(data);
                 aggregateFunc: 'sum'
             }
         ],
-        // rows    : [ 'Toto'],//, 'Category' ],
-        // columns : [ 'Titi' ],
-        // data    : [ 'Quantity', 'Amount' ],
+        rows    : [ 'Toto'],//, 'Category' ],
+        columns : [ 'Titi' ],
+        data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
             'Manufacturer': { 'Matches': /^a|^c/ },

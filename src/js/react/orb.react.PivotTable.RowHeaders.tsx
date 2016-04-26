@@ -9,21 +9,19 @@ export default class RowHeadersComponent extends React.Component<any,any>{
   }
   setColGroup(widths) {
       const myNode = ReactDOM.findDOMNode(this);
-    const colGroupNode = this.refs.colgroup;
-    myNode.style.tableLayout = 'auto';
+    const colGroupNode = this.refs['colgroup'];
+    myNode['style'].tableLayout = 'auto';
 
-    colGroupNode.innerHTML = '';
+    colGroupNode['innerHTML'] = '';
     for(let i = 0; i < widths.length; i++) {
       const col = document.createElement('col');
       col.style.width = `${widths[i]}${8}px`;
-      colGroupNode.appendChild(col);
+      colGroupNode['appendChild'](col);
     }
-    myNode.style.tableLayout = 'fixed';
+    myNode['style'].tableLayout = 'fixed';
   }
   render() {
-    console.log('rendering rowHeaders');
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    console.log(pgridwidget);
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 
     const layoutInfos = {
