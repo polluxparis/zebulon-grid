@@ -5,7 +5,7 @@ import {AxeType} from '../orb.axe';
 
 export function exportToExcel(pgridComponent, button) {
   const a = document.createElement('a');
-  a.download = "orbpivotgrid.xls";
+  a['download'] = "orbpivotgrid.xls";
   a.href =  excelExport(pgridComponent.props.pgridwidget);
   document.body.appendChild(a);
   a.click();

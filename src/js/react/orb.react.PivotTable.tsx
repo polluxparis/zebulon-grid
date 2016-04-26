@@ -71,7 +71,7 @@ export default class PivotTableComponent extends React.Component<any,any>{
       const thisnode = ReactDOM.findDOMNode(this);
       const classes = this.pgridwidget.pgrid.config.theme.getPivotClasses();
       thisnode.className = classes.container;
-      thisnode.children[1].className = classes.table;
+      thisnode['children'][1].className = classes.table;
   }
   componentDidUpdate() {
     this.synchronizeWidths();
@@ -83,12 +83,12 @@ export default class PivotTableComponent extends React.Component<any,any>{
       fontSize: fontInfos[1]
     };
 
-    const dataCellsNode = ReactDOM.findDOMNode(this.refs.dataCells);
-    const dataCellsTableNode = dataCellsNode.children[0];
-    const colHeadersNode = ReactDOM.findDOMNode(this.refs.colHeaders);
-    const rowHeadersNode = ReactDOM.findDOMNode(this.refs.rowHeaders);
+    const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
+    const dataCellsTableNode = dataCellsNode['children'][0];
+    const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
+    const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
 
-    this.refs.horizontalScrollBar.setScrollClient(dataCellsNode, scrollPercent => {
+    this.refs['horizontalScrollBar'].setScrollClient(dataCellsNode, scrollPercent => {
       const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).width -
@@ -99,7 +99,7 @@ export default class PivotTableComponent extends React.Component<any,any>{
       dataCellsNode.scrollLeft = scrollAmount;
     });
 
-    this.refs.verticalScrollBar.setScrollClient(dataCellsNode, scrollPercent => {
+    this.refs['verticalScrollBar'].setScrollClient(dataCellsNode, scrollPercent => {
       const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).height -
@@ -117,12 +117,12 @@ export default class PivotTableComponent extends React.Component<any,any>{
     let scrollbar;
     let amount;
 
-    if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.colHeaders))) {
-      scrollbar = this.refs.horizontalScrollBar;
+    if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['colHeaders']))) {
+      scrollbar = this.refs['horizontalScrollBar'];
       amount = e.deltaX || e.deltaY;
-    } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.rowHeaders))) ||
-              (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs.dataCells))) ) {
-      scrollbar = this.refs.verticalScrollBar;
+    } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['rowHeaders']))) ||
+              (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['dataCells']))) ) {
+      scrollbar = this.refs['verticalScrollBar'];
       amount = e.deltaY;
     }
 
@@ -133,8 +133,8 @@ export default class PivotTableComponent extends React.Component<any,any>{
   }
   synchronizeWidths() {
     SizingManager.synchronizeWidths(this);
-    this.refs.horizontalScrollBar.refresh();
-    this.refs.verticalScrollBar.refresh();
+    this.refs['horizontalScrollBar'].refresh();
+    this.refs['verticalScrollBar'].refresh();
   }
   render() {
 

@@ -8,26 +8,28 @@ export default class DropdownComponent extends React.Component<any,any>{
 		this.onMouseEnter = this.onMouseEnter.bind(this);
 		this.onMouseLeave = this.onMouseLeave.bind(this);
 		this.selectValue = this.selectValue.bind(this);
+		this.openOrClose = this.openOrClose.bind(this);
 	}
 
 	openOrClose(e) {
-		const valueNode = this.refs.valueElement;
-		const valuesListNode = this.refs.valuesList;
+		console.log(this);
+		const valueNode = this.refs['valueElement'];
+		const valuesListNode = this.refs['valuesList'];
 		const target = e.target || e.srcElement;
 
-		if(target === valueNode && valuesListNode.style.display === 'none') {
-			valuesListNode.style.display = 'block';
+		if(target === valueNode && valuesListNode['style'].display === 'none') {
+			valuesListNode['style'].display = 'block';
 		} else {
-			valuesListNode.style.display = 'none';
+			valuesListNode['style'].display = 'none';
 		}
 	}
 	onMouseEnter() {
-		const valueNode = this.refs.valueElement;
-		valueNode.className = "orb-tgl-btn-down";
-		valueNode.style.backgroundPosition = 'right center';
+		const valueNode = this.refs['valueElement'];
+		valueNode['className'] = "orb-tgl-btn-down";
+		valueNode['style'].backgroundPosition = 'right center';
 	}
 	onMouseLeave() {
-		this.refs.valueElement.className = "";
+		this.refs['valueElement']['className'] = "";
 	}
 	componentDidMount() {
 		addEventListener(document, 'click', this.openOrClose);
@@ -36,7 +38,7 @@ export default class DropdownComponent extends React.Component<any,any>{
 		removeEventListener(document, 'click', this.openOrClose);
 	}
 	selectValue(e) {
-		const listNode = this.refs.valuesList;
+		const listNode = this.refs['valuesList'];
 		let target = e.target || e.srcElement;
 		let isli = false;
 		while(!isli && target != null) {
@@ -49,9 +51,9 @@ export default class DropdownComponent extends React.Component<any,any>{
 
 		if(isli) {
 			const value = target.textContent;
-			const valueElement = this.refs.valueElement;
-			if(valueElement.textContent != value) {
-				valueElement.textContent = value;
+			const valueElement = this.refs['valueElement'];
+			if(valueElement['textContent'] != value) {
+				valueElement['textContent'] = value;
 				if(this.props.onValueChanged) {
 					this.props.onValueChanged(value);
 				}

@@ -20,19 +20,19 @@ export default class PivotCellComponent extends React.Component<any,any>{
   updateCellInfos() {
     const node = ReactDOM.findDOMNode(this);
     const cell = this.props.cell;
-    node.__orb = node.__orb || {};
+    node['__orb'] = node['__orb'] || {};
 
     if(!cell.visible()) {
 
-      node.__orb._visible = false;
+      node['__orb']._visible = false;
 
     } else {
-      const cellContentNode = this.refs.cellContent;
+      const cellContentNode = this.refs['cellContent'];
 
       const propList = [];
       const retPaddingLeft = _paddingLeft == null;
       const retBorderLeft = !this.props.leftmost && _borderLeft == null;
-      const text = node.textContent || node.innerText;
+      const text = node.textContent || node['innerText'];
 
       if(retPaddingLeft) {
         propList.push('padding-left');
@@ -56,17 +56,17 @@ export default class PivotCellComponent extends React.Component<any,any>{
 
       domUtils.removeClass(node, 'cell-hidden');
 
-      node.__orb._visible = true;
-      if(text != node.__orb._lastText || !node.__orb._textWidth) {
-        node.__orb._lastText = text;
-        node.__orb._textWidth = domUtils.getSize(cellContentNode).width;
+      node['__orb']._visible = true;
+      if(text != node['__orb']._lastText || !node['__orb']._textWidth) {
+        node['__orb']._lastText = text;
+        node['__orb']._textWidth = domUtils.getSize(cellContentNode).width;
       }
-      node.__orb._colSpan = this.props.cell.hspan(true) || 1;
-      node.__orb._rowSpan = this.props.cell.vspan(true) || 1;
-      node.__orb._paddingLeft = _paddingLeft;
-      node.__orb._paddingRight = _paddingLeft;
-      node.__orb._borderLeftWidth = this.props.leftmost ? 0 : _borderLeft;
-      node.__orb._borderRightWidth = 0;
+      node['__orb']._colSpan = this.props.cell.hspan(true) || 1;
+      node['__orb']._rowSpan = this.props.cell.vspan(true) || 1;
+      node['__orb']._paddingLeft = _paddingLeft;
+      node['__orb']._paddingRight = _paddingLeft;
+      node['__orb']._borderLeftWidth = this.props.leftmost ? 0 : _borderLeft;
+      node['__orb']._borderRightWidth = 0;
     }
   }
   componentDidMount() {

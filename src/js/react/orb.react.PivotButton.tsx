@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import FilterPanel from './orb.react.FilterPanel';
 import DragManager from './orb.react.DragManager';
+import FilterPanel from './orb.react.FilterPanel';
 import * as utils from '../orb.utils';
 import {AxeType} from '../orb.axe';
 import * as domUtils from '../orb.utils.dom';
@@ -25,10 +25,11 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		};
 
 	onFilterMouseDown(e){
+		console.log('onFilterMouseDown');
 		// left mouse button only
 		if (e.button !== 0) return;
 
-		const filterButton = this.refs.filterButton;
+		const filterButton = this.refs['filterButton'];
 		const filterButtonPos = domUtils.getOffset(filterButton);
 		const filterContainer = document.createElement('div');
 
@@ -71,7 +72,7 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		utils.removeEventListener(document, 'mousemove', this.onMouseMove);
 	}
 	onMouseDown(e) {
-		console.log('onMouseDown');
+		console.log('onMouseDown in PivotButtonComponent');
 		console.log(e);
 		// drag/sort with left mouse button
 		if (e.button !== 0) return;
