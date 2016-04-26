@@ -83,7 +83,7 @@ export class ResizeManager {
 
 		if(newContainerHeight >= this.minContainerHeight) {
 			this.outerContainerElem.style.height = `${newContainerHeight}px`;
-			this.valuesTableElem.tBodies[0].style.height = `${valuesTableSize.bottom - valuesTableSize.top}${offset.y}px`;
+			this.valuesTableElem.tBodies[0].style.height = `${valuesTableSize.bottom - valuesTableSize.top + offset.y}px`;
 		}
 
 		utils.stopPropagation(e);
