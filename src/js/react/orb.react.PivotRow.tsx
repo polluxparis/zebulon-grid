@@ -2,11 +2,21 @@ import * as React from 'react';
 import PivotCell from './orb.react.PivotCell';
 import {AxeType} from '../orb.axe';
 
-export default class PivotRowComponent extends React.Component<any,any>{
+import PivotTableComponent from './orb.react.PivotTable';
+import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
 
-  constructor(){
-    super()
-  }
+interface Props{
+key:number,
+row:(Header|DataHeader|DataCell|ButtonCell|EmptyCell)[],
+axetype:number,
+layoutInfos:{
+  lastLeftMostCellVSpan: number,
+  topMostCells: {}
+},
+pivotTableComp:PivotTableComponent
+}
+
+export default class PivotRowComponent extends React.Component<Props,{}>{
 
   render() {
     const lastCellIndex = this.props.row.length - 1;
@@ -27,10 +37,15 @@ export default class PivotRowComponent extends React.Component<any,any>{
       // and last row left most cell does not span vertically over the current one and current one is visible
       // then mark IT as the left most cell
       if(cell.visible() && layoutInfos) {
-        if(cell.dim) {
-          if((cell.dim.isRoot && layoutInfos.topMostCells[cell.dim.depth - 1] === undefined) || (!cell.dim.isRoot && layoutInfos.topMostCells[cell.dim.depth] === undefined && (cell.dim.parent.isRoot || layoutInfos.topMostCells[cell.dim.depth + 1] === cell.dim.parent))) {
+        if((cell as Header).dim) {
+          if(
+            ((cell as Header).dim.isRoot && layoutInfos.topMostCells[(cell as Header).dim.depth - 1] === undefined) ||
+            (
+             !(cell as Header).dim.isRoot && layoutInfos.topMostCells[(cell as Header).dim.depth] === undefined &&
+              ((cell as Header).dim.parent.isRoot || layoutInfos.topMostCells[(cell as Header).dim.depth + 1] === (cell as Header).dim.parent))
+            ) {
             istopmost = true;
-            layoutInfos.topMostCells[cell.dim.depth] = cell.dim;
+            layoutInfos.topMostCells[(cell as Header).dim.depth] = (cell as Header).dim;
           }
         } else if(!layoutInfos.topMostCells['0']) {
           istopmost = layoutInfos.topMostCells['0'] = true;

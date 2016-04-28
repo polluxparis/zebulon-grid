@@ -11,7 +11,7 @@ function getData(i) {
 	}
 	for(var k=0; k<i;k++){
 		for (var j=0; j<10; j++){
-			res[10*k+j][0] = 'toto'+String(k%30);
+			res[10*k+j][0] = 'toto'+String(k%300);
 			res[10*k+j][3] = 'titi'+String(j);
 			res[10*k+j][1] = k+j;
 			res[10*k+j][2] = 100*k+3*j;
@@ -20,7 +20,7 @@ function getData(i) {
 	return res;
     }
 
-const data = getData(100);
+const data = getData(10000);
  var config = {
         dataSource: data,
         canMoveFields: true,

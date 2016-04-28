@@ -297,6 +297,7 @@ export class  PGridWidget {
           }
       }
       this.dataRows = dataRows;
+      console.log(this);
   }
 
   buildUiAndRender() {

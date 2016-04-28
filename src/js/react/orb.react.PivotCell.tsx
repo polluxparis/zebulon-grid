@@ -4,7 +4,18 @@ import {HeaderType} from '../orb.ui.header';
 import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
-export default class PivotCellComponent extends React.Component<any,any>{
+import PivotTableComponent from './orb.react.PivotTable';
+import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
+
+interface Props{
+  key:number,
+  cell:Header|DataHeader|DataCell|ButtonCell|EmptyCell,
+  leftmost:boolean,
+  topmost:boolean,
+  pivotTableComp: PivotTableComponent
+}
+
+export default class PivotCellComponent extends React.Component<Props,{}>{
   _latestVisibleState: boolean;
 
   constructor(props){
@@ -93,7 +104,7 @@ export default class PivotCellComponent extends React.Component<any,any>{
     switch(cell.template) {
       case 'cell-template-row-header':
       case 'cell-template-column-header':
-        const isWrapper = cell.type === HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
+        const isWrapper = cell.type === HeaderType.WRAPPER && (cell as Header).dim.field.subTotal.visible && (cell as Header).dim.field.subTotal.collapsible;
         const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
           headerPushed = true;
@@ -111,8 +122,8 @@ export default class PivotCellComponent extends React.Component<any,any>{
         value = cell.value.caption;
         break;
       case 'cell-template-datavalue':
-        value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);         
+        value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
+        cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);
         break;
       default:
         break;
@@ -132,14 +143,14 @@ export default class PivotCellComponent extends React.Component<any,any>{
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    return <td className={getClassname(this.props)}
+    return <div className={getClassname(this.props)}
                onDoubleClick={ cellClick }
                colSpan={cell.hspan()}
                rowSpan={cell.vspan()}>
                 <div>
                   {divcontent}
                 </div>
-           </td>;
+           </div>;
   }
 };
 

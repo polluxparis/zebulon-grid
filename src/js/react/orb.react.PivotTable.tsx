@@ -84,32 +84,32 @@ export default class PivotTableComponent extends React.Component<any,any>{
 
     const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
     const dataCellsTableNode = dataCellsNode['children'][0];
-    const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
-    const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
-    (this.refs['horizontalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
-      const scrollAmount = Math.ceil(
-        scrollPercent * (
-          domUtils.getSize(dataCellsTableNode).width -
-          domUtils.getSize(dataCellsNode).width
-        )
-      );
-      colHeadersNode.scrollLeft = scrollAmount;
-      dataCellsNode.scrollLeft = scrollAmount;
-    });
+    // const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
+    // const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
+    // (this.refs['horizontalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
+    //   const scrollAmount = Math.ceil(
+    //     scrollPercent * (
+    //       domUtils.getSize(dataCellsTableNode).width -
+    //       domUtils.getSize(dataCellsNode).width
+    //     )
+    //   );
+    //   colHeadersNode.scrollLeft = scrollAmount;
+    //   dataCellsNode.scrollLeft = scrollAmount;
+    // });
+    //
+    // (this.refs['verticalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
+    //   const scrollAmount = Math.ceil(
+    //     scrollPercent * (
+    //       domUtils.getSize(dataCellsTableNode).height -
+    //       domUtils.getSize(dataCellsNode).height
+    //     )
+    //   );
+    //   rowHeadersNode.scrollTop = scrollAmount;
+    //   dataCellsNode.scrollTop = scrollAmount;
+    // });
 
-    (this.refs['verticalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
-      const scrollAmount = Math.ceil(
-        scrollPercent * (
-          domUtils.getSize(dataCellsTableNode).height -
-          domUtils.getSize(dataCellsNode).height
-        )
-      );
-      rowHeadersNode.scrollTop = scrollAmount;
-      dataCellsNode.scrollTop = scrollAmount;
-    });
 
-
-    this.synchronizeWidths();
+    // this.synchronizeWidths();
   }
   onWheel(e) {
     let elem;
@@ -143,63 +143,70 @@ export default class PivotTableComponent extends React.Component<any,any>{
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
 
+    // return (
+    // <div className={classes.container} style={tblStyle} ref="pivot">
+    //   {config.toolbar && config.toolbar.visible ? <div ref="toolbar" className="orb-toolbar">
+    //     <Toolbar pivotTableComp={this}></Toolbar>
+    //   </div> : null}
+    //   <table id={'tbl-' + this.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
+    //     <colgroup>
+    //       <col ref="column1"></col>
+    //       <col ref="column2"></col>
+    //       <col ref="column3"></col>
+    //       <col ref="column4"></col>
+    //     </colgroup>
+    //     <tbody>
+    //       <tr ref="upperButtons">
+    //         <td colSpan="4">
+    //           <UpperButtons pivotTableComp={this}></UpperButtons>
+    //         </td>
+    //       </tr>
+    //       <tr ref="colButtons">
+    //         <td></td>
+    //         <td style={{padding: '11px 4px !important'}}>
+    //           <ColumnButtons pivotTableComp={this}></ColumnButtons>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //       <tr>
+    //         <td style={{ position: 'relative'}}>
+    //           <RowButtons pivotTableComp={this} ref="rowButtons"></RowButtons>
+    //         </td>
+    //         <td>
+    //           <ColumnHeaders pivotTableComp={this} ref="colHeaders"></ColumnHeaders>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //       <tr>
+    //         <td>
+    //           <RowHeaders pivotTableComp={this} ref="rowHeaders"></RowHeaders>
+    //         </td>
+    //         <td>
+    //           <DataCells pivotTableComp={this} ref="dataCells"></DataCells>
+    //         </td>
+    //         <td>
+    //           <ScrollBar pivotTableComp={this} axis='vertical' ref="verticalScrollBar"></ScrollBar>
+    //         </td>
+    //         <td></td>
+    //       </tr>
+    //       <tr>
+    //         <td></td>
+    //         <td>
+    //           <ScrollBar pivotTableComp={this} axis='horizontal' ref="horizontalScrollBar"></ScrollBar>
+    //         </td>
+    //         <td colSpan="2"></td>
+    //       </tr>
+    //     </tbody>
+    //   </table>
+    //   <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
+    // </div>
+    // );
     return (
     <div className={classes.container} style={tblStyle} ref="pivot">
-      {config.toolbar && config.toolbar.visible ? <div ref="toolbar" className="orb-toolbar">
-        <Toolbar pivotTableComp={this}></Toolbar>
-      </div> : null}
-      <table id={'tbl-' + this.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
-        <colgroup>
-          <col ref="column1"></col>
-          <col ref="column2"></col>
-          <col ref="column3"></col>
-          <col ref="column4"></col>
-        </colgroup>
-        <tbody>
-          <tr ref="upperButtons">
-            <td colSpan="4">
-              <UpperButtons pivotTableComp={this}></UpperButtons>
-            </td>
-          </tr>
-          <tr ref="colButtons">
-            <td></td>
-            <td style={{padding: '11px 4px !important'}}>
-              <ColumnButtons pivotTableComp={this}></ColumnButtons>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td style={{ position: 'relative'}}>
-              <RowButtons pivotTableComp={this} ref="rowButtons"></RowButtons>
-            </td>
-            <td>
-              <ColumnHeaders pivotTableComp={this} ref="colHeaders"></ColumnHeaders>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-          <tr>
-            <td>
-              <RowHeaders pivotTableComp={this} ref="rowHeaders"></RowHeaders>
-            </td>
-            <td>
               <DataCells pivotTableComp={this} ref="dataCells"></DataCells>
-            </td>
-            <td>
-              <ScrollBar pivotTableComp={this} axis='vertical' ref="verticalScrollBar"></ScrollBar>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <ScrollBar pivotTableComp={this} axis='horizontal' ref="horizontalScrollBar"></ScrollBar>
-            </td>
-            <td colSpan="2"></td>
-          </tr>
-        </tbody>
-      </table>
       <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
     </div>
     );
+
   }
 }
