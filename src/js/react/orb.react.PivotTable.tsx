@@ -9,14 +9,13 @@ import RowButtons from './orb.react.PivotTable.RowButtons';
 import RowHeaders from './orb.react.PivotTable.RowHeaders';
 import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders';
 import DataCells from './orb.react.PivotTable.DataCells';
-import {HorizontalScrollBar, VerticalScrollBar} from './orb.react.ScrollBars';
+import {ScrollBar} from './orb.react.ScrollBars';
 import * as utils from '../orb.utils';
 import * as domUtils from '../orb.utils.dom';
 let pivotId = 1;
 const themeChangeCallbacks = {};
 
 export default class PivotTableComponent extends React.Component<any,any>{
-
 
   id = pivotId++;
   pgrid = null;
@@ -84,11 +83,13 @@ export default class PivotTableComponent extends React.Component<any,any>{
     };
 
     const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
+    console.log(dataCellsNode);
     const dataCellsTableNode = dataCellsNode['children'][0];
     const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
     const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
 
     this.refs['horizontalScrollBar'].setScrollClient(dataCellsNode, scrollPercent => {
+      console.log('callback called for horizontal scrollbar');
       const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).width -
@@ -100,6 +101,7 @@ export default class PivotTableComponent extends React.Component<any,any>{
     });
 
     this.refs['verticalScrollBar'].setScrollClient(dataCellsNode, scrollPercent => {
+      console.log('callback called for vertical scrollbar');
       const scrollAmount = Math.ceil(
         scrollPercent * (
           domUtils.getSize(dataCellsTableNode).height -
@@ -125,7 +127,6 @@ export default class PivotTableComponent extends React.Component<any,any>{
       scrollbar = this.refs['verticalScrollBar'];
       amount = e.deltaY;
     }
-
     if(scrollbar && scrollbar.scroll(amount, e.deltaMode)) {
       utils.stopPropagation(e);
       utils.preventDefault(e);
@@ -187,14 +188,14 @@ export default class PivotTableComponent extends React.Component<any,any>{
               <DataCells pivotTableComp={this} ref="dataCells"></DataCells>
             </td>
             <td>
-              <VerticalScrollBar pivotTableComp={this} ref="verticalScrollBar"></VerticalScrollBar>
+              <ScrollBar pivotTableComp={this} axis='vertical' ref="verticalScrollBar"></ScrollBar>
             </td>
             <td></td>
           </tr>
           <tr>
             <td></td>
             <td>
-              <HorizontalScrollBar pivotTableComp={this} ref="horizontalScrollBar"></HorizontalScrollBar>
+              <ScrollBar pivotTableComp={this} axis='horizontal' ref="horizontalScrollBar"></ScrollBar>
             </td>
             <td colSpan="2"></td>
           </tr>

@@ -3,18 +3,19 @@ import * as ReactDOM from 'react-dom';
 import * as utils from '../orb.utils';
 import * as domUtils from '../orb.utils.dom';
 
-const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass) => class extends React.Component<any,any>{
+export class ScrollBar extends React.Component<any,any>{
 
   scrollEvent;
   scrollClient;
+
   mousePosProp;
   posProp;
   sizeProp;
   offsetCssProp;
   cssClass;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.scrollEvent = null;
     this.scrollClient = null;
     // initial state, all zero.
@@ -23,26 +24,51 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
       mousedown: false,
       thumbOffset: 0
     };
+    switch(this.props.axis){
+      case 'vertical':
+        this.posProp = 'y';
+        this.mousePosProp = 'pageY';
+        this.sizeProp = 'height';
+        this.offsetCssProp = 'top';
+        this.cssClass = 'orb-v-scrollbar';
+        break;
+      case 'horizontal':
+        this.posProp = 'x';
+        this.mousePosProp = 'pageX';
+        this.sizeProp = 'width';
+        this.offsetCssProp = 'left';
+        this.cssClass = 'orb-h-scrollbar';
+        break;
+    }
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onWheel = this.onWheel.bind(this);
   }
   componentDidMount() {
+    // console.log('componentDidMount in Scrollbars');
     this.scrollEvent = new ScrollEvent(this);
   }
   componentDidUpdate() {
+    // console.log('componentDidUpdate in Scrollbars');
     if (!this.state.mousedown) {
+      // console.log('not mousedown in scrollbars');
       // mouse not down, don't care about mouse up/move events.
-      utils.removeEventListener(document, 'mousemove', this.onMouseMove);
-      utils.removeEventListener(document, 'mouseup', this.onMouseUp);
+      utils.removeEventListener(document, 'mousemove', this.onMouseMove.bind(this));
+      utils.removeEventListener(document, 'mouseup', this.onMouseUp.bind(this));
     } else if (this.state.mousedown) {
+      // console.log('mousedown in scrollbars');
       // mouse down, interested by mouse up/move events.
-      utils.addEventListener(document, 'mousemove', this.onMouseMove);
-      utils.addEventListener(document, 'mouseup', this.onMouseUp);
+      utils.addEventListener(document, 'mousemove', this.onMouseMove.bind(this));
+      utils.addEventListener(document, 'mouseup', this.onMouseUp.bind(this));
     }
   }
   componentWillUnmount() {
-    utils.removeEventListener(document, 'mousemove', this.onMouseMove);
-    utils.removeEventListener(document, 'mouseup', this.onMouseUp);
+    utils.removeEventListener(document, 'mousemove', this.onMouseMove.bind(this));
+    utils.removeEventListener(document, 'mouseup', this.onMouseUp.bind(this));
   }
   onMouseDown(e) {
+    // console.log('onMouseDown in Scrollbars');
+    // console.log(this);
+
     // drag with left mouse button
     if (e.button !== 0) return;
 
@@ -64,6 +90,8 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     utils.preventDefault(e);
   }
   onMouseUp() {
+    // console.log('onMouseUp in Scrollbars');
+    // console.log(this);
 
     if(this.state.mousedown) {
       const thumbElem  = this.refs['scrollThumb'];
@@ -75,6 +103,8 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     });
   }
   onMouseMove(e) {
+    // console.log('onMouseMove in Scrollbars');
+    // console.log(this);
 
     // if the mouse is not down while moving, return (no drag)
     if (!this.state.mousedown) return;
@@ -89,6 +119,7 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     this.scroll(amount);
   }
   getScrollSize() {
+    // console.log('getScrollSize in Scrollbars');
     if(this.scrollClient != null) {
       return domUtils.getSize(this.scrollClient)[this.sizeProp];
     } else {
@@ -96,14 +127,17 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     }
   }
   setScrollClient(scrollClient, scrollCallback) {
+    console.log('setScrollClient in Scrollbars');
     this.scrollClient = scrollClient;
     this.scrollEvent.callback = scrollCallback;
   }
   getScrollPercent() {
+    // console.log('getScrollPercent in Scrollbars');
     const maxOffset = this.getScrollSize() - this.state.size;
     return maxOffset <= 0 ? 0 : this.state.thumbOffset/maxOffset;
   }
   refresh() {
+    // console.log('refresh in Scrollbars');
     if(this.scrollClient) {
       const scrolledElement = this.scrollClient.children[0];
 
@@ -125,6 +159,7 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     }
   }
   scroll(amount, mode?) {
+    // console.log('scroll in Scrollbars');
     if(this.state.size > 0) {
       if(mode == 1) amount *= 8;
 
@@ -136,7 +171,7 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
       if(this.state.thumbOffset != newOffset) {
         this.setState(
           { thumbOffset: newOffset },
-          this.scrollEvent.raise
+          this.scrollEvent.raise.bind(this.scrollEvent)
         );
         return true;
       }
@@ -144,11 +179,14 @@ const scrollBarMixin = (posProp, mousePosProp, sizeProp, offsetCssProp, cssClass
     return false;
   }
   onWheel(e) {
+    // console.log('onWheel in Scrollbars');
+    // console.log(this);
     this.scroll(e.deltaY, e.deltaMode);
     utils.stopPropagation(e);
     utils.preventDefault(e);
   }
   render() {
+    console.log('render in Scrollbars');
     const self = this;
 
     const thumbStyle = {padding: 0};
@@ -182,6 +220,8 @@ class ScrollEvent {
   }
 
   raise(){
+    console.log(this);
+    this.scrollBarComp.getScrollPercent();
       // if(SVGPathSegCurvetoCubicAbs['callback']) {
       //   SVGPathSegCurvetoCubicAbs['callback'](this.scrollBarComp.getScrollPercent());
       // }
@@ -189,21 +229,3 @@ class ScrollEvent {
 
 
 }
-//   const oldMixin = {
-// }
-
-export const HorizontalScrollBar = scrollBarMixin(
-   'x',
-   'pageX',
-   'width',
-   'left',
-   'orb-h-scrollbar'
-);
-
-export const VerticalScrollBar = scrollBarMixin(
-  'y',
-  'pageY',
-  'height',
-  'top',
-  'orb-v-scrollbar'
-);

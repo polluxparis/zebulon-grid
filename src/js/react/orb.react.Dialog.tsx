@@ -33,7 +33,7 @@ export class Dialog extends React.Component<any, any>{
   componentDidMount() {
     this.overlayElement = ReactDOM.findDOMNode(this).parentNode;
     this.setOverlayClass(true);
-    utils.addEventListener(this.overlayElement, 'click', this.close);
+    utils.addEventListener(this.overlayElement, 'click', this.close.bind(this));
 
     const dialogElement = this.overlayElement.children[0];
     const dialogBodyElement = dialogElement.children[0].children[1];
@@ -55,7 +55,7 @@ export class Dialog extends React.Component<any, any>{
   close(e) {
     const target = e.target || e.srcElement;
     if(target == this.overlayElement || target.className === 'button-close') {
-      utils.removeEventListener(this.overlayElement, 'click', this.close);
+      utils.removeEventListener(this.overlayElement, 'click', this.close.bind(this));
       ReactDOM.unmountComponentAtNode(this.overlayElement);
       this.setOverlayClass(false);
     }
@@ -68,7 +68,7 @@ export class Dialog extends React.Component<any, any>{
 
       return <div className={classes.dialog} style={ this.props.style || {} }>
       <div className={classes.content}>
-          <div className={classes.header}><div className="button-close" onClick={ this.close }></div><div className={classes.title}>{ this.props.title }</div></div>
+          <div className={classes.header}><div className="button-close" onClick={ () => this.close }></div><div className={classes.title}>{ this.props.title }</div></div>
           <div className={classes.body}>
           { comp }
           </div>

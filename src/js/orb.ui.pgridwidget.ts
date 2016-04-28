@@ -205,13 +205,13 @@ export class  PGridWidget {
   };
 
   drilldown(dataCell, pivotId) {
+    console.log('drilldown');
+    console.log(this);
       if(dataCell) {
           var colIndexes = dataCell.columnDimension.getRowIndexes();
-          var data = dataCell.rowDimension.getRowIndexes().filter(function(index) {
-              return colIndexes.indexOf(index) >= 0;
-          }).map(function(index) {
-              return this.pgrid.filteredDataSource[index];
-          });
+          var data = dataCell.rowDimension.getRowIndexes()
+            .filter(index => colIndexes.indexOf(index) >= 0)
+            .map(index => this.pgrid.filteredDataSource[index]);
 
           var title;
           if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {

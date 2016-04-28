@@ -82,7 +82,6 @@ export default class PivotCellComponent extends React.Component<any,any>{
     return true;
   }
   render() {
-    const self = this;
     const cell = this.props.cell;
     const divcontent = [];
     let value;
@@ -113,9 +112,7 @@ export default class PivotCellComponent extends React.Component<any,any>{
         break;
       case 'cell-template-datavalue':
         value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = () => {
-          self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
-        };
+        cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);         
         break;
       default:
         break;

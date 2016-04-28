@@ -19,7 +19,7 @@ export default class DataCellsComponent extends React.Component<any,any>{
       </PivotRow>;
     });
 
-    return <div className="inner-table-container data-cntr" onWheel={this.props.pivotTableComp.onWheel}>
+    return <div className="inner-table-container data-cntr" onWheel={this.props.pivotTableComp.onWheel.bind(this.props.pivotTableComp)}>
         <table className="inner-table">
             <colgroup>
             </colgroup>
