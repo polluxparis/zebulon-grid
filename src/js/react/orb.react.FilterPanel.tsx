@@ -27,7 +27,7 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 		console.log('destroy');
 		console.log(this);
 		const container = ReactDOM.findDOMNode(this).parentNode;
-		ReactDOM.unmountComponentAtNode(container);
+		ReactDOM.unmountComponentAtNode(container as Element);
 		container.parentNode.removeChild(container);
 	}
 	onFilter(operator, term, staticValue, excludeStatic) {

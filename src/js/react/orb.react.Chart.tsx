@@ -1,17 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-export default React.createClass({
-  getInitialState() {
-    return {
+export default class Chart extends React.Component<any,any>{
+  constructor() {
+    super();
+    this.state = {
       canRender: false
     };
-  },
+  }
   canRender() {
     return this.state.canRender &&
       typeof this.props.chartMode.type === 'string' &&
       typeof google.visualization[this.props.chartMode.type] === 'function';
-  },
+  }
   drawChart() {
     if(this.canRender()) {
       const chartData = this.props.pivotTableComp.pgridwidget.pgrid.getChartData();
@@ -42,17 +43,17 @@ export default React.createClass({
         chart.draw(data, options);
       }
     }
-  },
+  }
   componentDidMount() {
     this.drawChart();
-  },
+  }
   componentDidUpdate() {
     this.drawChart();
-  },
+  }
   render() {
     if(this.canRender()) {
       return <div className="chart" style={this.state.chartStyle}></div>;
     }
     return null;
   }
-});
+}
