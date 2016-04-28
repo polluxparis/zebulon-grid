@@ -67,9 +67,6 @@ export class FilterManager{
 	};
 
 	onOperatorChanged (newOperator){
-		console.log('onOperatorChanged');
-		console.log(newOperator);
-		console.log(this);
 		if(this.operator.name !== newOperator) {
 			this.operator = filtering.Operators.get(newOperator);
 			this.toggleRegexpButtonVisibility();
@@ -164,8 +161,6 @@ export class FilterManager{
 	};
 
 	valueChecked (e) {
-		console.log('valueChecked');
-		console.log(this);
 		const target = e.target || e.srcElement;
 		if(target && target.type && target.type === 'checkbox') {
 			if(target == this.elems.allCheckbox) {

@@ -25,7 +25,6 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		};
 
 	onFilterMouseDown(e){
-		console.log('onFilterMouseDown');
 		// left mouse button only
 		if (e.button !== 0) return;
 
@@ -72,8 +71,6 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		utils.removeEventListener(document, 'mousemove', this.onMouseMove);
 	}
 	onMouseDown(e) {
-		console.log('onMouseDown in PivotButtonComponent');
-		console.log(e);
 		// drag/sort with left mouse button
 		if (e.button !== 0) return;
 
@@ -103,10 +100,6 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		utils.preventDefault(e);
 	}
 	onMouseUp(e) {
-		console.log('onMouseUp')
-		console.log(e);
-		console.log(e.ctrlKey);
-		console.log(this.state.dragging);
 
 		const isdragged = this.state.dragging;
 
@@ -122,7 +115,6 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 
 		if(!e.ctrlKey && !isdragged) {
 			// if button was not dragged, proceed as a click
-			console.log('sorting');
 			this.props.pivotTableComp.sort(this.props.axetype, this.props.field);
 		}
 	}

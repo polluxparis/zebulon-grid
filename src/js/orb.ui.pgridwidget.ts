@@ -205,8 +205,6 @@ export class  PGridWidget {
   };
 
   drilldown(dataCell, pivotId) {
-    console.log('drilldown');
-    console.log(this);
       if(dataCell) {
           var colIndexes = dataCell.columnDimension.getRowIndexes();
           var data = dataCell.rowDimension.getRowIndexes()
@@ -252,8 +250,6 @@ export class  PGridWidget {
   }
 
   buildUi() {
-      console.log('buildUi');
-      console.log(this);
       // build row and column headers
       this.rows = new UiRows(this.pgrid.rows);
       this.columns = new UiCols(this.pgrid.columns);
@@ -287,7 +283,6 @@ export class  PGridWidget {
           };
       }
       if(rowsHeaders.length > 0) {
-          console.log(`rowHeaders length ${rowsHeaders.length}`);
           for (var ri = 0; ri < rowsHeaders.length; ri++) {
               var rowHeadersRow = rowsHeaders[ri];
               var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];

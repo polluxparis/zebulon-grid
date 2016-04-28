@@ -24,8 +24,6 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 	}
 
 	destroy() {
-		console.log('destroy');
-		console.log(this);
 		const container = ReactDOM.findDOMNode(this).parentNode;
 		ReactDOM.unmountComponentAtNode(container as Element);
 		container.parentNode.removeChild(container);
@@ -35,8 +33,6 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 		this.destroy();
 	}
 	onMouseDown(e) {
-		console.log('onMouseDown in FilterPanelComponent');
-		console.log(e);
     const container = ReactDOM.findDOMNode(this).parentNode;
 		let target = e.target || e.srcElement;
 		while(target != null) {
@@ -49,13 +45,8 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 		this.destroy();
 	}
 	onMouseWheel(e) {
-		console.log('onMouseWheel');
-		console.log(e);
-		console.log(this);
 		const valuesTable = this.refs['valuesTable'];
 		let target = e.target || e.srcElement;
-		console.log(valuesTable);
-		console.log(target);
 		while(target != null) {
 			if(target == valuesTable) {
 				if(valuesTable['scrollHeight'] <= valuesTable['clientHeight']) {

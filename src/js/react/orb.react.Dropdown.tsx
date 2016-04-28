@@ -12,7 +12,6 @@ export default class DropdownComponent extends React.Component<any,any>{
 	}
 
 	openOrClose(e) {
-		console.log(this);
 		const valueNode = this.refs['valueElement'];
 		const valuesListNode = this.refs['valuesList'];
 		const target = e.target || e.srcElement;
