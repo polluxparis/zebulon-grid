@@ -3,6 +3,10 @@ import * as ReactDOM from 'react-dom';
 import PivotRow from './orb.react.PivotRow';
 import {AxeType} from '../orb.axe';
 
+import {Grid} from 'react-virtualized';
+import PivotCell from './orb.react.PivotCell';
+
+
 export default class RowHeadersComponent extends React.Component<any,any>{
   constructor(){
     super();
@@ -20,7 +24,34 @@ export default class RowHeadersComponent extends React.Component<any,any>{
     }
     myNode['style'].tableLayout = 'fixed';
   }
-  render() {
+  render(){
+    const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
+
+    const layoutInfos = {
+      lastLeftMostCellVSpan: 0,
+      topMostCells: {}
+    };
+
+    return <Grid
+              width={100}
+              height={300}
+              columnWidth={100}
+              rowHeight={30}
+              columnsCount={1}
+              rowsCount={pgridwidget.rows.headers.length}
+              renderCell={
+                ({columnIndex, rowIndex}) => <PivotCell
+                          key={columnIndex}
+                          cell={pgridwidget.rows.headers[rowIndex][0]}
+                          leftmost={true}
+                          topmost={false}
+                          pivotTableComp={this.props.pivotTableComp} />
+                          }
+              />
+  }
+
+  _render() {
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 

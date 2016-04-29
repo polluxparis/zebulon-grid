@@ -24,8 +24,8 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
 
     return(
     <Grid
-      width={600}
-      height={600}
+      width={500}
+      height={300}
       columnWidth={100}
       rowHeight={30}
       columnsCount={pgridwidget.dataRows[0].length}

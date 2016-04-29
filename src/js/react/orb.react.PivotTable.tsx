@@ -12,10 +12,20 @@ import DataCells from './orb.react.PivotTable.DataCells';
 import {ScrollBar} from './orb.react.ScrollBars';
 import * as utils from '../orb.utils';
 import * as domUtils from '../orb.utils.dom';
+
+import {Grid, ScrollSync} from 'react-virtualized';
+
+import {PGridWidget} from '../orb.ui.pgridwidget';
+
+
 let pivotId = 1;
 const themeChangeCallbacks = {};
 
-export default class PivotTableComponent extends React.Component<any,any>{
+interface Props{
+  pgridwidget: PGridWidget
+}
+
+export default class PivotTableComponent extends React.Component<Props,{}>{
 
   id = pivotId++;
   pgrid = null;
@@ -202,9 +212,16 @@ export default class PivotTableComponent extends React.Component<any,any>{
     // </div>
     // );
     return (
-    <div className={classes.container} style={tblStyle} ref="pivot">
-              <DataCells pivotTableComp={this} ref="dataCells"></DataCells>
-      <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
+      <div>
+        <ScrollSync>
+         {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => (
+           <div className={classes.container} style={tblStyle} ref="pivot">
+              <RowHeaders pivotTableComp={this} ref="rowHeaders"/>
+              <DataCells pivotTableComp={this} ref="dataCells"/>
+          </div>
+        )}
+        </ScrollSync>
+        <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
     </div>
     );
 

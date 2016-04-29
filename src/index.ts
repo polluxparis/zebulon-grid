@@ -4,14 +4,14 @@ require('expose?Perf!react-addons-perf');
 import {PGridWidget} from './js/orb';
 
 
-function getData(i) {
+function getData(i,n) {
 	var res = [];
 	for(var k=0; k<10*i;k++){
 		res[k]=[];
 	}
 	for(var k=0; k<i;k++){
 		for (var j=0; j<10; j++){
-			res[10*k+j][0] = 'toto'+String(k%300);
+			res[10*k+j][0] = 'toto'+String(k%n);
 			res[10*k+j][3] = 'titi'+String(j);
 			res[10*k+j][1] = k+j;
 			res[10*k+j][2] = 100*k+3*j;
@@ -19,8 +19,9 @@ function getData(i) {
 	}
 	return res;
     }
-
-const data = getData(10000);
+console.log(`starting 1`);
+const data = getData(10000,300);
+console.log(`starting 1`);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -123,8 +124,10 @@ const data = getData(10000);
          //   'Quantity'    : [4, 8, 12]
         }*/
     };
-
+console.log(`starting 3`);
  const elem = document.getElementById('grid');
-
+console.log(`starting 4`);
 const myWidget = new PGridWidget(config);
+console.log(`starting 5`);
 myWidget.render(elem);
+console.log(`starting 6`);
