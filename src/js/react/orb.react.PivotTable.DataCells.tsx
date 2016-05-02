@@ -9,10 +9,11 @@ import PivotCell from './orb.react.PivotCell';
 import PivotTableComponent from './orb.react.PivotTable';
 
 interface Props{
-  pivotTableComp: PivotTableComponent
+  pivotTableComp: PivotTableComponent,
+  onScroll: any
 }
 
-export default class DataCellsComponent extends React.Component<Props,{}>{
+export default class DataCellsComponent extends React.Component<any,{}>{
 
 
   render(){
@@ -24,6 +25,7 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
 
     return(
     <Grid
+      onScroll={this.props.onScroll}
       width={500}
       height={300}
       columnWidth={100}

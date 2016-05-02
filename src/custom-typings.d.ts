@@ -6,7 +6,15 @@ interface GridProps{
   rowHeight:number,
   columnsCount:number,
   rowsCount:number,
-  renderCell:({columnIndex, rowIndex}) => JSX.Element
+  onScroll?: any,
+  scrollTop?: number,
+  scrollLeft?: number,
+  renderCell:(renderCellArgs) => (JSX.Element|string)
+}
+
+interface renderCellArgs {
+  columnIndex:number,
+  rowIndex:number
 }
 
 interface ScrollSyncProps{

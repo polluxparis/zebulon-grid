@@ -34,6 +34,9 @@ export default class RowHeadersComponent extends React.Component<any,any>{
     };
 
     return <Grid
+              onScroll={this.props.onScroll}
+              scrollLeft={this.props.scrollLeft}
+              scrollTop={this.props.scrollTop}
               width={100}
               height={300}
               columnWidth={100}
@@ -69,7 +72,7 @@ export default class RowHeadersComponent extends React.Component<any,any>{
       </PivotRow>;
     });
 
-    return  <div className={ 'inner-table-container' + cntrClass } onWheel={this.props.pivotTableComp.onWheel.bind(this.props.pivotTableComp)}>
+    return  <div className={ 'inner-table-container' + cntrClass } >
       <table className="inner-table">
         <colgroup ref="colgroup">
         </colgroup>

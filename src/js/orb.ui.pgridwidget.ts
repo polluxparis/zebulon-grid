@@ -100,16 +100,16 @@ export class  PGridWidget {
   public dialog;
 
   constructor(config) {
-
+    console.log('constructing gridWidget 1');
       this.dialog = Dialog.create();
-
+      console.log('constructing gridWidget 2');
       this.pgrid = new PGrid(config);
-
+      console.log('constructing gridWidget 3');
       this.rows = null;
       this.columns = null;
-
+      console.log('constructing gridWidget 4');
       this.dataRows = [];
-
+      console.log('constructing gridWidget 5');
       this.layout = {
           rowHeaders: {
               width: null,
@@ -124,7 +124,9 @@ export class  PGridWidget {
               height: null
           }
       };
+        console.log('constructing gridWidget 6');
       this.init();
+        console.log('constructing gridWidget 7');
   };
 
   expandRow(cell) {

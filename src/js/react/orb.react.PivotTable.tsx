@@ -83,7 +83,7 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
       thisnode['children'][1].className = classes.table;
   }
   componentDidUpdate() {
-    this.synchronizeWidths();
+    // this.synchronizeWidths();
   }
   componentDidMount() {
     const fontInfos = domUtils.getStyle(ReactDOM.findDOMNode(this), ['font-family', 'font-size'], true);
@@ -92,8 +92,8 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
       fontSize: fontInfos[1]
     };
 
-    const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
-    const dataCellsTableNode = dataCellsNode['children'][0];
+    // const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
+    // const dataCellsTableNode = dataCellsNode['children'][0];
     // const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
     // const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
     // (this.refs['horizontalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
@@ -121,29 +121,29 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
 
     // this.synchronizeWidths();
   }
-  onWheel(e) {
-    let elem;
-    let scrollbar;
-    let amount;
-
-    if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['colHeaders']))) {
-      scrollbar = this.refs['horizontalScrollBar'];
-      amount = e.deltaX || e.deltaY;
-    } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['rowHeaders']))) ||
-              (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['dataCells']))) ) {
-      scrollbar = this.refs['verticalScrollBar'];
-      amount = e.deltaY;
-    }
-    if(scrollbar && scrollbar.scroll(amount, e.deltaMode)) {
-      utils.stopPropagation(e);
-      utils.preventDefault(e);
-    }
-  }
-  synchronizeWidths() {
-    SizingManager.synchronizeWidths(this);
-    (this.refs['horizontalScrollBar'] as ScrollBar).refresh();
-    (this.refs['verticalScrollBar'] as ScrollBar).refresh();
-  }
+  // onWheel(e) {
+  //   let elem;
+  //   let scrollbar;
+  //   let amount;
+  //
+  //   if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['colHeaders']))) {
+  //     scrollbar = this.refs['horizontalScrollBar'];
+  //     amount = e.deltaX || e.deltaY;
+  //   } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['rowHeaders']))) ||
+  //             (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['dataCells']))) ) {
+  //     scrollbar = this.refs['verticalScrollBar'];
+  //     amount = e.deltaY;
+  //   }
+  //   if(scrollbar && scrollbar.scroll(amount, e.deltaMode)) {
+  //     utils.stopPropagation(e);
+  //     utils.preventDefault(e);
+  //   }
+  // }
+  // synchronizeWidths() {
+  //   SizingManager.synchronizeWidths(this);
+  //   (this.refs['horizontalScrollBar'] as ScrollBar).refresh();
+  //   (this.refs['verticalScrollBar'] as ScrollBar).refresh();
+  // }
   render() {
 
     const config = this.pgridwidget.pgrid.config;
@@ -216,8 +216,25 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
         <ScrollSync>
          {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => (
            <div className={classes.container} style={tblStyle} ref="pivot">
-              <RowHeaders pivotTableComp={this} ref="rowHeaders"/>
-              <DataCells pivotTableComp={this} ref="dataCells"/>
+            <table id={'tbl-' + this.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
+              <tbody>
+              <tr>
+                <td></td>
+                <td>
+                  <ColumnHeaders pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
+                </td>
+                <td colSpan="2"></td>
+              </tr>
+                <tr>
+                  <td>
+                    <RowHeaders pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="rowHeaders"/>
+                  </td>
+                  <td>
+                    <DataCells pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         )}
         </ScrollSync>
