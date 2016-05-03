@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
 import {PGridWidget} from './js/orb';
+import PivotTableComponent from './js/react/orb.react.PivotTable';
 
 
 function getData(i,n) {
@@ -19,9 +20,7 @@ function getData(i,n) {
 	}
 	return res;
     }
-console.log(`starting 1`);
 const data = getData(1000,300);
-console.log(`starting 1`);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -124,10 +123,5 @@ console.log(`starting 1`);
          //   'Quantity'    : [4, 8, 12]
         }*/
     };
-console.log(`starting 3`);
- const elem = document.getElementById('grid');
-console.log(`starting 4`);
 const myWidget = new PGridWidget(config);
-console.log(`starting 5`);
-myWidget.render(elem);
-console.log(`starting 6`);
+ReactDOM.render(<PivotTableComponent pgridwidget={myWidget}/>, document.getElementById('grid'))
