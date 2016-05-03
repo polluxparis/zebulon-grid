@@ -16,6 +16,7 @@ import * as domUtils from '../orb.utils.dom';
 import {Grid, ScrollSync} from 'react-virtualized';
 
 import {PGridWidget} from '../orb.ui.pgridwidget';
+import {PGrid} from '../orb.pgrid';
 
 
 let pivotId = 1;
@@ -27,9 +28,9 @@ interface Props{
 
 export default class PivotTableComponent extends React.Component<Props,{}>{
 
-  id = pivotId++;
-  pgrid = null;
-  pgridwidget = null;
+  id:number = pivotId++;
+  pgrid: PGrid = null;
+  pgridwidget: PGridWidget = null;
   fontStyle = null;
   constructor(props){
     super(props);
@@ -82,9 +83,9 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
       thisnode.className = classes.container;
       thisnode['children'][1].className = classes.table;
   }
-  componentDidUpdate() {
-    // this.synchronizeWidths();
-  }
+  // componentDidUpdate() {
+  //   this.synchronizeWidths();
+  // }
   componentDidMount() {
     const fontInfos = domUtils.getStyle(ReactDOM.findDOMNode(this), ['font-family', 'font-size'], true);
     this.fontStyle = {
@@ -214,29 +215,41 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
     return (
       <div>
         <ScrollSync>
-         {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => (
-           <div className={classes.container} style={tblStyle} ref="pivot">
-            <table id={'tbl-' + this.id} ref="pivotWrapperTable" className={classes.table} style={{tableLayout: 'fixed'}}>
-              <tbody>
-              <tr>
-                <td></td>
-                <td>
-                  <ColumnHeaders pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
-                </td>
-                <td colSpan="2"></td>
-              </tr>
-                <tr>
-                  <td>
-                    <RowHeaders pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="rowHeaders"/>
-                  </td>
-                  <td>
-                    <DataCells pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+         {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
+           return <div className={classes.container} style={tblStyle} ref="pivot">
+              <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0
+              }}>
+              <div
+                id="filler"
+                style={{
+                  heigth: 60,
+                  width: 100
+                }}>
+                </div>
+                <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 60
+                }}>
+                <RowHeaders pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
+                </div>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 100,
+                    top: 0
+                  }}>
+                  <ColumnHeaders pivotTableComp={this} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
+                  <DataCells pivotTableComp={this} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
+                </div>
           </div>
-        )}
+        </div>
+        }}
         </ScrollSync>
         <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
     </div>

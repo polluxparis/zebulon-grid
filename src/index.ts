@@ -20,7 +20,7 @@ function getData(i,n) {
 	return res;
     }
 console.log(`starting 1`);
-const data = getData(10000,300);
+const data = getData(1000,300);
 console.log(`starting 1`);
  var config = {
         dataSource: data,
@@ -113,8 +113,8 @@ console.log(`starting 1`);
                 aggregateFunc: 'sum'
             }
         ],
-        rows    : [ 'Toto'],//, 'Category' ],
-        columns : [ 'Titi' ],
+        rows    : [ 'Toto', 'Titi'],//, 'Category' ],
+        // columns : [ 'Titi' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },

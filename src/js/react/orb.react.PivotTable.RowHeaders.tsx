@@ -6,8 +6,16 @@ import {AxeType} from '../orb.axe';
 import {Grid} from 'react-virtualized';
 import PivotCell from './orb.react.PivotCell';
 
+import PivotTableComponent from './orb.react.PivotTable';
 
-export default class RowHeadersComponent extends React.Component<any,any>{
+interface Props{
+  pivotTableComp: PivotTableComponent,
+  onScroll: any,
+  scrollTop: any
+}
+
+
+export default class RowHeadersComponent extends React.Component<Props,any>{
   constructor(){
     super();
   }
@@ -24,22 +32,21 @@ export default class RowHeadersComponent extends React.Component<any,any>{
     }
     myNode['style'].tableLayout = 'fixed';
   }
-  render(){
+  __render(){
+    console.log('render rowHeaders');
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const config = pgridwidget.pgrid.config;
+    const columnWidth = 100;
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 
-    const layoutInfos = {
-      lastLeftMostCellVSpan: 0,
-      topMostCells: {}
-    };
+
 
     return <Grid
               onScroll={this.props.onScroll}
-              scrollLeft={this.props.scrollLeft}
               scrollTop={this.props.scrollTop}
-              width={100}
-              height={300}
-              columnWidth={100}
+              width={columnWidth}
+              height={config.height - 60}
+              columnWidth={columnWidth}
               rowHeight={30}
               columnsCount={1}
               rowsCount={pgridwidget.rows.headers.length}
@@ -49,6 +56,38 @@ export default class RowHeadersComponent extends React.Component<any,any>{
                           cell={pgridwidget.rows.headers[rowIndex][0]}
                           leftmost={true}
                           topmost={false}
+                          pivotTableComp={this.props.pivotTableComp} />
+                          }
+              />
+  }
+
+  render(){
+    console.log('render rowHeaders');
+    const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const config = pgridwidget.pgrid.config;
+    const columnWidth = 100;
+    const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
+
+    const layoutInfos = {
+      lastLeftMostCellVSpan: 0,
+      topMostCells: {}
+    };
+
+    return <Grid
+              onScroll={this.props.onScroll}
+              scrollTop={this.props.scrollTop}
+              width={columnWidth}
+              height={config.height - 60}
+              columnWidth={columnWidth}
+              rowHeight={30}
+              columnsCount={1}
+              rowsCount={pgridwidget.rows.headers.length}
+              renderCell={
+                ({columnIndex, rowIndex}) => <PivotRow
+                          key={columnIndex}
+                          row={pgridwidget.rows.headers[rowIndex]}
+                          layoutInfos={layoutInfos}
+                          axetype={AxeType.ROWS}
                           pivotTableComp={this.props.pivotTableComp} />
                           }
               />

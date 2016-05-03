@@ -3,6 +3,32 @@
 
 'use strict';
 
+// var _scrollBarSize;
+//
+// const inDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+// export function scrollbarSize(recalc?:boolean){
+// 	console.log(`in scrollbarSize ${_scrollBarSize}`);
+// 	if (!_scrollBarSize || recalc) {
+// 		console.log(`in scrollbarSize ${inDOM}`);
+//     if (inDOM) {
+// 			console.log(`in scrollbarSize ${inDOM}`);
+//       var scrollDiv = document.createElement('div');
+//
+//       scrollDiv.style.position = 'absolute';
+//       scrollDiv.style.top = '-9999px';
+//       scrollDiv.style.width = '50px';
+//       scrollDiv.style.height = '50px';
+//       scrollDiv.style.overflow = 'scroll';
+//
+//       document.body.appendChild(scrollDiv);
+//       _scrollBarSize = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+//       // document.body.removeChild(scrollDiv);
+//     }
+//   }
+// 	console.log(`return scrollbarSize: ${_scrollBarSize}`);
+//   return _scrollBarSize;
+// }
+
 export function removeClass(element, classname) {
 	if(element && classname) {
 		while(element.className.indexOf(classname) >= 0) {

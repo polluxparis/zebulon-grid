@@ -21,6 +21,8 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
   constructor(props){
     super(props);
     this._latestVisibleState = false;
+    this.expand = this.expand.bind(this);
+    this.collapse = this.collapse.bind(this);
   }
   expand() {
       this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);

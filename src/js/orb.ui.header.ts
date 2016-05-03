@@ -261,6 +261,8 @@ export class Header extends CellBase{
     }
 
     calcSpan(ignoreVisibility) {
+        // console.log('calcSpan');
+        // console.log(this);
         var tspan = 0;
         var subSpan;
         var addone = false;

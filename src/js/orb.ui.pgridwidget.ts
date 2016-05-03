@@ -24,7 +24,7 @@ import Grid from './react/orb.react.Grid';
 // CSS files
 // Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
 require('../../dist/orb.css');
-require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
+// require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 /**
 * Creates a new instance of pivot grid control

@@ -9,6 +9,8 @@ interface GridProps{
   onScroll?: any,
   scrollTop?: number,
   scrollLeft?: number,
+  overscanRowsCount?:number,
+  overscanColumnsCount?:number,
   renderCell:(renderCellArgs) => (JSX.Element|string)
 }
 
