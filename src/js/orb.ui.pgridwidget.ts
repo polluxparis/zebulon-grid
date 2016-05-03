@@ -44,12 +44,12 @@ export class  PGridWidget {
    * Control rows headers
    * @type {orb.ui.rows}
    */
-  public rows = null;
+  public rows: UiRows = null;
   /**
    * Control columns headers
    * @type {orb.ui.cols}
    */
-  public columns = null;
+  public columns: UiCols = null;
 
   /**
    * Control data rows
@@ -63,70 +63,47 @@ export class  PGridWidget {
            * Total number of horizontal row headers.
            * @type {Number}
            */
-          width: null,
+          width: undefined,
           /**
            * Total number of vertical row headers.
            * @type {Number}
            */
-          height: null
+          height: undefined
       },
       columnHeaders: {
           /**
            * Total number of horizontal column headers.
            * @type {Number}
            */
-          width: null,
+          width: undefined,
           /**
            * Total number of vertical column headers.
            * @type {Number}
            */
-          height: null
+          height: undefined
       },
       pivotTable: {
           /**
            * Total number of horizontal cells of the whole pivot grid control.
            * @type {Number}
            */
-          width: null,
+          width: undefined,
           /**
            * Total number of vertical cells of the whole pivot grid control.
            * @type {Number}
            */
-          height: null
+          height: undefined
       }
   };
   public renderElement: Element;
-  public pivotComponent;
+  public pivotComponent: React.Component<any,{}|void> | Element | void;
+
   public dialog;
 
   constructor(config) {
-    console.log('constructing gridWidget 1');
       this.dialog = Dialog.create();
-      console.log('constructing gridWidget 2');
       this.pgrid = new PGrid(config);
-      console.log('constructing gridWidget 3');
-      this.rows = null;
-      this.columns = null;
-      console.log('constructing gridWidget 4');
-      this.dataRows = [];
-      console.log('constructing gridWidget 5');
-      this.layout = {
-          rowHeaders: {
-              width: null,
-              height: null
-          },
-          columnHeaders: {
-              width: null,
-              height: null
-          },
-          pivotTable: {
-              width: null,
-              height: null
-          }
-      };
-        console.log('constructing gridWidget 6');
       this.init();
-        console.log('constructing gridWidget 7');
   };
 
   expandRow(cell) {
@@ -135,6 +112,9 @@ export class  PGridWidget {
   };
 
   collapseRow(cell) {
+      console.log(`collapseRow`);
+      console.log(cell);
+      // this.rows.headers
       cell.subtotalHeader.collapse();
       this.render();
   };
@@ -185,7 +165,7 @@ export class  PGridWidget {
   };
 
   changeTheme(newTheme) {
-      this.pivotComponent.changeTheme(newTheme);
+      this.pivotComponent['changeTheme'](newTheme);
   };
 
   render(element?) {
@@ -237,7 +217,7 @@ export class  PGridWidget {
                   }
               },
               theme: this.pgrid.config.theme,
-              style: this.pivotComponent.fontStyle
+              style: this.pivotComponent['fontStyle']
           });
       }
   };
@@ -285,9 +265,9 @@ export class  PGridWidget {
           };
       }
       if(rowsHeaders.length > 0) {
-          for (var ri = 0; ri < rowsHeaders.length; ri++) {
-              var rowHeadersRow = rowsHeaders[ri];
-              var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];
+          const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
+          for (var ri = 0; ri < rowHeadersLeafs.length; ri++) {
+              var rowLeafHeader = rowHeadersLeafs[ri];
 
               arr = [];
               for (var colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {

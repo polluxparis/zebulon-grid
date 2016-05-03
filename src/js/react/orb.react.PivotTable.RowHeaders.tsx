@@ -19,6 +19,7 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
   constructor(){
     super();
   }
+
   setColGroup(widths) {
       const myNode = ReactDOM.findDOMNode(this);
     const colGroupNode = this.refs['colgroup'];
@@ -32,7 +33,7 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
     }
     myNode['style'].tableLayout = 'fixed';
   }
-  __render(){
+  render(){
     console.log('render rowHeaders');
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const config = pgridwidget.pgrid.config;
@@ -40,28 +41,38 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 
 
+    const leafsHeadersCount = pgridwidget.rows.headers[pgridwidget.rows.headers.length - 1].length;
+    const rowHeaders = pgridwidget.rows.headers.map((headerColumn, index)=>{
+      const rowsCount = headerColumn.length;
+      const rowHeight = (leafsHeadersCount/rowsCount)*30;
 
-    return <Grid
+      return <Grid
+              key={index}
               onScroll={this.props.onScroll}
               scrollTop={this.props.scrollTop}
               width={columnWidth}
               height={config.height - 60}
               columnWidth={columnWidth}
-              rowHeight={30}
+              rowHeight={rowHeight}
               columnsCount={1}
-              rowsCount={pgridwidget.rows.headers.length}
+              rowsCount={rowsCount}
               renderCell={
                 ({columnIndex, rowIndex}) => <PivotCell
-                          key={columnIndex}
-                          cell={pgridwidget.rows.headers[rowIndex][0]}
-                          leftmost={true}
+                          key={rowIndex}
+                          cell={pgridwidget.rows.headers[index][rowIndex]}
+                          leftmost={false}
                           topmost={false}
                           pivotTableComp={this.props.pivotTableComp} />
                           }
               />
+            })
+      return <div className={'inner-table-container' + cntrClass} style={{display: 'flex'}}>
+            {rowHeaders}
+      </div>
+
   }
 
-  render(){
+  _render(){
     console.log('render rowHeaders');
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const config = pgridwidget.pgrid.config;
@@ -93,7 +104,7 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
               />
   }
 
-  _render() {
+  __render() {
     const pgridwidget = this.props.pivotTableComp.pgridwidget;
     const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
 

@@ -25,9 +25,11 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
     this.collapse = this.collapse.bind(this);
   }
   expand() {
+      console.log(`expand`);
       this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);
   }
   collapse() {
+      console.log(`collapse`);
       this.props.pivotTableComp.pgridwidget.collapseRow(this.props.cell);
   }
   updateCellInfos() {
@@ -109,13 +111,13 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
         const isWrapper = cell.type === HeaderType.WRAPPER && (cell as Header).dim.field.subTotal.visible && (cell as Header).dim.field.subTotal.collapsible;
         const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
+          console.log(`isSubtotal: ${isSubtotal}`);
           headerPushed = true;
 
-          divcontent.push(<table key="header-value" ref="cellContent">
-            <tbody>
-            <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
-            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
-            </tbody></table>);
+          divcontent.push(<div key="header-value" ref="cellContent">
+            <div className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></div>
+            <div className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></div>
+            </div>);
         } else {
           value = (cell.value || '&#160;') + (cell.type === HeaderType.SUB_TOTAL ? ' Total' : '');
         }

@@ -113,8 +113,8 @@ console.log(`starting 1`);
                 aggregateFunc: 'sum'
             }
         ],
-        rows    : [ 'Toto', 'Titi'],//, 'Category' ],
-        // columns : [ 'Titi' ],
+        // rows    : [ 'Toto'],//, 'Category' ],
+        rows : [ 'Toto','Titi' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },

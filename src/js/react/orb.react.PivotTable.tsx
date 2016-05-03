@@ -32,6 +32,7 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
   pgrid: PGrid = null;
   pgridwidget: PGridWidget = null;
   fontStyle = null;
+
   constructor(props){
     super(props);
     DragManager.init(this);
@@ -227,7 +228,7 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
                 id="filler"
                 style={{
                   heigth: 60,
-                  width: 100
+                  width: 200
                 }}>
                 </div>
                 <div
@@ -241,7 +242,7 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
                 <div
                   style={{
                     position: 'absolute',
-                    left: 100,
+                    left: 200,
                     top: 0
                   }}>
                   <ColumnHeaders pivotTableComp={this} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>

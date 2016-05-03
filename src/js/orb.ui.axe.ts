@@ -9,7 +9,7 @@
 /*jshint eqnull: true*/
 
 import {Axe, AxeType} from './orb.axe';
-import {Header, HeaderType} from './orb.ui.header';
+import {Header, DataHeader, HeaderType} from './orb.ui.header';
 
 /**
  * Creates a new instance of rows/columns ui properties.
@@ -29,10 +29,10 @@ export class AxeUi{
      * Headers render properties
      * @type {Array}
      */
-    public headers: Array<Array<Header>>;
+    public headers: (Header|DataHeader)[][] = [];
+
     constructor(axeModel){
         this.axe = axeModel;
-        this.headers = [];
     }
 
     dataFieldsCount() {

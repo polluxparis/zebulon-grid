@@ -50,8 +50,8 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
 
     const leafsHeadersCount = pgridwidget.columns.leafsHeaders.length;
     const columnHeaders = pgridwidget.columns.headers.map((headerRow, index) =>{
-      const rowLength = headerRow.length;
-      const columnWidth = (leafsHeadersCount/rowLength)*100;
+      const columnsCount = headerRow.length;
+      const columnWidth = (leafsHeadersCount/columnsCount)*100;
       return <Grid
             key={index}
             onScroll={this.props.onScroll}
@@ -60,11 +60,11 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
             width={config.width - 100}
             rowHeight={rowHeight}
             columnWidth={columnWidth}
-            columnsCount={rowLength}
+            columnsCount={columnsCount}
             rowsCount={1}
             renderCell={
               ({columnIndex, rowIndex}) => <PivotCell
-                        key={rowIndex}
+                        key={columnIndex}
                         cell={pgridwidget.columns.headers[index][columnIndex]}
                         leftmost={false}
                         topmost={false}
