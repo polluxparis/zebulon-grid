@@ -9,7 +9,6 @@
 /*jshint eqnull: true*/
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import {Axe, AxeType} from './orb.axe';
 import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED} from './orb.pgrid';
 import {HeaderType, DataCell, CellBase} from './orb.ui.header';
@@ -162,15 +161,11 @@ export class  PGridWidgetStore {
 
   expandRow(cell) {
       cell.expand();
-      // this.render();
   };
 
   collapseRow(cell) {
       console.log(`collapseRow`);
-      console.log(cell);
-      // this.rows.headers
       cell.subtotalHeader.collapse();
-      // this.render();
   };
 
   sort(axetype, field) {
@@ -222,24 +217,6 @@ export class  PGridWidgetStore {
       this.pivotComponent['changeTheme'](newTheme);
   };
 
-  // render(element?) {
-  //     this.renderElement = element || this.renderElement;
-  //     if(this.renderElement) {
-  //         var pivotTableFactory = React.createFactory(
-  //             this.pgrid.config.chartMode.enabled ?
-  //                 PivotChart :
-  //                 PivotTable);
-  //         var pivottable = pivotTableFactory({
-  //             pgridwidgetstore: this
-  //         });
-  //         this.pivotComponent = ReactDOM.render(pivottable, this.renderElement);
-  //     }
-  // };
-  //
-  // unmount() {
-  //     ReactDOM.unmountComponentAtNode(this.renderElement);
-  // };
-
   drilldown(dataCell) {
       if(dataCell) {
           var colIndexes = dataCell.columnDimension.getRowIndexes();
@@ -275,10 +252,5 @@ export class  PGridWidgetStore {
           });
       }
   };
-
-  // buildUiAndRender() {
-  //     this.buildUi();
-  //     this.render();
-  // }
 
 };
