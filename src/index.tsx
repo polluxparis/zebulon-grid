@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
-import {PGridWidget} from './js/orb';
+import {PGridWidgetStore} from './js/orb.ui.pgridwidgetstore';
 import PivotTableComponent from './js/react/orb.react.PivotTable';
 
 
@@ -123,5 +123,5 @@ const data = getData(1000,300);
          //   'Quantity'    : [4, 8, 12]
         }*/
     };
-const myWidget = new PGridWidget(config);
-ReactDOM.render(<PivotTableComponent pgridwidget={myWidget}/>, document.getElementById('grid'))
+const appStore = new PGridWidgetStore(config);
+ReactDOM.render(<PivotTableComponent pgridwidgetstore={appStore}/>, document.getElementById('grid'))

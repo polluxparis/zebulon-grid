@@ -23,7 +23,7 @@ module.exports = {
    *
    * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
    */
-  extensions: ['', '.ts', '.js', '.tsx'],
+  extensions: ['', '.ts', '.js', '.tsx']
   },
   module: {
     loaders: [

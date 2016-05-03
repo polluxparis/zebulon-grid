@@ -6,10 +6,10 @@ import {AxeType} from '../orb.axe';
 import {Grid} from 'react-virtualized';
 import PivotCell from './orb.react.PivotCell';
 
-import PivotTableComponent from './orb.react.PivotTable';
+import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
 interface Props{
-  pivotTableComp: PivotTableComponent,
+  pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
   scrollTop: any
 }
@@ -35,14 +35,14 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
   }
   render(){
     console.log('render rowHeaders');
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    const config = pgridwidget.pgrid.config;
+    const pgridwidgetstore = this.props.pgridwidgetstore;
+    const config = pgridwidgetstore.pgrid.config;
     const columnWidth = 100;
-    const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
+    const cntrClass = pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
 
 
-    const leafsHeadersCount = pgridwidget.rows.headers[pgridwidget.rows.headers.length - 1].length;
-    const rowHeaders = pgridwidget.rows.headers.map((headerColumn, index)=>{
+    const leafsHeadersCount = pgridwidgetstore.rows.headers[pgridwidgetstore.rows.headers.length - 1].length;
+    const rowHeaders = pgridwidgetstore.rows.headers.map((headerColumn, index)=>{
       const rowsCount = headerColumn.length;
       const rowHeight = (leafsHeadersCount/rowsCount)*30;
 
@@ -59,10 +59,10 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
               renderCell={
                 ({columnIndex, rowIndex}) => <PivotCell
                           key={rowIndex}
-                          cell={pgridwidget.rows.headers[index][rowIndex]}
+                          cell={pgridwidgetstore.rows.headers[index][rowIndex]}
                           leftmost={false}
                           topmost={false}
-                          pivotTableComp={this.props.pivotTableComp} />
+                          pgridwidgetstore={this.props.pgridwidgetstore} />
                           }
               />
             })
@@ -74,10 +74,10 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
 
   _render(){
     console.log('render rowHeaders');
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    const config = pgridwidget.pgrid.config;
+    const pgridwidgetstore = this.props.pgridwidgetstore;
+    const config = pgridwidgetstore.pgrid.config;
     const columnWidth = 100;
-    const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
+    const cntrClass = pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
 
     const layoutInfos = {
       lastLeftMostCellVSpan: 0,
@@ -92,33 +92,33 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
               columnWidth={columnWidth}
               rowHeight={30}
               columnsCount={1}
-              rowsCount={pgridwidget.rows.headers.length}
+              rowsCount={pgridwidgetstore.rows.headers.length}
               renderCell={
                 ({columnIndex, rowIndex}) => <PivotRow
                           key={columnIndex}
-                          row={pgridwidget.rows.headers[rowIndex]}
+                          row={pgridwidgetstore.rows.headers[rowIndex]}
                           layoutInfos={layoutInfos}
                           axetype={AxeType.ROWS}
-                          pivotTableComp={this.props.pivotTableComp} />
+                          pgridwidgetstore={this.props.pgridwidgetstore} />
                           }
               />
   }
 
   __render() {
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    const cntrClass = pgridwidget.rows.headers.length === 0 ? '' : ' rows-cntr';
+    const pgridwidgetstore = this.props.pgridwidgetstore;
+    const cntrClass = pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
 
     const layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
 
-    const rowHeaders = pgridwidget.rows.headers.map((headerRow, index) => {
+    const rowHeaders = pgridwidgetstore.rows.headers.map((headerRow, index) => {
       return <PivotRow key={index}
                        row={headerRow}
                        axetype={AxeType.ROWS}
                        layoutInfos={layoutInfos}
-                       pivotTableComp={this.props.pivotTableComp}>
+                       pgridwidgetstore={this.props.pgridwidgetstore}>
       </PivotRow>;
     });
 

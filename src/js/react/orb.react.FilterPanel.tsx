@@ -8,13 +8,13 @@ import {FilterManager} from './FilterManager';
 
 export default class FilterPanelComponent extends React.Component<any,any>{
 
-	public pgridwidget = null;
+	public pgridwidgetstore = null;
 	public values = null;
 	public filterManager = null;
 
 	constructor(props){
 		super(props);
-		this.pgridwidget = this.props.pivotTableComp.pgridwidget;
+		this.pgridwidgetstore = this.props.pivotTableComp.pgridwidgetstore;
 		this.filterManager = new FilterManager(this, null);
 		this.onFilter = this.onFilter.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
@@ -77,8 +77,8 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 		const checkboxes = [];
 
 		this.filterManager.reactComp = this;
-		this.filterManager.initialFilterObject = this.pgridwidget.pgrid.getFieldFilter(this.props.field);
-		this.values = this.pgridwidget.pgrid.getFieldValues(this.props.field);
+		this.filterManager.initialFilterObject = this.pgridwidgetstore.pgrid.getFieldFilter(this.props.field);
+		this.values = this.pgridwidgetstore.pgrid.getFieldValues(this.props.field);
 
 		function addCheckboxRow(value, text?) {
 			return checkboxes.push(<tr key={value}>
@@ -102,7 +102,7 @@ export default class FilterPanelComponent extends React.Component<any,any>{
 		const buttonClass = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().orbButton;
 		const style = this.props.pivotTableComp.fontStyle;
 
-		const currentFilter = this.pgridwidget.pgrid.getFieldFilter(this.props.field);
+		const currentFilter = this.pgridwidgetstore.pgrid.getFieldFilter(this.props.field);
 
 		return(
 		// <ResizableBox width={301} heigth={200}>

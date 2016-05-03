@@ -27,7 +27,7 @@ export default class ToolbarComponent extends React.Component<any,any>{
   }
   render() {
 
-    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidgetstore.pgrid.config;
 
     if(config.toolbar && config.toolbar.visible) {
 

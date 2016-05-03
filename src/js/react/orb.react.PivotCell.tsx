@@ -4,7 +4,7 @@ import {HeaderType} from '../orb.ui.header';
 import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
-import PivotTableComponent from './orb.react.PivotTable';
+import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
 
 interface Props{
@@ -12,7 +12,7 @@ interface Props{
   cell:Header|DataHeader|DataCell|ButtonCell|EmptyCell,
   leftmost:boolean,
   topmost:boolean,
-  pivotTableComp: PivotTableComponent
+  pgridwidgetstore: PGridWidgetStore
 }
 
 export default class PivotCellComponent extends React.Component<Props,{}>{
@@ -26,11 +26,11 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
   }
   expand() {
       console.log(`expand`);
-      this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);
+      this.props.pgridwidgetstore.expandRow(this.props.cell);
   }
   collapse() {
       console.log(`collapse`);
-      this.props.pivotTableComp.pgridwidget.collapseRow(this.props.cell);
+      this.props.pgridwidgetstore.collapseRow(this.props.cell);
   }
   updateCellInfos() {
     const node = ReactDOM.findDOMNode(this);
@@ -127,7 +127,7 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
         break;
       case 'cell-template-datavalue':
         value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);
+        cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
         break;
       default:
         break;

@@ -32,7 +32,7 @@ require('../../dist/orb.css');
 * @memberOf orb.ui
 * @param  {object} pgrid - pivot grid instance
 buico */
-export class  PGridWidget {
+export class  PGridWidgetStore {
 
   /**
    * Parent pivot grid
@@ -106,127 +106,11 @@ export class  PGridWidget {
       this.init();
   };
 
-  expandRow(cell) {
-      cell.expand();
-      this.render();
-  };
-
-  collapseRow(cell) {
-      console.log(`collapseRow`);
-      console.log(cell);
-      // this.rows.headers
-      cell.subtotalHeader.collapse();
-      this.render();
-  };
-
-  sort(axetype, field) {
-      this.pgrid.sort(axetype, field);
-  };
-
-  refreshData(data) {
-      this.pgrid.refreshData(data);
-  };
-
-  applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
-      this.pgrid.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
-  };
-
-  moveField(field, oldAxeType, newAxeType, position) {
-      this.pgrid.moveField(field, oldAxeType, newAxeType, position);
-  };
-
-  toggleFieldExpansion (axetype, field, newState) {
-      var axeToExpand =
-          axetype === AxeType.ROWS
-          ? this.rows
-          : (axetype === AxeType.COLUMNS
-          ? this.columns
-          : null);
-
-      if (axeToExpand && axeToExpand.toggleFieldExpansion(field, newState)) {
-          this.render();
-      }
-  };
-
-  toggleSubtotals(axetype) {
-      this.pgrid.toggleSubtotals(axetype);
-  };
-
-  areSubtotalsVisible(axetype) {
-      return this.pgrid.areSubtotalsVisible(axetype);
-  };
-
-  toggleGrandtotal(axetype) {
-      this.pgrid.toggleGrandtotal(axetype);
-  };
-
-  isGrandtotalVisible(axetype) {
-      return this.pgrid.isGrandtotalVisible(axetype);
-  };
-
-  changeTheme(newTheme) {
-      this.pivotComponent['changeTheme'](newTheme);
-  };
-
-  render(element?) {
-      this.renderElement = element || this.renderElement;
-      if(this.renderElement) {
-          var pivotTableFactory = React.createFactory(
-              this.pgrid.config.chartMode.enabled ?
-                  PivotChart :
-                  PivotTable);
-          var pivottable = pivotTableFactory({
-              pgridwidget: this
-          });
-          this.pivotComponent = ReactDOM.render(pivottable, this.renderElement);
-      }
-  };
-
-  unmount() {
-      ReactDOM.unmountComponentAtNode(this.renderElement);
-  };
-
-  drilldown(dataCell, pivotId) {
-      if(dataCell) {
-          var colIndexes = dataCell.columnDimension.getRowIndexes();
-          var data = dataCell.rowDimension.getRowIndexes()
-            .filter(index => colIndexes.indexOf(index) >= 0)
-            .map(index => this.pgrid.filteredDataSource[index]);
-
-          var title;
-          if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {
-              title = 'Grand total';
-          } else {
-              if(dataCell.rowType === HeaderType.GRAND_TOTAL) {
-                  title = dataCell.columnDimension.value + '/Grand total ';
-              } else if(dataCell.colType === HeaderType.GRAND_TOTAL) {
-                  title = dataCell.rowDimension.value + '/Grand total ';
-              } else {
-                  title = dataCell.rowDimension.value + '/' + dataCell.columnDimension.value;
-              }
-          }
-
-          this.dialog.show({
-              title: title,
-              comp: {
-                  type: Grid,
-                  props: {
-                      headers: this.pgrid.config.getDataSourceFieldCaptions(),
-                      data: data,
-                      theme: this.pgrid.config.theme
-                  }
-              },
-              theme: this.pgrid.config.theme,
-              style: this.pivotComponent['fontStyle']
-          });
-      }
-  };
-
   init() {
       // binding functions to have the proper 'this' when the function is used as callback
-      this.pgrid.subscribe(EVENT_UPDATED, this.buildUiAndRender.bind(this));
-      this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUiAndRender.bind(this));
-      this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUiAndRender.bind(this));
+      // this.pgrid.subscribe(EVENT_UPDATED, this.buildUiAndRender.bind(this));
+      // this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUiAndRender.bind(this));
+      // this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUiAndRender.bind(this));
 
       this.buildUi();
   }
@@ -259,11 +143,6 @@ export class  PGridWidget {
       var dataRows = [];
       var arr;
 
-      function createVisibleFunc(rowvisible, colvisible) {
-          return function() {
-              return rowvisible() && colvisible();
-          };
-      }
       if(rowsHeaders.length > 0) {
           const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
           for (var ri = 0; ri < rowHeadersLeafs.length; ri++) {
@@ -272,8 +151,7 @@ export class  PGridWidget {
               arr = [];
               for (var colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
                   var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
-                  var isvisible = createVisibleFunc(rowLeafHeader.visible, columnLeafHeader.visible);
-                  arr[colHeaderIndex] = new DataCell(this.pgrid, isvisible, rowLeafHeader, columnLeafHeader);
+                  arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
               }
               dataRows.push(arr);
           }
@@ -282,9 +160,125 @@ export class  PGridWidget {
       console.log(this);
   }
 
-  buildUiAndRender() {
-      this.buildUi();
-      this.render();
-  }
+  expandRow(cell) {
+      cell.expand();
+      // this.render();
+  };
+
+  collapseRow(cell) {
+      console.log(`collapseRow`);
+      console.log(cell);
+      // this.rows.headers
+      cell.subtotalHeader.collapse();
+      // this.render();
+  };
+
+  sort(axetype, field) {
+      this.pgrid.sort(axetype, field);
+  };
+
+  refreshData(data) {
+      this.pgrid.refreshData(data);
+  };
+
+  applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
+      this.pgrid.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
+  };
+
+  moveField(field, oldAxeType, newAxeType, position) {
+      this.pgrid.moveField(field, oldAxeType, newAxeType, position);
+  };
+
+  toggleFieldExpansion (axetype, field, newState) {
+      var axeToExpand =
+          axetype === AxeType.ROWS
+          ? this.rows
+          : (axetype === AxeType.COLUMNS
+          ? this.columns
+          : null);
+
+      // if (axeToExpand && axeToExpand.toggleFieldExpansion(field, newState)) {
+      //     this.render();
+      // }
+  };
+
+  toggleSubtotals(axetype) {
+      this.pgrid.toggleSubtotals(axetype);
+  };
+
+  areSubtotalsVisible(axetype) {
+      return this.pgrid.areSubtotalsVisible(axetype);
+  };
+
+  toggleGrandtotal(axetype) {
+      this.pgrid.toggleGrandtotal(axetype);
+  };
+
+  isGrandtotalVisible(axetype) {
+      return this.pgrid.isGrandtotalVisible(axetype);
+  };
+
+  changeTheme(newTheme) {
+      this.pivotComponent['changeTheme'](newTheme);
+  };
+
+  // render(element?) {
+  //     this.renderElement = element || this.renderElement;
+  //     if(this.renderElement) {
+  //         var pivotTableFactory = React.createFactory(
+  //             this.pgrid.config.chartMode.enabled ?
+  //                 PivotChart :
+  //                 PivotTable);
+  //         var pivottable = pivotTableFactory({
+  //             pgridwidgetstore: this
+  //         });
+  //         this.pivotComponent = ReactDOM.render(pivottable, this.renderElement);
+  //     }
+  // };
+  //
+  // unmount() {
+  //     ReactDOM.unmountComponentAtNode(this.renderElement);
+  // };
+
+  drilldown(dataCell) {
+      if(dataCell) {
+          var colIndexes = dataCell.columnDimension.getRowIndexes();
+          var data = dataCell.rowDimension.getRowIndexes()
+            .filter(index => colIndexes.indexOf(index) >= 0)
+            .map(index => this.pgrid.filteredDataSource[index]);
+
+          var title;
+          if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {
+              title = 'Grand total';``
+          } else {
+              if(dataCell.rowType === HeaderType.GRAND_TOTAL) {
+                  title = dataCell.columnDimension.value + '/Grand total ';
+              } else if(dataCell.colType === HeaderType.GRAND_TOTAL) {
+                  title = dataCell.rowDimension.value + '/Grand total ';
+              } else {
+                  title = dataCell.rowDimension.value + '/' + dataCell.columnDimension.value;
+              }
+          }
+
+          this.dialog.show({
+              title: title,
+              comp: {
+                  type: Grid,
+                  props: {
+                      headers: this.pgrid.config.getDataSourceFieldCaptions(),
+                      data: data,
+                      theme: this.pgrid.config.theme
+                  }
+              },
+              theme: this.pgrid.config.theme,
+              style: this.pivotComponent['fontStyle']
+          });
+      }
+  };
+
+  // buildUiAndRender() {
+  //     this.buildUi();
+  //     this.render();
+  // }
 
 };

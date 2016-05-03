@@ -8,7 +8,7 @@ export default class ColumnButtonComponent extends React.Component<any,any>{
     super(props)
   }
   render() {
-    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidgetstore.pgrid.config;
 
     const columnButtons = config.columnFields.map((field, index) => {
       return <PivotButton key={field.name}

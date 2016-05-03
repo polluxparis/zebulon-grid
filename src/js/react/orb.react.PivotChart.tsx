@@ -15,7 +15,7 @@ export default class PivotChartComponent extends React.Component<any,any>{
 
   id;
   pgrid;
-  pgridwidget;
+  pgridwidgetstore;
   fontStyle;
 
   constructor(){
@@ -26,17 +26,17 @@ export default class PivotChartComponent extends React.Component<any,any>{
     themeChangeCallbacks[this.id] = [];
     this.registerThemeChanged(this.updateClasses);
 
-    this.pgridwidget = this.props.pgridwidget;
-    this.pgrid = this.pgridwidget.pgrid;
+    this.pgridwidgetstore = this.props.pgridwidgetstore;
+    this.pgrid = this.pgridwidgetstore.pgrid;
   }
   sort(axetype, field) {
-    this.pgridwidget.sort(axetype, field);
+    this.pgridwidgetstore.sort(axetype, field);
   }
   moveButton(button, newAxeType, position) {
-    this.pgridwidget.moveField(button.props.field.name, button.props.axetype, newAxeType, position);
+    this.pgridwidgetstore.moveField(button.props.field.name, button.props.axetype, newAxeType, position);
   }
   applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
-    this.pgridwidget.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
+    this.pgridwidgetstore.applyFilter(fieldname, operator, term, staticValue, excludeStatic);
   }
   registerThemeChanged(compCallback) {
     if(compCallback) {
@@ -50,7 +50,7 @@ export default class PivotChartComponent extends React.Component<any,any>{
     }
   }
   changeTheme(newTheme) {
-    if(this.pgridwidget.pgrid.config.setTheme(newTheme)) {
+    if(this.pgridwidgetstore.pgrid.config.setTheme(newTheme)) {
       // notify this/sub-components of the theme change
       for(let i = 0; i < themeChangeCallbacks[this.id].length; i++) {
         themeChangeCallbacks[this.id][i]();
@@ -59,7 +59,7 @@ export default class PivotChartComponent extends React.Component<any,any>{
   }
   updateClasses() {
       const thisnode = ReactDOM.findDOMNode(this);
-      const classes = this.pgridwidget.pgrid.config.theme.getPivotClasses();
+      const classes = this.pgridwidgetstore.pgrid.config.theme.getPivotClasses();
       thisnode.className = classes.container;
       thisnode['children'][1].className = classes.table;
   }
@@ -87,7 +87,7 @@ export default class PivotChartComponent extends React.Component<any,any>{
   }
   render() {
 
-    const config = this.pgridwidget.pgrid.config;
+    const config = this.pgridwidgetstore.pgrid.config;
     const classes = config.theme.getPivotClasses();
 
     const tblStyle = {width: undefined, height: undefined};

@@ -4,7 +4,7 @@ import {AxeType} from '../orb.axe';
 
 import {Grid} from 'react-virtualized';
 
-import PivotTableComponent from './orb.react.PivotTable';
+import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
 
 interface Props{
@@ -15,7 +15,7 @@ layoutInfos:{
   lastLeftMostCellVSpan: number,
   topMostCells: {}
 },
-pivotTableComp:PivotTableComponent,
+pgridwidgetstore:PGridWidgetStore,
 onScroll?: any,
 scrollLeft?: any
 }
@@ -69,7 +69,7 @@ export default class PivotRowComponent extends React.Component<Props,{}>{
                       cell={cell}
                       leftmost={isleftmost}
                       topmost={this.istopmost}
-                      pivotTableComp={this.props.pivotTableComp}>
+                      pgridwidgetstore={this.props.pgridwidgetstore}>
            </PivotCell>;
   }
 
@@ -80,9 +80,9 @@ export default class PivotRowComponent extends React.Component<Props,{}>{
     //   this.layoutInfos.lastLeftMostCellVSpan--;
     // }
 
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
+    const pgridwidgetstore = this.props.pgridwidgetstore;
 
-    const config = pgridwidget.pgrid.config;
+    const config = pgridwidgetstore.pgrid.config;
 
     const rowHeight = 30;
     // const hspan = this.props.row[0].hspan(false);
@@ -143,7 +143,7 @@ export default class PivotRowComponent extends React.Component<Props,{}>{
                         cell={cell}
                         leftmost={isleftmost}
                         topmost={istopmost}
-                        pivotTableComp={this.props.pivotTableComp}>
+                        pgridwidgetstore={this.props.pgridwidgetstore}>
              </PivotCell>;
     });
 

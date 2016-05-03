@@ -5,33 +5,32 @@ import PivotRow from './orb.react.PivotRow';
 import {Grid} from 'react-virtualized';
 import PivotCell from './orb.react.PivotCell';
 
-
-import PivotTableComponent from './orb.react.PivotTable';
+import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
 interface Props{
-  pivotTableComp: PivotTableComponent,
+  pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
   scrollLeft: any
 }
 
 export default class ColumnHeadersComponent extends React.Component<Props,any>{
   _render() {
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    const cntrClass = pgridwidget.columns.headers.length === 0 ? '' : ' columns-cntr';
+    const pgridwidgetstore = this.props.pgridwidgetstore;
+    const cntrClass = pgridwidgetstore.columns.headers.length === 0 ? '' : ' columns-cntr';
 
     const layoutInfos = {
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
 
-    const columnHeaders = pgridwidget.columns.headers.map((headerRow, index) => {
+    const columnHeaders = pgridwidgetstore.columns.headers.map((headerRow, index) => {
       return <PivotRow
         onScroll={this.props.onScroll}
         scrollLeft={this.props.scrollLeft}
         key={index}
         row={headerRow}
         axetype={AxeType.COLUMNS}
-        pivotTableComp={this.props.pivotTableComp}
+        pgridwidgetstore={this.props.pgridwidgetstore}
         layoutInfos={layoutInfos}>
       </PivotRow>;
     });
@@ -42,14 +41,14 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
   }
   render() {
     console.log('render columnHeaders');
-    const pgridwidget = this.props.pivotTableComp.pgridwidget;
-    const config = pgridwidget.pgrid.config;
+    const pgridwidgetstore = this.props.pgridwidgetstore;
+    const config = pgridwidgetstore.pgrid.config;
     const rowHeight = 30;
-    const cntrClass = pgridwidget.columns.headers.length === 0 ? '' : ' columns-cntr';
+    const cntrClass = pgridwidgetstore.columns.headers.length === 0 ? '' : ' columns-cntr';
     // need to find how to represent the cells correctly using renderCell
 
-    const leafsHeadersCount = pgridwidget.columns.leafsHeaders.length;
-    const columnHeaders = pgridwidget.columns.headers.map((headerRow, index) =>{
+    const leafsHeadersCount = pgridwidgetstore.columns.leafsHeaders.length;
+    const columnHeaders = pgridwidgetstore.columns.headers.map((headerRow, index) =>{
       const columnsCount = headerRow.length;
       const columnWidth = (leafsHeadersCount/columnsCount)*100;
       return <Grid
@@ -65,10 +64,10 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
             renderCell={
               ({columnIndex, rowIndex}) => <PivotCell
                         key={columnIndex}
-                        cell={pgridwidget.columns.headers[index][columnIndex]}
+                        cell={pgridwidgetstore.columns.headers[index][columnIndex]}
                         leftmost={false}
                         topmost={false}
-                        pivotTableComp={this.props.pivotTableComp} />
+                        pgridwidgetstore={this.props.pgridwidgetstore} />
                         }
             />
           });

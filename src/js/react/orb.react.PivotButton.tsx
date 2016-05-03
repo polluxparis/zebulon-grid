@@ -75,7 +75,7 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		if (e.button !== 0) return;
 
 		if(e.ctrlKey) {
-		    this.props.pivotTableComp.pgridwidget.toggleFieldExpansion(this.props.axetype, this.props.field);
+		    this.props.pivotTableComp.pgridwidgetstore.toggleFieldExpansion(this.props.axetype, this.props.field);
 		} else {
 
 		    const thispos = domUtils.getOffset(ReactDOM.findDOMNode(this));

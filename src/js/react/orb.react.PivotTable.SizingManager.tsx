@@ -2,7 +2,7 @@ import * as ReactDOM from 'react-dom';
 import {updateTableColGroup, getSize} from '../orb.utils.dom';
 
 export function synchronizeWidths(pivotComp) {
-  if(pivotComp.pgridwidget.pgrid.config.chartMode.enabled) {
+  if(pivotComp.pgridwidgetstore.pgrid.config.chartMode.enabled) {
     return synchronizePivotChartWidths(pivotComp);
   } else {
     synchronizePivotTableWidths(pivotComp);
@@ -18,7 +18,7 @@ export function synchronizePivotChartWidths(pivotComp) {
   const chart = new ComponentSizeInfo(pivotComp.refs.chart);
   const rBtnsWidth = Math.max(rBtnsTbl.w, 67);
   const chartWidth = pivot.w - rBtnsWidth;
-  const pivotHeight = pivotComp.pgridwidget.pgrid.config.height;
+  const pivotHeight = pivotComp.pgridwidgetstore.pgrid.config.height;
   const chartHeight = !pivotHeight ? null : (pivotHeight - (topBtns.h + cBtns.h));
 
   // set pivotWrapperTable columns width to fixed value
@@ -49,7 +49,7 @@ export function synchronizePivotTableWidths(pivotComp) {
   const dataCellsWidths = dataCellsTbl.getLargestWidths(cHeadersTbl);
   const rHeadersWidth = Math.max(rHeadersTbl.w, rBtnsTbl.w, 67);
   const dataCellsContainerWidth = Math.min(dataCellsWidths.total + 1, pivot.w - rHeadersWidth - vScroll.w);
-  const pivotHeight = pivotComp.pgridwidget.pgrid.config.height;
+  const pivotHeight = pivotComp.pgridwidgetstore.pgrid.config.height;
   const dataCellsRemHeight = !pivotHeight ? null : (pivotHeight - (toolbar ? toolbar.h + 17 : 0) - (topBtns.h + cBtns.h + cHeadersTbl.h + hScroll.h));
   const dataCellsTableHeight = !dataCellsRemHeight ? null : Math.ceil(Math.min(dataCellsRemHeight, dataCellsTbl.h));
 

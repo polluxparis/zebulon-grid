@@ -6,7 +6,7 @@ import {AxeType} from '../orb.axe';
 
 export default class RowButtonComponent extends React.Component<any,any>{
   render() {
-    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidgetstore.pgrid.config;
 
     const rowButtons = config.rowFields.map((field, index) => {
       return <PivotButton key={field.name}
