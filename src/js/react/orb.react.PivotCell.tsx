@@ -111,7 +111,9 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
         const isWrapper = cell.type === HeaderType.WRAPPER && (cell as Header).dim.field.subTotal.visible && (cell as Header).dim.field.subTotal.collapsible;
         const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
-          console.log(`isSubtotal: ${isSubtotal}`);
+          // console.log(cell);
+          // console.log(`isSubtotal: ${isSubtotal}`);
+          // console.log(`isWrapper: ${isWrapper}`);
           headerPushed = true;
 
           divcontent.push(<div key="header-value" ref="cellContent">
@@ -147,11 +149,12 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
+    // border style is for dev only. To be deleted later
     return <div className={getClassname(this.props)}
                onDoubleClick={ cellClick }
                colSpan={cell.hspan()}
                rowSpan={cell.vspan()}>
-                <div>
+                <div style={{border: 'solid gray 0.5px'}}>
                   {divcontent}
                 </div>
            </div>;

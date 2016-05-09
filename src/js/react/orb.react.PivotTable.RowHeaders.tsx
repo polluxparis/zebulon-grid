@@ -21,7 +21,7 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
   }
 
   setColGroup(widths) {
-      const myNode = ReactDOM.findDOMNode(this);
+    const myNode = ReactDOM.findDOMNode(this);
     const colGroupNode = this.refs['colgroup'];
     myNode['style'].tableLayout = 'auto';
 
@@ -34,7 +34,7 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
     myNode['style'].tableLayout = 'fixed';
   }
   render(){
-    console.log('render rowHeaders');
+    // console.log('render rowHeaders');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const columnWidth = 100;

@@ -84,9 +84,7 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
       thisnode.className = classes.container;
       thisnode['children'][1].className = classes.table;
   }
-  // componentDidUpdate() {
-  //   this.synchronizeWidths();
-  // }
+
   componentDidMount() {
     const fontInfos = domUtils.getStyle(ReactDOM.findDOMNode(this), ['font-family', 'font-size'], true);
     this.fontStyle = {
@@ -94,59 +92,16 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
       fontSize: fontInfos[1]
     };
 
-    // const dataCellsNode = ReactDOM.findDOMNode(this.refs['dataCells']);
-    // const dataCellsTableNode = dataCellsNode['children'][0];
-    // const colHeadersNode = ReactDOM.findDOMNode(this.refs['colHeaders']);
-    // const rowHeadersNode = ReactDOM.findDOMNode(this.refs['rowHeaders']);
-    // (this.refs['horizontalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
-    //   const scrollAmount = Math.ceil(
-    //     scrollPercent * (
-    //       domUtils.getSize(dataCellsTableNode).width -
-    //       domUtils.getSize(dataCellsNode).width
-    //     )
-    //   );
-    //   colHeadersNode.scrollLeft = scrollAmount;
-    //   dataCellsNode.scrollLeft = scrollAmount;
-    // });
-    //
-    // (this.refs['verticalScrollBar'] as ScrollBar).setScrollClient(dataCellsNode, scrollPercent => {
-    //   const scrollAmount = Math.ceil(
-    //     scrollPercent * (
-    //       domUtils.getSize(dataCellsTableNode).height -
-    //       domUtils.getSize(dataCellsNode).height
-    //     )
-    //   );
-    //   rowHeadersNode.scrollTop = scrollAmount;
-    //   dataCellsNode.scrollTop = scrollAmount;
-    // });
-
-
-    // this.synchronizeWidths();
   }
-  // onWheel(e) {
-  //   let elem;
-  //   let scrollbar;
-  //   let amount;
-  //
-  //   if(e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['colHeaders']))) {
-  //     scrollbar = this.refs['horizontalScrollBar'];
-  //     amount = e.deltaX || e.deltaY;
-  //   } else if ((e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['rowHeaders']))) ||
-  //             (e.currentTarget == (elem = ReactDOM.findDOMNode(this.refs['dataCells']))) ) {
-  //     scrollbar = this.refs['verticalScrollBar'];
-  //     amount = e.deltaY;
-  //   }
-  //   if(scrollbar && scrollbar.scroll(amount, e.deltaMode)) {
-  //     utils.stopPropagation(e);
-  //     utils.preventDefault(e);
-  //   }
-  // }
-  // synchronizeWidths() {
-  //   SizingManager.synchronizeWidths(this);
-  //   (this.refs['horizontalScrollBar'] as ScrollBar).refresh();
-  //   (this.refs['verticalScrollBar'] as ScrollBar).refresh();
-  // }
   render() {
+
+    const rowHeight = 30;
+    const columnWidth = 100;
+
+    const rowVerticalCount = this.pgridwidgetstore.layout.rowHeaders.height;
+    const rowHorizontalCount = this.pgridwidgetstore.layout.rowHeaders.width;
+    const columnVerticalCount = this.pgridwidgetstore.layout.columnHeaders.height;
+    const columnHorizontalCount = this.pgridwidgetstore.layout.columnHeaders.width;
 
     const config = this.pgridwidgetstore.pgrid.config;
     const classes = config.theme.getPivotClasses();
@@ -154,6 +109,42 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
     const tblStyle = {width:undefined, height:undefined};
     if(config.width) { tblStyle.width = config.width; }
     if(config.height) { tblStyle.height = config.height; }
+
+    return (
+      <div>
+      <ScrollSync>
+      {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
+        return <div className={classes.container} style={tblStyle} ref="pivot">
+        <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0
+        }}>
+        <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: rowHeight*columnVerticalCount
+        }}>
+        <RowHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
+        </div>
+        <div
+        style={{
+          position: 'absolute',
+          left: columnWidth*rowHorizontalCount,
+          top: 0
+        }}>
+        <ColumnHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
+        <DataCells pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
+        </div>
+        </div>
+        </div>
+      }}
+      </ScrollSync>
+      <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
+      </div>
+    );
 
     // return (
     // <div className={classes.container} style={tblStyle} ref="pivot">
@@ -213,48 +204,6 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
     //   <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
     // </div>
     // );
-    return (
-      <div>
-        <ScrollSync>
-         {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
-           return <div className={classes.container} style={tblStyle} ref="pivot">
-              <div
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0
-              }}>
-              <div
-                id="filler"
-                style={{
-                  heigth: 60,
-                  width: 200
-                }}>
-                </div>
-                <div
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 60
-                }}>
-                <RowHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
-                </div>
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 200,
-                    top: 0
-                  }}>
-                  <ColumnHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
-                  <DataCells pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
-                </div>
-          </div>
-        </div>
-        }}
-        </ScrollSync>
-        <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
-    </div>
-    );
 
   }
 }

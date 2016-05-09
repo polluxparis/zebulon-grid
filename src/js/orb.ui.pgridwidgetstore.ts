@@ -30,7 +30,7 @@ require('../../dist/orb.css');
 * @class
 * @memberOf orb.ui
 * @param  {object} pgrid - pivot grid instance
-buico */
+*/
 export class  PGridWidgetStore {
 
   /**
@@ -94,7 +94,6 @@ export class  PGridWidgetStore {
           height: undefined
       }
   };
-  public renderElement: Element;
   public pivotComponent: React.Component<any,{}|void> | Element | void;
 
   public dialog;
@@ -119,17 +118,18 @@ export class  PGridWidgetStore {
       this.rows = new UiRows(this.pgrid.rows);
       this.columns = new UiCols(this.pgrid.columns);
 
-      var rowsHeaders = this.rows.headers;
-      var columnsLeafHeaders = this.columns.leafsHeaders;
+      const rowsHeaders = this.rows.headers;
+      const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
+      const columnsLeafHeaders = this.columns.leafsHeaders;
 
       // set control layout infos
       this.layout.rowHeaders = {
           width: (this.pgrid.rows.fields.length || 1) +
           (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-          height: rowsHeaders.length
+          height: rowHeadersLeafs.length
       };
       this.layout.columnHeaders = {
-          width: this.columns.leafsHeaders.length,
+          width: columnsLeafHeaders.length,
           height: (this.pgrid.columns.fields.length || 1) +
           (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
       };
@@ -143,7 +143,6 @@ export class  PGridWidgetStore {
       var arr;
 
       if(rowsHeaders.length > 0) {
-          const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
           for (var ri = 0; ri < rowHeadersLeafs.length; ri++) {
               var rowLeafHeader = rowHeadersLeafs[ri];
 

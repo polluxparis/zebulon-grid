@@ -19,7 +19,7 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
 
 
   render(){
-    console.log('render dataCells');
+    // console.log('render dataCells');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const columnsCount = pgridwidgetstore.dataRows[0].length;

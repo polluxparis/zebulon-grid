@@ -5,22 +5,29 @@ import {PGridWidgetStore} from './js/orb.ui.pgridwidgetstore';
 import PivotTableComponent from './js/react/orb.react.PivotTable';
 
 
-function getData(i,n) {
+function getData(data_repetition,n_toto) {
+	const n_titi = 3;
+	const n_tutu = 2;
+	var arr = [];
 	var res = [];
-	for(var k=0; k<10*i;k++){
-		res[k]=[];
-	}
-	for(var k=0; k<i;k++){
-		for (var j=0; j<10; j++){
-			res[10*k+j][0] = 'toto'+String(k%n);
-			res[10*k+j][3] = 'titi'+String(j);
-			res[10*k+j][1] = k+j;
-			res[10*k+j][2] = 100*k+3*j;
+	for(var k=0; k<data_repetition;k++){
+		for (var ll=0; ll<n_toto; ll++){
+			for (var l=0; l<n_titi; l++){
+				for (var j=0; j<n_tutu; j++){
+					arr = []
+					arr[0] = 'toto'+String(ll);
+					arr[3] = 'titi'+String(l);
+					arr[4] = 'tutu'+String(j);
+					arr[1] = k+10*j+100*l*1000*ll;
+					arr[2] = k+10*j+100*l*1000*ll;
+					res.push(arr);
+				}
 		}
+	}
 	}
 	return res;
     }
-const data = getData(1000,300);
+const data = getData(10,3);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -36,21 +43,21 @@ const data = getData(1000,300);
             columnsvisible: false
         },
         subTotal: {
-            visible: true,
-            collapsed: true,
-            collapsible: true
+            visible: false,
+            collapsed: false,
+            collapsible: false
         },
         rowSettings: {
             subTotal: {
                 visible: true,
-                collapsed: true,
+                collapsed: false,
                 collapsible: true
             }
         },
         columnSettings: {
             subTotal: {
-                visible: false,
-                collapsed: true,
+                visible: true,
+                collapsed: false,
                 collapsible: true
             }
         },
@@ -92,6 +99,10 @@ const data = getData(1000,300);
                 name: '3',
                 caption: 'Titi'
             },
+						{
+                name: '4',
+                caption: 'Tutu'
+            },
             // {
             //     name: '4',
             //     caption: 'Category',
@@ -112,8 +123,8 @@ const data = getData(1000,300);
                 aggregateFunc: 'sum'
             }
         ],
-        // rows    : [ 'Toto'],//, 'Category' ],
-        rows : [ 'Toto','Titi' ],
+        rows    : [ 'Tutu'],//, 'Category' ],
+        columns : [ 'Toto', 'Titi' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },

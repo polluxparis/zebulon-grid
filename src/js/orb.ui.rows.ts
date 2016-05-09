@@ -97,17 +97,17 @@ export class UiRows extends AxeUi{
 
                 var subtotalHeader;
                 if (!subdim.isLeaf && subdim.field.subTotal.visible) {
-                    subtotalHeader = new Header(AxeType.COLUMNS, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount());
+                    subtotalHeader = new Header(AxeType.ROWS, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount());
                 } else {
                     subtotalHeader = null;
                 }
 
-                var header = new Header(AxeType.COLUMNS, null, subdim, parent, this.dataFieldsCount(), subtotalHeader);
+                var header = new Header(AxeType.ROWS, null, subdim, parent, this.dataFieldsCount(), subtotalHeader);
                 infos.push(header);
 
-                // if (!subdim.isLeaf && subdim.field.subTotal.visible) {
-                //     infos.push(subtotalHeader);
-                // }
+                if (!subdim.isLeaf && subdim.field.subTotal.visible) {
+                    infos.push(subtotalHeader);
+                }
             }
         }
     }

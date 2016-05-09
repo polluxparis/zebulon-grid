@@ -14,33 +14,9 @@ interface Props{
 }
 
 export default class ColumnHeadersComponent extends React.Component<Props,any>{
-  _render() {
-    const pgridwidgetstore = this.props.pgridwidgetstore;
-    const cntrClass = pgridwidgetstore.columns.headers.length === 0 ? '' : ' columns-cntr';
 
-    const layoutInfos = {
-      lastLeftMostCellVSpan: 0,
-      topMostCells: {}
-    };
-
-    const columnHeaders = pgridwidgetstore.columns.headers.map((headerRow, index) => {
-      return <PivotRow
-        onScroll={this.props.onScroll}
-        scrollLeft={this.props.scrollLeft}
-        key={index}
-        row={headerRow}
-        axetype={AxeType.COLUMNS}
-        pgridwidgetstore={this.props.pgridwidgetstore}
-        layoutInfos={layoutInfos}>
-      </PivotRow>;
-    });
-
-    return  <div className={'inner-table-container' + cntrClass}>
-          {columnHeaders}
-    </div>;
-  }
   render() {
-    console.log('render columnHeaders');
+    // console.log('render columnHeaders');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const rowHeight = 30;
@@ -61,14 +37,7 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
             columnWidth={columnWidth}
             columnsCount={columnsCount}
             rowsCount={1}
-            renderCell={
-              ({columnIndex, rowIndex}) => <PivotCell
-                        key={columnIndex}
-                        cell={pgridwidgetstore.columns.headers[index][columnIndex]}
-                        leftmost={false}
-                        topmost={false}
-                        pgridwidgetstore={this.props.pgridwidgetstore} />
-                        }
+            renderCell={this.renderCell(index)}
             />
           });
 
@@ -78,4 +47,16 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
         </div>
       )
   };
+
+  private renderCell(index: number){
+
+    return ({columnIndex, rowIndex}) => <PivotCell
+                  key={columnIndex}
+                  cell={this.props.pgridwidgetstore.columns.headers[index][columnIndex]}
+                  leftmost={false}
+                  topmost={false}
+                  pgridwidgetstore={this.props.pgridwidgetstore} />
+  }
+
+
 };
