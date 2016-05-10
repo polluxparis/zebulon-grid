@@ -27,7 +27,7 @@ function getData(data_repetition,n_toto) {
 	}
 	return res;
     }
-const data = getData(10,3);
+const data = getData(10,10);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -49,16 +49,16 @@ const data = getData(10,3);
         },
         rowSettings: {
             subTotal: {
-                visible: true,
+                visible: false,
                 collapsed: false,
-                collapsible: true
+                collapsible: false
             }
         },
         columnSettings: {
             subTotal: {
-                visible: true,
+                visible: false,
                 collapsed: false,
-                collapsible: true
+                collapsible: false
             }
         },
         fields: [
@@ -123,8 +123,8 @@ const data = getData(10,3);
                 aggregateFunc: 'sum'
             }
         ],
-        rows    : [ 'Tutu'],//, 'Category' ],
-        columns : [ 'Toto', 'Titi' ],
+        columns    : [ 'Tutu'],//, 'Category' ],
+        rows : [ 'Toto', 'Titi' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },

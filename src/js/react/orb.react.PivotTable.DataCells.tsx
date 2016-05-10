@@ -24,13 +24,19 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
     const config = pgridwidgetstore.pgrid.config;
     const columnCount = pgridwidgetstore.dataRows[0].length;
 
+    const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
+    const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
+    const colVerticalCount = this.props.pgridwidgetstore.layout.columnHeaders.height;
+    const rowHorizontalCount = this.props.pgridwidgetstore.layout.rowHeaders.width;
+
+
     return(
     <Grid
       onScroll={this.props.onScroll}
       scrollLeft={this.props.scrollLeft}
       scrollTop={this.props.scrollTop}
-      width={config.width-100}
-      height={config.height-60}
+      width={config.width-cellWidth*rowHorizontalCount}
+      height={config.height-cellHeight*colVerticalCount}
       columnWidth={100}
       rowHeight={30}
       columnCount={columnCount}

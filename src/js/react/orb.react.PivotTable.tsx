@@ -95,8 +95,8 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
   }
   render() {
 
-    const rowHeight = 30;
-    const columnWidth = 100;
+    const rowHeight = this.pgridwidgetstore.layout.cell.height;
+    const columnWidth = this.pgridwidgetstore.layout.cell.width;
 
     const rowVerticalCount = this.pgridwidgetstore.layout.rowHeaders.height;
     const rowHorizontalCount = this.pgridwidgetstore.layout.rowHeaders.width;
@@ -112,37 +112,43 @@ export default class PivotTableComponent extends React.Component<Props,{}>{
 
     return (
       <div>
-      <ScrollSync>
-      {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
-        return <div className={classes.container} style={tblStyle} ref="pivot">
-        <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0
-        }}>
-        <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: rowHeight*columnVerticalCount
-        }}>
-        <RowHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
+        <UpperButtons pivotTableComp={this}></UpperButtons>
+        <ColumnButtons pivotTableComp={this}/>
+        <RowButtons pivotTableComp={this} ref="rowButtons"/>
+
+        <div style={{position:'absolute', left:0, top:100, border:'solid'}}>
+        <ScrollSync>
+        {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
+          return <div className={classes.container} style={tblStyle} ref="pivot">
+          <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0
+          }}>
+          <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: rowHeight*columnVerticalCount
+          }}>
+          <RowHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
+          </div>
+          <div
+          style={{
+            position: 'absolute',
+            left: columnWidth*rowHorizontalCount,
+            top: 0
+          }}>
+          <ColumnHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
+          <DataCells pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
+          </div>
+          </div>
+          </div>
+        }}
+        </ScrollSync>
+        <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
         </div>
-        <div
-        style={{
-          position: 'absolute',
-          left: columnWidth*rowHorizontalCount,
-          top: 0
-        }}>
-        <ColumnHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollLeft={scrollLeft} ref="colHeaders"></ColumnHeaders>
-        <DataCells pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
-        </div>
-        </div>
-        </div>
-      }}
-      </ScrollSync>
-      <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
       </div>
     );
 

@@ -57,6 +57,13 @@ export class  PGridWidgetStore {
   public dataRows;
 
   public layout = {
+      cell: {
+        /**
+        * Dimensions of a cell
+        */
+        height: 30,
+        width: 100
+      },
       rowHeaders: {
           /**
            * Total number of horizontal row headers.
@@ -142,9 +149,23 @@ export class  PGridWidgetStore {
       var dataRows = [];
       var arr;
 
+      // if(rowsHeaders.length > 0) {
+      //     for (var ri = 0; ri < rowHeadersLeafs.length; ri++) {
+      //         var rowLeafHeader = rowHeadersLeafs[ri];
+      //
+      //         arr = [];
+      //         for (var colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
+      //             var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
+      //             arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
+      //         }
+      //         dataRows.push(arr);
+      //     }
+      // }
+
       if(rowsHeaders.length > 0) {
-          for (var ri = 0; ri < rowHeadersLeafs.length; ri++) {
-              var rowLeafHeader = rowHeadersLeafs[ri];
+          for (var ri = 0; ri < rowsHeaders.length; ri++) {
+              var rowHeadersRow = rowsHeaders[ri];
+              var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];
 
               arr = [];
               for (var colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
@@ -154,6 +175,7 @@ export class  PGridWidgetStore {
               dataRows.push(arr);
           }
       }
+
       this.dataRows = dataRows;
       console.log(this);
   }

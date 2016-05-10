@@ -3,10 +3,11 @@ import * as ReactDOM from 'react-dom';
 import PivotRow from './orb.react.PivotRow';
 import {AxeType} from '../orb.axe';
 
-import {Grid} from 'react-virtualized';
+import {Grid, Collection} from 'react-virtualized';
 import PivotCell from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
+import{Header} from '../orb.ui.header';
 
 interface Props{
   pgridwidgetstore: PGridWidgetStore,
@@ -16,8 +17,10 @@ interface Props{
 
 
 export default class RowHeadersComponent extends React.Component<Props,any>{
+  headersConcat: Header[];
   constructor(){
     super();
+    this.layoutGetter = this.layoutGetter.bind(this);
   }
 
   setColGroup(widths) {
@@ -37,39 +40,52 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
     // console.log('render rowHeaders');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
-    const columnWidth = 100;
     const cntrClass = pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
 
+    const colNb = pgridwidgetstore.rows.headers[0].length;
+    pgridwidgetstore.rows.headers.map((headerRow,rowIndex)=>
+      headerRow.map((header,colIndex) => Object.assign(header,{x:colNb - headerRow.length+colIndex, y: rowIndex})));
+    this.headersConcat = [].concat(...pgridwidgetstore.rows.headers);
+    const cellCount = this.headersConcat.length;
 
-    const leafsHeadersCount = pgridwidgetstore.rows.headers[pgridwidgetstore.rows.headers.length - 1].length;
-    const rowHeaders = pgridwidgetstore.rows.headers.map((headerColumn, index)=>{
-      const rowCount = headerColumn.length;
-      const rowHeight = (leafsHeadersCount/rowCount)*30;
+    const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
+    const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
 
-      return <Grid
-              key={index}
-              onScroll={this.props.onScroll}
-              scrollTop={this.props.scrollTop}
-              width={columnWidth}
-              height={config.height - 60}
-              columnWidth={columnWidth}
-              rowHeight={rowHeight}
-              columnCount={1}
-              rowCount={rowCount}
-              cellRenderer={
-                ({columnIndex, rowIndex}) => <PivotCell
-                          key={rowIndex}
-                          cell={pgridwidgetstore.rows.headers[index][rowIndex]}
-                          leftmost={false}
-                          topmost={false}
-                          pgridwidgetstore={this.props.pgridwidgetstore} />
-                          }
-              />
-            })
+    const colVerticalCount = this.props.pgridwidgetstore.layout.columnHeaders.height;
+    const rowHorizontalCount = this.props.pgridwidgetstore.layout.rowHeaders.width;
+
+    const rowHeaders =
+      <Collection
+          onScroll={this.props.onScroll}
+          scrollTop={this.props.scrollTop}
+          height={config.height - colVerticalCount*cellHeight}
+          width={rowHorizontalCount*cellWidth}
+          cellCount={cellCount}
+          cellRenderer={({index})=>
+            <PivotCell
+                        key={index}
+                        cell={this.headersConcat[index]}
+                        leftmost={false}
+                        topmost={false}
+                        pgridwidgetstore={this.props.pgridwidgetstore} />
+          }
+          cellSizeAndPositionGetter={this.layoutGetter}
+          />
+        ;
+
       return <div className={'inner-table-container' + cntrClass} style={{display: 'flex'}}>
             {rowHeaders}
       </div>
 
+  }
+
+  layoutGetter({index}){
+    return ({
+            x:this.headersConcat[index]['x']*100,
+            y:this.headersConcat[index]['y']*30,
+            height:30*this.headersConcat[index].vspan(),
+            width:100*this.headersConcat[index].hspan()
+          })
   }
 
   _render(){

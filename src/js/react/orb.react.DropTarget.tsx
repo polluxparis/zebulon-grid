@@ -6,8 +6,8 @@ import {AxeType} from '../orb.axe';
 let dtid = 0;
 
 export default class DropTarget extends React.Component<any,any>{
-    _isMounted: boolean;
-    dtid: number;
+  private _isMounted: boolean;
+  dtid: number;
 	constructor(props) {
 		super(props);
 		this.dtid = ++dtid;
@@ -17,10 +17,10 @@ export default class DropTarget extends React.Component<any,any>{
     this.onDragOver = this.onDragOver.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
 	}
-  	componentDidMount() {
-			this._isMounted = true;
-  		DragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
-  	}
+	componentDidMount() {
+		this._isMounted = true;
+		DragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
+	}
 	componentWillUnmount() {
 		this._isMounted = false;
 		DragManager.unregisterTarget(this);
