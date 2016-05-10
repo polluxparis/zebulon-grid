@@ -22,7 +22,7 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
     // console.log('render dataCells');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
-    const columnsCount = pgridwidgetstore.dataRows[0].length;
+    const columnCount = pgridwidgetstore.dataRows[0].length;
 
     return(
     <Grid
@@ -33,9 +33,9 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
       height={config.height-60}
       columnWidth={100}
       rowHeight={30}
-      columnsCount={columnsCount}
-      rowsCount={pgridwidgetstore.dataRows.length}
-      renderCell={
+      columnCount={columnCount}
+      rowCount={pgridwidgetstore.dataRows.length}
+      cellRenderer={
         ({columnIndex, rowIndex}) => <PivotCell
                   key={columnIndex}
                   cell={pgridwidgetstore.dataRows[rowIndex][columnIndex]}

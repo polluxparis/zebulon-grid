@@ -31,10 +31,10 @@ export default class PivotRowComponent extends React.Component<Props,{}>{
     this.lastCellIndex = this.props.row.length - 1;
     this.cell0 = this.props.row[0];
     this.layoutInfos = this.props.layoutInfos;
-    this.renderCell = this.renderCell.bind(this);
+    this.cellRenderer = this.cellRenderer.bind(this);
   }
 
-  renderCell({columnIndex, rowIndex}) {
+  cellRenderer({columnIndex, rowIndex}) {
 
     let cell = this.props.row[columnIndex]
     let isleftmost = false;
@@ -96,9 +96,9 @@ export default class PivotRowComponent extends React.Component<Props,{}>{
         width={config.width}
         rowHeight={rowHeight}
         columnWidth={100*hspan}
-        columnsCount={this.props.row.length/hspan}
-        rowsCount={1}
-        renderCell={this.renderCell}
+        columnCount={this.props.row.length/hspan}
+        rowCount={1}
+        cellRenderer={this.cellRenderer}
       />
     );
   }

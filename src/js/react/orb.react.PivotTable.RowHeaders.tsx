@@ -43,8 +43,8 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
 
     const leafsHeadersCount = pgridwidgetstore.rows.headers[pgridwidgetstore.rows.headers.length - 1].length;
     const rowHeaders = pgridwidgetstore.rows.headers.map((headerColumn, index)=>{
-      const rowsCount = headerColumn.length;
-      const rowHeight = (leafsHeadersCount/rowsCount)*30;
+      const rowCount = headerColumn.length;
+      const rowHeight = (leafsHeadersCount/rowCount)*30;
 
       return <Grid
               key={index}
@@ -54,9 +54,9 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
               height={config.height - 60}
               columnWidth={columnWidth}
               rowHeight={rowHeight}
-              columnsCount={1}
-              rowsCount={rowsCount}
-              renderCell={
+              columnCount={1}
+              rowCount={rowCount}
+              cellRenderer={
                 ({columnIndex, rowIndex}) => <PivotCell
                           key={rowIndex}
                           cell={pgridwidgetstore.rows.headers[index][rowIndex]}
@@ -91,9 +91,9 @@ export default class RowHeadersComponent extends React.Component<Props,any>{
               height={config.height - 60}
               columnWidth={columnWidth}
               rowHeight={30}
-              columnsCount={1}
-              rowsCount={pgridwidgetstore.rows.headers.length}
-              renderCell={
+              columnCount={1}
+              rowCount={pgridwidgetstore.rows.headers.length}
+              cellRenderer={
                 ({columnIndex, rowIndex}) => <PivotRow
                           key={columnIndex}
                           row={pgridwidgetstore.rows.headers[rowIndex]}

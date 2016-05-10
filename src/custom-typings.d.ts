@@ -4,27 +4,44 @@ interface GridProps{
   height: number,
   columnWidth:number,
   rowHeight:number,
-  columnsCount:number,
-  rowsCount:number,
+  columnCount:number,
+  rowCount:number,
   onScroll?: any,
   scrollTop?: number,
   scrollLeft?: number,
-  overscanRowsCount?:number,
-  overscanColumnsCount?:number,
-  renderCell:(renderCellArgs) => (JSX.Element|string)
+  overscanRowCount?:number,
+  overscanColumnCount?:number,
+  cellRenderer:(cellRendererArgs) => (JSX.Element|string)
 }
 
-interface renderCellArgs {
+interface cellRendererArgs {
   columnIndex:number,
   rowIndex:number
+}
+
+interface cellSizeAndPositionGetter {
+  index:number
 }
 
 interface ScrollSyncProps{
   // children:({onScroll, scrollLeft, scrollTop}) =>JSX.Element
 }
 
+interface CollectionProps{
+  width: number,
+  height: number,
+  cellCount: number,
+  onScroll?: any,
+  scrollTop?: number,
+  scrollLeft?: number,
+  cellRenderer:(cellRendererArgs) => (JSX.Element|string),
+  cellSizeAndPositionGetter:(cellSizeAndPositionGetter) => { height: number, width: number, x: number, y: number }
+}
+
 declare module "react-virtualized"{
   class Grid extends __React.Component<GridProps,{}>{}
 
   class ScrollSync extends __React.Component<ScrollSyncProps,{}>{}
+
+  class Collection extends __React.Component<CollectionProps,{}>{}
 }
