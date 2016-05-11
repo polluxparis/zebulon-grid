@@ -1,10 +1,9 @@
 {
-  "name": "orb",
-  "version": "1.1.0",
+  "name": "orb-emile",
+  "version": "0.0.1",
   "license": "MIT",
   "description": "Pivot table javascript library",
-  "author": "Najmeddine Nouri <devnajm@gmail.com>",
-  "homepage": "http://orbjs.net/",
+  "author": "Emile Bres <emile.bres@gmail.com>",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
@@ -23,7 +22,7 @@
     "aggregation",
     "dimension"
   ],
-  "main": "src/js/orb.js",
+  "main": "src/js/orb.ts",
   "files": [
     "README.md",
     "LICENCE",
@@ -39,6 +38,7 @@
     "mobx": "^2.0.0",
     "mobx-react": "^3.1.0",
     "react": "~15.0.1",
+    "react-addons-shallow-compare": "^15.0.1",
     "react-dom": "~15.0.1",
     "react-virtualized": "~7.0.0"
   },

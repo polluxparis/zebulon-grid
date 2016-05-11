@@ -32,4 +32,4 @@
 // export {Query} from './orb.query';
 // export * from './orb.export.excel';
 
-export {PivotTableComponent} from './react/orb.react.PivotTable/';
+export {PGridWidget} from './orb.ui.pgridwidget';

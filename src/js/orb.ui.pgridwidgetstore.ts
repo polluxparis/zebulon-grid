@@ -17,10 +17,8 @@ import {HeaderType, DataCell, CellBase} from './orb.ui.header';
 import {UiRows} from './orb.ui.rows';
 import {UiCols} from './orb.ui.cols';
 
-import {Dialog} from './react/orb.react.Dialog';
-import PivotChart from './react/orb.react.PivotChart';
-import PivotTable from './react/orb.react.PivotTable';
-import Grid from './react/orb.react.Grid';
+// import Dialog from './react/orb.react.Dialog';
+// import Grid from './react/orb.react.Grid';
 
 
 /**
@@ -104,7 +102,7 @@ export class PGridWidgetStore {
   public dialog;
 
   constructor(config) {
-      this.dialog = Dialog.create();
+      // this.dialog = Dialog.create();
       this.pgrid = new PGrid(config);
       this.init();
   };
@@ -236,39 +234,39 @@ export class PGridWidgetStore {
   };
 
   drilldown(dataCell) {
-      if(dataCell) {
-          var colIndexes = dataCell.columnDimension.getRowIndexes();
-          var data = dataCell.rowDimension.getRowIndexes()
-            .filter(index => colIndexes.indexOf(index) >= 0)
-            .map(index => this.pgrid.filteredDataSource[index]);
-
-          var title;
-          if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {
-              title = 'Grand total';``
-          } else {
-              if(dataCell.rowType === HeaderType.GRAND_TOTAL) {
-                  title = dataCell.columnDimension.value + '/Grand total ';
-              } else if(dataCell.colType === HeaderType.GRAND_TOTAL) {
-                  title = dataCell.rowDimension.value + '/Grand total ';
-              } else {
-                  title = dataCell.rowDimension.value + '/' + dataCell.columnDimension.value;
-              }
-          }
-
-          this.dialog.show({
-              title: title,
-              comp: {
-                  type: Grid,
-                  props: {
-                      headers: this.pgrid.config.getDataSourceFieldCaptions(),
-                      data: data,
-                      theme: this.pgrid.config.theme
-                  }
-              },
-              theme: this.pgrid.config.theme
-              // style: this.pivotComponent['fontStyle']
-          });
-      }
+      // if(dataCell) {
+      //     var colIndexes = dataCell.columnDimension.getRowIndexes();
+      //     var data = dataCell.rowDimension.getRowIndexes()
+      //       .filter(index => colIndexes.indexOf(index) >= 0)
+      //       .map(index => this.pgrid.filteredDataSource[index]);
+      //
+      //     var title;
+      //     if(dataCell.rowType === HeaderType.GRAND_TOTAL && dataCell.colType === HeaderType.GRAND_TOTAL) {
+      //         title = 'Grand total';``
+      //     } else {
+      //         if(dataCell.rowType === HeaderType.GRAND_TOTAL) {
+      //             title = dataCell.columnDimension.value + '/Grand total ';
+      //         } else if(dataCell.colType === HeaderType.GRAND_TOTAL) {
+      //             title = dataCell.rowDimension.value + '/Grand total ';
+      //         } else {
+      //             title = dataCell.rowDimension.value + '/' + dataCell.columnDimension.value;
+      //         }
+      //     }
+      //
+      //     this.dialog.show({
+      //         title: title,
+      //         comp: {
+      //             type: Grid,
+      //             props: {
+      //                 headers: this.pgrid.config.getDataSourceFieldCaptions(),
+      //                 data: data,
+      //                 theme: this.pgrid.config.theme
+      //             }
+      //         },
+      //         theme: this.pgrid.config.theme
+      //         // style: this.pivotComponent['fontStyle']
+      //     });
+      // }
   };
 
 };

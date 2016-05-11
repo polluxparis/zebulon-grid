@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
 import {PGridWidgetStore} from './js/orb.ui.pgridwidgetstore';
 import {PivotTableComponent} from './js/react/orb.react.PivotTable';
-
+import {PGridWidget} from './js/orb.ui.pgridwidget';
 
 function getData(data_repetition,n_toto) {
 	const n_titi = 3;
@@ -134,5 +134,7 @@ const data = getData(1,100);
          //   'Quantity'    : [4, 8, 12]
         }*/
     };
-const appStore = new PGridWidgetStore(config);
-ReactDOM.render(<PivotTableComponent pgridwidgetstore={appStore}/>, document.getElementById('grid'))
+const widget = new PGridWidget(config);
+widget.render(document.getElementById('grid'));
+// ReactDOM.render(<PivotTableComponent pgridwidgetstore={appStore}/>, document.getElementById('grid'))
+// ReactDOM.render(React.createElement(PivotTableComponent, {pgridwidgetstore:new PGridWidgetStore(config)}), document.getElementById('grid'))

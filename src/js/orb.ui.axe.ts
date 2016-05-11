@@ -54,7 +54,7 @@ export class AxeUi{
         for(var i = 0; i < this.headers.length; i++) {
             for(hIndex = 0; hIndex < this.headers[i].length; hIndex++) {
                 var header = this.headers[i][hIndex];
-                if(header.type === HeaderType.SUB_TOTAL && (field == null || header.dim.field.name == field.name)) {
+                if(header.type === HeaderType.SUB_TOTAL && (field == null || (header as Header).dim.field.name == field.name)) {
                     toToggle.push(header);
                     allExpanded = allExpanded && header.expanded;
                 }
