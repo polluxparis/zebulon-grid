@@ -151,6 +151,7 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
 
     // border style is for dev only. To be deleted later
     return <div className={getClassname(this.props)}
+              style={{width:'100%', height:'100%'}}
                onDoubleClick={ cellClick }
               //  colSpan={cell.hspan()}
               //  rowSpan={cell.vspan()}

@@ -3,6 +3,10 @@ import {Axe, AxeType} from '../orb.axe';
 import * as defaultToolbarConfig from './defaultToolbarConfig';
 
 export default class ToolbarComponent extends React.Component<any,any>{
+  constructor(){
+    super();
+    this.createCallback = this.createCallback.bind(this);
+  }
   _toInit = [];
   componentDidMount() {
     for(let i = 0; i < this._toInit.length; i++){

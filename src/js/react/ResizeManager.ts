@@ -18,7 +18,7 @@ export class ResizeManager {
 		this.outerContainerElem = outerContainerElem;
 		this.valuesTableElem = valuesTableElem;
 		this.resizeGripElem = resizeGripElem;
-
+		console.log(this.outerContainerElem);
 		utils.addEventListener(this.resizeGripElem, 'mousedown', this.resizeMouseDown.bind(this));
 		utils.addEventListener(document, 'mouseup', this.resizeMouseUp.bind(this));
 		utils.addEventListener(document, 'mousemove', this.resizeMouseMove.bind(this));
@@ -53,12 +53,17 @@ export class ResizeManager {
 		if (!this.isMouseDown) return;
 		const mousePageXY = utils.getMousePageXY(e);
 
+		//there is a bug with getBoundingClientRect that overestimate the size of outerContainerElem leading to wild extension of the filter panel size
+		// using style.width and height corrects it but not sure of it's best practice
 		const resizeGripSize = this.resizeGripElem.getBoundingClientRect();
-		const outerContainerSize = this.outerContainerElem.getBoundingClientRect();
+		// const outerContainerSize = this.outerContainerElem.getBoundingClientRect();
 		const valuesTableSize = this.valuesTableElem.tBodies[0].getBoundingClientRect();
 
-		const outerContainerWidth = outerContainerSize.right - outerContainerSize.left;
-		const outerContainerHeight = outerContainerSize.bottom - outerContainerSize.top;
+		// const outerContainerWidth = outerContainerSize.right - outerContainerSize.left;
+		// const outerContainerHeight = outerContainerSize.bottom - outerContainerSize.top;
+		const outerContainerWidth = Number(this.outerContainerElem.style.width.slice(0,-2));
+		const outerContainerHeight = Number(this.outerContainerElem.style.height.slice(0,-2));
+
 
 		const offset = {
 			x: outerContainerWidth <= this.minContainerWidth && mousePageXY.pageX < resizeGripSize.left ? 0 : mousePageXY.pageX - this.mousedownpos.x,
@@ -67,7 +72,6 @@ export class ResizeManager {
 
 		const newContainerWidth = outerContainerWidth  + offset.x;
 		const newContainerHeight = outerContainerHeight  + offset.y;
-
 		this.mousedownpos.x = mousePageXY.pageX;
 		this.mousedownpos.y = mousePageXY.pageY;
 
@@ -79,7 +83,6 @@ export class ResizeManager {
 			this.outerContainerElem.style.height = `${newContainerHeight}px`;
 			this.valuesTableElem.tBodies[0].style.height = `${valuesTableSize.bottom - valuesTableSize.top + offset.y}px`;
 		}
-
 		utils.stopPropagation(e);
 		utils.preventDefault(e);
 	};

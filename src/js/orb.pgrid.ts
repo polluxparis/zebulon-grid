@@ -62,15 +62,15 @@ export class PGrid extends PubSub{
     }
 
     refresh(refreshFilters?) {
-        if(refreshFilters !== false) {
-            this.refreshFilteredDataSource();
-        }
-        this.rows.update();
-        this.columns.update();
-       this.computeValues();
+      if(refreshFilters !== false) {
+        this.refreshFilteredDataSource();
+      }
+      this.rows.update();
+      this.columns.update();
+      this.computeValues();
 
-        // publish updated event
-        this.publish(EVENT_UPDATED);
+      // publish updated event
+      this.publish(EVENT_UPDATED);
     }
 
     refreshFilteredDataSource() {
@@ -428,4 +428,3 @@ export class PGrid extends PubSub{
         }
     }
 };
-

@@ -9,6 +9,8 @@
 /*jshint eqnull: true*/
 
 import * as React from 'react';
+import {observable} from 'mobx';
+
 import {Axe, AxeType} from './orb.axe';
 import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED} from './orb.pgrid';
 import {HeaderType, DataCell, CellBase} from './orb.ui.header';
@@ -20,10 +22,6 @@ import PivotChart from './react/orb.react.PivotChart';
 import PivotTable from './react/orb.react.PivotTable';
 import Grid from './react/orb.react.Grid';
 
-// CSS files
-// Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
-require('../../dist/orb.css');
-// require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 /**
 * Creates a new instance of pivot grid control
@@ -31,32 +29,32 @@ require('../../dist/orb.css');
 * @memberOf orb.ui
 * @param  {object} pgrid - pivot grid instance
 */
-export class  PGridWidgetStore {
+export class PGridWidgetStore {
 
   /**
    * Parent pivot grid
    * @type {orb.pgrid}
    */
-  public pgrid: PGrid;
+  @observable public pgrid: PGrid;
 
   /**
    * Control rows headers
    * @type {orb.ui.rows}
    */
-  public rows: UiRows = null;
+  @observable public rows: UiRows = null;
   /**
    * Control columns headers
    * @type {orb.ui.cols}
    */
-  public columns: UiCols = null;
+  @observable public columns: UiCols = null;
 
   /**
    * Control data rows
    * @type {orb.ui.CellBase}
    */
-  public dataRows;
+  @observable public dataRows;
 
-  public layout = {
+  @observable public layout = {
       cell: {
         /**
         * Dimensions of a cell
@@ -112,10 +110,9 @@ export class  PGridWidgetStore {
   };
 
   init() {
-      // binding functions to have the proper 'this' when the function is used as callback
-      // this.pgrid.subscribe(EVENT_UPDATED, this.buildUiAndRender.bind(this));
-      // this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUiAndRender.bind(this));
-      // this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUiAndRender.bind(this));
+      this.pgrid.subscribe(EVENT_UPDATED, this.buildUi.bind(this));
+      this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUi.bind(this));
+      this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUi.bind(this));
 
       this.buildUi();
   }
@@ -126,14 +123,14 @@ export class  PGridWidgetStore {
       this.columns = new UiCols(this.pgrid.columns);
 
       const rowsHeaders = this.rows.headers;
-      const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
+      // const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
       const columnsLeafHeaders = this.columns.leafsHeaders;
 
       // set control layout infos
       this.layout.rowHeaders = {
           width: (this.pgrid.rows.fields.length || 1) +
           (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-          height: rowHeadersLeafs.length
+          height: rowsHeaders.length
       };
       this.layout.columnHeaders = {
           width: columnsLeafHeaders.length,
@@ -268,8 +265,8 @@ export class  PGridWidgetStore {
                       theme: this.pgrid.config.theme
                   }
               },
-              theme: this.pgrid.config.theme,
-              style: this.pivotComponent['fontStyle']
+              theme: this.pgrid.config.theme
+              // style: this.pivotComponent['fontStyle']
           });
       }
   };

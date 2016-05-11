@@ -2,7 +2,7 @@ import * as React from 'react';
 import {AxeType} from '../orb.axe';
 import PivotRow from './orb.react.PivotRow';
 
-import {Grid} from 'react-virtualized';
+import {Grid, AutoSizer} from 'react-virtualized';
 import 'react-virtualized/styles.css';
 import PivotCell from './orb.react.PivotCell';
 
@@ -26,30 +26,30 @@ export default class DataCellsComponent extends React.Component<Props,{}>{
 
     const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
     const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
-    const colVerticalCount = this.props.pgridwidgetstore.layout.columnHeaders.height;
-    const rowHorizontalCount = this.props.pgridwidgetstore.layout.rowHeaders.width;
-
 
     return(
-    <Grid
-      onScroll={this.props.onScroll}
-      scrollLeft={this.props.scrollLeft}
-      scrollTop={this.props.scrollTop}
-      width={config.width-cellWidth*rowHorizontalCount}
-      height={config.height-cellHeight*colVerticalCount}
-      columnWidth={100}
-      rowHeight={30}
-      columnCount={columnCount}
-      rowCount={pgridwidgetstore.dataRows.length}
-      cellRenderer={
-        ({columnIndex, rowIndex}) => <PivotCell
-                  key={columnIndex}
-                  cell={pgridwidgetstore.dataRows[rowIndex][columnIndex]}
-                  leftmost={true}
-                  topmost={true}
-                  pgridwidgetstore={this.props.pgridwidgetstore} />
-                  }
-      />
+      <AutoSizer>
+      {({height, width})=>
+        <Grid
+          onScroll={this.props.onScroll}
+          scrollLeft={this.props.scrollLeft}
+          scrollTop={this.props.scrollTop}
+          width={width}
+          height={height}
+          columnWidth={cellWidth}
+          rowHeight={cellHeight}
+          columnCount={columnCount}
+          rowCount={pgridwidgetstore.dataRows.length}
+          cellRenderer={
+            ({columnIndex, rowIndex}) => <PivotCell
+                      key={columnIndex}
+                      cell={pgridwidgetstore.dataRows[rowIndex][columnIndex]}
+                      leftmost={true}
+                      topmost={true}
+                      pgridwidgetstore={this.props.pgridwidgetstore} />
+                      }
+          />}
+        </AutoSizer>
     )
   }
 

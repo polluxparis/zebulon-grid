@@ -27,7 +27,7 @@ function getData(data_repetition,n_toto) {
 	}
 	return res;
     }
-const data = getData(10,10);
+const data = getData(1,100);
  var config = {
         dataSource: data,
         canMoveFields: true,

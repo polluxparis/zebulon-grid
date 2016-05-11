@@ -44,4 +44,6 @@ declare module "react-virtualized"{
   class ScrollSync extends __React.Component<ScrollSyncProps,{}>{}
 
   class Collection extends __React.Component<CollectionProps,{}>{}
+
+  class AutoSizer  extends __React.Component<any,{}>{}
 }

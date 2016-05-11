@@ -2,7 +2,7 @@ import * as React from 'react';
 import {AxeType} from '../orb.axe';
 import PivotRow from './orb.react.PivotRow';
 
-import {Grid, Collection} from 'react-virtualized';
+import {Collection,AutoSizer} from 'react-virtualized';
 import PivotCell from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
@@ -37,18 +37,15 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
     this.headersConcat = [].concat(...pgridwidgetstore.columns.headers);
     const cellCount = this.headersConcat.length;
 
-    const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
-    const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
-    const colVerticalCount = this.props.pgridwidgetstore.layout.columnHeaders.height;
-    const rowHorizontalCount = this.props.pgridwidgetstore.layout.rowHeaders.width;
-
     // const columnWidth = (leafsHeadersCount/columnCount)*100;
     const columnHeaders =
+    <AutoSizer>
+      {({height, width})=>
       <Collection
         onScroll={this.props.onScroll}
         scrollLeft={this.props.scrollLeft}
-        height={colVerticalCount*cellHeight}
-        width={config.width - rowHorizontalCount*cellWidth}
+        width={width}
+        height={height}
         cellCount={cellCount}
         cellRenderer={({index})=><PivotCell
                       key={index}
@@ -57,23 +54,26 @@ export default class ColumnHeadersComponent extends React.Component<Props,any>{
                       topmost={false}
                       pgridwidgetstore={this.props.pgridwidgetstore} />}
         cellSizeAndPositionGetter={this.layoutGetter}
-        />
+        />}
+        </AutoSizer>
 
     return (
-        <div className={'inner-table-container' + cntrClass} >
+        <div className={'inner-table-container' + cntrClass} style={{width:'100%', height:'100%'}}>
         {columnHeaders}
         </div>
       )
   };
 
   private layoutGetter({index}){
+    const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
+    const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
     // multiplication by hspan is dirty
     // should be modifed later if need to use more complex patterns than just cells on a line having same widths
     return ({
-            x:this.headersConcat[index]['x']*100*this.headersConcat[index].hspan(),
-            y:this.headersConcat[index]['y']*30,
-            height:30*this.headersConcat[index].vspan(),
-            width:100*this.headersConcat[index].hspan()
+            x:this.headersConcat[index]['x']*cellWidth*this.headersConcat[index].hspan(),
+            y:this.headersConcat[index]['y']*cellHeight,
+            height:cellHeight*this.headersConcat[index].vspan(),
+            width:cellWidth*this.headersConcat[index].hspan()
           })
   }
 
