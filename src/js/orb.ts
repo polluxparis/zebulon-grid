@@ -26,8 +26,10 @@
 
 'use strict';
 
-export * from './orb.utils';
-export {PGrid} from './orb.pgrid';
-export {PGridWidgetStore} from './orb.ui.pgridwidgetstore';
-export {Query} from './orb.query';
-export * from './orb.export.excel';
+// export * from './orb.utils';
+// export {PGrid} from './orb.pgrid';
+// export {PGridWidgetStore} from './orb.ui.pgridwidgetstore';
+// export {Query} from './orb.query';
+// export * from './orb.export.excel';
+
+export {PivotTableComponent} from './react/orb.react.PivotTable/';

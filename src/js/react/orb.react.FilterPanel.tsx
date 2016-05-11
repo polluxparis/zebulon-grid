@@ -6,7 +6,7 @@ import * as utils from '../orb.utils';
 import * as filtering from '../orb.filtering';
 import {FilterManager} from './FilterManager';
 
-import PivotTableComponent from './orb.react.PivotTable';
+import {PivotTableComponent} from './orb.react.PivotTable';
 
 interface Props{
 	field: string,

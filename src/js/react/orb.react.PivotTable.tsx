@@ -34,7 +34,7 @@ interface Props{
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 @observer
-export default class PivotTableComponent extends React.Component<Props,{}>{
+export class PivotTableComponent extends React.Component<Props,{}>{
 
   id:number = pivotId++;
   pgrid: PGrid = null;

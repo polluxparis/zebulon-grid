@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
 import {PGridWidgetStore} from './js/orb.ui.pgridwidgetstore';
-import PivotTableComponent from './js/react/orb.react.PivotTable';
+import {PivotTableComponent} from './js/react/orb.react.PivotTable';
 
 
 function getData(data_repetition,n_toto) {
