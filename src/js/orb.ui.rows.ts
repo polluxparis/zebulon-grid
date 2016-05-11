@@ -19,7 +19,7 @@ import {Dimension} from './orb.dimension';
  * @memberOf orb.ui
  * @param  {orb.axe} rowsAxe - axe containing all rows dimensions.
  */
-export class UiRows extends AxeUi{
+export class UiRows extends AxeUi {
 
     constructor(rowsAxe: Axe) {
         super(rowsAxe);
@@ -31,7 +31,7 @@ export class UiRows extends AxeUi{
         var grandtotalHeader;
 
         if (this.axe != null) {
-            if(this.axe.root.values.length > 0 || this.axe.pgrid.config.grandTotal.rowsvisible) {
+            if (this.axe.root.values.length > 0 || this.axe.pgrid.config.grandTotal.rowsvisible) {
                 headers.push([]);
 
                 // Fill Rows layout infos
@@ -52,7 +52,7 @@ export class UiRows extends AxeUi{
                 headers.push([grandtotalHeader = new Header(AxeType.ROWS, HeaderType.INNER, this.axe.root, null, this.dataFieldsCount())]);
             }
 
-            if(grandtotalHeader) {
+            if (grandtotalHeader) {
                 // add grand-total data headers if more than 1 data field and they will be the leaf headers
                 this.addDataHeaders(headers, grandtotalHeader);
             }

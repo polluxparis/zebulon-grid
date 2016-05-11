@@ -9,7 +9,7 @@
 /*jshint eqnull: true*/
 
 import {Axe, AxeType} from './orb.axe';
-import {Header, HeaderType} from './orb.ui.header';
+import {Header, DataHeader, HeaderType} from './orb.ui.header';
 
 /**
  * Creates a new instance of rows/columns ui properties.
@@ -29,10 +29,10 @@ export class AxeUi{
      * Headers render properties
      * @type {Array}
      */
-    public headers: Array<Array<Header>>;
+    public headers: (Header|DataHeader)[][] = [];
+
     constructor(axeModel){
         this.axe = axeModel;
-        this.headers = [];
     }
 
     dataFieldsCount() {
@@ -54,7 +54,7 @@ export class AxeUi{
         for(var i = 0; i < this.headers.length; i++) {
             for(hIndex = 0; hIndex < this.headers[i].length; hIndex++) {
                 var header = this.headers[i][hIndex];
-                if(header.type === HeaderType.SUB_TOTAL && (field == null || header.dim.field.name == field.name)) {
+                if(header.type === HeaderType.SUB_TOTAL && (field == null || (header as Header).dim.field.name == field.name)) {
                     toToggle.push(header);
                     allExpanded = allExpanded && header.expanded;
                 }

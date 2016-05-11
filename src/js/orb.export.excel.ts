@@ -9,7 +9,7 @@
  /*jshint eqnull: true*/
 
 import * as utils from './orb.utils';
-import {PGridWidget} from './orb.ui.pgridwidget';
+import {PGridWidgetStore} from './orb.ui.pgridwidgetstore';
 import {HeaderType} from './orb.ui.header';
 import {ThemeManager} from './orb.themes';
 
@@ -43,9 +43,9 @@ const docFooter = '</body></html>';
  * @memberOf orb.ui
  * @param  {orb.axe} rowsAxe - axe containing all rows dimensions.
  */
-export default (pgridwidget: PGridWidget) => {
+export default (pgridwidgetstore: PGridWidgetStore) => {
 
- 	var config = pgridwidget.pgrid.config;
+ 	var config = pgridwidgetstore.pgrid.config;
 
 	const themeManager = config.theme;
  	var currTheme = themeManager.current();
@@ -80,7 +80,7 @@ export default (pgridwidget: PGridWidget) => {
  		return str + '</tr>';
  	}
 
- 	var cellsHorizontalCount = Math.max(config.dataFields.length + 1, pgridwidget.layout.pivotTable.width);
+ 	var cellsHorizontalCount = Math.max(config.dataFields.length + 1, pgridwidgetstore.layout.pivotTable.width);
 
  	var dataFields = createButtons(config.dataFields,
  		0,
@@ -91,18 +91,18 @@ export default (pgridwidget: PGridWidget) => {
  	var sep = '<tr><td style="height: 22px;" colspan="' + cellsHorizontalCount + '"></td></tr>';
 
  	var columnFields = createButtons(config.columnFields,
- 		pgridwidget.layout.rowHeaders.width,
- 		cellsHorizontalCount - (pgridwidget.layout.rowHeaders.width + config.columnFields.length)
+ 		pgridwidgetstore.layout.rowHeaders.width,
+ 		cellsHorizontalCount - (pgridwidgetstore.layout.rowHeaders.width + config.columnFields.length)
  	);
 
  	var columnHeaders = (function() {
  		var str = '';
  		var j;
- 		for(var i = 0; i < pgridwidget.columns.headers.length; i++) {
- 			var currRow = pgridwidget.columns.headers[i];
+ 		for(var i = 0; i < pgridwidgetstore.columns.headers.length; i++) {
+ 			var currRow = pgridwidgetstore.columns.headers[i];
  			var rowStr = '<tr>';
- 			if(i < pgridwidget.columns.headers.length - 1) {
- 				for(j = 0; j < pgridwidget.layout.rowHeaders.width; j++) {
+ 			if(i < pgridwidgetstore.columns.headers.length - 1) {
+ 				for(j = 0; j < pgridwidgetstore.layout.rowHeaders.width; j++) {
  					rowStr += '<td></td>';
  				}
  			} else {
@@ -123,13 +123,13 @@ export default (pgridwidget: PGridWidget) => {
  	var rowHeadersAndDataCells = (function() {
  		var str = '';
  		var j;
- 		for(var i = 0; i < pgridwidget.rows.headers.length; i++) {
- 			var currRow = pgridwidget.rows.headers[i];
+ 		for(var i = 0; i < pgridwidgetstore.rows.headers.length; i++) {
+ 			var currRow = pgridwidgetstore.rows.headers[i];
  			var rowStr = '<tr>';
  			rowStr += currRow.reduce(function(tr, header) {
  				return (tr += '<td ' + headerStyle + ' colspan="' + header.hspan(true) + '" rowspan="' + header.vspan(true) + '">' + header.value + '</td>');
  			}, '');
- 			var dataRow = pgridwidget.dataRows[i];
+ 			var dataRow = pgridwidgetstore.dataRows[i];
  			rowStr += dataRow.reduce(function(tr, dataCell, index) {
  				var formatFunc = config.dataFields[index = index % config.dataFields.length].formatFunc;
  				var value = dataCell.value == null ? '' : formatFunc ? formatFunc()(dataCell.value) : dataCell.value;

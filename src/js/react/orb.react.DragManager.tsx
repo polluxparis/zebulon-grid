@@ -84,7 +84,6 @@ export default (() => {
 			_pivotComp = pivotComp;
 		},
 		setDragElement(elem) {
-
 			const prevDragElement = _currDragElement;
 			_currDragElement = elem;
 			if(_currDragElement != prevDragElement) {
@@ -146,6 +145,7 @@ export default (() => {
 			}
 		},
 		elementMoved() {
+			// console.log(`elementMoved`);
 			if(_currDragElement != null) {
 				const dragNodeRect = _dragNode.getBoundingClientRect();
 				let foundTarget;

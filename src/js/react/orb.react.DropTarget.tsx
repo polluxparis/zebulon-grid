@@ -6,8 +6,8 @@ import {AxeType} from '../orb.axe';
 let dtid = 0;
 
 export default class DropTarget extends React.Component<any,any>{
-    _isMounted: boolean;
-    dtid: number;
+  private _isMounted: boolean;
+  dtid: number;
 	constructor(props) {
 		super(props);
 		this.dtid = ++dtid;
@@ -17,10 +17,10 @@ export default class DropTarget extends React.Component<any,any>{
     this.onDragOver = this.onDragOver.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
 	}
-  	componentDidMount() {
-			this._isMounted = true;
-  		DragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
-  	}
+	componentDidMount() {
+		this._isMounted = true;
+		DragManager.registerTarget(this, this.props.axetype, this.onDragOver, this.onDragEnd);
+	}
 	componentWillUnmount() {
 		this._isMounted = false;
 		DragManager.unregisterTarget(this);
@@ -60,7 +60,16 @@ export default class DropTarget extends React.Component<any,any>{
 			}
 		});
 
-		const style = this.props.axetype === AxeType.ROWS ? { position: 'absolute', left: 0, bottom: 11 } : null;
+		// const style = this.props.axetype === AxeType.ROWS ? { position: 'absolute', left: 0, bottom: 11 } : null;
+    const style = {
+      border:'dotted rgba(91, 192, 222, 0.7)',
+      width: '100%',
+      marginRight: '17px',
+      padding: '1px 0',
+      minHeight: '24px',
+      minWidth: '67px',
+      borderRadius: 10
+    };
 
 		return <div className={'drp-trgt' + (this.state.isover ? ' drp-trgt-over' : '') + (buttons.length === 0 ? ' drp-trgt-empty' : '')} style={style}>
 			<table>

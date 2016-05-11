@@ -4,9 +4,9 @@ import DropTarget from './orb.react.DropTarget';
 import DropTargetVertical from './orb.react.DropTargetVertical';
 import {AxeType} from '../orb.axe';
 
-export default class RowButtonComponent extends React.Component<any,any>{
+export default class RowButtonsComponent extends React.Component<any,any>{
   render() {
-    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidgetstore.pgrid.config;
 
     const rowButtons = config.rowFields.map((field, index) => {
       return <PivotButton key={field.name}
@@ -21,8 +21,7 @@ export default class RowButtonComponent extends React.Component<any,any>{
       return  <DropTargetVertical buttons={rowButtons} axetype={AxeType.ROWS}>
               </DropTargetVertical>;
     } else {
-      return  <DropTarget buttons={rowButtons} axetype={AxeType.ROWS}>
-              </DropTarget>;
+      return(<table><tbody><tr><td><DropTarget buttons={rowButtons} axetype={AxeType.ROWS}/></td></tr></tbody></table>);
     }
   }
 };

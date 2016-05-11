@@ -9,7 +9,7 @@ function createOverlay() {
   return overlayElement;
 }
 
-export class Dialog extends React.Component<any, any>{
+export default class Dialog extends React.Component<any, any>{
 
     static create() {
         const dialogFactory = React.createFactory(Dialog);

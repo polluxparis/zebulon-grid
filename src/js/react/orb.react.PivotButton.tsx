@@ -32,18 +32,20 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		const filterButtonPos = domUtils.getOffset(filterButton);
 		const filterContainer = document.createElement('div');
 
-        const filterPanelFactory = React.createFactory(FilterPanel);
-        const filterPanel = filterPanelFactory({
-            field: this.props.field.name,
-            pivotTableComp: this.props.pivotTableComp
-        });
+    filterContainer.className = this.props.pivotTableComp.pgrid.config.theme.getFilterClasses().container;
+		filterContainer.style.position = 'fixed';
+    filterContainer.style.top = `${filterButtonPos.y}px`;
+    filterContainer.style.left = `${filterButtonPos.x}px`;
+		filterContainer.style.backgroundColor= 'white';
+		filterContainer.style.fontSize= '90%';
+		filterContainer.style.width= '301px';
+		filterContainer.style.height= '223px';
+		filterContainer.style.padding= '3px';
+		filterContainer.style.border= 'solid 1px';
+		filterContainer.style.boxShadow= '0 5px 15px #9d9d9d';
+    document.body.appendChild(filterContainer);
 
-        filterContainer.className = this.props.pivotTableComp.pgrid.config.theme.getFilterClasses().container;
-        filterContainer.style.top = `${filterButtonPos.y}px`;
-        filterContainer.style.left = `${filterButtonPos.x}px`;
-        document.body.appendChild(filterContainer);
-
-        ReactDOM.render(filterPanel, filterContainer);
+    ReactDOM.render(<FilterPanel field={this.props.field.name} pivotTableComp={this.props.pivotTableComp}/>, filterContainer);
 
 		// prevent event bubbling (to prevent text selection while dragging for example)
 		utils.stopPropagation(e);
@@ -75,7 +77,7 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		if (e.button !== 0) return;
 
 		if(e.ctrlKey) {
-		    this.props.pivotTableComp.pgridwidget.toggleFieldExpansion(this.props.axetype, this.props.field);
+		    this.props.pivotTableComp.pgridwidgetstore.toggleFieldExpansion(this.props.axetype, this.props.field);
 		} else {
 
 		    const thispos = domUtils.getOffset(ReactDOM.findDOMNode(this));
@@ -158,7 +160,9 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 			top: `${this.state.pos.y}px`,
 			position: this.state.dragging ? 'fixed' : '',
 			zIndex: 101,
-      width:''
+      width:'',
+			backgroundColor: '#5bc0de',
+			borderRadius: 4
 		};
 
 		if(this.state.size) {
@@ -189,7 +193,8 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		            			<td className="caption">{this.props.field.caption}{fieldAggFunc}</td>
 		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
 		            			<td className="filter">
-		            				<div ref="filterButton" className={filterClass} onMouseDown={this.state.dragging ? null : this.onFilterMouseDown}></div>
+		            				<div ref="filterButton" className={filterClass} onMouseDown={this.state.dragging ? null : this.onFilterMouseDown} style={{width: 11, height: 11,   background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px'
+}}></div>
 		            			</td>
 		            		</tr>
 		            	</tbody>

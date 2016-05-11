@@ -10,3 +10,4 @@ orb.sln
 .node_libraries
 *.sublime-*
 dist
+tags

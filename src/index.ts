@@ -1,26 +1,33 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 require('expose?Perf!react-addons-perf');
-import {PGridWidget} from './js/orb';
+import {PGridWidgetStore} from './js/orb.ui.pgridwidgetstore';
+import {PivotTableComponent} from './js/react/orb.react.PivotTable';
+import {PGridWidget} from './js/orb.ui.pgridwidget';
 
-
-function getData(i) {
+function getData(data_repetition,n_toto) {
+	const n_titi = 3;
+	const n_tutu = 2;
+	var arr = [];
 	var res = [];
-	for(var k=0; k<10*i;k++){
-		res[k]=[];
-	}
-	for(var k=0; k<i;k++){
-		for (var j=0; j<10; j++){
-			res[10*k+j][0] = 'toto'+String(k%30);
-			res[10*k+j][3] = 'titi'+String(j);
-			res[10*k+j][1] = k+j;
-			res[10*k+j][2] = 100*k+3*j;
+	for(var k=0; k<data_repetition;k++){
+		for (var ll=0; ll<n_toto; ll++){
+			for (var l=0; l<n_titi; l++){
+				for (var j=0; j<n_tutu; j++){
+					arr = []
+					arr[0] = 'toto'+String(ll);
+					arr[3] = 'titi'+String(l);
+					arr[4] = 'tutu'+String(j);
+					arr[1] = k+10*j+100*l*1000*ll;
+					arr[2] = k+10*j+100*l*1000*ll;
+					res.push(arr);
+				}
 		}
+	}
 	}
 	return res;
     }
-
-const data = getData(100);
+const data = getData(1,100);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -36,22 +43,22 @@ const data = getData(100);
             columnsvisible: false
         },
         subTotal: {
-            visible: true,
-            collapsed: true,
-            collapsible: true
+            visible: false,
+            collapsed: false,
+            collapsible: false
         },
         rowSettings: {
             subTotal: {
-                visible: true,
-                collapsed: true,
-                collapsible: true
+                visible: false,
+                collapsed: false,
+                collapsible: false
             }
         },
         columnSettings: {
             subTotal: {
                 visible: false,
-                collapsed: true,
-                collapsible: true
+                collapsed: false,
+                collapsible: false
             }
         },
         fields: [
@@ -92,6 +99,10 @@ const data = getData(100);
                 name: '3',
                 caption: 'Titi'
             },
+						{
+                name: '4',
+                caption: 'Tutu'
+            },
             // {
             //     name: '4',
             //     caption: 'Category',
@@ -112,8 +123,8 @@ const data = getData(100);
                 aggregateFunc: 'sum'
             }
         ],
-        rows    : [ 'Toto'],//, 'Category' ],
-        columns : [ 'Titi' ],
+        columns    : [ 'Tutu'],//, 'Category' ],
+        rows : [ 'Toto', 'Titi' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
@@ -123,8 +134,7 @@ const data = getData(100);
          //   'Quantity'    : [4, 8, 12]
         }*/
     };
-
- const elem = document.getElementById('grid');
-
-const myWidget = new PGridWidget(config);
-myWidget.render(elem);
+const widget = new PGridWidget(config);
+widget.render(document.getElementById('grid'));
+// ReactDOM.render(<PivotTableComponent pgridwidgetstore={appStore}/>, document.getElementById('grid'))
+// ReactDOM.render(React.createElement(PivotTableComponent, {pgridwidgetstore:new PGridWidgetStore(config)}), document.getElementById('grid'))

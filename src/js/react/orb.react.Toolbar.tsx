@@ -3,6 +3,10 @@ import {Axe, AxeType} from '../orb.axe';
 import * as defaultToolbarConfig from './defaultToolbarConfig';
 
 export default class ToolbarComponent extends React.Component<any,any>{
+  constructor(){
+    super();
+    this.createCallback = this.createCallback.bind(this);
+  }
   _toInit = [];
   componentDidMount() {
     for(let i = 0; i < this._toInit.length; i++){
@@ -27,7 +31,7 @@ export default class ToolbarComponent extends React.Component<any,any>{
   }
   render() {
 
-    const config = this.props.pivotTableComp.pgridwidget.pgrid.config;
+    const config = this.props.pivotTableComp.pgridwidgetstore.pgrid.config;
 
     if(config.toolbar && config.toolbar.visible) {
 

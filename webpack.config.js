@@ -2,11 +2,11 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  devtool: 'eval',
+  // devtool: 'eval',
   entry: [
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
-    './src/index'
+    './src/js/orb'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
@@ -23,17 +23,17 @@ module.exports = {
    *
    * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
    */
-  extensions: ['', '.ts', '.js', '.tsx'],
+  extensions: ['', '.ts', '.js', '.tsx']
   },
   module: {
     loaders: [
       // {test: /\.js$/,
       //   loader:'raw-loader'}
-      {
-        test: /\.jsx$/,
-        loaders: ['react-hot', 'babel'],
-        include: path.join(__dirname, 'src')
-      },
+      // {
+      //   test: /\.jsx$/,
+      //   loaders: ['react-hot', 'babel'],
+      //   include: path.join(__dirname, 'src')
+      // },
       {
         test: /\.tsx$/,
         loaders: ['react-hot', 'babel', 'awesome-typescript-loader'],
@@ -44,10 +44,10 @@ module.exports = {
       },
       {test: /\.css$/,
         loaders:['style','css']
-      },
-      // Font loader
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader"+"?limit=10000&mimetype=application/font-woff" },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
+      }
+      // // Font loader
+      // { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader'+'?limit=10000&mimetype=application/font-woff' },
+      // { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }
 
     ]
   }

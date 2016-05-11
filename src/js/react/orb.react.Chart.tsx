@@ -15,7 +15,7 @@ export default class Chart extends React.Component<any,any>{
   }
   drawChart() {
     if(this.canRender()) {
-      const chartData = this.props.pivotTableComp.pgridwidget.pgrid.getChartData();
+      const chartData = this.props.pivotTableComp.pgridwidgetstore.pgrid.getChartData();
       const data = new google.visualization.DataTable();
 
       data.addColumn('string', chartData.hAxisLabel);

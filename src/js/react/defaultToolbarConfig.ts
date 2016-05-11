@@ -6,25 +6,25 @@ import {AxeType} from '../orb.axe';
 export function exportToExcel(pgridComponent, button) {
   const a = document.createElement('a');
   a['download'] = "orbpivotgrid.xls";
-  a.href =  excelExport(pgridComponent.props.pgridwidget);
+  a.href =  excelExport(pgridComponent.props.pgridwidgetstore);
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
 }
 export function expandAllRows(pgridComponent, button) {
-    pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.ROWS, null, true);
+    pgridComponent.pgridwidgetstore.toggleFieldExpansion(AxeType.ROWS, null, true);
 }
 export function collapseAllRows(pgridComponent, button) {
-    pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.ROWS, null, false);
+    pgridComponent.pgridwidgetstore.toggleFieldExpansion(AxeType.ROWS, null, false);
 }
 export function expandAllColumns(pgridComponent, button) {
-    pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.COLUMNS, null, true);
+    pgridComponent.pgridwidgetstore.toggleFieldExpansion(AxeType.COLUMNS, null, true);
 }
 export function collapseAllColumns(pgridComponent, button) {
-    pgridComponent.pgridwidget.toggleFieldExpansion(AxeType.COLUMNS, null, false);
+    pgridComponent.pgridwidgetstore.toggleFieldExpansion(AxeType.COLUMNS, null, false);
 }
 export function updateSubtotalsButton(axetype, pgridComponent, button) {
-  const subTotalsState = pgridComponent.pgridwidget.areSubtotalsVisible(axetype);
+  const subTotalsState = pgridComponent.pgridwidgetstore.areSubtotalsVisible(axetype);
   button.style.display = subTotalsState === null ? 'none' : '';
 
   let classToAdd = '';
@@ -52,7 +52,7 @@ export function toggleSubtotals(axetype) {
   };
 }
 export function updateGrandtotalButton(axetype, pgridComponent, button) {
-  const subTotalsState = pgridComponent.pgridwidget.isGrandtotalVisible(axetype);
+  const subTotalsState = pgridComponent.pgridwidgetstore.isGrandtotalVisible(axetype);
   button.style.display = subTotalsState === null ? 'none' : '';
 
   let classToAdd = '';

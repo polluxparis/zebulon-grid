@@ -4,7 +4,18 @@ import {HeaderType} from '../orb.ui.header';
 import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
-export default class PivotCellComponent extends React.Component<any,any>{
+import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
+import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
+
+interface Props{
+  key:number,
+  cell:Header|DataHeader|DataCell|ButtonCell|EmptyCell,
+  leftmost:boolean,
+  topmost:boolean,
+  pgridwidgetstore: PGridWidgetStore
+}
+
+export default class PivotCellComponent extends React.Component<Props,{}>{
   _latestVisibleState: boolean;
 
   constructor(props){
@@ -14,10 +25,12 @@ export default class PivotCellComponent extends React.Component<any,any>{
     this.collapse = this.collapse.bind(this);
   }
   expand() {
-      this.props.pivotTableComp.pgridwidget.expandRow(this.props.cell);
+      console.log(`expand`);
+      this.props.pgridwidgetstore.expandRow(this.props.cell);
   }
   collapse() {
-      this.props.pivotTableComp.pgridwidget.collapseRow(this.props.cell);
+      console.log(`collapse`);
+      this.props.pgridwidgetstore.collapseRow(this.props.cell);
   }
   updateCellInfos() {
     const node = ReactDOM.findDOMNode(this);
@@ -95,16 +108,18 @@ export default class PivotCellComponent extends React.Component<any,any>{
     switch(cell.template) {
       case 'cell-template-row-header':
       case 'cell-template-column-header':
-        const isWrapper = cell.type === HeaderType.WRAPPER && cell.dim.field.subTotal.visible && cell.dim.field.subTotal.collapsible;
+        const isWrapper = cell.type === HeaderType.WRAPPER && (cell as Header).dim.field.subTotal.visible && (cell as Header).dim.field.subTotal.collapsible;
         const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
+          // console.log(cell);
+          // console.log(`isSubtotal: ${isSubtotal}`);
+          // console.log(`isWrapper: ${isWrapper}`);
           headerPushed = true;
 
-          divcontent.push(<table key="header-value" ref="cellContent">
-            <tbody>
-            <tr><td className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></td>
-            <td className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></td></tr>
-            </tbody></table>);
+          divcontent.push(<div key="header-value" ref="cellContent">
+            <div className="orb-tgl-btn"><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></div>
+            <div className="hdr-val"><div dangerouslySetInnerHTML={{__html: cell.value || '&#160;'}}></div></div>
+            </div>);
         } else {
           value = (cell.value || '&#160;') + (cell.type === HeaderType.SUB_TOTAL ? ' Total' : '');
         }
@@ -113,7 +128,7 @@ export default class PivotCellComponent extends React.Component<any,any>{
         value = cell.value.caption;
         break;
       case 'cell-template-datavalue':
-        value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
+        value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
         cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);
         break;
       default:
@@ -134,14 +149,15 @@ export default class PivotCellComponent extends React.Component<any,any>{
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    return <td className={getClassname(this.props)}
+    // border style is for dev only. To be deleted later
+    return <div className={getClassname(this.props)}
+              style={{width:'100%', height:'100%'}}
                onDoubleClick={ cellClick }
-               colSpan={cell.hspan()}
-               rowSpan={cell.vspan()}>
-                <div>
+              //  colSpan={cell.hspan()}
+              //  rowSpan={cell.vspan()}
+              >
                   {divcontent}
-                </div>
-           </td>;
+           </div>;
   }
 };
 

@@ -21,13 +21,10 @@ import {Dimension} from './orb.dimension';
  */
 export class UiCols extends AxeUi{
 
-    public leafsHeaders: any[];
+    public leafsHeaders: DataHeader[] = [];
 
     constructor(columnsAxe) {
-
         super(columnsAxe);
-
-        this.leafsHeaders = null;
         this.build();
     }
 
