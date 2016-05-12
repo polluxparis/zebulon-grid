@@ -4,11 +4,11 @@
     "module": "commonjs",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "declaration": true,
-    "jsx": "react",
     "outDir": "dist/lib/",
-    "rootDir": "src/ts/"
+    "rootDir": "src/ts/",
+    "jsx": "react"
   },
   "exclude": [
     "node_modules",

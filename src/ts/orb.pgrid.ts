@@ -404,7 +404,7 @@ export class PGrid extends PubSub{
         this._iCache = {};
 
         // calc grand total row
-        this.dataMatrix[this.rows.root.id] = this.computeRowValues(this.rows.root);
+        // this.dataMatrix[this.rows.root.id] = this.computeRowValues(this.rows.root);
 
         if (this.rows.dimensionsCount > 0) {
             var parents = [this.rows.root];
