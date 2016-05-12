@@ -18,8 +18,8 @@ function getData(data_repetition,n_toto) {
 					arr[0] = 'toto'+String(ll);
 					arr[3] = 'titi'+String(l);
 					arr[4] = 'tutu'+String(j);
-					arr[1] = k+10*j+100*l*1000*ll;
-					arr[2] = k+10*j+100*l*1000*ll;
+					arr[1] = k+10*j+100*l*1000*ll+9999999999.1234567890123456;
+					arr[2] = k+10*j+100*l*1000*ll+9999999999.1234567890123456;
 					res.push(arr);
 				}
 		}
