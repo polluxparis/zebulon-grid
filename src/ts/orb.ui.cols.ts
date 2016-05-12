@@ -34,7 +34,7 @@ export class UiCols extends AxeUi{
         if (this.axe != null) {
             // Fill columns layout infos
             if(this.axe.root.values.length > 0 || this.axe.pgrid.config.grandTotal.columnsvisible) {
-                for (var depth = this.axe.root.depth; depth > 1; depth--) {
+                for (let depth = this.axe.root.depth; depth > 1; depth--) {
                     this.headers.push([]);
                     this.getUiInfo(depth, this.headers);
                 }
@@ -74,7 +74,7 @@ export class UiCols extends AxeUi{
                 var currparent,
                     prevpar = header.parent;
 
-                for (var i = 0; i < infos.length; i++) {
+                for (let i = 0; i < infos.length; i++) {
                     header = infos[i];
                     currparent = header.parent;
                     // if current header parent is different than previous header parent,
@@ -117,8 +117,8 @@ export class UiCols extends AxeUi{
         // add data headers if more than 1 data field and they willbe the leaf headers
         if (this.isMultiDataFields()) {
             this.leafsHeaders = [];
-            for (var leafIndex = 0; leafIndex < leafsHeaders.length; leafIndex++) {
-                for (var datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
+            for (let leafIndex = 0; leafIndex < leafsHeaders.length; leafIndex++) {
+                for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
                     this.leafsHeaders.push(new DataHeader(this.axe.pgrid.config.dataFields[datafieldindex], leafsHeaders[leafIndex]));
                 }
             }
@@ -142,12 +142,12 @@ export class UiCols extends AxeUi{
                 return p.type !== HeaderType.SUB_TOTAL;
             });
 
-        for (var pi = 0; pi < parents.length; pi++) {
+        for (let pi = 0; pi < parents.length; pi++) {
 
             var parent = parents[pi];
             var parentDim = parent == null ? this.axe.root : parent.dim;
 
-            for (var di = 0; di < parentDim.values.length; di++) {
+            for (let di = 0; di < parentDim.values.length; di++) {
 
                 var subvalue = parentDim.values[di];
                 var subdim = parentDim.subdimvals[subvalue];

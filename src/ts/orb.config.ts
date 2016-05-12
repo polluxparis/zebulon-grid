@@ -15,7 +15,7 @@ import * as filtering from './orb.filtering';
 import {ThemeManager} from './orb.themes';
 
 function getpropertyvalue(property, configs, defaultvalue) {
-    for (var i = 0; i < configs.length; i++) {
+    for (let i = 0; i < configs.length; i++) {
         if (configs[i][property] != null) {
             return configs[i][property];
         }
@@ -32,7 +32,7 @@ function mergefieldconfigs(...args) {
         functions: []
     };
 
-    for (var i = 0; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
         var nnconfig = args[i] || {};
         merged.configs.push(nnconfig);
         merged.sorts.push(nnconfig.sort || {});
@@ -338,7 +338,7 @@ export class Config{
     }
 
     getfieldindex(axefields, fieldname) {
-        for (var fi = 0; fi < axefields.length; fi++) {
+        for (let fi = 0; fi < axefields.length; fi++) {
             if (axefields[fi].name === fieldname) {
                 return fi;
             }

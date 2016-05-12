@@ -102,7 +102,7 @@ export class Axe {
         this.root = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false);
 
         this.dimensionsByDepth = {};
-        for (var depth = 1; depth <= this.dimensionsCount; depth++) {
+        for (let depth = 1; depth <= this.dimensionsCount; depth++) {
             this.dimensionsByDepth[depth] = [];
         }
 
@@ -110,7 +110,7 @@ export class Axe {
         this.fill();
 
         // initial sort
-        for (var findex = 0; findex < this.fields.length; findex++) {
+        for (let findex = 0; findex < this.fields.length; findex++) {
             var ffield = this.fields[findex];
             if (ffield.sort.order === 'asc' || ffield.sort.order === 'desc') {
                 this.sort(ffield, true);
@@ -130,7 +130,7 @@ export class Axe {
 
             var depth = this.dimensionsCount - this.getfieldindex(field);
             var parents = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1];
-            for (var i = 0; i < parents.length; i++) {
+            for (let i = 0; i < parents.length; i++) {
                 if(field.sort.customfunc != null){
                     parents[i].values.sort(field.sort.customfunc);
                 } else {
@@ -164,7 +164,7 @@ export class Axe {
     // }
 
     getfieldindex(field) {
-        for (var i = 0; i < this.fields.length; i++) {
+        for (let i = 0; i < this.fields.length; i++) {
             if (this.fields[i].name === field.name) {
                 return i;
             }
@@ -181,10 +181,10 @@ export class Axe {
 
             var datasource = this.pgrid.filteredDataSource;
             if (datasource != null && utils.isArray(datasource) && datasource.length > 0) {
-                for (var rowIndex = 0, dataLength = datasource.length; rowIndex < dataLength; rowIndex++) {
+                for (let rowIndex = 0, dataLength = datasource.length; rowIndex < dataLength; rowIndex++) {
                     var row = datasource[rowIndex];
                     var dim = this.root;
-                    for (var findex = 0; findex < this.dimensionsCount; findex++) {
+                    for (let findex = 0; findex < this.dimensionsCount; findex++) {
                         var depth = this.dimensionsCount - findex;
                         var subfield = this.fields[findex];
                         var subvalue = row[subfield.name];

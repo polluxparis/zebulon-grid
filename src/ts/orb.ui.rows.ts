@@ -63,7 +63,7 @@ export class UiRows extends AxeUi {
     addDataHeaders(infos, parent) {
         if (this.isMultiDataFields()) {
             var lastInfosArray = infos[infos.length - 1];
-            for (var datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
+            for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
                 lastInfosArray.push(new DataHeader(this.axe.pgrid.config.dataFields[datafieldindex], parent));
                 if (datafieldindex < this.dataFieldsCount() - 1) {
                     infos.push((lastInfosArray = []));
@@ -84,7 +84,7 @@ export class UiRows extends AxeUi {
             var lastInfosArray = infos[infosMaxIndex];
             var parent = lastInfosArray.length > 0 ? lastInfosArray[lastInfosArray.length - 1] : null;
 
-            for (var valIndex = 0; valIndex < dimension.values.length; valIndex++) {
+            for (let valIndex = 0; valIndex < dimension.values.length; valIndex++) {
                 var subvalue = dimension.values[valIndex];
                 var subdim = dimension.subdimvals[subvalue];
 

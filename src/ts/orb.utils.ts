@@ -26,7 +26,7 @@ export function ns(identifier, parent) {
  */
 export function ownProperties(obj) {
     var arr = [];
-    for (var prop in obj) {
+    for (let prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             arr.push(prop);
         }
@@ -117,7 +117,7 @@ export function escapeRegex(re) {
  */
 export function findInArray(array, predicate) {
     if (this.isArray(array) && predicate) {
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             var item = array[i];
             if (predicate(item)) {
                 return item;

@@ -82,12 +82,12 @@ export class Dimension{
     getRowIndexes(result?) {
         if (this.rowIndexes == null) {
             this.rowIndexes = [];
-            for (var i = 0; i < this.values.length; i++) {
+            for (let i = 0; i < this.values.length; i++) {
                 this.subdimvals[this.values[i]].getRowIndexes(this.rowIndexes);
             }
         }
         if (result != null) {
-            for (var j = 0; j < this.rowIndexes.length; j++) {
+            for (let j = 0; j < this.rowIndexes.length; j++) {
                 result.push(this.rowIndexes[j]);
             }
             return result;

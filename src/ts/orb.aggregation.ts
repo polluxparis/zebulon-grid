@@ -111,7 +111,7 @@ export function forEachIntersection(datafield, intersection, datasource, callbac
     var all = intersection === 'all';
     intersection = all ? datasource : intersection;
     if (intersection.length > 0) {
-        for (var i = 0; i < intersection.length; i++) {
+        for (let i = 0; i < intersection.length; i++) {
             callback((all ? intersection[i] : datasource[intersection[i]])[datafield]);
         }
     }

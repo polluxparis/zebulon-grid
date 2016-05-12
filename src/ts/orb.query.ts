@@ -43,7 +43,7 @@ abstract class QueryBase {
     extractResult(aggs, options, outerArgs) {
         if (outerArgs.multi === true) {
             var res = {};
-            for (var ai = 0; ai < options.multiFieldNames.length; ai++) {
+            for (let ai = 0; ai < options.multiFieldNames.length; ai++) {
                 res[options.multiFieldNames[ai]] = aggs[this.getCaptionName(options.multiFieldNames[ai])];
             }
             return res;
@@ -79,7 +79,7 @@ abstract class QueryBase {
          * sum(), avg(), ... *
          *********************/
         var aggFunctions = utils.ownProperties(aggregation);
-        for (var funcIndex = 0; funcIndex < aggFunctions.length; funcIndex++) {
+        for (let funcIndex = 0; funcIndex < aggFunctions.length; funcIndex++) {
             var funcName = aggFunctions[funcIndex];
             if (funcName !== 'toAggregateFunc') {
                 this.query[funcName] = this.measureFunc(
@@ -120,7 +120,7 @@ class PGridQuery extends QueryBase {
                 opts.multiFieldNames = innerArgs;
             }
 
-            for (var ai = 0; ai < opts.multiFieldNames.length; ai++) {
+            for (let ai = 0; ai < opts.multiFieldNames.length; ai++) {
                 opts.fieldNames.push(this.getCaptionName(opts.multiFieldNames[ai]));
             }
         } else {
@@ -161,7 +161,7 @@ class PGridQuery extends QueryBase {
         }
 
         if (parameters) {
-            for (var param in parameters) {
+            for (let param in parameters) {
                 if (parameters.hasOwnProperty(param)) {
                     this.query[param](parameters[param]);
                 }
@@ -229,17 +229,17 @@ class PGridQuery extends QueryBase {
 
         if (rowdims.length === 1 && coldims.length === 1) {
             aggs = {};
-            for (var ai = 0; ai < options.fieldNames.length; ai++) {
+            for (let ai = 0; ai < options.fieldNames.length; ai++) {
                 aggs[options.fieldNames[ai]] = this.source.getData(options.fieldNames[ai], rowdims[0], coldims[0], options.aggregateFunc);
             }
         } else {
             var rowIndexes = [];
             var colIndexes = [];
 
-            for (var rdi = 0; rdi < rowdims.length; rdi++) {
+            for (let rdi = 0; rdi < rowdims.length; rdi++) {
                 rowIndexes = rowIndexes.concat(rowdims[rdi].getRowIndexes());
             }
-            for (var cdi = 0; cdi < coldims.length; cdi++) {
+            for (let cdi = 0; cdi < coldims.length; cdi++) {
                 colIndexes = colIndexes.concat(coldims[cdi].getRowIndexes());
             }
 
@@ -282,7 +282,7 @@ class ArrayQuery extends QueryBase{
                 opts.multiFieldNames = innerArgs;
             }
 
-            for (var ai = 0; ai < opts.multiFieldNames.length; ai++) {
+            for (let ai = 0; ai < opts.multiFieldNames.length; ai++) {
                 opts.fieldNames.push(this.getCaptionName(opts.multiFieldNames[ai]));
             }
         } else {
@@ -308,7 +308,7 @@ class ArrayQuery extends QueryBase{
 
             var fieldNames = utils.ownProperties(fieldsConfig);
 
-            for (var fi = 0; fi < fieldNames.length; fi++) {
+            for (let fi = 0; fi < fieldNames.length; fi++) {
                 var fname = fieldNames[fi];
                 var f = fieldsConfig[fname];
                 var fcaption = f.caption || f.name;
@@ -338,10 +338,10 @@ class ArrayQuery extends QueryBase{
     applyFilters() {
         var rowIndexes = [];
 
-        for (var i = 0; i < this.source.length; i++) {
+        for (let i = 0; i < this.source.length; i++) {
             var row = this.source[i];
             var include = true;
-            for (var j = 0; j < this.filters.length; j++) {
+            for (let j = 0; j < this.filters.length; j++) {
                 var filter = this.filters[j];
                 if (row[filter.name] !== filter.val) {
                     include = false;
@@ -361,7 +361,7 @@ class ArrayQuery extends QueryBase{
 
         var aggs = {};
 
-        for (var ai = 0; ai < options.fieldNames.length; ai++) {
+        for (let ai = 0; ai < options.fieldNames.length; ai++) {
             var datafield = options.fieldNames[ai];
             var aggFunc = aggregation.toAggregateFunc(
                 multi === true ?

@@ -229,7 +229,7 @@ export class PGrid extends PubSub{
 
     getAxisLabel(axisFields) {
         var str = '';
-        for (var ti = 0; ti < axisFields.length; ti++) {
+        for (let ti = 0; ti < axisFields.length; ti++) {
             str += (ti > 0 ? ' - ' : '') + axisFields[ti].caption;
         }
         return str;
@@ -281,7 +281,7 @@ export class PGrid extends PubSub{
                 intersection = rowIndexes;
             } else {
                 intersection = [];
-                for (var ri = 0; ri < rowIndexes.length; ri++) {
+                for (let ri = 0; ri < rowIndexes.length; ri++) {
                     var rowindex = rowIndexes[ri];
                     if (rowindex >= 0) {
                         var colrowindex = colIndexes.indexOf(rowindex);
@@ -299,7 +299,7 @@ export class PGrid extends PubSub{
             var datafields = [];
 
             if(fieldNames) {
-                for (var fieldnameIndex = 0; fieldnameIndex < fieldNames.length; fieldnameIndex++) {
+                for (let fieldnameIndex = 0; fieldnameIndex < fieldNames.length; fieldnameIndex++) {
                     datafield = this.config.getDataField(fieldNames[fieldnameIndex]);
                     if(!aggregateFunc) {
                         if(!datafield) {
@@ -317,7 +317,7 @@ export class PGrid extends PubSub{
                     }
                 }
             } else {
-                for (var datafieldIndex = 0; datafieldIndex < this.config.dataFieldsCount; datafieldIndex++) {
+                for (let datafieldIndex = 0; datafieldIndex < this.config.dataFieldsCount; datafieldIndex++) {
                     datafield = this.config.dataFields[datafieldIndex] || this.defaultfield;
                     if (aggregateFunc || datafield.aggregateFunc) {
                         datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc()});
@@ -365,7 +365,7 @@ export class PGrid extends PubSub{
                             this._iCache[rid].slice(0) :
                             this._iCache['c' + parent.id].slice(0));
 
-                    for (var i = 0; i < parent.values.length; i++) {
+                    for (let i = 0; i < parent.values.length; i++) {
                         var subdim = parent.subdimvals[parent.values[i]];
                         var cid = 'c' + subdim.id;
 
@@ -380,7 +380,7 @@ export class PGrid extends PubSub{
                             parents.push(subdim);
                             if (rowindexes) {
                                 this._iCache[cid] = [];
-                                for (var ur = 0; ur < rowindexes.length; ur++) {
+                                for (let ur = 0; ur < rowindexes.length; ur++) {
                                     var vr = rowindexes[ur];
                                     if (vr != -1 && vr < 0) {
                                         this._iCache[cid].push(0 - (vr + 2));
@@ -413,7 +413,7 @@ export class PGrid extends PubSub{
             while (p < parents.length) {
                 parent = parents[p];
                 // calc children rows
-                for (var i = 0; i < parent.values.length; i++) {
+                for (let i = 0; i < parent.values.length; i++) {
                     var subdim = parent.subdimvals[parent.values[i]];
                     // calc child row
                     this.dataMatrix[subdim.id] = this.computeRowValues(subdim);

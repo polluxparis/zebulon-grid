@@ -271,7 +271,7 @@ export class Header extends CellBase{
             if (!this.dim.isLeaf) {
                 // subdimvals 'own' properties are the set of values for this dimension
                 if(this.subheaders.length > 0) {
-                    for (var i = 0; i < this.subheaders.length; i++) {
+                    for (let i = 0; i < this.subheaders.length; i++) {
                         var subheader = this.subheaders[i];
                         // if its not an array
                         if (!subheader.dim.isLeaf) {
