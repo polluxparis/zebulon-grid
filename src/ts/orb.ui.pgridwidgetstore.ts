@@ -180,7 +180,6 @@ export class PGridWidgetStore {
   };
 
   collapseRow(cell) {
-      console.log(`collapseRow`);
       cell.subtotalHeader.collapse();
   };
 

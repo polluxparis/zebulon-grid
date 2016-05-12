@@ -24,17 +24,18 @@ import {PGrid} from '../orb.pgrid';
 let pivotId = 1;
 const themeChangeCallbacks = {};
 
-interface Props{
+export interface PivotTableProps{
   pgridwidgetstore: PGridWidgetStore
 }
 
 // CSS files
+import 'react-virtualized/styles.css';
 // Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
 // require('../../../dist/orb.css');
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 @observer
-export class PivotTableComponent extends React.Component<Props,{}>{
+export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
 
   id:number = pivotId++;
   pgrid: PGrid = null;

@@ -1,5 +1,5 @@
 {
-  "name": "orb-emile",
+  "name": "orb-zebulon",
   "version": "0.0.1",
   "license": "MIT",
   "description": "Pivot table javascript library",
@@ -22,7 +22,8 @@
     "aggregation",
     "dimension"
   ],
-  "main": "src/js/orb.ts",
+  "main": "dist/lib/orb.js",
+  "typings": "dist/lib/orb.d.ts",
   "files": [
     "README.md",
     "LICENCE",

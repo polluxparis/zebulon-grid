@@ -7,7 +7,7 @@ import {Grid} from 'react-virtualized';
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
 
-interface Props{
+export interface PivotRowProps{
 key:number,
 row:(Header|DataHeader|DataCell|ButtonCell|EmptyCell)[],
 axetype:number,
@@ -20,7 +20,7 @@ onScroll?: any,
 scrollLeft?: any
 }
 
-export default class PivotRowComponent extends React.Component<Props,{}>{
+export default class PivotRowComponent extends React.Component<PivotRowProps,{}>{
   private lastCellIndex
   private cell0
   private leftmostCellFound = false;

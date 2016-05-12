@@ -11,14 +11,14 @@ import{Header} from '../orb.ui.header';
 
 import {scrollbarSize} from '../orb.utils.dom';
 
-interface Props{
+export interface RowHeadersProps{
   pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
   scrollTop: any
 }
 
 
-export default class RowHeadersComponent extends React.Component<Props,any>{
+export default class RowHeadersComponent extends React.Component<RowHeadersProps,any>{
   headersConcat: Header[];
   constructor(){
     super();

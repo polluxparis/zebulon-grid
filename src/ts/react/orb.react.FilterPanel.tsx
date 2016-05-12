@@ -8,12 +8,12 @@ import {FilterManager} from './FilterManager';
 
 import {PivotTableComponent} from './orb.react.PivotTable';
 
-interface Props{
+export interface FilterPanelProps{
 	field: string,
 	pivotTableComp: PivotTableComponent
 }
 
-export default class FilterPanelComponent extends React.Component<Props,any>{
+export default class FilterPanelComponent extends React.Component<FilterPanelProps,any>{
 
 	public pgridwidgetstore = null;
 	public values = null;
@@ -40,7 +40,6 @@ export default class FilterPanelComponent extends React.Component<Props,any>{
 		this.destroy();
 	}
 	onMouseDown(e) {
-		console.log('onMouseDown in FilterPanel');
     const container = ReactDOM.findDOMNode(this).parentNode;
 		let target = e.target || e.srcElement;
 		while(target != null) {
@@ -53,7 +52,6 @@ export default class FilterPanelComponent extends React.Component<Props,any>{
 		this.destroy();
 	}
 	onMouseWheel(e) {
-		console.log('onMouseWheel in FilterPanel');
 		const valuesTable = this.refs['valuesTable'];
 		let target = e.target || e.srcElement;
 		while(target != null) {
@@ -70,23 +68,19 @@ export default class FilterPanelComponent extends React.Component<Props,any>{
 		this.destroy();
 	}
 	componentWillMount() {
-		console.log('componentWillMount');
 		utils.addEventListener(document, 'mousedown', this.onMouseDown);
 		// utils.addEventListener(document, 'wheel', this.onMouseWheel);
 		utils.addEventListener(window, 'resize', this.destroy);
 	}
 	componentDidMount() {
-		console.log('componentDidMount');
 	    this.filterManager.init(ReactDOM.findDOMNode(this));
 	}
 	componentWillUnmount() {
-		console.log('componentWillUnmount');
 		utils.removeEventListener(document, 'mousedown', this.onMouseDown);
 		// utils.removeEventListener(document, 'wheel', this.onMouseWheel);
 		utils.removeEventListener(window, 'resize', this.destroy);
 	}
 	render() {
-		console.log('render');
 		const checkboxes = [];
 
 		this.filterManager.reactComp = this;

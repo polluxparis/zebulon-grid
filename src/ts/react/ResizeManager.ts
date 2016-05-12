@@ -18,7 +18,6 @@ export class ResizeManager {
 		this.outerContainerElem = outerContainerElem;
 		this.valuesTableElem = valuesTableElem;
 		this.resizeGripElem = resizeGripElem;
-		console.log(this.outerContainerElem);
 		utils.addEventListener(this.resizeGripElem, 'mousedown', this.resizeMouseDown.bind(this));
 		utils.addEventListener(document, 'mouseup', this.resizeMouseUp.bind(this));
 		utils.addEventListener(document, 'mousemove', this.resizeMouseMove.bind(this));

@@ -80,15 +80,15 @@ export function toggleGrandtotal(axetype) {
   };
 }
 
-interface Button{
+export interface ToolbarButton{
   type: string;
   text?:string;
   tooltip?:string;
   cssClass?: string;
-  init?:{(pgridComponent: any, btn:Button): void};
-  action?:{(pgridComponent: any, btn:Button): void};
+  init?:{(pgridComponent: any, btn:ToolbarButton): void};
+  action?:{(pgridComponent: any, btn:ToolbarButton): void};
 }
-export const buttons: Button[]= [
+export const buttons: ToolbarButton[]= [
   { type: 'label', text: 'Rows:'},
   { type: 'button', tooltip: 'Expand all rows', cssClass: 'expand-all', action: expandAllRows},
   { type: 'button', tooltip: 'Collapse all rows', cssClass: 'collapse-all', action: collapseAllRows},

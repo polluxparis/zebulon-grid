@@ -7,7 +7,7 @@ let _paddingLeft = null, _borderLeft = null;
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
 
-interface Props{
+export interface PivotCellProps{
   key:number,
   cell:Header|DataHeader|DataCell|ButtonCell|EmptyCell,
   leftmost:boolean,
@@ -15,7 +15,7 @@ interface Props{
   pgridwidgetstore: PGridWidgetStore
 }
 
-export default class PivotCellComponent extends React.Component<Props,{}>{
+export default class PivotCellComponent extends React.Component<PivotCellProps,{}>{
   _latestVisibleState: boolean;
 
   constructor(props){
@@ -25,11 +25,9 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
     this.collapse = this.collapse.bind(this);
   }
   expand() {
-      console.log(`expand`);
       this.props.pgridwidgetstore.expandRow(this.props.cell);
   }
   collapse() {
-      console.log(`collapse`);
       this.props.pgridwidgetstore.collapseRow(this.props.cell);
   }
   updateCellInfos() {
@@ -111,9 +109,6 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
         const isWrapper = cell.type === HeaderType.WRAPPER && (cell as Header).dim.field.subTotal.visible && (cell as Header).dim.field.subTotal.collapsible;
         const isSubtotal = cell.type === HeaderType.SUB_TOTAL && !cell.expanded;
         if(isWrapper || isSubtotal) {
-          // console.log(cell);
-          // console.log(`isSubtotal: ${isSubtotal}`);
-          // console.log(`isWrapper: ${isWrapper}`);
           headerPushed = true;
 
           divcontent.push(<div key="header-value" ref="cellContent">
@@ -129,7 +124,7 @@ export default class PivotCellComponent extends React.Component<Props,{}>{
         break;
       case 'cell-template-datavalue':
         value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = () => this.props.pivotTableComp.pgridwidget.drilldown(cell, this.props.pivotTableComp.id);
+        cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
         break;
       default:
         break;

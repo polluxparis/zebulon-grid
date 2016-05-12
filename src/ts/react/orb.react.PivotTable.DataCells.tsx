@@ -3,19 +3,18 @@ import {AxeType} from '../orb.axe';
 import PivotRow from './orb.react.PivotRow';
 
 import {Grid, AutoSizer} from 'react-virtualized';
-import 'react-virtualized/styles.css';
 import PivotCell from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
-interface Props{
+export interface DataCellsProps{
   pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
   scrollLeft: any,
   scrollTop: any
 }
 
-export default class DataCellsComponent extends React.Component<Props,{}>{
+export default class DataCellsComponent extends React.Component<DataCellsProps,{}>{
 
 
   render(){

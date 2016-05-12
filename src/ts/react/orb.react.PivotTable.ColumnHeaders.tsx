@@ -7,13 +7,13 @@ import PivotCell from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
-interface Props{
+export interface ColumnHeadersProps{
   pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
   scrollLeft: any
 }
 
-export default class ColumnHeadersComponent extends React.Component<Props,any>{
+export default class ColumnHeadersComponent extends React.Component<ColumnHeadersProps,any>{
 
   private headersConcat;
 
