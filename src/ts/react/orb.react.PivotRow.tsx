@@ -73,35 +73,35 @@ export default class PivotRowComponent extends React.Component<PivotRowProps,{}>
            </PivotCell>;
   }
 
-  _render() {
-
-    // decrement lastLeftMostCellVSpan
-    // if(this.layoutInfos && this.layoutInfos.lastLeftMostCellVSpan > 0 && !this.leftmostCellFound) {
-    //   this.layoutInfos.lastLeftMostCellVSpan--;
-    // }
-
-    const pgridwidgetstore = this.props.pgridwidgetstore;
-
-    const config = pgridwidgetstore.pgrid.config;
-
-    const rowHeight = 30;
-    // const hspan = this.props.row[0].hspan(false);
-    const hspan = 1;
-
-    return (
-      <Grid
-        onScroll={this.props.onScroll}
-        scrollLeft={this.props.scrollLeft}
-        height={rowHeight}
-        width={config.width}
-        rowHeight={rowHeight}
-        columnWidth={100*hspan}
-        columnCount={this.props.row.length/hspan}
-        rowCount={1}
-        cellRenderer={this.cellRenderer}
-      />
-    );
-  }
+  // _render() {
+  //
+  //   // decrement lastLeftMostCellVSpan
+  //   // if(this.layoutInfos && this.layoutInfos.lastLeftMostCellVSpan > 0 && !this.leftmostCellFound) {
+  //   //   this.layoutInfos.lastLeftMostCellVSpan--;
+  //   // }
+  //
+  //   const pgridwidgetstore = this.props.pgridwidgetstore;
+  //
+  //   const config = pgridwidgetstore.pgrid.config;
+  //
+  //   const rowHeight = 30;
+  //   // const hspan = this.props.row[0].hspan(false);
+  //   const hspan = 1;
+  //
+  //   return (
+  //     <Grid
+  //       onScroll={this.props.onScroll}
+  //       scrollLeft={this.props.scrollLeft}
+  //       height={rowHeight}
+  //       width={config.width}
+  //       rowHeight={rowHeight}
+  //       columnWidth={100*hspan}
+  //       columnCount={this.props.row.length/hspan}
+  //       rowCount={1}
+  //       cellRenderer={this.cellRenderer}
+  //     />
+  //   );
+  // }
 
   render() {
     const lastCellIndex = this.props.row.length - 1;

@@ -99,10 +99,10 @@ function createfield(rootconfig, axetype, fieldconfig, defaultfieldconfig) {
     }, false);
 }
 
-class GrandTotalConfig {
+export class GrandTotalConfig {
 
-    public rowsvisible;
-    public columnsvisible;
+    public rowsvisible: boolean;
+    public columnsvisible: boolean;
 
     constructor(options){
         options = options || {};
@@ -112,11 +112,11 @@ class GrandTotalConfig {
     }
 }
 
-class SubTotalConfig{
+export class SubTotalConfig{
 
-    public visible;
-    public collapsible;
-    public collapsed;
+    public visible: boolean;
+    public collapsible: boolean;
+    public collapsed: boolean;
     constructor(options, setdefaults?) {
 
         const defaults = {
@@ -132,22 +132,32 @@ class SubTotalConfig{
     }
 }
 
-function SortConfig(options) {
+export class SortConfig{
+  public order;
+  public customfunc;
+
+  constructor(options) {
     options = options || {};
 
     this.order = options.order || (options.customfunc ? 'asc' : null);
     this.customfunc = options.customfunc;
+  }
 }
 
-function ChartConfig(options) {
+export class ChartConfig{
+  public enabled: boolean;
+  public type: string;
+
+  constructor(options) {
     options = options || {};
 
     this.enabled = options.enabled || false;
     // type can be: 'LineChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
     this.type = options.type || 'LineChart';
+  }
 }
 
-class Field{
+export class Field{
 
     public name;
     public caption;
@@ -225,32 +235,32 @@ class Field{
 // module.config(config) {
 export class Config{
 
-    private config;
+  private config: Object;
 
-   public dataSource;
-   public canMoveFields;
-   public dataHeadersLocation;
-   public grandTotal;
-   public subTotal;
-   public width;
-   public height;
-   public toolbar;
-   public theme;
-   public chartMode;
-   public rowSettings;
-   public columnSettings;
-   public dataSettings;
+   public dataSource: any[];
+   public canMoveFields: boolean;
+   public dataHeadersLocation: string;
+   public grandTotal: GrandTotalConfig;
+   public subTotal: SubTotalConfig;
+   public width: number;
+   public height: number;
+   public toolbar: Object;
+   public theme: ThemeManager;
+   public chartMode: ChartConfig;
+   public rowSettings: Field;
+   public columnSettings: Field;
+   public dataSettings: Field;
     // datasource field names
-    public dataSourceFieldNames = [];
+    public dataSourceFieldNames: string[] = [];
     // datasource field captions
-    public dataSourceFieldCaptions = [];
-    public allFields;
-    public rowFields;
-    public columnFields;
-    public dataFields;
-    public dataFieldsCount;
+    public dataSourceFieldCaptions: string[] = [];
+    public allFields: Field[];
+    public rowFields: Field[];
+    public columnFields: Field[];
+    public dataFields: Field[];
+    public dataFieldsCount: number;
 
-    public runtimeVisibility;
+    public runtimeVisibility: Object;
 
     constructor(config) {
         this.config = config;

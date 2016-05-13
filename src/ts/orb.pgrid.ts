@@ -35,13 +35,15 @@ export class PGrid extends PubSub{
     public defaultfield = {
         name: '#undefined#'
     };
-    private _iCache;
+    // cache for row indexes
+    private _iCache: Object;
     public config: Config;
     public filters;
-    public filteredDataSource;
-    public rows;
-    public columns;
-    public dataMatrix;
+    public filteredDataSource: any[];
+    public dataSourceMap;
+    public rows: Axe;
+    public columns: Axe;
+    public dataMatrix: Object;
     public query: Query;
 
     constructor(config){
@@ -51,11 +53,13 @@ export class PGrid extends PubSub{
         this.filters = this.config.getPreFilters();
         this.filteredDataSource = this.config.dataSource;
 
+        // this.dataSourceMap = this.buildDataSourceMap();
+
         this.rows = new Axe(this, AxeType.ROWS);
         this.columns = new Axe(this, AxeType.COLUMNS);
         this.dataMatrix = {};
 
-        this.query = new Query(this);
+        // this.query = new Query(this);
 
         this.refresh();
 
@@ -67,11 +71,32 @@ export class PGrid extends PubSub{
       }
       this.rows.update();
       this.columns.update();
-      this.computeValues();
+      // this.computeValues();
 
       // publish updated event
       this.publish(EVENT_UPDATED);
     }
+
+    buildDataSourceMap(){
+      var dimMap = this.config.allFields.reduce(
+        (myMap, curr) => {
+          // This is a hacky way to detect which fields are measures in order to avoid mapping them
+          // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
+          if (curr.aggregateFuncName === null){
+            myMap[curr.name] = {} };
+            return myMap
+          },
+        {});
+      dimMap = this.config.dataSource.reduce(
+        (myMap, curr, currIndex) => {
+          Object.keys(myMap).forEach(dim => {
+            if (myMap[dim][curr[dim]] === undefined){myMap[dim][curr[dim]]=[]};
+            myMap[dim][curr[dim]].push(currIndex)
+          })
+          return myMap
+        }, dimMap)
+      return dimMap;
+      }
 
     refreshFilteredDataSource() {
         var filterFields = utils.ownProperties(this.filters);
@@ -203,21 +228,30 @@ export class PGrid extends PubSub{
         if (rowdim && coldim) {
 
             var datafieldName = field || (this.config.dataFields[0] || this.defaultfield).name;
-            var datafield = this.config.getDataField(datafieldName);
+            // var datafield = this.config.getDataField(datafieldName);
 
-            if(!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
-                value = this.calcAggregation(
-                    rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
-                    coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
-                    [datafieldName],
-                    aggregateFunc)[datafieldName];
-            } else {
-                if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id]) {
-                    value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
-                } else {
-                    value = null;
-                }
-            }
+            // if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id] && (this.dataMatrix[rowdim.id][coldim.id][datafieldName]=== 0)) {
+            //   value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
+            //   }
+            // else {
+              value = this.calcAggregation(
+                  rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
+                  coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
+                  [datafieldName],
+                  aggregateFunc)[datafieldName];
+            //   this.dataMatrix[rowdim.id] = this.dataMatrix[rowdim.id] || {};
+            //   this.dataMatrix[rowdim.id][coldim.id] = this.dataMatrix[rowdim.id][coldim.id] || {};
+            //   this.dataMatrix[rowdim.id][coldim.id][datafieldName] = value;
+            // }
+
+            // if(!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
+            // } else {
+            //     if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id]) {
+            //         value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
+            //     } else {
+            //         value = null;
+            //     }
+            // }
         }
 
         return value === undefined ? null : value;
@@ -267,7 +301,7 @@ export class PGrid extends PubSub{
         };
     };
 
-    computeValue(rowIndexes, colIndexes?, origRowIndexes?, fieldNames?, aggregateFunc?) {
+    computeValue(rowIndexes, colIndexes, origRowIndexes?, fieldNames?, aggregateFunc?) {
 
         var res = {};
 

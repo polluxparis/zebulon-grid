@@ -176,7 +176,6 @@ export class Axe {
      * Creates all subdimensions using the supplied data
      */
     fill() {
-
         if (this.pgrid.filteredDataSource != null && this.dimensionsCount > 0) {
 
             var datasource = this.pgrid.filteredDataSource;

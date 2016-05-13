@@ -1,12 +1,4 @@
-/**
- * @fileOverview Pivot Grid dimension viewmodel
- * @author Najmeddine Nouri <najmno@gmail.com>
- */
-
-'use strict';
-
-/* global module */
-/*jshint eqnull: true*/
+import {Field} from './orb.config';
 
 /**
  * Creates a new container for a row/column dimension values.<br/>
@@ -24,47 +16,47 @@ export class Dimension{
      * unique id within parent orb.axe instance.
      * @type {Number}
      */
-    public id;
+    public id: number;
     /**
      * parent subdimension
      * @type {orb.dimension}
      */
-    public parent;
+    public parent: Dimension;
     /**
      * This instance dimension value
      * @type {object}
      */
-    public value;
+    public value: any;
     /**
      * Whether or not this is the root dimension for a given axe (row/column)
      * @type {Boolean}
      */
-    public isRoot;
+    public isRoot: boolean;
     /**
      * Whether or not this is the leaf (deepest) dimension for a given axe (row/column)
      * @type {Boolean}
      */
-    public isLeaf;
+    public isLeaf: boolean;
     /**
      * Dimension's data field
      * @type {Array}
      */
-    public field;
+    public field: Field;
     /**
      * Dimension's depth (to the deepest sub-dimension)
      * @type {Number}
      */
-    public depth;
+    public depth: number;
     /**
      * Dimension's set of all values
      * @type {Array}
      */
-    public values = [];
+    public values: string[] = [];
     /**
      * Direct descendant subdimensions dictionary
      * @type {Object}
      */
-    public subdimvals = {};
+    public subdimvals: Object = {};
 
     public rowIndexes = null;
 
@@ -80,7 +72,7 @@ export class Dimension{
     };
 
     getRowIndexes(result?) {
-        if (this.rowIndexes == null) {
+        if (this.rowIndexes === null) {
             this.rowIndexes = [];
             for (let i = 0; i < this.values.length; i++) {
                 this.subdimvals[this.values[i]].getRowIndexes(this.rowIndexes);

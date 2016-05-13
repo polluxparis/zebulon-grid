@@ -22,7 +22,7 @@ export class ThemeManager {
         return this.currentTheme === 'bootstrap';
     }
 
-    current(newTheme) {
+    current(newTheme?) {
         if (newTheme) {
             this.currentTheme = this.validateTheme(newTheme);
         }

@@ -340,7 +340,7 @@ export class DataCell extends CellBase {
             axetype: null,
             type: HeaderType.DATA_VALUE,
             template: 'cell-template-datavalue',
-            value: pgrid.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
+            // value: pgrid.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
             cssclass: 'cell ' + HeaderType.getCellClass(rowType, colType),
             isvisible: isvisible
         });

@@ -16,7 +16,7 @@ export interface PivotCellProps{
 }
 
 export default class PivotCellComponent extends React.Component<PivotCellProps,{}>{
-  _latestVisibleState: boolean;
+  private _latestVisibleState: boolean;
 
   constructor(props){
     super(props);
@@ -83,10 +83,10 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
     }
   }
   componentDidMount() {
-    this.updateCellInfos();
+    // this.updateCellInfos();
   }
   componentDidUpdate() {
-    this.updateCellInfos();
+    // this.updateCellInfos();
   }
   shouldComponentUpdate(nextProps, nextState) {
     if(nextProps.cell && nextProps.cell == this.props.cell && !this._latestVisibleState && !nextProps.cell.visible()) {
@@ -123,6 +123,7 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
         value = cell.value.caption;
         break;
       case 'cell-template-datavalue':
+        cell.value = this.props.pgridwidgetstore.pgrid.getData((cell as DataCell).datafield ? (cell as DataCell).datafield.name : null, (cell as DataCell).rowDimension, (cell as DataCell).columnDimension);
         value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
         cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
         break;
