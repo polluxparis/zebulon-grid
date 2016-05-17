@@ -23,6 +23,16 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
   constructor(){
     super();
     this.layoutGetter = this.layoutGetter.bind(this);
+    this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this);
+  }
+
+  componentWillMount(){
+    console.log('componentWillMount');
+    this.headersConcat = [].concat(...this.props.pgridwidgetstore.rows.headers);
+    const colNb = this.props.pgridwidgetstore.rows.headers[0].length;
+    this.props.pgridwidgetstore.rows.headers.map((headerRow,rowIndex)=>
+      headerRow.map((header,colIndex) => Object.assign(header,{x:colNb - headerRow.length+colIndex, y: rowIndex}))
+    );
   }
 
   setColGroup(widths) {
@@ -40,36 +50,24 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
   }
   render(){
     // console.log('render rowHeaders');
-    const pgridwidgetstore = this.props.pgridwidgetstore;
-    const config = pgridwidgetstore.pgrid.config;
-    const cntrClass = pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
+    const config = this.props.pgridwidgetstore.pgrid.config;
+    const cntrClass = this.props.pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
 
-    const colNb = pgridwidgetstore.rows.headers[0].length;
-    pgridwidgetstore.rows.headers.map((headerRow,rowIndex)=>
-      headerRow.map((header,colIndex) => Object.assign(header,{x:colNb - headerRow.length+colIndex, y: rowIndex}))
-    );
-    this.headersConcat = [].concat(...pgridwidgetstore.rows.headers);
     const cellCount = this.headersConcat.length;
 
     const rowHeaders =
       <AutoSizer>
-        {({height, width})=>
+        {({height, width})=>(
           <Collection
               onScroll={this.props.onScroll}
               scrollTop={this.props.scrollTop}
               height={height}
               width={width}
               cellCount={cellCount}
-              cellRenderer={({index})=>
-                <PivotCell
-                            key={index}
-                            cell={this.headersConcat[index]}
-                            leftmost={false}
-                            topmost={false}
-                            pgridwidgetstore={this.props.pgridwidgetstore} />
-              }
+              cellRenderer={this.rowHeaderRenderer}
               cellSizeAndPositionGetter={this.layoutGetter}
-              />}
+              />
+            )}
         </AutoSizer>
         ;
 
@@ -78,6 +76,18 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
       </div>
 
   }
+
+  mockRowHeaderRenderer({index}){
+    return `RH: ${index}`;
+  }
+  rowHeaderRenderer({index}){
+    return <PivotCell
+                key={index}
+                cell={this.headersConcat[index]}
+                leftmost={false}
+                topmost={false}
+                pgridwidgetstore={this.props.pgridwidgetstore} />
+    }
 
   layoutGetter({index}){
     const cellHeight = this.props.pgridwidgetstore.layout.cell.height;

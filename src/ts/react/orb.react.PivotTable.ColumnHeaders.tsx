@@ -20,42 +20,39 @@ export default class ColumnHeadersComponent extends React.Component<ColumnHeader
   constructor(){
     super();
     this.layoutGetter = this.layoutGetter.bind(this);
+    this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this);
+  }
+
+  componentWillMount(){
+    console.log('componentWillMount');
+    this.headersConcat = [].concat(...this.props.pgridwidgetstore.columns.headers);
+    const rowNb = this.props.pgridwidgetstore.columns.headers.length;
+    this.props.pgridwidgetstore.columns.headers.map((headerCol,colIndex)=>
+      headerCol.map((header,rowIndex) => Object.assign(header,{x:rowIndex, y: colIndex})));
   }
 
   render() {
     // console.log('render columnHeaders');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
-    const rowHeight = 30;
     const cntrClass = pgridwidgetstore.columns.headers.length === 0 ? '' : ' columns-cntr';
-    // need to find how to represent the cells correctly using cellRenderer
 
     const leafsHeadersCount = pgridwidgetstore.columns.leafsHeaders.length;
-    const rowNb = pgridwidgetstore.columns.headers.length;
-    pgridwidgetstore.columns.headers.map((headerCol,colIndex)=>
-      headerCol.map((header,rowIndex) => Object.assign(header,{x:rowIndex, y: colIndex})));
-    this.headersConcat = [].concat(...pgridwidgetstore.columns.headers);
     const cellCount = this.headersConcat.length;
 
-    // const columnWidth = (leafsHeadersCount/columnCount)*100;
     const columnHeaders =
     <AutoSizer>
-      {({height, width})=>
-      <Collection
+      {({height, width})=>(<Collection
         onScroll={this.props.onScroll}
         scrollLeft={this.props.scrollLeft}
         width={width}
         height={height}
         cellCount={cellCount}
-        cellRenderer={({index})=><PivotCell
-                      key={index}
-                      cell={this.headersConcat[index]}
-                      leftmost={false}
-                      topmost={false}
-                      pgridwidgetstore={this.props.pgridwidgetstore} />}
+        cellRenderer={this.columnHeaderRenderer}
         cellSizeAndPositionGetter={this.layoutGetter}
-        />}
-        </AutoSizer>
+        />
+      )}
+      </AutoSizer>
 
     return (
         <div className={'inner-table-container' + cntrClass} style={{width:'100%', height:'100%'}}>
@@ -63,6 +60,19 @@ export default class ColumnHeadersComponent extends React.Component<ColumnHeader
         </div>
       )
   };
+
+  columnHeaderRenderer ({index}){
+    return <PivotCell
+                key={index}
+                cell={this.headersConcat[index]}
+                leftmost={false}
+                topmost={false}
+                pgridwidgetstore={this.props.pgridwidgetstore} />
+  }
+
+  mockColumnHeaderRenderer({index}){
+    return `CH: ${index}`;
+  }
 
   private layoutGetter({index}){
     const cellHeight = this.props.pgridwidgetstore.layout.cell.height;

@@ -52,6 +52,9 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
     )
   }
 
+  renderMockDataCell({columnIndex, rowIndex}){
+    return `C: ${columnIndex} R: ${rowIndex}`;
+  }
   renderDataCell({columnIndex, rowIndex}){
     const rowHeaderRow = this.props.pgridwidgetstore.rows.headers[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
