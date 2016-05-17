@@ -123,7 +123,6 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
         value = cell.value.caption;
         break;
       case 'cell-template-datavalue':
-        cell.value = this.props.pgridwidgetstore.pgrid.getData((cell as DataCell).datafield ? (cell as DataCell).datafield.name : null, (cell as DataCell).rowDimension, (cell as DataCell).columnDimension);
         value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
         cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
         break;

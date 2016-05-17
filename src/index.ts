@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-require('expose?Perf!react-addons-perf');
+// require('expose?Perf!react-addons-perf');
 import {PGridWidgetStore} from './ts/orb.ui.pgridwidgetstore';
 import {PivotTableComponent} from './ts/react/orb.react.PivotTable';
 import {PGridWidget} from './ts/orb.ui.pgridwidget';
@@ -141,5 +141,3 @@ const data = getMockDataSource(1,500);
     };
 const widget = new PGridWidget(config);
 widget.render(document.getElementById('grid'));
-// ReactDOM.render(<PivotTableComponent pgridwidgetstore={appStore}/>, document.getElementById('grid'))
-// ReactDOM.render(React.createElement(PivotTableComponent, {pgridwidgetstore:new PGridWidgetStore(config)}), document.getElementById('grid'))

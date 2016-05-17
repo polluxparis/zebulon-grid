@@ -67,7 +67,7 @@ export class Axe {
      * Dimensions dictionary indexed by depth
      * @type {Object} Dictionary of (depth, arrays)
      */
-    public dimensionsByDepth;
+    // public dimensionsByDepth;
 
     constructor(pgrid, type) {
         this.pgrid = pgrid;
@@ -88,23 +88,18 @@ export class Axe {
 
         this.dimensionsCount = null;
         this.root = null;
-        this.dimensionsByDepth = null;
+        // this.dimensionsByDepth = null;
     }
-
-
-
-    // if (pgrid != null && pgrid.config != null) {
-
 
 
     update() {
         this.dimensionsCount = this.fields.length;
         this.root = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false);
 
-        this.dimensionsByDepth = {};
-        for (let depth = 1; depth <= this.dimensionsCount; depth++) {
-            this.dimensionsByDepth[depth] = [];
-        }
+        // this.dimensionsByDepth = {};
+        // for (let depth = 1; depth <= this.dimensionsCount; depth++) {
+        //     this.dimensionsByDepth[depth] = [];
+        // }
 
         // fill data
         this.fill();
@@ -118,7 +113,7 @@ export class Axe {
         }
     };
 
-    sort(field, donottoggle) {
+    sort(field?, donottoggle?) {
         if (field != null) {
             if (donottoggle !== true) {
                 if (field.sort.order !== 'asc') {
@@ -129,7 +124,8 @@ export class Axe {
             }
 
             var depth = this.dimensionsCount - this.getfieldindex(field);
-            var parents = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1];
+            // var parents = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1];
+            var parents = [this.root];
             for (let i = 0; i < parents.length; i++) {
                 if(field.sort.customfunc != null){
                     parents[i].values.sort(field.sort.customfunc);
@@ -143,25 +139,24 @@ export class Axe {
         }
     };
 
-    flattenValues() {
-        return this.dimensionsByDepth[1].map(function(dim) {
-            var name = '';
-            var currDim = dim;
-            while(!currDim.isRoot) {
-                name = currDim.value + (name !== '' ? '-' + name : '');
-                currDim = currDim.parent;
-            }
-            return {
-                name: name,
-                dim: dim
-            };
-        }).sort(function(a, b) {
-            if(a.name < b.name) return -1;
-            if(a.name > b.name) return 1;
-            return 0;
-        });
-    };
-    // }
+    // flattenValues() {
+    //     return this.dimensionsByDepth[1].map(function(dim) {
+    //         var name = '';
+    //         var currDim = dim;
+    //         while(!currDim.isRoot) {
+    //             name = currDim.value + (name !== '' ? '-' + name : '');
+    //             currDim = currDim.parent;
+    //         }
+    //         return {
+    //             name: name,
+    //             dim: dim
+    //         };
+    //     }).sort(function(a, b) {
+    //         if(a.name < b.name) return -1;
+    //         if(a.name > b.name) return 1;
+    //         return 0;
+    //     });
+    // };
 
     getfieldindex(field) {
         for (let i = 0; i < this.fields.length; i++) {
@@ -174,6 +169,10 @@ export class Axe {
 
     /**
      * Creates all subdimensions using the supplied data
+     * fill does two things:
+     *   - filling the dimensionsByDepth array of the axe (used for sorting and flattenValues - note sure if useful)
+     *   - filling the subdimvals array of each dimension of the axe
+     *   - filling the rowIndexes array of each dimension of the axe (used for calculating aggregations)
      */
     fill() {
         if (this.pgrid.filteredDataSource != null && this.dimensionsCount > 0) {
@@ -196,7 +195,7 @@ export class Axe {
                             dim = new Dimension(++this.dimid, dim, subvalue, subfield, depth, false, findex == this.dimensionsCount - 1);
                             subdimvals[subvalue] = dim;
                             dim.rowIndexes = [];
-                            this.dimensionsByDepth[depth].push(dim);
+                            // this.dimensionsByDepth[depth].push(dim);
                         }
 
                         dim.rowIndexes.push(rowIndex);
@@ -204,5 +203,16 @@ export class Axe {
                 }
             }
         }
+        // var dim = this.root;
+        // for (let findex = 0; findex < this.dimensionsCount; findex++) {
+        //   var depth = this.dimensionsCount - findex;
+        //   var subfield = this.fields[findex];
+        //   var dimMap = this.pgrid.dataSourceMap[subfield.name];
+        //   Object.keys(dimMap).forEach(k => {
+        //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, subfield, depth, false, findex == this.dimensionsCount - 1));
+        //     dim.rowIndexes = dimMap[k];
+        //   })
+        // }
     }
+
 };

@@ -33,7 +33,7 @@ export class PGridWidgetStore {
    * Parent pivot grid
    * @type {orb.pgrid}
    */
-  @observable public pgrid: PGrid;
+  public pgrid: PGrid;
 
   /**
    * Control rows headers
@@ -50,7 +50,7 @@ export class PGridWidgetStore {
    * Control data rows
    * @type {orb.ui.CellBase}
    */
-  @observable public dataRows;
+  public dataRows;
 
   @observable public layout = {
       cell: {
@@ -157,20 +157,20 @@ export class PGridWidgetStore {
       //     }
       // }
 
-      if(rowsHeaders.length > 0) {
-          for (let ri = 0; ri < rowsHeaders.length; ri++) {
-              var rowHeadersRow = rowsHeaders[ri];
-              var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];
-
-              arr = [];
-              for (let colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
-                  var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
-                  arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
-              }
-              dataRows.push(arr);
-          }
-      }
-
+      // if(rowsHeaders.length > 0) {
+      //     for (let ri = 0; ri < rowsHeaders.length; ri++) {
+      //         var rowHeadersRow = rowsHeaders[ri];
+      //         var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];
+      //
+      //         arr = [];
+      //         for (let colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
+      //             var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
+      //             arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
+      //         }
+      //         dataRows.push(arr);
+      //     }
+      // }
+      //
       this.dataRows = dataRows;
       console.log(this);
   }
