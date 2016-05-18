@@ -1,16 +1,15 @@
 import * as React from 'react';
 import {AxeType} from '../orb.axe';
-import PivotRow from './orb.react.PivotRow';
 
 import {Collection,AutoSizer} from 'react-virtualized';
-import PivotCell from './orb.react.PivotCell';
+import {PivotHeaderCell} from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
 export interface ColumnHeadersProps{
   pgridwidgetstore: PGridWidgetStore,
-  onScroll: any,
-  scrollLeft: any
+  onScroll: number,
+  scrollLeft: number
 }
 
 export default class ColumnHeadersComponent extends React.Component<ColumnHeadersProps,any>{
@@ -23,19 +22,16 @@ export default class ColumnHeadersComponent extends React.Component<ColumnHeader
     this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this);
   }
 
-  componentWillMount(){
-    console.log('componentWillMount');
-    this.headersConcat = [].concat(...this.props.pgridwidgetstore.columns.headers);
-    const rowNb = this.props.pgridwidgetstore.columns.headers.length;
-    this.props.pgridwidgetstore.columns.headers.map((headerCol,colIndex)=>
-      headerCol.map((header,rowIndex) => Object.assign(header,{x:rowIndex, y: colIndex})));
-  }
-
   render() {
     // console.log('render columnHeaders');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const cntrClass = pgridwidgetstore.columns.headers.length === 0 ? '' : ' columns-cntr';
+
+    this.headersConcat = [].concat(...this.props.pgridwidgetstore.columns.headers);
+    const rowNb = pgridwidgetstore.columns.headers.length;
+    pgridwidgetstore.columns.headers.map((headerCol,colIndex)=>
+    headerCol.map((header,rowIndex) => Object.assign(header,{x:rowIndex, y: colIndex})));
 
     const leafsHeadersCount = pgridwidgetstore.columns.leafsHeaders.length;
     const cellCount = this.headersConcat.length;
@@ -62,7 +58,7 @@ export default class ColumnHeadersComponent extends React.Component<ColumnHeader
   };
 
   columnHeaderRenderer ({index}){
-    return <PivotCell
+    return <PivotHeaderCell
                 key={index}
                 cell={this.headersConcat[index]}
                 leftmost={false}

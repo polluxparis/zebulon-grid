@@ -1,11 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import PivotRow from './orb.react.PivotRow';
 import {AxeType} from '../orb.axe';
 
 import {Collection, AutoSizer, Grid} from 'react-virtualized';
 import CellSizeAndPositionManager from './utils/CellSizeAndPositionManager';
-import PivotCell from './orb.react.PivotCell';
+import {PivotHeaderCell} from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import{Header} from '../orb.ui.header';
@@ -14,24 +13,16 @@ import {scrollbarSize} from '../orb.utils.dom';
 
 export interface RowHeadersProps{
   pgridwidgetstore: PGridWidgetStore,
-  onScroll: any,
-  scrollTop: any
+  onScroll: number,
+  scrollTop: number
 }
 
 export default class RowHeadersComponent extends React.Component<RowHeadersProps,any>{
-  headersConcat: Header[];
+
   constructor(){
     super();
-    this.layoutGetter = this.layoutGetter.bind(this);
     this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this);
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this);
-  }
-
-  componentWillMount(){
-    console.log('componentWillMount');
-    // this.props.pgridwidgetstore.rows.headers.map((headerRow,rowIndex)=>
-    //   headerRow.map((header,colIndex) => Object.assign(header,{x:colNb - headerRow.length+colIndex, y: rowIndex}))
-    // );
   }
 
   setColGroup(widths) {
@@ -49,9 +40,7 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
   }
   render(){
     // console.log('render rowHeaders');
-    const config = this.props.pgridwidgetstore.pgrid.config;
     const cntrClass = this.props.pgridwidgetstore.rows.headers.length === 0 ? '' : ' rows-cntr';
-
 
     const rowHeaders =
       <AutoSizer>
@@ -89,97 +78,85 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
       rowStartIndex,
       rowStopIndex
     }) {
-  const renderedCells = []
+    const renderedCells = []
 
-  const headers = this.props.pgridwidgetstore.rows.headers;
-  const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
-  const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
-  const colNb = headers[0].length;
+    const headers = this.props.pgridwidgetstore.rows.headers;
+    const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
+    const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
+    const colNb = headers[0].length;
 
-  for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
-    // let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
+    for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
+      // let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
 
-    for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
-      // let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-      let key = `${rowIndex}-${columnIndex}`
-      let renderedCell
+      for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
+        // let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
+        let key = `${rowIndex}-${columnIndex}`
+        let renderedCell
 
-      // Avoid re-creating cells while scrolling.
-      // This can lead to the same cell being created many times and can cause performance issues for "heavy" cells.
-      // If a scroll is in progress- cache and reuse cells.
-      // This cache will be thrown away once scrolling complets.
-      if (isScrolling) {
-        if (!cellCache[key]) {
-          cellCache[key] = cellRenderer({
+        // Avoid re-creating cells while scrolling.
+        // This can lead to the same cell being created many times and can cause performance issues for "heavy" cells.
+        // If a scroll is in progress- cache and reuse cells.
+        // This cache will be thrown away once scrolling complets.
+        if (isScrolling) {
+          if (!cellCache[key]) {
+            cellCache[key] = cellRenderer({
+              columnIndex,
+              isScrolling,
+              rowIndex
+            })
+          }
+          renderedCell = cellCache[key]
+        // If the user is no longer scrolling, don't cache cells.
+        // This makes dynamic cell content difficult for users and would also lead to a heavier memory footprint.
+        } else {
+          renderedCell = cellRenderer({
             columnIndex,
             isScrolling,
             rowIndex
           })
         }
-        renderedCell = cellCache[key]
-      // If the user is no longer scrolling, don't cache cells.
-      // This makes dynamic cell content difficult for users and would also lead to a heavier memory footprint.
-      } else {
-        renderedCell = cellRenderer({
-          columnIndex,
-          isScrolling,
-          rowIndex
-        })
-      }
 
-      if (renderedCell == null || renderedCell === false) {
-        continue
-      }
-      let child = (
-        <div
-          key={key}
-          className='Grid__cell'
-          style={{
-            left:(colNb - headers[rowIndex].length+columnIndex)*cellWidth,
-            top:rowIndex*cellHeight,
-            height:cellHeight*headers[rowIndex][columnIndex].vspan(),
-            width:cellWidth*headers[rowIndex][columnIndex].hspan()
-          }}
-        >
-          {renderedCell}
-        </div>
-      )
+        if (renderedCell == null || renderedCell === false) {
+          continue
+        }
+        let child = (
+          <div
+            key={key}
+            className='Grid__cell'
+            style={{
+              left:(colNb - headers[rowIndex].length+columnIndex)*cellWidth,
+              top:rowIndex*cellHeight,
+              height:cellHeight*headers[rowIndex][columnIndex].vspan(),
+              width:cellWidth*headers[rowIndex][columnIndex].hspan()
+            }}
+          >
+            {renderedCell}
+          </div>
+        )
 
-      renderedCells.push(child)
+        renderedCells.push(child)
+      }
+    }
+
+    return renderedCells
+  }
+
+  mockRowHeaderRenderer({columnIndex, rowIndex}){
+    return `C: ${columnIndex} R: ${rowIndex}`;
+  }
+  rowHeaderRenderer({columnIndex, rowIndex}){
+    const cell = this.props.pgridwidgetstore.rows.headers[rowIndex][columnIndex];
+    if (!cell){
+      return null;
+    }
+    else {
+      return <PivotHeaderCell
+                key={rowIndex-columnIndex}
+                cell={cell}
+                leftmost={false}
+                topmost={false}
+                pgridwidgetstore={this.props.pgridwidgetstore} />
     }
   }
-
-  return renderedCells
-}
-
-mockRowHeaderRenderer({columnIndex, rowIndex}){
-  return `C: ${columnIndex} R: ${rowIndex}`;
-}
-rowHeaderRenderer({columnIndex, rowIndex}){
-  const cell = this.props.pgridwidgetstore.rows.headers[rowIndex][columnIndex];
-  if (!cell){
-    return null;
-  }
-  else {
-    return <PivotCell
-              key={rowIndex-columnIndex}
-              cell={cell}
-              leftmost={false}
-              topmost={false}
-              pgridwidgetstore={this.props.pgridwidgetstore} />
-  }
-}
-
-layoutGetter({index}){
-  const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
-  const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
-
-  return ({
-          x:this.headersConcat[index]['x']*cellWidth,
-          y:this.headersConcat[index]['y']*cellHeight,
-          height:cellHeight*this.headersConcat[index].vspan(),
-          width:cellWidth*this.headersConcat[index].hspan()
-        })
-}
 
 };

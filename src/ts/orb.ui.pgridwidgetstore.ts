@@ -46,11 +46,6 @@ export class PGridWidgetStore {
    */
   @observable public columns: UiCols = null;
 
-  /**
-   * Control data rows
-   * @type {orb.ui.CellBase}
-   */
-  public dataRows;
 
   @observable public layout = {
       cell: {
@@ -138,10 +133,8 @@ export class PGridWidgetStore {
           height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
       };
 
-      var dataRows = [];
       var arr;
 
-      this.dataRows = dataRows;
       console.log(this);
   }
 

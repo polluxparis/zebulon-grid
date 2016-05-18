@@ -5,17 +5,17 @@ import * as domUtils from '../orb.utils.dom';
 let _paddingLeft = null, _borderLeft = null;
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
-import {Header, DataHeader, DataCell, ButtonCell, EmptyCell} from '../orb.ui.header';
+import {Header, DataHeader, DataCell} from '../orb.ui.header';
 
-export interface PivotCellProps{
+export interface PivotHeaderCellProps{
   key:number,
-  cell:Header|DataHeader|DataCell|ButtonCell|EmptyCell,
+  cell:Header|DataHeader,
   leftmost:boolean,
   topmost:boolean,
   pgridwidgetstore: PGridWidgetStore
 }
 
-export default class PivotCellComponent extends React.Component<PivotCellProps,{}>{
+export class PivotHeaderCell extends React.Component<PivotHeaderCellProps,{}>{
   private _latestVisibleState: boolean;
 
   constructor(props){
@@ -123,36 +123,57 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
       case 'cell-template-dataheader':
         value = cell.value.caption;
         break;
-      case 'cell-template-datavalue':
-        value = ((cell as DataCell).datafield && (cell as DataCell).datafield.formatFunc) ? (cell as DataCell).datafield.formatFunc()(cell.value) : cell.value;
-        cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
-        break;
       default:
         break;
     }
 
     if(!headerPushed) {
       let headerClassName;
-      switch(cell.template){
-        case 'cell-template-datavalue':
-          headerClassName = 'cell-data';
-        break;
-        default:
-        if(cell.template != 'cell-template-dataheader' && cell.type !== HeaderType.GRAND_TOTAL) {
-          headerClassName = 'hdr-val';
-        }
+      if(cell.template != 'cell-template-dataheader' && cell.type !== HeaderType.GRAND_TOTAL) {
+        headerClassName = 'hdr-val';
       }
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    return <div className={getClassname(this.props)}
+    return <div
+              // className={getClassname(this.props)}
               style={{width:'100%', height:'100%'}}
-               onDoubleClick={ cellClick }
+              onDoubleClick={ cellClick }
               >
+                {divcontent}
+           </div>;
+  }
+}
+
+export interface PivotDataCellProps{
+  key:number,
+  cell:DataCell,
+  pgridwidgetstore: PGridWidgetStore
+}
+
+export class PivotDataCell extends React.Component<PivotDataCellProps,{}>{
+
+  _latestVisibleState: boolean = false;
+
+  render() {
+    const cell = this.props.cell;
+
+    this._latestVisibleState = cell.visible();
+
+    const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
+    const cellClick = () => this.props.pgridwidgetstore.drilldown(cell);
+
+    const divcontent = [<div key="cell-value" ref="cellContent" className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>];
+
+    return <div
+              // className={getClassname(this.props)}
+              style={{width:'100%', height:'100%'}}
+              onDoubleClick={ cellClick }
+            >
                   {divcontent}
            </div>;
   }
-};
+}
 
 function getClassname(compProps) {
     const cell = compProps.cell;

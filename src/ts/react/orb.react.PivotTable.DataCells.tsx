@@ -1,18 +1,17 @@
 import * as React from 'react';
 import {AxeType} from '../orb.axe';
-import PivotRow from './orb.react.PivotRow';
 import {DataCell, DataHeader} from '../orb.ui.header';
 
 import {Grid, AutoSizer} from 'react-virtualized';
-import PivotCell from './orb.react.PivotCell';
+import {PivotDataCell} from './orb.react.PivotCell';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 
 export interface DataCellsProps{
   pgridwidgetstore: PGridWidgetStore,
   onScroll: any,
-  scrollLeft: any,
-  scrollTop: any
+  scrollLeft: number,
+  scrollTop: number
 }
 
 export default class DataCellsComponent extends React.Component<DataCellsProps,{}>{
@@ -21,7 +20,6 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
     super();
     this.renderDataCell = this.renderDataCell.bind(this);
   }
-
 
   render(){
     // console.log('render dataCells');
@@ -64,11 +62,9 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
       (cell as DataCell).datafield ? (cell as DataCell).datafield.name : null,
       (cell as DataCell).rowDimension,
       (cell as DataCell).columnDimension);
-    return <PivotCell
+    return <PivotDataCell
             key={columnIndex}
             cell={cell}
-            leftmost={true}
-            topmost={true}
             pgridwidgetstore={this.props.pgridwidgetstore}
             />
     }

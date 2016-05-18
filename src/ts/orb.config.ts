@@ -226,6 +226,7 @@ export class Field{
 
 };
 
+
 /**
  * Creates a new instance of pgrid config
  * @class
@@ -235,7 +236,7 @@ export class Field{
 // module.config(config) {
 export class Config{
 
-  private config: Object;
+   private config: Object;
 
    public dataSource: any[];
    public canMoveFields: boolean;
@@ -399,9 +400,9 @@ export class Config{
 
     getPreFilters() {
         var prefilters = {};
-        if(this.config.preFilters) {
+        if(this.config['preFilters']) {
             utils.forEach(
-                utils.ownProperties(this.config.preFilters),
+                utils.ownProperties(this.config['preFilters']),
                     function(filteredField) {
                     var prefilterConfig = this.config.preFilters[filteredField];
                     if(utils.isArray(prefilterConfig)) {
@@ -508,10 +509,10 @@ export class Config{
         var newState = !this.areSubtotalsVisible(axetype);
 
         if(axetype === AxeType.ROWS) {
-            this.runtimeVisibility.subtotals.rows = newState;
+            this.runtimeVisibility['subtotals']['rows'] = newState;
             axeFields = this.rowFields;
         } else if(axetype === AxeType.COLUMNS) {
-            this.runtimeVisibility.subtotals.columns = newState;
+            this.runtimeVisibility['subtotals']['columns'] = newState;
             axeFields = this.columnFields;
         } else {
             return false;
@@ -528,9 +529,9 @@ export class Config{
 
     areSubtotalsVisible(axetype) {
         if(axetype === AxeType.ROWS) {
-            return this.runtimeVisibility.subtotals.rows;
+            return this.runtimeVisibility['subtotals']['rows'];
         } else if(axetype === AxeType.COLUMNS) {
-            return this.runtimeVisibility.subtotals.columns;
+            return this.runtimeVisibility['subtotals']['columns'];
         } else {
             return null;
         }

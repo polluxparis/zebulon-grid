@@ -1,16 +1,16 @@
 import * as React from 'react';
-import excelExport from '../orb.export.excel';
+// import excelExport from '../orb.export.excel';
 import {removeClass, addClass} from '../orb.utils.dom';
 import {AxeType} from '../orb.axe';
 
-export function exportToExcel(pgridComponent, button) {
-  const a = document.createElement('a');
-  a['download'] = "orbpivotgrid.xls";
-  a.href =  excelExport(pgridComponent.props.pgridwidgetstore);
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
+// export function exportToExcel(pgridComponent, button) {
+//   const a = document.createElement('a');
+//   a['download'] = "orbpivotgrid.xls";
+//   a.href =  excelExport(pgridComponent.props.pgridwidgetstore);
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+// }
 export function expandAllRows(pgridComponent, button) {
     pgridComponent.pgridwidgetstore.toggleFieldExpansion(AxeType.ROWS, null, true);
 }
@@ -106,5 +106,5 @@ export const buttons: ToolbarButton[]= [
                                                            action: toggleGrandtotal(AxeType.COLUMNS)},
   { type: 'separator'},
   { type: 'label', text: 'Export:'},
-  { type: 'button', tooltip: 'Export to Excel', cssClass: 'export-xls', action: exportToExcel}
+  // { type: 'button', tooltip: 'Export to Excel', cssClass: 'export-xls', action: exportToExcel}
 ];
