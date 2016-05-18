@@ -138,9 +138,7 @@ export class UiCols extends AxeUi{
 
         var infos = headers[headers.length - 1];
         var parents = this.axe.root.depth === depth ? [null] :
-            headers[this.axe.root.depth - depth - 1].filter(function(p) {
-                return p.type !== HeaderType.SUB_TOTAL;
-            });
+            headers[this.axe.root.depth - depth - 1].filter(p => p.type !== HeaderType.SUB_TOTAL);
 
         for (let pi = 0; pi < parents.length; pi++) {
 

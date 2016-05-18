@@ -103,6 +103,7 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
 
     this._latestVisibleState = cell.visible();
 
+
     switch(cell.template) {
       case 'cell-template-row-header':
       case 'cell-template-column-header':
@@ -144,12 +145,9 @@ export default class PivotCellComponent extends React.Component<PivotCellProps,{
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
-    // border style is for dev only. To be deleted later
     return <div className={getClassname(this.props)}
               style={{width:'100%', height:'100%'}}
                onDoubleClick={ cellClick }
-              //  colSpan={cell.hspan()}
-              //  rowSpan={cell.vspan()}
               >
                   {divcontent}
            </div>;

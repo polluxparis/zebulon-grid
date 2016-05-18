@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// require('expose?Perf!react-addons-perf');
+require('expose?Perf!react-addons-perf');
 import {PGridWidgetStore} from './ts/orb.ui.pgridwidgetstore';
 import {PivotTableComponent} from './ts/react/orb.react.PivotTable';
 import {PGridWidget} from './ts/orb.ui.pgridwidget';
