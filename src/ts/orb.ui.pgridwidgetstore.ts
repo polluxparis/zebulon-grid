@@ -116,22 +116,19 @@ export class PGridWidgetStore {
   }
 
   buildUi() {
+      console.log(`buildUi`, this.pgrid);
       // build row and column headers
       this.rows = new UiRows(this.pgrid.rows);
       this.columns = new UiCols(this.pgrid.columns);
-
-      const rowsHeaders = this.rows.headers;
-      // const rowHeadersLeafs = rowsHeaders[rowsHeaders.length -1];
-      const columnsLeafHeaders = this.columns.leafsHeaders;
 
       // set control layout infos
       this.layout.rowHeaders = {
           width: (this.pgrid.rows.fields.length || 1) +
           (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-          height: rowsHeaders.length
+          height: this.rows.headers.length
       };
       this.layout.columnHeaders = {
-          width: columnsLeafHeaders.length,
+          width: this.columns.leafsHeaders.length,
           height: (this.pgrid.columns.fields.length || 1) +
           (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
       };
@@ -144,33 +141,6 @@ export class PGridWidgetStore {
       var dataRows = [];
       var arr;
 
-      // if(rowsHeaders.length > 0) {
-      //     for (let ri = 0; ri < rowHeadersLeafs.length; ri++) {
-      //         var rowLeafHeader = rowHeadersLeafs[ri];
-      //
-      //         arr = [];
-      //         for (let colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
-      //             var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
-      //             arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
-      //         }
-      //         dataRows.push(arr);
-      //     }
-      // }
-
-      // if(rowsHeaders.length > 0) {
-      //     for (let ri = 0; ri < rowsHeaders.length; ri++) {
-      //         var rowHeadersRow = rowsHeaders[ri];
-      //         var rowLeafHeader = rowHeadersRow[rowHeadersRow.length - 1];
-      //
-      //         arr = [];
-      //         for (let colHeaderIndex = 0; colHeaderIndex < columnsLeafHeaders.length; colHeaderIndex++) {
-      //             var columnLeafHeader = columnsLeafHeaders[colHeaderIndex];
-      //             arr[colHeaderIndex] = new DataCell(this.pgrid, () => rowLeafHeader.visible() && columnLeafHeader.visible(), rowLeafHeader, columnLeafHeader);
-      //         }
-      //         dataRows.push(arr);
-      //     }
-      // }
-      //
       this.dataRows = dataRows;
       console.log(this);
   }

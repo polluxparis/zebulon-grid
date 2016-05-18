@@ -137,6 +137,7 @@ export class PGrid extends PubSub{
     };
 
     moveField(fieldname, oldaxetype, newaxetype, position) {
+      console.log(`moveField`);
         if (this.config.moveField(fieldname, oldaxetype, newaxetype, position)) {
             this.refresh(false);
             return true;
@@ -269,37 +270,37 @@ export class PGrid extends PubSub{
         return str;
     }
 
-    getChartData() {
-
-        var config = this.config;
-
-
-        var hAxisLabel = this.getAxisLabel(config.columnFields);
-        var vAxisLabel = config.dataFields[0].aggregateFuncName + '(' + config.dataFields[0].caption + ')';
-        var legendsLabel = this.getAxisLabel(config.rowFields);
-
-        var rowLeafDimensions = this.rows.flattenValues();
-        var colLeafDimensions = this.columns.flattenValues();
-        var data = [];
-
-        for(var ci=0; ci < colLeafDimensions.length; ci++) {
-            var cdim = colLeafDimensions[ci];
-            var currData = [cdim.name];
-            for(var rri=0; rri < rowLeafDimensions.length; rri++) {
-                currData.push(this.getData(config.dataFields[0].name, rowLeafDimensions[rri].dim, cdim.dim));
-            }
-            data.push(currData);
-        }
-
-        return {
-            title: vAxisLabel + ': ' + hAxisLabel + ' by ' + legendsLabel,
-            hAxisLabel: hAxisLabel,
-            vAxisLabel: vAxisLabel,
-            legendsLabel: legendsLabel,
-            colNames: rowLeafDimensions.map(function(d) { return d.name; }),
-            dataTable: data
-        };
-    };
+    // getChartData() {
+    //
+    //     var config = this.config;
+    //
+    //
+    //     var hAxisLabel = this.getAxisLabel(config.columnFields);
+    //     var vAxisLabel = config.dataFields[0].aggregateFuncName + '(' + config.dataFields[0].caption + ')';
+    //     var legendsLabel = this.getAxisLabel(config.rowFields);
+    //
+    //     var rowLeafDimensions = this.rows.flattenValues();
+    //     var colLeafDimensions = this.columns.flattenValues();
+    //     var data = [];
+    //
+    //     for(var ci=0; ci < colLeafDimensions.length; ci++) {
+    //         var cdim = colLeafDimensions[ci];
+    //         var currData = [cdim.name];
+    //         for(var rri=0; rri < rowLeafDimensions.length; rri++) {
+    //             currData.push(this.getData(config.dataFields[0].name, rowLeafDimensions[rri].dim, cdim.dim));
+    //         }
+    //         data.push(currData);
+    //     }
+    //
+    //     return {
+    //         title: vAxisLabel + ': ' + hAxisLabel + ' by ' + legendsLabel,
+    //         hAxisLabel: hAxisLabel,
+    //         vAxisLabel: vAxisLabel,
+    //         legendsLabel: legendsLabel,
+    //         colNames: rowLeafDimensions.map(function(d) { return d.name; }),
+    //         dataTable: data
+    //     };
+    // };
 
     computeValue(rowIndexes, colIndexes, origRowIndexes?, fieldNames?, aggregateFunc?) {
 
@@ -309,22 +310,23 @@ export class PGrid extends PubSub{
 
             var intersection;
 
-            if (rowIndexes == null) {
+            if (rowIndexes === null) {
                 intersection = colIndexes;
-            } else if (colIndexes == null) {
+            } else if (colIndexes === null) {
                 intersection = rowIndexes;
             } else {
-                intersection = [];
-                for (let ri = 0; ri < rowIndexes.length; ri++) {
-                    var rowindex = rowIndexes[ri];
-                    if (rowindex >= 0) {
-                        var colrowindex = colIndexes.indexOf(rowindex);
-                        if (colrowindex >= 0) {
-                            rowIndexes[ri] = 0 - (rowindex + 2);
-                            intersection.push(rowindex);
-                        }
-                    }
-                }
+                intersection = utils.array_intersect([colIndexes, rowIndexes]);
+                // intersection = [];
+                // for (let ri = 0; ri < rowIndexes.length; ri++) {
+                //     var rowindex = rowIndexes[ri];
+                //     if (rowindex >= 0) {
+                //         var colrowindex = colIndexes.indexOf(rowindex);
+                //         if (colrowindex >= 0) {
+                //             rowIndexes[ri] = 0 - (rowindex + 2);
+                //             intersection.push(rowindex);
+                //         }
+                //     }
+                // }
             }
 
             var emptyIntersection = intersection && intersection.length === 0;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// require('expose?Perf!react-addons-perf');
+require('expose?Perf!react-addons-perf');
 import {PGridWidgetStore} from './ts/orb.ui.pgridwidgetstore';
 import {PivotTableComponent} from './ts/react/orb.react.PivotTable';
 import {PGridWidget} from './ts/orb.ui.pgridwidget';
@@ -21,8 +21,8 @@ function getMockDataSource(data_repetition,n_toto) {
 					// arr[0] = ll;
 					// arr[3] = l;
 					// arr[4] = j;
-					arr[1] = k+10*j+100*l*1000*ll;//+9999999999.1234567890123456;
-					arr[2] = k+10*j+100*l*1000*ll;//+9999999999.1234567890123456;
+					arr[1] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
+					arr[2] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
 					res.push(arr);
 				}
 		}
