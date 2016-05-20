@@ -499,15 +499,21 @@ export class Config{
     toggleDataField(fieldname){
       const defaultFieldConfig = this.getfield(this.allFields, fieldname);
       const newDataFields = this.dataFields.filter(fld => fld.name !== fieldname);
-      if (this.dataFields.length === newDataFields.length){
-        this.dataFields.push(defaultFieldConfig);
+      if (newDataFields.length === 0){ // the last activated datafield would be unactivated ==> fail
+        return false;
       }
       else {
-        this.dataFields = newDataFields;
-      }
+        if (this.dataFields.length === newDataFields.length){
+          this.dataFields.push(defaultFieldConfig);
+        }
+        else {
+          this.dataFields = newDataFields;
+        }
 
-      // update data fields count
-      this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
+        // update data fields count
+        this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
+        return true;
+      }
     }
 
     toggleSubtotals(axetype) {

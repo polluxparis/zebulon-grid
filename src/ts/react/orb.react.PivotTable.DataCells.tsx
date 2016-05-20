@@ -22,7 +22,7 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
   }
 
   render(){
-    // console.log('render dataCells');
+    console.log('render dataCells');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const columnCount = pgridwidgetstore.columns.leafsHeaders.length;

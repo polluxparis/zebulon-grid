@@ -217,19 +217,20 @@ export class DataButton extends React.Component<any,{}>{
 			}
 		}
 		onClick(){
-			this.props.pgrid.toggleDataField(this.props.field.name);
-			this.setState({active: !this.state['active']});
+			if (this.props.pgrid.toggleDataField(this.props.field.name)){
+				this.setState({active: !this.state['active']});
+			}
 		}
 
 		render(){
 			const fieldAggFunc = <small>{' (' + this.props.field.aggregateFuncName + ')' }</small>;
 			const activeStyle = {
-				backgroundColor: '#5bc0de',
+				backgroundColor: '#cccccc',
 				borderRadius: 4,
 				padding: 4
 			};
 			const inactiveStyle = {
-				border: 'solid #5bc0de',
+				border: 'solid #cccccc 1px',
 				borderRadius: 4,
 				padding: 4
 			};

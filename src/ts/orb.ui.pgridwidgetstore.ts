@@ -12,7 +12,7 @@ import * as React from 'react';
 import {observable} from 'mobx';
 
 import {Axe, AxeType} from './orb.axe';
-import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED} from './orb.pgrid';
+import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED, DATAFIELD_TOGGLED} from './orb.pgrid';
 import {HeaderType, DataCell, CellBase} from './orb.ui.header';
 import {UiRows} from './orb.ui.rows';
 import {UiCols} from './orb.ui.cols';
@@ -106,6 +106,7 @@ export class PGridWidgetStore {
       this.pgrid.subscribe(EVENT_UPDATED, this.buildUi.bind(this));
       this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUi.bind(this));
       this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUi.bind(this));
+      this.pgrid.subscribe(DATAFIELD_TOGGLED, this.changeDatafields.bind(this));
 
       this.buildUi();
   }
@@ -133,9 +134,37 @@ export class PGridWidgetStore {
           height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
       };
 
-      var arr;
-
       console.log(this);
+  }
+
+  changeDatafields(){
+    switch (this.pgrid.config.dataHeadersLocation){
+      case 'rows':
+        this.rows = new UiRows(this.pgrid.rows);
+        break;
+      case 'columns':
+        this.columns = new UiCols(this.pgrid.columns);
+        break;
+      default:
+        console.error(`pgrid.config.dataHeadersLocation should be 'rows' or 'columns', instead is ${this.pgrid.config.dataHeadersLocation}`);
+        break;
+    }
+    this.layout.rowHeaders = {
+        width: (this.pgrid.rows.fields.length || 1) +
+        (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
+        height: this.rows.headers.length
+    };
+    this.layout.columnHeaders = {
+        width: this.columns.leafsHeaders.length,
+        height: (this.pgrid.columns.fields.length || 1) +
+        (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
+    };
+
+    this.layout.pivotTable = {
+        width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
+        height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
+    };
+    console.log(this);
   }
 
   expandRow(cell) {

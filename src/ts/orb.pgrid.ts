@@ -22,6 +22,7 @@ import {Dimension} from './orb.dimension';
 export const EVENT_UPDATED = 'pgrid:updated';
 export const EVENT_SORT_CHANGED = 'pgrid:sort-changed';
 export const EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
+export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled';
 
 
 /**
@@ -75,6 +76,21 @@ export class PGrid extends PubSub{
 
       // publish updated event
       this.publish(EVENT_UPDATED);
+    }
+
+    refreshDataFields(){
+      switch (this.config.dataHeadersLocation){
+        case 'rows':
+          this.rows.update();
+          break;
+        case 'columns':
+          this.columns.update();
+          break;
+        default:
+          console.error(`pgrid.config.dataHeadersLocation should be 'rows' or 'columns', instead is ${this.config.dataHeadersLocation}`);
+          break;
+      }
+      this.publish(DATAFIELD_TOGGLED);
     }
 
     // buildDataSourceMap(){
@@ -146,8 +162,13 @@ export class PGrid extends PubSub{
     };
 
     toggleDataField(fieldname){
-      this.config.toggleDataField(fieldname);
-      this.refresh(false);
+      if (this.config.toggleDataField(fieldname)){
+        this.refreshDataFields();
+        return true;
+      }
+      else {
+        return false;
+      }
     }
 
     applyFilter(fieldname, operator, term, staticValue, excludeStatic) {

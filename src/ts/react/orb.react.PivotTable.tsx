@@ -128,11 +128,6 @@ export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
       <div className={classes.container}>
         <div className={'orb'}>
           <UpperButtons pivotTableComp={this}></UpperButtons>
-          <div style={{
-            position: 'relative',
-            left: cellWidth*rowHorizontalCount,
-          }}>
-          </div>
 
           <div style={{position: 'relative'}}>
           <ScrollSync>
