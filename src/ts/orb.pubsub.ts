@@ -26,7 +26,6 @@ export class PubSub {
     };
 
     publish(topic /*, callback arguments */) {
-      console.log('publish', topic);
         if(utils.isString(topic)) {
             utils.forEach(
                 this._topics[topic],

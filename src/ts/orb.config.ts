@@ -375,7 +375,11 @@ export class Config{
 
     availablefields() {
         const usedFields = this.rowFields.concat(this.columnFields);
-        return this.allFields.filter(field => field.name.indexOf(usedFields.map(field => field.name))>-1 )
+        return this.allFields
+        // This is a hacky way to detect which fields are measures
+        // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
+          .filter(field => field.aggregateFuncName === null)
+          .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
     };
 
     getDataSourceFieldCaptions() {
@@ -430,9 +434,6 @@ export class Config{
                 case AxeType.COLUMNS:
                     oldaxe = this.columnFields;
                     break;
-                case AxeType.DATA:
-                    oldaxe = this.dataFields;
-                    break;
                 default:
                     break;
             }
@@ -445,10 +446,6 @@ export class Config{
                 case AxeType.COLUMNS:
                     newaxe = this.columnFields;
                     fieldConfig = this.getColumnField(fieldname);
-                    break;
-                case AxeType.DATA:
-                    newaxe = this.dataFields;
-                    fieldConfig = this.getDataField(fieldname);
                     break;
                 default:
                     break;
@@ -487,11 +484,15 @@ export class Config{
                         newaxe.push(field);
                     }
                 }
-
-                // update data fields count
-                this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
-
-                return true;
+                if (newaxetype === null){
+                  return oldaxetype;
+                }
+                else if (oldaxetype === null){
+                  return newaxetype;
+                }
+                else {
+                  return -1;
+                }
             }
         }
     };

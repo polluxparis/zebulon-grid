@@ -12,7 +12,7 @@ import * as React from 'react';
 import {observable} from 'mobx';
 
 import {Axe, AxeType} from './orb.axe';
-import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED, DATAFIELD_TOGGLED} from './orb.pgrid';
+import {PGrid, EVENT_UPDATED, EVENT_CONFIG_CHANGED, EVENT_SORT_CHANGED, EVENT_ROWS_UPDATED, EVENT_COLUMNS_UPDATED, DATAFIELD_TOGGLED} from './orb.pgrid';
 import {HeaderType, DataCell, CellBase} from './orb.ui.header';
 import {UiRows} from './orb.ui.rows';
 import {UiCols} from './orb.ui.cols';
@@ -107,34 +107,42 @@ export class PGridWidgetStore {
       this.pgrid.subscribe(EVENT_SORT_CHANGED, this.buildUi.bind(this));
       this.pgrid.subscribe(EVENT_CONFIG_CHANGED, this.buildUi.bind(this));
       this.pgrid.subscribe(DATAFIELD_TOGGLED, this.changeDatafields.bind(this));
+      this.pgrid.subscribe(EVENT_COLUMNS_UPDATED, this.buildUi.bind(this, 1));
+      this.pgrid.subscribe(EVENT_ROWS_UPDATED, this.buildUi.bind(this, 2));
 
       this.buildUi();
   }
 
-  buildUi() {
-      console.log(`buildUi`, this.pgrid);
-      // build row and column headers
-      this.rows = new UiRows(this.pgrid.rows);
-      this.columns = new UiCols(this.pgrid.columns);
-
-      // set control layout infos
-      this.layout.rowHeaders = {
-          width: (this.pgrid.rows.fields.length || 1) +
-          (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-          height: this.rows.headers.length
-      };
-      this.layout.columnHeaders = {
-          width: this.columns.leafsHeaders.length,
-          height: (this.pgrid.columns.fields.length || 1) +
-          (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
-      };
-
-      this.layout.pivotTable = {
-          width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
-          height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
-      };
-
-      console.log(this);
+  buildUi(axe?) {
+    console.log(`buildUi`, this.pgrid);
+    switch (axe){
+      case 2:
+        this.rows = new UiRows(this.pgrid.rows);
+        break;
+      case 1:
+        this.columns = new UiCols(this.pgrid.columns);
+        break;
+      case -1:
+      default:
+        this.rows = new UiRows(this.pgrid.rows);
+        this.columns = new UiCols(this.pgrid.columns);
+        break;
+    }
+    this.layout.rowHeaders = {
+        width: (this.pgrid.rows.fields.length || 1) +
+        (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
+        height: this.rows.headers.length
+    };
+    this.layout.columnHeaders = {
+        width: this.columns.leafsHeaders.length,
+        height: (this.pgrid.columns.fields.length || 1) +
+        (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
+    };
+    this.layout.pivotTable = {
+        width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
+        height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
+    };
+    console.log(this);
   }
 
   changeDatafields(){

@@ -20,6 +20,8 @@ import {Dimension} from './orb.dimension';
 
 // pgrid events
 export const EVENT_UPDATED = 'pgrid:updated';
+export const EVENT_COLUMNS_UPDATED = 'pgrid:columns-updated';
+export const EVENT_ROWS_UPDATED = 'pgrid:rows-updated';
 export const EVENT_SORT_CHANGED = 'pgrid:sort-changed';
 export const EVENT_CONFIG_CHANGED = 'pgrid:config-changed';
 export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled';
@@ -66,16 +68,26 @@ export class PGrid extends PubSub{
 
     }
 
-    refresh(refreshFilters?) {
+    refresh(refreshFilters?, axe?) {
       if(refreshFilters !== false) {
         this.refreshFilteredDataSource();
       }
-      this.rows.update();
-      this.columns.update();
-      // this.computeValues();
-
-      // publish updated event
-      this.publish(EVENT_UPDATED);
+      switch (axe){
+        case 1: //columns
+          this.columns.update();
+          this.publish(EVENT_COLUMNS_UPDATED);
+          break;
+        case 2: //rows
+          this.rows.update();
+          this.publish(EVENT_ROWS_UPDATED);
+          break;
+        case -1: //both axes
+        default:
+          this.rows.update();
+          this.columns.update();
+          this.publish(EVENT_UPDATED);
+          break;
+      }
     }
 
     refreshDataFields(){
@@ -153,12 +165,8 @@ export class PGrid extends PubSub{
     };
 
     moveField(fieldname, oldaxetype, newaxetype, position) {
-      console.log(`moveField`);
-        if (this.config.moveField(fieldname, oldaxetype, newaxetype, position)) {
-            this.refresh(false);
-            return true;
-        }
-        return false;
+      const axe = this.config.moveField(fieldname, oldaxetype, newaxetype, position);
+      this.refresh(false,axe);
     };
 
     toggleDataField(fieldname){
