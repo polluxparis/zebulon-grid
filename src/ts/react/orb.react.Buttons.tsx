@@ -7,7 +7,7 @@ import {AxeType} from '../orb.axe';
 import * as domUtils from '../orb.utils.dom';
 let pbid = 0;
 
-export default class PivotButtonComponent extends React.Component<any,any>{
+export class PivotButton extends React.Component<any,any>{
 	constructor(props){
     super(props)
     this.state = {
@@ -177,10 +177,7 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 				//' \u2193' :
 				'' );
 		const filterClass = (this.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '');
-		var fieldAggFunc = undefined;
-		if(this.props.axetype === AxeType.DATA) {
-			fieldAggFunc = <small>{' (' + this.props.field.aggregateFuncName + ')' }</small>;
-		};
+		const filterImage = `url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px`;
 
 		return <div key={this.props.field.name}
 		            className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
@@ -190,15 +187,54 @@ export default class PivotButtonComponent extends React.Component<any,any>{
 		            <table>
 		            	<tbody>
 		            		<tr>
-		            			<td className="caption">{this.props.field.caption}{fieldAggFunc}</td>
+		            			<td className="caption">{this.props.field.caption}</td>
 		            			<td><div className={'sort-indicator ' + sortDirectionClass}></div></td>
 		            			<td className="filter">
-		            				<div ref="filterButton" className={filterClass} onMouseDown={this.state.dragging ? null : this.onFilterMouseDown} style={{width: 11, height: 11,   background: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px'
-}}></div>
+		            				<div 	ref="filterButton"
+															className={filterClass}
+															onMouseDown={this.state.dragging ? null : this.onFilterMouseDown}
+															style={{
+																width: 11,
+																height: 11,
+																background: filterImage
+															}}>
+												</div>
 		            			</td>
 		            		</tr>
 		            	</tbody>
 		            </table>
 		        </div>;
 	}
+}
+
+export class DataButton extends React.Component<any,{}>{
+
+		constructor(props){
+			super(props);
+			this.onClick = this.onClick.bind(this);
+			this.state = {
+				active: true
+			}
+		}
+		onClick(){
+			this.props.pgrid.toggleDataField(this.props.field.name);
+			this.setState({active: !this.state['active']});
+		}
+
+		render(){
+			const fieldAggFunc = <small>{' (' + this.props.field.aggregateFuncName + ')' }</small>;
+			const activeStyle = {
+				backgroundColor: '#5bc0de',
+				borderRadius: 4,
+				padding: 4
+			};
+			const inactiveStyle = {
+				border: 'solid #5bc0de',
+				borderRadius: 4,
+				padding: 4
+			};
+			return <div style={this.state['active'] ? activeStyle : inactiveStyle}
+									onClick={this.onClick}
+			>{this.props.field.caption}{fieldAggFunc}</div>
+		}
 }

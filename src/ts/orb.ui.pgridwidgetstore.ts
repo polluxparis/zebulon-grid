@@ -162,6 +162,10 @@ export class PGridWidgetStore {
       this.pgrid.moveField(field, oldAxeType, newAxeType, position);
   };
 
+  // toggleDataField(fieldname){
+  //   this.pgrid.toggleDataField(fieldname);
+  // }
+
   toggleFieldExpansion (axetype, field, newState) {
       var axeToExpand =
           axetype === AxeType.ROWS

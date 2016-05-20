@@ -35,8 +35,8 @@ const data = getMockDataSource(1,500);
         dataSource: data,
         canMoveFields: true,
         dataHeadersLocation: 'columns',
-        width: 1099,
-        height: 611,
+        width: 2099,
+        height: 1011,
         theme: 'green',
         toolbar: {
             visible: true

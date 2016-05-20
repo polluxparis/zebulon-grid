@@ -4,8 +4,8 @@ import DragManager from './orb.react.DragManager';
 import * as SizingManager from './orb.react.PivotTable.SizingManager';
 import Toolbar from './orb.react.Toolbar';
 import UpperButtons from './orb.react.PivotTable.UpperButtons';
-import ColumnButtons from './orb.react.PivotTable.ColumnButtons';
-import RowButtons from './orb.react.PivotTable.RowButtons';
+// import ColumnButtons from './orb.react.PivotTable.ColumnButtons';
+// import RowButtons from './orb.react.PivotTable.RowButtons';
 import RowHeaders from './orb.react.PivotTable.RowHeaders';
 import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders';
 import DataCells from './orb.react.PivotTable.DataCells';
@@ -132,7 +132,6 @@ export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
             position: 'relative',
             left: cellWidth*rowHorizontalCount,
           }}>
-            <ColumnButtons pivotTableComp={this}/>
           </div>
 
           <div style={{position: 'relative'}}>
@@ -145,7 +144,6 @@ export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
               left: 0,
               top: 0
             }}>
-            <RowButtons pivotTableComp={this} ref="rowButtons"/>
             <div
             style={{
               backgroundColor: '#eef8fb',

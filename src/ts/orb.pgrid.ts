@@ -77,26 +77,26 @@ export class PGrid extends PubSub{
       this.publish(EVENT_UPDATED);
     }
 
-    buildDataSourceMap(){
-      var dimMap = this.config.allFields.reduce(
-        (myMap, curr) => {
-          // This is a hacky way to detect which fields are measures in order to avoid mapping them
-          // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
-          if (curr.aggregateFuncName === null){
-            myMap[curr.name] = {} };
-            return myMap
-          },
-        {});
-      dimMap = this.config.dataSource.reduce(
-        (myMap, curr, currIndex) => {
-          Object.keys(myMap).forEach(dim => {
-            if (myMap[dim][curr[dim]] === undefined){myMap[dim][curr[dim]]=[]};
-            myMap[dim][curr[dim]].push(currIndex)
-          })
-          return myMap
-        }, dimMap)
-      return dimMap;
-      }
+    // buildDataSourceMap(){
+    //   var dimMap = this.config.allFields.reduce(
+    //     (myMap, curr) => {
+    //       // This is a hacky way to detect which fields are measures in order to avoid mapping them
+    //       // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
+    //       if (curr.aggregateFuncName === null){
+    //         myMap[curr.name] = {} };
+    //         return myMap
+    //       },
+    //     {});
+    //   dimMap = this.config.dataSource.reduce(
+    //     (myMap, curr, currIndex) => {
+    //       Object.keys(myMap).forEach(dim => {
+    //         if (myMap[dim][curr[dim]] === undefined){myMap[dim][curr[dim]]=[]};
+    //         myMap[dim][curr[dim]].push(currIndex)
+    //       })
+    //       return myMap
+    //     }, dimMap)
+    //   return dimMap;
+    //   }
 
     refreshFilteredDataSource() {
         var filterFields = utils.ownProperties(this.filters);
@@ -144,6 +144,11 @@ export class PGrid extends PubSub{
         }
         return false;
     };
+
+    toggleDataField(fieldname){
+      this.config.toggleDataField(fieldname);
+      this.refresh(false);
+    }
 
     applyFilter(fieldname, operator, term, staticValue, excludeStatic) {
         this.filters[fieldname] = new ExpressionFilter(operator, term, staticValue, excludeStatic);
@@ -297,7 +302,7 @@ export class PGrid extends PubSub{
             } else if (colIndexes === null) {
                 intersection = rowIndexes;
             } else {
-                intersection = utils.custom_intersect2([colIndexes, rowIndexes]);
+                intersection = utils.custom_intersect([colIndexes, rowIndexes]);
             }
 
             var emptyIntersection = intersection && intersection.length === 0;

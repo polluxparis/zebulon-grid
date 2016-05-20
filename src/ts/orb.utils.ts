@@ -299,18 +299,19 @@ export function array_intersect(args) {
 }
 
 export function custom_intersect(args){
-  var n = 0, m = 1, k, res = [];
-  if (args[0].length>args[1].length){
-    n = 1;
-    m = 0;
-  }
-  for (let i = 0; i<args[n].length; i++){
-    k = args[n][i];
-    for (let j = 0; j<args[m].length; j++){
-      if (k === args[m][j]){
-        res.push(k);
-        break;
-      }
+  const n = args[0].length,m =args[1].length;
+  var i = 0,j = 0,res = [];
+  while (i<n && j< m){
+    if (args[0][i]>args[1][j]){
+      j++;
+    }
+    else if (args[0][i]<args[1][j]){
+      i++;
+    }
+    else {
+      res.push(args[0][i]);
+      i++;
+      j++;
     }
   }
   return res;

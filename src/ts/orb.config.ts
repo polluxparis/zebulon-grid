@@ -374,15 +374,8 @@ export class Config{
     };
 
     availablefields() {
-        return this.allFields.filter(field => {
-            function notequalfield(otherfield) {
-                            return field.name !== otherfield.name;
-                        };
-
-            return this.dataFields.every(notequalfield) &&
-                this.rowFields.every(notequalfield) &&
-                this.columnFields.every(notequalfield);
-        });
+        const usedFields = this.rowFields.concat(this.columnFields);
+        return this.allFields.filter(field => field.name.indexOf(usedFields.map(field => field.name))>-1 )
     };
 
     getDataSourceFieldCaptions() {
@@ -502,6 +495,21 @@ export class Config{
             }
         }
     };
+
+    toggleDataField(fieldname){
+      const defaultFieldConfig = this.getfield(this.allFields, fieldname);
+      const newDataFields = this.dataFields.filter(fld => fld.name !== fieldname);
+      if (this.dataFields.length === newDataFields.length){
+        this.dataFields.push(defaultFieldConfig);
+      }
+      else {
+        this.dataFields = newDataFields;
+      }
+
+      // update data fields count
+      this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1;
+    }
+
     toggleSubtotals(axetype) {
 
         var i;
