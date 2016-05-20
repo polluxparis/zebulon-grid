@@ -225,34 +225,16 @@ export class PGrid extends PubSub{
     };
 
     getData(field, rowdim, coldim, aggregateFunc?) {
-        var value;
+        let value;
         if (rowdim && coldim) {
 
-            var datafieldName = field || (this.config.dataFields[0] || this.defaultfield).name;
-            // var datafield = this.config.getDataField(datafieldName);
-
-            // if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id] && (this.dataMatrix[rowdim.id][coldim.id][datafieldName]=== 0)) {
-            //   value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
-            //   }
-            // else {
-              value = this.calcAggregation(
-                  rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
-                  coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
-                  [datafieldName],
-                  aggregateFunc)[datafieldName];
-            //   this.dataMatrix[rowdim.id] = this.dataMatrix[rowdim.id] || {};
-            //   this.dataMatrix[rowdim.id][coldim.id] = this.dataMatrix[rowdim.id][coldim.id] || {};
-            //   this.dataMatrix[rowdim.id][coldim.id][datafieldName] = value;
-            // }
-
-            // if(!datafield || (aggregateFunc && datafield.aggregateFunc != aggregateFunc)) {
-            // } else {
-            //     if (this.dataMatrix[rowdim.id] && this.dataMatrix[rowdim.id][coldim.id]) {
-            //         value = this.dataMatrix[rowdim.id][coldim.id][datafieldName];
-            //     } else {
-            //         value = null;
-            //     }
-            // }
+            const datafieldName = field || (this.config.dataFields[0] || this.defaultfield).name;
+            value = this.calcAggregation(
+                rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
+                coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
+                [datafieldName],
+                aggregateFunc
+              )[datafieldName];
         }
 
         return value === undefined ? null : value;
@@ -315,18 +297,7 @@ export class PGrid extends PubSub{
             } else if (colIndexes === null) {
                 intersection = rowIndexes;
             } else {
-                intersection = utils.array_intersect([colIndexes, rowIndexes]);
-                // intersection = [];
-                // for (let ri = 0; ri < rowIndexes.length; ri++) {
-                //     var rowindex = rowIndexes[ri];
-                //     if (rowindex >= 0) {
-                //         var colrowindex = colIndexes.indexOf(rowindex);
-                //         if (colrowindex >= 0) {
-                //             rowIndexes[ri] = 0 - (rowindex + 2);
-                //             intersection.push(rowindex);
-                //         }
-                //     }
-                // }
+                intersection = utils.custom_intersect2([colIndexes, rowIndexes]);
             }
 
             var emptyIntersection = intersection && intersection.length === 0;

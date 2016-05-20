@@ -9,7 +9,7 @@ import {PivotHeaderCell} from './orb.react.PivotCell';
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import{Header} from '../orb.ui.header';
 
-import {scrollbarSize} from '../orb.utils.dom';
+// import {scrollbarSize} from '../orb.utils.dom';
 
 export interface RowHeadersProps{
   pgridwidgetstore: PGridWidgetStore,
@@ -56,6 +56,8 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
               rowCount={this.props.pgridwidgetstore.rows.headers.length}
               cellRangeRenderer={this.cellRangeRenderer}
               cellRenderer={this.rowHeaderRenderer}
+              overscanRowCount={0}
+              overscanColumnCount={0}
               />
             )}
         </AutoSizer>
@@ -153,6 +155,7 @@ export default class RowHeadersComponent extends React.Component<RowHeadersProps
       return <PivotHeaderCell
                 key={rowIndex-columnIndex}
                 cell={cell}
+                // scrollTop={this.props.scrollTop}
                 leftmost={false}
                 topmost={false}
                 pgridwidgetstore={this.props.pgridwidgetstore} />

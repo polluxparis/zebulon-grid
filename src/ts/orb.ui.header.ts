@@ -159,7 +159,7 @@ export class Header extends CellBase{
     public isRowsAxe;
     public subtotalHeader;
     public parent;
-    private subheaders: Header[];
+    public subheaders: Header[];
     public dim;
     public expanded;
     public headerType;

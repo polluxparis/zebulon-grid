@@ -44,6 +44,8 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
             columnCount={columnCount}
             rowCount={pgridwidgetstore.rows.headers.length}
             cellRenderer={this.renderDataCell}
+            overscanRowCount={0}
+            overscanColumnCount={0}
           />
         )}
       </AutoSizer>

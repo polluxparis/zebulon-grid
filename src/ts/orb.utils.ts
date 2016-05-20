@@ -297,3 +297,57 @@ export function array_intersect(args) {
   }
   return ret;
 }
+
+export function custom_intersect(args){
+  var n = 0, m = 1, k, res = [];
+  if (args[0].length>args[1].length){
+    n = 1;
+    m = 0;
+  }
+  for (let i = 0; i<args[n].length; i++){
+    k = args[n][i];
+    for (let j = 0; j<args[m].length; j++){
+      if (k === args[m][j]){
+        res.push(k);
+        break;
+      }
+    }
+  }
+  return res;
+}
+
+export function custom_intersect2(args){
+  var n = 0, m = 1, k, res = [], obj={}, elem;
+  if (args[0].length>args[1].length){
+    n = 1;
+    m = 0;
+  }
+  for (let i = 0; i<args[n].length; i++){
+    obj[args[n][i]] = true;
+  }
+
+  for (let j = 0; j<args[m].length; j++){
+    elem = args[m][j];
+    if (obj[elem]){
+      res.push(elem);
+    }
+  }
+  return res;
+}
+
+// function test_node(f,a,b){
+//   var hrstart = process.hrtime();
+//   var res = f(a,b);
+//   var hrend = process.hrtime(hrstart);
+//   console.log("Execution time: %ds %dms", hrend[0], hrend[1]/1000000);
+// }
+
+
+function test_chrome(n,f,a,b){
+  var hrstart = performance.now();
+  for (let i = 0; i< n; i++){
+    var res = f([a,b]);
+  }
+  var hrend = performance.now();
+  console.log("Execution time: %dms", hrend - hrstart);
+}

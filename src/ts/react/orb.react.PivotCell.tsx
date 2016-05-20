@@ -132,6 +132,11 @@ export class PivotHeaderCell extends React.Component<PivotHeaderCellProps,{}>{
       if(cell.template != 'cell-template-dataheader' && cell.type !== HeaderType.GRAND_TOTAL) {
         headerClassName = 'hdr-val';
       }
+      // var style = {};
+      // if((cell as Header).subheaders && (cell as Header).subheaders.length>0){
+      //   const transfo = `translate(0px,${this.props.scrollTop}px`;
+      //   style={transform: transfo}
+      // }
       divcontent.push(<div key="cell-value" ref="cellContent" className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160;'}}></div></div>);
     }
 
