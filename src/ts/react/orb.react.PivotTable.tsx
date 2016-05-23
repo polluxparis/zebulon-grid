@@ -4,14 +4,14 @@ import DragManager from './orb.react.DragManager';
 import * as SizingManager from './orb.react.PivotTable.SizingManager';
 import Toolbar from './orb.react.Toolbar';
 import UpperButtons from './orb.react.PivotTable.UpperButtons';
-// import ColumnButtons from './orb.react.PivotTable.ColumnButtons';
-// import RowButtons from './orb.react.PivotTable.RowButtons';
 import RowHeaders from './orb.react.PivotTable.RowHeaders';
 import ColumnHeaders from './orb.react.PivotTable.ColumnHeaders';
 import DataCells from './orb.react.PivotTable.DataCells';
 import {ScrollBar} from './orb.react.ScrollBars';
 import * as utils from '../orb.utils';
 import * as domUtils from '../orb.utils.dom';
+
+import DevTools from 'mobx-react-devtools';
 
 import {Grid, ScrollSync} from 'react-virtualized';
 
@@ -126,6 +126,7 @@ export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
 
     return (
       <div className={classes.container}>
+        <DevTools />
         <div className={'orb'}>
           <UpperButtons pivotTableComp={this}></UpperButtons>
 

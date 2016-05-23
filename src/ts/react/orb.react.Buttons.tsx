@@ -224,12 +224,12 @@ export class DataButton extends React.Component<any,{}>{
 
 		render(){
 			const fieldAggFunc = <small>{' (' + this.props.field.aggregateFuncName + ')' }</small>;
-			const activeStyle = {
+			const inactiveStyle = {
 				backgroundColor: '#cccccc',
 				borderRadius: 4,
 				padding: 4
 			};
-			const inactiveStyle = {
+			const activeStyle = {
 				border: 'solid #cccccc 1px',
 				borderRadius: 4,
 				padding: 4

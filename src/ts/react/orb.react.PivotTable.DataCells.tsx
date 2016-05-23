@@ -18,24 +18,27 @@ export interface DataCellsProps{
 
 export default class DataCellsComponent extends React.Component<DataCellsProps,{}>{
 
+  private _grid;
   constructor(){
     super();
     this.renderDataCell = this.renderDataCell.bind(this);
   }
 
   render(){
-    // console.log('render dataCells');
+    console.log('render dataCells');
     const pgridwidgetstore = this.props.pgridwidgetstore;
     const config = pgridwidgetstore.pgrid.config;
     const columnCount = pgridwidgetstore.columns.leafsHeaders.length;
 
     const cellHeight = this.props.pgridwidgetstore.layout.cell.height;
     const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
+    if (this._grid) this._grid.forceUpdate();
 
     return(
         <AutoSizer>
           {({height, width}) => (
             <Grid
+              ref={ref => this._grid = ref}
               onScroll={this.props.onScroll}
               scrollLeft={this.props.scrollLeft}
               scrollTop={this.props.scrollTop}
