@@ -352,3 +352,43 @@ function test_chrome(n,f,a,b){
   var hrend = performance.now();
   console.log("Execution time: %dms", hrend - hrstart);
 }
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+export function debounce(func: Function, wait: number) {
+ // we need to save these in the closure
+ var timeout, args, context, timestamp;
+
+ return function() {
+
+  // save details of latest call
+  context = this;
+  args = [].slice.call(arguments, 0);
+  timestamp = Date.now();
+
+  // this is where the magic happens
+  var later = function() {
+
+   // how long ago was the last call
+   var last = Date.now() - timestamp;
+
+   // if the latest call was less that the wait period ago
+   // then we reset the timeout to wait for the difference
+   if (last < wait) {
+    timeout = setTimeout(later, wait - last);
+
+   // or if not we can null out the timer and run the latest
+   } else {
+    timeout = null;
+    func.apply(context, args);
+   }
+  };
+
+  // we only need to set the timer now if one isn't already running
+  if (!timeout) {
+   timeout = setTimeout(later, wait);
+  }
+ }
+};

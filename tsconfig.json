@@ -5,9 +5,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    /*"declaration": true,
+    "declaration": true,
     "outDir": "dist/lib/",
-    "rootDir": "src/ts/",*/
+    "rootDir": "src/ts",
     "jsx": "react"
   },
   "exclude": [

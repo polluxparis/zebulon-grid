@@ -1,6 +1,8 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import {AxeType} from '../orb.axe';
 import {DataCell, DataHeader} from '../orb.ui.header';
+import {debounce} from '../orb.utils';
 
 import {Grid, AutoSizer} from 'react-virtualized';
 import {PivotDataCell} from './orb.react.PivotCell';
@@ -31,31 +33,36 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
     const cellWidth = this.props.pgridwidgetstore.layout.cell.width;
 
     return(
-      <AutoSizer>
-        {({height, width}) => (
-          <Grid
-            onScroll={this.props.onScroll}
-            scrollLeft={this.props.scrollLeft}
-            scrollTop={this.props.scrollTop}
-            width={width}
-            height={height}
-            columnWidth={cellWidth}
-            rowHeight={cellHeight}
-            columnCount={columnCount}
-            rowCount={pgridwidgetstore.rows.headers.length}
-            cellRenderer={this.renderDataCell}
-            overscanRowCount={0}
-            overscanColumnCount={0}
-          />
-        )}
-      </AutoSizer>
+        <AutoSizer>
+          {({height, width}) => (
+            <Grid
+              onScroll={this.props.onScroll}
+              scrollLeft={this.props.scrollLeft}
+              scrollTop={this.props.scrollTop}
+              width={width}
+              height={height}
+              columnWidth={cellWidth}
+              rowHeight={cellHeight}
+              columnCount={columnCount}
+              rowCount={pgridwidgetstore.rows.headers.length}
+              cellRenderer={this.renderDataCell}
+              overscanRowCount={0}
+              overscanColumnCount={0}
+            />
+          )}
+        </AutoSizer>
     )
   }
 
   renderMockDataCell({columnIndex, rowIndex}){
     return `C: ${columnIndex} R: ${rowIndex}`;
   }
-  renderDataCell({columnIndex, rowIndex}){
+
+  renderDataCell({columnIndex, rowIndex, isScrolling}):string|JSX.Element{
+    if (isScrolling){
+      return '';
+    }
+    else {
     const rowHeaderRow = this.props.pgridwidgetstore.rows.headers[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
     const columnHeader = this.props.pgridwidgetstore.columns.leafsHeaders[columnIndex];
@@ -70,4 +77,5 @@ export default class DataCellsComponent extends React.Component<DataCellsProps,{
             pgridwidgetstore={this.props.pgridwidgetstore}
             />
     }
+  }
 };

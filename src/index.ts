@@ -128,8 +128,8 @@ const data = getMockDataSource(1,500);
                 aggregateFunc: 'sum'
             }
         ],
-        columns    : [ 'Tutu'],//, 'Category' ],
-        rows : [ 'Toto', 'Titi' ],
+        columns    : ['Titi','Tutu'],//, 'Category' ],
+        rows : [ 'Toto' ],
         data    : [ 'Quantity', 'Amount' ],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
