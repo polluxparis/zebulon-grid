@@ -54,6 +54,7 @@ export class OrbGrid extends React.Component<any,{}>{
   }
 
   render(){
+    console.log('rendering grid');
     // if (this._grid) {this._grid.forceUpdate()};
     this._rowHeadersWidth = this._rowHorizontalCount*this._cellWidth;
     this._columnHeadersHeight = this._columnVerticalCount*this._cellHeight;
@@ -93,6 +94,9 @@ export class OrbGrid extends React.Component<any,{}>{
     }) {
     const renderedCells = [];
 
+    // to avoid rendering empty cells
+    // there is a difference between columnCount (the prop of the Grid object) and the column count except the row headers
+    // the -1 is here because there are inferior or equal signs in the loops
     const _columnStopIndex = Math.min(columnStopIndex,this._columnHorizontalCount - 1)
     const _rowStopIndex = Math.min(rowStopIndex,this._rowVerticalCount - 1)
 
@@ -172,66 +176,46 @@ export class OrbGrid extends React.Component<any,{}>{
       }
     }
 
-    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
-      let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
+    if (!isScrolling){
+      for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
+        let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
 
-      for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
-        let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-        let key = `${rowIndex}-${columnIndex}`
-        let renderedCell
-
-        // Avoid re-creating cells while scrolling.
-        // This can lead to the same cell being created many times and can cause performance issues for "heavy" cells.
-        // If a scroll is in progress- cache and reuse cells.
-        // This cache will be thrown away once scrolling complets.
-        if (isScrolling) {
-          if (!cellCache[key]) {
-            cellCache[key] = this.dataCellRenderer({
+        for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
+          let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
+          let key = `${rowIndex}-${columnIndex}`
+          let renderedCell = this.dataCellRenderer({
               columnIndex,
               isScrolling,
               rowIndex
             })
-          }
-          renderedCell = cellCache[key]
-        // If the user is no longer scrolling, don't cache cells.
-        // This makes dynamic cell content difficult for users and would also lead to a heavier memory footprint.
-        } else {
-          renderedCell = this.dataCellRenderer({
-            columnIndex,
-            isScrolling,
-            rowIndex
-          })
+
+          if (renderedCell == null) {
+         continue
+       }
+
+       let child = (
+         <div
+           key={key}
+           className='Grid__cell'
+           style={{
+             height: this._cellHeight,
+             width: this._cellWidth,
+             left: columnDatum.offset+this._rowHeadersWidth,
+             top: rowDatum.offset+this._columnHeadersHeight
+           }}
+         >
+           {renderedCell}
+         </div>
+       )
+          renderedCells.push(child)
         }
-
-        if (renderedCell == null || renderedCell === false) {
-       continue
-     }
-
-     let child = (
-       <div
-         key={key}
-         className='Grid__cell'
-         style={{
-           height: this._cellHeight,
-           width: this._cellWidth,
-           left: columnDatum.offset+this._rowHeadersWidth,
-           top: rowDatum.offset+this._columnHeadersHeight
-         }}
-       >
-         {renderedCell}
-       </div>
-     )
-        renderedCells.push(child)
       }
     }
+
     return renderedCells
   }
 
   dataCellRenderer({columnIndex, rowIndex, isScrolling}):string|JSX.Element {
-    if (isScrolling){
-      return '';
-    }
-    else {
     const rowHeaderRow = this.props.pgridwidgetstore.rows.headers[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
     const columnHeaderColumn = this.props.pgridwidgetstore.columns.headers[columnIndex];
@@ -246,7 +230,6 @@ export class OrbGrid extends React.Component<any,{}>{
             cell={cell}
             pgridwidgetstore={this.props.pgridwidgetstore}
             />
-    }
   }
 
   columnHeaderRenderer ({columnIndex, rowIndex}){

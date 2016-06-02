@@ -270,7 +270,6 @@ export class PGrid extends PubSub{
                 aggregateFunc
               )[datafieldName];
         }
-
         return value === undefined ? null : value;
     };
 
