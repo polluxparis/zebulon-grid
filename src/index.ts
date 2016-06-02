@@ -6,7 +6,7 @@ import {PivotTableComponent} from './ts/react/orb.react.PivotTable';
 import {PGridWidget} from './ts/orb.ui.pgridwidget';
 
 function getMockDataSource(data_repetition,n_toto) {
-	const n_titi = 100;
+	const n_titi = 10;
 	const n_tutu = 2;
 	var arr = [];
 	var res = [];
@@ -30,13 +30,13 @@ function getMockDataSource(data_repetition,n_toto) {
 	}
 	return res;
     }
-const data = getMockDataSource(1,500);
+const data = getMockDataSource(1,50);
  var config = {
         dataSource: data,
         canMoveFields: true,
         dataHeadersLocation: 'columns',
-        width: 2099,
-        height: 1011,
+        width: 1099,
+        height: 601,
         theme: 'green',
         toolbar: {
             visible: true

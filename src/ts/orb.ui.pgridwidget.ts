@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 
 import {PGridWidgetStore} from './orb.ui.pgridwidgetstore';
 import {PivotTableComponent} from './react/orb.react.PivotTable';
+import {PivotTableComponent2} from './react/orb.react.PivotTable2';
 
 export class PGridWidget{
 
@@ -15,7 +16,7 @@ export class PGridWidget{
 
   render(elem){
     this.DOMNode = elem;
-    ReactDOM.render(React.createElement(PivotTableComponent,{pgridwidgetstore:this.store}), elem);
+    ReactDOM.render(React.createElement(PivotTableComponent2,{pgridwidgetstore:this.store}), elem);
   }
 
   unmount(){

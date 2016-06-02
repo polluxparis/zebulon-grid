@@ -134,7 +134,7 @@ export class PGridWidgetStore {
         height: this.rows.headers.length
     };
     this.layout.columnHeaders = {
-        width: this.columns.leafsHeaders.length,
+        width: this.columns.headers.length,
         height: (this.pgrid.columns.fields.length || 1) +
         (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
     };

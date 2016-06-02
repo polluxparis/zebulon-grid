@@ -1,5 +1,5 @@
 // import * as React from 'react';
-// import PivotCell from './orb.react.PivotCell';
+// import PivotCell from './orb.react.PivotCells';
 // import {AxeType} from '../orb.axe';
 //
 // import {Grid} from 'react-virtualized';
