@@ -71,8 +71,8 @@ export class OrbGrid extends React.Component<any,{}>{
             columnCount={this._columnHorizontalCount+this._rowHorizontalCount}
             rowCount={this._columnVerticalCount+this._rowVerticalCount}
             cellRangeRenderer={this.cellRangeRenderer}
-            overscanRowCount={2}
-            overscanColumnCount={2}
+            overscanRowCount={5}
+            overscanColumnCount={5}
           />
     )
   }
@@ -93,6 +93,8 @@ export class OrbGrid extends React.Component<any,{}>{
     }) {
     const renderedCells = [];
 
+    const _columnStopIndex = Math.min(columnStopIndex,this._columnHorizontalCount - 1)
+    const _rowStopIndex = Math.min(rowStopIndex,this._rowVerticalCount - 1)
 
     // Top-left corner piece
     renderedCells.push(
@@ -105,7 +107,8 @@ export class OrbGrid extends React.Component<any,{}>{
           top: scrollTop,
           width: this._rowHeadersWidth,
           height: this._columnHeadersHeight,
-          zIndex: 1
+          zIndex: 2,
+          backgroundColor: '#fff'
         }}
       >
         &nbsp;
@@ -114,7 +117,7 @@ export class OrbGrid extends React.Component<any,{}>{
 
 
     // Render fixed header row
-    for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
+    for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
       for (let columnHeaderIndex = 0; columnHeaderIndex < this._columnHeaders[columnIndex].length; columnHeaderIndex++){
         let renderedCell = this.columnHeaderRenderer({
           rowIndex: columnIndex,
@@ -130,7 +133,9 @@ export class OrbGrid extends React.Component<any,{}>{
               left:columnIndex*this._cellWidth+this._rowHeadersWidth,
               top:(this._columnVerticalCount - this._columnHeaders[columnIndex].length + columnHeaderIndex)*this._cellHeight + scrollTop,
               height:this._cellHeight*columnHeader.vspan(),
-              width:this._cellWidth*columnHeader.hspan()
+              width:this._cellWidth*columnHeader.hspan(),
+              zIndex: 1,
+              backgroundColor: '#eef8fb'
             }}
           >
           {renderedCell}
@@ -141,7 +146,7 @@ export class OrbGrid extends React.Component<any,{}>{
 
 
     // Render fixed left column
-    for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
+    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       for (let rowHeaderIndex = 0; rowHeaderIndex < this._rowHeaders[rowIndex].length; rowHeaderIndex++){
         let renderedCell = this.rowHeaderRenderer({
             columnIndex: rowHeaderIndex,
@@ -154,9 +159,11 @@ export class OrbGrid extends React.Component<any,{}>{
             style={{
               position: 'fixed',
               left:(this._rowHorizontalCount - this._rowHeaders[rowIndex].length+rowHeaderIndex)*this._cellWidth + scrollLeft,
-              top:rowIndex*this._cellHeight + this._columnHeadersHeight+scrollTop,
+              top:rowIndex*this._cellHeight + this._columnHeadersHeight,
               height:this._cellHeight*this._rowHeaders[rowIndex][rowHeaderIndex].vspan(),
-              width:this._cellWidth*this._rowHeaders[rowIndex][rowHeaderIndex].hspan()
+              width:this._cellWidth*this._rowHeaders[rowIndex][rowHeaderIndex].hspan(),
+              zIndex: 1,
+              backgroundColor: '#eef8fb'
             }}
           >
             {renderedCell}
@@ -165,10 +172,10 @@ export class OrbGrid extends React.Component<any,{}>{
       }
     }
 
-    for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
+    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
 
-      for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
+      for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
         let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
         let key = `${rowIndex}-${columnIndex}`
         let renderedCell
@@ -217,7 +224,6 @@ export class OrbGrid extends React.Component<any,{}>{
         renderedCells.push(child)
       }
     }
-
     return renderedCells
   }
 

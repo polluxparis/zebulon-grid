@@ -30,7 +30,7 @@ function getMockDataSource(data_repetition,n_toto) {
 	}
 	return res;
     }
-const data = getMockDataSource(1,50);
+const data = getMockDataSource(1,20);
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -130,7 +130,7 @@ const data = getMockDataSource(1,50);
         ],
         columns    : ['Titi','Tutu'],//, 'Category' ],
         rows : [ 'Toto' ],
-        data    : [ 'Quantity', 'Amount' ],
+        data    : [ 'Quantity'],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
             'Manufacturer': { 'Matches': /^a|^c/ },

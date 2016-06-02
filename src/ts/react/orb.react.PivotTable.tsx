@@ -37,7 +37,7 @@ import 'react-virtualized/styles.css';
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css');
 
 @observer
-export class PivotTableComponent2 extends React.Component<PivotTableProps,{}>{
+export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
 
   id:number = pivotId++;
   pgrid: PGrid = null;

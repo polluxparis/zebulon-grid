@@ -213,7 +213,7 @@ export class DataButton extends React.Component<any,{}>{
 			super(props);
 			this.onClick = this.onClick.bind(this);
 			this.state = {
-				active: true
+				active: this.props.active
 			}
 		}
 		onClick(){
