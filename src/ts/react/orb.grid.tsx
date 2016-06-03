@@ -41,9 +41,6 @@ export class OrbGrid extends React.Component<any,{}>{
   initLayoutInfos(props){
     const {pgridwidgetstore} = props;
 
-    this._width = pgridwidgetstore.pgrid.config.width;
-    this._height = pgridwidgetstore.pgrid.config.height;
-
     this._cellHeight = pgridwidgetstore.layout.cell.height;
     this._cellWidth = pgridwidgetstore.layout.cell.width;
 
@@ -51,13 +48,17 @@ export class OrbGrid extends React.Component<any,{}>{
     this._rowHorizontalCount = pgridwidgetstore.layout.rowHeaders.width;
     this._columnVerticalCount = pgridwidgetstore.layout.columnHeaders.height;
     this._columnHorizontalCount = pgridwidgetstore.layout.columnHeaders.width;
+
+    this._rowHeadersWidth = this._rowHorizontalCount*this._cellWidth;
+    this._columnHeadersHeight = this._columnVerticalCount*this._cellHeight;
+
+    this._width = Math.min(pgridwidgetstore.pgrid.config.width, this._rowHeadersWidth + this._columnHorizontalCount*this._cellWidth);
+    this._height = Math.min(pgridwidgetstore.pgrid.config.height, this._columnHeadersHeight + this._rowVerticalCount*this._cellHeight);
   }
 
   render(){
     console.log('rendering grid');
     // if (this._grid) {this._grid.forceUpdate()};
-    this._rowHeadersWidth = this._rowHorizontalCount*this._cellWidth;
-    this._columnHeadersHeight = this._columnVerticalCount*this._cellHeight;
 
     this._columnHeaders = this.props.pgridwidgetstore.columns.headers;
     this._rowHeaders = this.props.pgridwidgetstore.rows.headers;
@@ -72,8 +73,8 @@ export class OrbGrid extends React.Component<any,{}>{
             columnCount={this._columnHorizontalCount+this._rowHorizontalCount}
             rowCount={this._columnVerticalCount+this._rowVerticalCount}
             cellRangeRenderer={this.cellRangeRenderer}
-            overscanRowCount={5}
-            overscanColumnCount={5}
+            overscanRowCount={0}
+            overscanColumnCount={0}
           />
     )
   }
@@ -120,7 +121,7 @@ export class OrbGrid extends React.Component<any,{}>{
     )
 
 
-    // Render fixed header row
+    // Render fixed header rows
     for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
       for (let columnHeaderIndex = 0; columnHeaderIndex < this._columnHeaders[columnIndex].length; columnHeaderIndex++){
         let renderedCell = this.columnHeaderRenderer({
@@ -148,14 +149,14 @@ export class OrbGrid extends React.Component<any,{}>{
         }
       }
 
-
-    // Render fixed left column
+    // Render fixed left columns
     for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       for (let rowHeaderIndex = 0; rowHeaderIndex < this._rowHeaders[rowIndex].length; rowHeaderIndex++){
         let renderedCell = this.rowHeaderRenderer({
             columnIndex: rowHeaderIndex,
             rowIndex
           });
+        let rowHeader = this._rowHeaders[rowIndex][rowHeaderIndex];
         renderedCells.push(
           <div
             key={`fixedcol-${rowHeaderIndex}-${rowIndex}`}
@@ -164,8 +165,8 @@ export class OrbGrid extends React.Component<any,{}>{
               position: 'fixed',
               left:(this._rowHorizontalCount - this._rowHeaders[rowIndex].length+rowHeaderIndex)*this._cellWidth + scrollLeft,
               top:rowIndex*this._cellHeight + this._columnHeadersHeight,
-              height:this._cellHeight*this._rowHeaders[rowIndex][rowHeaderIndex].vspan(),
-              width:this._cellWidth*this._rowHeaders[rowIndex][rowHeaderIndex].hspan(),
+              height:this._cellHeight*rowHeader.vspan(),
+              width:this._cellWidth*rowHeader.hspan(),
               zIndex: 1,
               backgroundColor: '#eef8fb'
             }}
@@ -176,6 +177,7 @@ export class OrbGrid extends React.Component<any,{}>{
       }
     }
 
+    // Render data cells
     if (!isScrolling){
       for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
         let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
@@ -188,10 +190,6 @@ export class OrbGrid extends React.Component<any,{}>{
               isScrolling,
               rowIndex
             })
-
-          if (renderedCell == null) {
-         continue
-       }
 
        let child = (
          <div
