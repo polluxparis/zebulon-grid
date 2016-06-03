@@ -50,6 +50,7 @@ export default class UpperButtonsComponent extends React.Component<any,any>{
                    field={field}
                    axetype={AxeType.DATA}
                    position={index}
+                   active={config.dataFields.filter(fld => fld.name===field.name).length ? true : false}
                    pgrid={this.props.pivotTableComp.pgridwidgetstore.pgrid}>
       </DataButton>
       </div>

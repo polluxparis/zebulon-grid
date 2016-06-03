@@ -2,7 +2,7 @@ import * as React from 'react';
 import {AxeType} from '../orb.axe';
 
 import {Collection,AutoSizer} from 'react-virtualized';
-import {PivotHeaderCell} from './orb.react.PivotCell';
+import {PivotHeaderCell} from './orb.react.PivotCells';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 

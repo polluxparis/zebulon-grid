@@ -18,9 +18,6 @@ function getMockDataSource(data_repetition,n_toto) {
 					arr[0] = 'toto'+String(ll);
 					arr[3] = 'titi'+String(l);
 					arr[4] = 'tutu'+String(j);
-					// arr[0] = ll;
-					// arr[3] = l;
-					// arr[4] = j;
 					arr[1] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
 					arr[2] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
 					res.push(arr);
@@ -35,8 +32,8 @@ const data = getMockDataSource(1,500);
         dataSource: data,
         canMoveFields: true,
         dataHeadersLocation: 'columns',
-        width: 2099,
-        height: 1011,
+        width: 1099,
+        height: 601,
         theme: 'green',
         toolbar: {
             visible: true
@@ -130,7 +127,7 @@ const data = getMockDataSource(1,500);
         ],
         columns    : ['Titi','Tutu'],//, 'Category' ],
         rows : [ 'Toto' ],
-        data    : [ 'Quantity', 'Amount' ],
+        data    : [ 'Quantity'],
         /*preFilters : {
             'Class': { 'Matches': 'Regular' },
             'Manufacturer': { 'Matches': /^a|^c/ },

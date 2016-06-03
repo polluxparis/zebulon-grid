@@ -5,7 +5,7 @@ import {DataCell, DataHeader} from '../orb.ui.header';
 import {debounce} from '../orb.utils';
 
 import {Grid, AutoSizer} from 'react-virtualized';
-import {PivotDataCell} from './orb.react.PivotCell';
+import {PivotDataCell} from './orb.react.PivotCells';
 
 import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 

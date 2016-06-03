@@ -41,7 +41,7 @@
     "react": "~15.0.1",
     "react-addons-shallow-compare": "^15.0.1",
     "react-dom": "~15.0.1",
-    "react-virtualized": "~7.0.0"
+    "react-virtualized": "~7.2.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^0.17.0-rc.6",

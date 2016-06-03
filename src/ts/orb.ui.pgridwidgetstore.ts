@@ -128,21 +128,7 @@ export class PGridWidgetStore {
         this.columns = new UiCols(this.pgrid.columns);
         break;
     }
-    this.layout.rowHeaders = {
-        width: (this.pgrid.rows.fields.length || 1) +
-        (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
-        height: this.rows.headers.length
-    };
-    this.layout.columnHeaders = {
-        width: this.columns.leafsHeaders.length,
-        height: (this.pgrid.columns.fields.length || 1) +
-        (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
-    };
-    this.layout.pivotTable = {
-        width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
-        height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
-    };
-    console.log(this);
+    this._updateLayout();
   }
 
   changeDatafields(){
@@ -157,17 +143,20 @@ export class PGridWidgetStore {
         console.error(`pgrid.config.dataHeadersLocation should be 'rows' or 'columns', instead is ${this.pgrid.config.dataHeadersLocation}`);
         break;
     }
+    this._updateLayout();
+  }
+
+  private _updateLayout(){
     this.layout.rowHeaders = {
         width: (this.pgrid.rows.fields.length || 1) +
         (this.pgrid.config.dataHeadersLocation === 'rows' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0),
         height: this.rows.headers.length
     };
     this.layout.columnHeaders = {
-        width: this.columns.leafsHeaders.length,
+        width: this.columns.headers.length,
         height: (this.pgrid.columns.fields.length || 1) +
         (this.pgrid.config.dataHeadersLocation === 'columns' && this.pgrid.config.dataFieldsCount > 1 ? 1 : 0)
     };
-
     this.layout.pivotTable = {
         width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
         height: this.layout.rowHeaders.height + this.layout.columnHeaders.height

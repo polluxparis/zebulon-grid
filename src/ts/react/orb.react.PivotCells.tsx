@@ -8,10 +8,10 @@ import {PGridWidgetStore} from '../orb.ui.pgridwidgetstore';
 import {Header, DataHeader, DataCell} from '../orb.ui.header';
 
 export interface PivotHeaderCellProps{
-  key:number,
+  key?:number,
   cell:Header|DataHeader,
-  leftmost:boolean,
-  topmost:boolean,
+  leftmost?:boolean,
+  topmost?:boolean,
   pgridwidgetstore: PGridWidgetStore
 }
 

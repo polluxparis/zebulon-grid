@@ -162,7 +162,8 @@ export class PivotButton extends React.Component<any,any>{
 			zIndex: 101,
       width:'',
 			backgroundColor: '#5bc0de',
-			borderRadius: 4
+			borderRadius: 4,
+			cursor: 'default'
 		};
 
 		if(this.state.size) {
@@ -213,7 +214,7 @@ export class DataButton extends React.Component<any,{}>{
 			super(props);
 			this.onClick = this.onClick.bind(this);
 			this.state = {
-				active: true
+				active: this.props.active
 			}
 		}
 		onClick(){
@@ -227,12 +228,14 @@ export class DataButton extends React.Component<any,{}>{
 			const inactiveStyle = {
 				backgroundColor: '#cccccc',
 				borderRadius: 4,
-				padding: 4
+				padding: 4,
+				cursor: 'default'
 			};
 			const activeStyle = {
 				border: 'solid #cccccc 1px',
 				borderRadius: 4,
-				padding: 4
+				padding: 4,
+				cursor: 'default'
 			};
 			return <div style={this.state['active'] ? activeStyle : inactiveStyle}
 									onClick={this.onClick}

@@ -11,6 +11,8 @@ import {ScrollBar} from './orb.react.ScrollBars';
 import * as utils from '../orb.utils';
 import * as domUtils from '../orb.utils.dom';
 
+import {OrbGrid} from './orb.grid';
+
 import DevTools from 'mobx-react-devtools';
 
 import {Grid, ScrollSync} from 'react-virtualized';
@@ -129,58 +131,10 @@ export class PivotTableComponent extends React.Component<PivotTableProps,{}>{
         <DevTools />
         <div className={'orb'}>
           <UpperButtons pivotTableComp={this}></UpperButtons>
-
-          <div style={{position: 'relative'}}>
-          <ScrollSync>
-          {({ clientHeight, clientWidth, onScroll, scrollHeight, scrollLeft, scrollTop, scrollWidth }) => {
-            return <div style={tblStyle} ref="pivot">
-            <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: 0
-            }}>
-            <div
-            style={{
-              backgroundColor: '#eef8fb',
-              margin: '2px',
-              position: 'absolute',
-              left: 0,
-              top: cellHeight*columnVerticalCount+20,
-              height: Math.min(config.height-cellHeight*columnVerticalCount,cellHeight*rowVerticalCount),
-              width: rowHorizontalCount*cellWidth
-
-            }}>
-            <RowHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} ref="rowHeaders"/>
-            </div>
-            <div
-            style={{
-              margin: '2px',
-              position: 'absolute',
-              left: cellWidth*rowHorizontalCount,
-              top: 20,
-              width: cellWidth*columnHorizontalCount
-            }}>
-            <div style={{
-              backgroundColor: '#eef8fb',
-              width: Math.min(config.width-cellWidth*rowHorizontalCount,cellWidth*columnHorizontalCount),
-              height: columnVerticalCount*cellHeight
-            }} >
-              <ColumnHeaders pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollLeft={scrollLeft}ref="colHeaders"></ColumnHeaders>
-            </div>
-            <div style={{
-              width: Math.min(config.width-cellWidth*rowHorizontalCount,cellWidth*columnHorizontalCount),
-              height: Math.min(config.height-cellHeight*columnVerticalCount,cellHeight*rowVerticalCount)
-            }}>
-              <DataCells pgridwidgetstore={this.props.pgridwidgetstore} onScroll={onScroll} scrollTop={scrollTop} scrollLeft={scrollLeft} ref="dataCells"/>
-            </div>
-            </div>
-            </div>
-            </div>
-          }}
-          </ScrollSync>
-          <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
+          <div style={tblStyle}>
+            <OrbGrid pgridwidgetstore={this.props.pgridwidgetstore}/>
           </div>
+          <div className="orb-overlay orb-overlay-hidden" id={'drilldialog' + this.id}></div>
         </div>
       </div>
     );
