@@ -77,6 +77,8 @@ declare module "react-virtualized"{
 
   class AutoSizer  extends __React.Component<any,{}>{}
 
+  class VirtualScroll extends __React.Component<any,{}>{}
+
   interface cellRangeRendererArgs{
     cellCache: Object,
     cellRenderer: Function,
@@ -92,4 +94,12 @@ declare module "react-virtualized"{
   }
 
   class CellSizeAndPositionManager {}
+}
+
+declare module "react-dropdown"{
+  export default class Dropdown extends __React.Component<any,{}>{}
+}
+
+declare module "react-resizable"{
+  class ResizableBox extends __React.Component<any,{}>{}
 }

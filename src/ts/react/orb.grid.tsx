@@ -72,6 +72,7 @@ export class OrbGrid extends React.Component<any,{}>{
             rowHeight={this._cellHeight}
             columnCount={this._columnHorizontalCount+this._rowHorizontalCount}
             rowCount={this._columnVerticalCount+this._rowVerticalCount}
+            cellRenderer={()=>null}
             cellRangeRenderer={this.cellRangeRenderer}
             overscanRowCount={0}
             overscanColumnCount={0}

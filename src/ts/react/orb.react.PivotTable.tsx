@@ -31,7 +31,10 @@ export interface PivotTableProps{
 }
 
 // CSS files
-import 'react-virtualized/styles.css';
+require('react-virtualized/styles.css');
+require('../../css/react-dropdown.css');
+require('react-resizable/css/styles.css');
+
 // Do not use the .less files because the compilation is too complicated (cf gulpactions/buildcss.js)
 // require('../../../dist/orb.css');
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css');

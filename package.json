@@ -41,6 +41,8 @@
     "react": "~15.0.1",
     "react-addons-shallow-compare": "^15.0.1",
     "react-dom": "~15.0.1",
+    "react-dropdown": "^1.0.4",
+    "react-resizable": "^1.4.1",
     "react-virtualized": "~7.3.0"
   },
   "devDependencies": {
