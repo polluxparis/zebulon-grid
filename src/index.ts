@@ -1,33 +1,30 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-require('expose?Perf!react-addons-perf');
-import {PGridWidgetStore} from './ts/orb.ui.pgridwidgetstore';
-import {PivotTableComponent} from './ts/react/orb.react.PivotTable';
-import {PGridWidget} from './ts/orb.ui.pgridwidget';
+import 'expose?Perf!react-addons-perf'
+import {PGridWidget} from './ts/orb.ui.pgridwidget'
+
 
 function getMockDataSource(data_repetition,n_toto) {
-	const n_titi = 100;
-	const n_tutu = 2;
-	var arr = [];
-	var res = [];
+	const n_titi = 100
+	const n_tutu = 2
+	var arr = []
+	var res = []
 	for(var k=0; k<data_repetition;k++){
 		for (var ll=0; ll<n_toto; ll++){
 			for (var l=0; l<n_titi; l++){
 				for (var j=0; j<n_tutu; j++){
 					arr = []
-					arr[0] = 'toto'+String(ll);
-					arr[3] = 'titi'+String(l);
-					arr[4] = 'tutu'+String(j);
-					arr[1] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
-					arr[2] = k+10*j+100*l*1000*ll+1;//+9999999999.1234567890123456;
-					res.push(arr);
+					arr[0] = 'toto'+String(ll)
+					arr[3] = 'titi'+String(l)
+					arr[4] = 'tutu'+String(j)
+					arr[1] = k+10*j+100*l*1000*ll+1//+9999999999.1234567890123456
+					arr[2] = k+10*j+100*l*1000*ll+1//+9999999999.1234567890123456
+					res.push(arr)
 				}
 		}
 	}
 	}
-	return res;
+	return res
     }
-const data = getMockDataSource(1,500);
+const data = getMockDataSource(1,500)
  var config = {
         dataSource: data,
         canMoveFields: true,
@@ -71,7 +68,7 @@ const data = getMockDataSource(1,500);
                 //     aggregateFunc: 'sum',
                 //     aggregateFuncName: 'whatever',
                 //     formatFunc: function(value) {
-                //         return value ? Number(value).toFixed(0) + ' $' : '';
+                //         return value ? Number(value).toFixed(0) + ' $' : ''
                 //     }
                 // }
             },
@@ -111,11 +108,11 @@ const data = getMockDataSource(1,500);
             //     sort: {
             //         customfunc: function(a, b) {
             //             if(a.trim() == 'Touch Screen Phones'){
-            //              return -1;
+            //              return -1
             //             }
-            //             if(a < b) return -1;
-            //             if(a > b) return 1;
-            //             return 0;
+            //             if(a < b) return -1
+            //             if(a > b) return 1
+            //             return 0
             //         }
             //     }
             // },
@@ -135,6 +132,6 @@ const data = getMockDataSource(1,500);
            // 'Amount'      : { '>':  40 },
          //   'Quantity'    : [4, 8, 12]
         }*/
-    };
-const widget = new PGridWidget(config);
-widget.render(document.getElementById('grid'));
+    }
+const widget = new PGridWidget(config)
+widget.render(document.getElementById('grid'))

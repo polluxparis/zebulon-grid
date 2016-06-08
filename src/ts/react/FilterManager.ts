@@ -1,7 +1,6 @@
 import * as utils from '../orb.utils';
 import * as filtering from '../orb.filtering';
 import * as domUtils from '../orb.utils.dom';
-import {ResizeManager} from './ResizeManager';
 
 export class FilterManager{
 
@@ -49,14 +48,6 @@ export class FilterManager{
 		this.elems.cancelButton = this.elems.filterContainer.rows[2].cells[0].children[1];
 		this.elems.resizeGrip = this.elems.filterContainer.rows[2].cells[1].children[0];
 
-		// const rows = this.elems.filterContainer.rows[1].cells[0].children[0].rows;
-		// for(let i = 0; i < rows.length; i++) {
-		// 	const checkbox = rows[i].cells[0].children[0];
-		// 	this.elems.checkboxes[checkbox.value] = checkbox;
-		// }
-
-		// this.elems.allCheckbox = this.elems.checkboxes[filtering.ALL];
-		// this.elems.blankCheckbox = this.elems.checkboxes[filtering.BLANK];
 
 		const values = this.reactComp.values;
 		for (let i = 0; i < values.length; i++){
