@@ -1,0 +1,2621 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Ax",
+				"AxeType	const"
+			],
+			[
+				"A",
+				"AxeType	const"
+			],
+			[
+				"ini",
+				"initialFilterObject	property"
+			],
+			[
+				"s",
+				"synchronizeWidths	function"
+			],
+			[
+				"ge",
+				"getSize	function"
+			],
+			[
+				"Re",
+				"React	alias"
+			],
+			[
+				"ex",
+				"extends	keyword"
+			],
+			[
+				"co",
+				"clog	console log"
+			],
+			[
+				"con",
+				"console	var"
+			],
+			[
+				"o",
+				"orb.ts"
+			],
+			[
+				"or",
+				"orb.config.ts"
+			],
+			[
+				"loa",
+				"loaders"
+			],
+			[
+				"get",
+				"getData"
+			],
+			[
+				"load",
+				"loader"
+			],
+			[
+				"re",
+				"render"
+			],
+			[
+				"bt",
+				"btoaFunc	const"
+			],
+			[
+				"pgr",
+				"orb.ui.pgridwidget.js"
+			],
+			[
+				"P",
+				"PGrid	alias"
+			],
+			[
+				"Axe",
+				"Axe	alias"
+			],
+			[
+				"Da",
+				"DataHeader	class"
+			],
+			[
+				"H",
+				"Header	class"
+			],
+			[
+				"Hea",
+				"HeaderType	const"
+			],
+			[
+				"d",
+				"orb.dimension.ts"
+			],
+			[
+				"t",
+				"orb.themes.ts"
+			],
+			[
+				"f",
+				"filtering	module"
+			],
+			[
+				"name",
+				"namespace	keyword"
+			],
+			[
+				"cl",
+				"class	class …"
+			],
+			[
+				"cons",
+				"constructor	keyword"
+			],
+			[
+				"de",
+				"demo.data.csv"
+			],
+			[
+				"pivot",
+				"pivottable"
+			],
+			[
+				"cs",
+				"cssLoader"
+			],
+			[
+				"style",
+				"style-loader"
+			],
+			[
+				"resol",
+				"resolve"
+			],
+			[
+				"di",
+				"__dirname"
+			],
+			[
+				"a",
+				"assets/"
+			],
+			[
+				"p",
+				"pgridwidget	property"
+			],
+			[
+				"mea",
+				"meaFields	const"
+			],
+			[
+				"dim",
+				"dimFields	const"
+			],
+			[
+				"data",
+				"dataSource	property"
+			],
+			[
+				"styles",
+				"styles	property"
+			],
+			[
+				"Vi",
+				"ViewEncapsulation	alias"
+			],
+			[
+				"ele",
+				"elementRef	parameter"
+			],
+			[
+				"Ele",
+				"ElementRef	alias"
+			],
+			[
+				"tem",
+				"template	property"
+			],
+			[
+				"Com",
+				"Component	alias"
+			],
+			[
+				"Co",
+				"Component	var"
+			],
+			[
+				"Eel",
+				"ElementRef	alias"
+			],
+			[
+				"selec",
+				"selectedCube"
+			],
+			[
+				"se",
+				"selectedCube	property"
+			],
+			[
+				"bi",
+				"binding	method"
+			],
+			[
+				"bin",
+				"exactBinding	method"
+			],
+			[
+				"isP",
+				"isPresent	method"
+			],
+			[
+				"afte",
+				"afterEach	function"
+			],
+			[
+				"moc",
+				"mockParamValues	property"
+			],
+			[
+				"ze",
+				"zebulon.service.ts"
+			],
+			[
+				"WebS",
+				"$WebSocket	class"
+			],
+			[
+				"w",
+				"angular2-websocket.ts"
+			],
+			[
+				"pa",
+				"parameterChange	property"
+			],
+			[
+				"me",
+				"measures	property"
+			],
+			[
+				"cha",
+				"changeParameterValue	method"
+			],
+			[
+				"mo",
+				"mockOptions	let"
+			],
+			[
+				"ac",
+				"actual	let"
+			],
+			[
+				"exp",
+				"expected	let"
+			],
+			[
+				"sle",
+				"selectedCube	let"
+			],
+			[
+				"m",
+				"meta.zeb.mock.json"
+			],
+			[
+				"c",
+				"cubes	getter"
+			],
+			[
+				"in",
+				"inject	alias"
+			],
+			[
+				"fr",
+				"fromArray	property"
+			],
+			[
+				"Obe",
+				"Observable	alias"
+			],
+			[
+				"Ob",
+				"Observable	alias"
+			],
+			[
+				"pr",
+				"provide	alias"
+			],
+			[
+				"be",
+				"beforeEachProviders	alias"
+			],
+			[
+				"cube",
+				"CubesActions	alias"
+			],
+			[
+				"fil",
+				"filter	method"
+			],
+			[
+				"AD",
+				"ADD_FILTER_OPTIONS	alias"
+			],
+			[
+				"sel",
+				"selectedCube	alias"
+			],
+			[
+				"to",
+				"toEqual	method"
+			],
+			[
+				"mock",
+				"mockCubes	let"
+			],
+			[
+				"TO",
+				"toEqual	method"
+			],
+			[
+				"C",
+				"cubes	const"
+			],
+			[
+				"befo",
+				"beforeEachProviders	alias"
+			],
+			[
+				"b",
+				"beforeEachProviders	function"
+			],
+			[
+				"befor",
+				"beforeEach	function"
+			],
+			[
+				"req",
+				"require	keyword"
+			],
+			[
+				"Reac",
+				"ReactDOM	alias"
+			],
+			[
+				"gr",
+				"gridActions	property"
+			],
+			[
+				"U",
+				"UPDATE_FILTER	alias"
+			],
+			[
+				"typ",
+				"typeChange	property"
+			],
+			[
+				"filter",
+				"filterChange	property"
+			],
+			[
+				"Hi",
+				"HiddenPipe	alias"
+			],
+			[
+				"Fil",
+				"Filter	alias"
+			],
+			[
+				"nam",
+				"name	property"
+			],
+			[
+				"filt",
+				"filtersActions	property"
+			],
+			[
+				"Filter",
+				"FiltersActions	alias"
+			],
+			[
+				"g",
+				"getDimValues	method"
+			],
+			[
+				"Eve",
+				"EventEmitter	alias"
+			],
+			[
+				"l",
+				"loadParameterOptions	method"
+			],
+			[
+				"Sele",
+				"SelectedCubeActions	alias"
+			],
+			[
+				"Cu",
+				"CubesActions	alias"
+			],
+			[
+				"O",
+				"Observable	alias"
+			],
+			[
+				"Stor",
+				"StoreService	alias"
+			],
+			[
+				"Sel",
+				"SelectedCubeActions	alias"
+			],
+			[
+				"const",
+				"constructor	keyword"
+			],
+			[
+				"In",
+				"Injectable	alias"
+			],
+			[
+				"coo",
+				"console	var"
+			],
+			[
+				"cno",
+				"console	var"
+			],
+			[
+				"dims",
+				"dimsArray	const"
+			],
+			[
+				"meas",
+				"measureViews"
+			],
+			[
+				"Meas",
+				"MeasureView	alias"
+			],
+			[
+				"gen",
+				"generateRowData	method"
+			],
+			[
+				"col",
+				"columnDefs	local var"
+			],
+			[
+				"res",
+				"resultsData	const"
+			],
+			[
+				"resul",
+				"resultsKey	const"
+			],
+			[
+				"groupS",
+				"groupSuppressAutoColumn	property"
+			],
+			[
+				"row",
+				"rowData	property"
+			],
+			[
+				"vi",
+				"viewProviders	property"
+			],
+			[
+				"on",
+				"onOpen	method"
+			],
+			[
+				"des",
+				"deserialize	alias"
+			],
+			[
+				"Ref",
+				"RefData	alias"
+			],
+			[
+				"pro",
+				"providers	property"
+			],
+			[
+				"ro",
+				"rowData	property"
+			],
+			[
+				"sty",
+				"styleUrls	property"
+			],
+			[
+				"pri",
+				"private	keyword"
+			],
+			[
+				"Hero",
+				"HeroService	alias"
+			],
+			[
+				"hero",
+				"hero.service.js"
+			],
+			[
+				"pairs",
+				"pairs_dict	statement"
+			],
+			[
+				"chi",
+				"chi2_contingency	function"
+			],
+			[
+				"test",
+				"test_class"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/Q/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Q/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 365.0,
+		"last_filter": "gi",
+		"selected_items":
+		[
+			[
+				"gi",
+				"Git: Change Branch"
+			],
+			[
+				"git",
+				"Git: Change Branch"
+			],
+			[
+				"de",
+				"File: Delete"
+			],
+			[
+				"setjso",
+				"Set Syntax: JSON"
+			],
+			[
+				"types",
+				"TypeScript: Show Error List"
+			],
+			[
+				"del",
+				"File: Delete"
+			],
+			[
+				"lispa",
+				"Package Control: List Packages"
+			],
+			[
+				"setyp",
+				"Set Syntax: TypeScript"
+			],
+			[
+				"setsyntyp",
+				"Set Syntax: TypeScriptReact"
+			],
+			[
+				"insp",
+				"Package Control: Install Package"
+			],
+			[
+				"remopa",
+				"Package Control: Remove Package"
+			],
+			[
+				"re",
+				"File: Rename"
+			],
+			[
+				"gitc",
+				"Git: Change Branch"
+			],
+			[
+				"tomi",
+				"View: Toggle Minimap"
+			],
+			[
+				"upp",
+				"Convert Case: Upper Case"
+			],
+			[
+				"ren",
+				"File: Rename"
+			],
+			[
+				"typ",
+				"Set Syntax: TypeScript"
+			],
+			[
+				"json",
+				"Pretty JSON: Validate"
+			],
+			[
+				"ssytjson",
+				"Set Syntax: JSON"
+			],
+			[
+				"du",
+				"File: Duplicate"
+			],
+			[
+				"prettjsofo",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"filedu",
+				"File: Duplicate"
+			],
+			[
+				"pretty",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"move",
+				"File: Move"
+			],
+			[
+				"pret",
+				"HTMLPrettify"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"prett",
+				"HTMLPrettify"
+			],
+			[
+				"setsytype",
+				"Set Syntax: TypeScript"
+			],
+			[
+				"renam",
+				"File: Rename"
+			],
+			[
+				"htmlpt",
+				"HTMLPrettify"
+			],
+			[
+				"tyo",
+				"TypeScript: Show Error List"
+			],
+			[
+				"htmpret",
+				"HTMLPrettify"
+			],
+			[
+				"filmov",
+				"File: Move"
+			],
+			[
+				"setsty",
+				"Set Syntax: TypeScript"
+			],
+			[
+				"setsyjavs",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"setsytypp",
+				"Set Syntax: TypeScript"
+			],
+			[
+				"rena",
+				"File: Rename"
+			],
+			[
+				"renma",
+				"File: Rename"
+			],
+			[
+				"instalp",
+				"Package Control: Install Package"
+			],
+			[
+				"settjs",
+				"Set Syntax: JSON"
+			],
+			[
+				"ssytjavs",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"packre",
+				"Package Control: Remove Package"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"stsypyh",
+				"Set Syntax: Python"
+			],
+			[
+				"setsy",
+				"Set Syntax: q"
+			],
+			[
+				"setsync",
+				"Set Syntax: C++"
+			],
+			[
+				"locas",
+				"Convert Case: Lower Case"
+			],
+			[
+				"setsyq",
+				"Set Syntax: q"
+			],
+			[
+				"setspyth",
+				"Set Syntax: Python"
+			],
+			[
+				"setINI",
+				"Set Syntax: INI"
+			],
+			[
+				"instp",
+				"Package Control: Install Package"
+			],
+			[
+				"setsynshe",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"stsyshe",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"pac",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"inspag",
+				"Package Control: Install Package"
+			],
+			[
+				"ssynq",
+				"Set Syntax: q"
+			],
+			[
+				"ta",
+				"Table Editor: Set table syntax 'Creole' for current view"
+			],
+			[
+				"table",
+				"Table Editor: Show demo film in new scratch view"
+			],
+			[
+				"syn",
+				"Set Syntax: Creole"
+			],
+			[
+				"omprevi",
+				"OmniMarkupPreviewer: Preview Current Markup in Browser"
+			],
+			[
+				"omni",
+				"Preferences: OmniMarkupPreviewer Settings – User"
+			],
+			[
+				"markup",
+				"Preferences: OmniMarkupPreviewer Settings – Default"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"tore",
+				"TodoReview: Project Files"
+			],
+			[
+				"todoop",
+				"TodoReview: Project Files"
+			],
+			[
+				"todore",
+				"TodoReview: Project Files"
+			],
+			[
+				"s",
+				"Set Syntax: Creole"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"pAck",
+				"Package Control: Remove Package"
+			],
+			[
+				"sy",
+				"Set Syntax: Creole"
+			],
+			[
+				"pre",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"sync",
+				"Set Syntax: Creole"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"makpre",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"synmar",
+				"Set Syntax: Markdown"
+			],
+			[
+				"ma",
+				"Preferences: MarkdownEditing Settings – User"
+			],
+			[
+				"mkdpre",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"markdpr",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"previ",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"synma",
+				"Set Syntax: Markdown"
+			],
+			[
+				"packins",
+				"Package Control: Install Package"
+			],
+			[
+				"up",
+				"Convert Case: Upper Case"
+			],
+			[
+				"synpy",
+				"Set Syntax: Python"
+			],
+			[
+				"live",
+				"Snippet: Create new LiveReload plugin"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"report",
+				"SublimeLinter: Report (Open Files)"
+			],
+			[
+				"lin",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"synQ",
+				"Set Syntax: q"
+			],
+			[
+				"packa",
+				"Package Control: Remove Package"
+			],
+			[
+				"synsq",
+				"Set Syntax: QBasic"
+			],
+			[
+				"packein",
+				"Package Control: Install Package"
+			],
+			[
+				"syntobj",
+				"Set Syntax: Objective-C"
+			],
+			[
+				"syno",
+				"Set Syntax: Objective-C"
+			],
+			[
+				"tools",
+				"LaTeXTools: Toggle focus (PDF/editor)"
+			],
+			[
+				"too",
+				"LaTeXTools: View PDF"
+			],
+			[
+				"pyt",
+				"Set Syntax: Python"
+			],
+			[
+				"spy",
+				"Set Syntax: Python"
+			],
+			[
+				"ba",
+				"View: Toggle Side Bar"
+			],
+			[
+				"min",
+				"View: Toggle Minimap"
+			],
+			[
+				"miin",
+				"View: Toggle Minimap"
+			],
+			[
+				"ca",
+				"Convert Case: Upper Case"
+			],
+			[
+				"pa",
+				"Package Control: Install Package"
+			],
+			[
+				"si",
+				"View: Toggle Open Files in Side Bar"
+			],
+			[
+				"ju",
+				"LaTeXTools: Jump to PDF"
+			],
+			[
+				"vi",
+				"LaTeXTools: View PDF"
+			],
+			[
+				"vipd",
+				"LaTeXTools: View PDF"
+			],
+			[
+				"vip",
+				"LaTeXTools: View PDF"
+			],
+			[
+				"late",
+				"LaTeXTools: Reconfigure and migrate settings"
+			],
+			[
+				"bro",
+				"Preferences: Browse Packages"
+			],
+			[
+				"mini",
+				"View: Toggle Minimap"
+			],
+			[
+				"view",
+				"View: Toggle Side Bar"
+			],
+			[
+				"togg",
+				"View: Toggle Minimap"
+			],
+			[
+				"jum",
+				"LaTeXing: Jump To PDF"
+			],
+			[
+				"pdf",
+				"LaTeXing: Jump To PDF"
+			],
+			[
+				"openp",
+				"LaTeXing: Open PDF"
+			],
+			[
+				"ke",
+				"Preferences: Key Bindings - Default"
+			],
+			[
+				"space",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"buil",
+				"Build: Cancel"
+			],
+			[
+				"latexsett",
+				"Preferences: LaTeXing Settings - Default"
+			],
+			[
+				"keyus",
+				"Preferences: Key Bindings - User"
+			],
+			[
+				"key",
+				"Preferences: Key Bindings - Default"
+			],
+			[
+				"sett",
+				"Preferences: Settings - Default"
+			],
+			[
+				"user",
+				"Preferences: Settings - User"
+			],
+			[
+				"vie",
+				"View: Toggle Minimap"
+			],
+			[
+				"convesp",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"converspa",
+				"Indentation: Convert to Spaces"
+			]
+		],
+		"width": 602.0
+	},
+	"console":
+	{
+		"height": 114.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2deb499853c4371624f5a07e27c334aa' + 'bf8c4e67d14fb0525ba4f89698a6d7e1'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/emilebres/orb",
+		"/Users/emilebres/orb/src",
+		"/Users/emilebres/orb/src/css",
+		"/Users/emilebres/orb/src/js"
+	],
+	"file_history":
+	[
+		"/Users/emilebres/orb/src/js/orb.pgrid.ts",
+		"/Users/emilebres/orb/src/index.ts",
+		"/Users/emilebres/orb/.babelrc",
+		"/Users/emilebres/orb/tags",
+		"/Users/emilebres/orb/src/js/orb.ui.pgridwidget.js",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.SizingManager.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.UpperButtons.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotButton.tsx",
+		"/Users/emilebres/orb/src/js/orb.export.excel.ts",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropTarget.tsx",
+		"/Users/emilebres/orb/src/js/orb.ui.pgridwidget.ts",
+		"/Users/emilebres/orb/src/js/orb.ts",
+		"/Users/emilebres/orb/src/js/orb.config.ts",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.tsx",
+		"/Users/emilebres/orb/src/js/orb.axe.ts",
+		"/Users/emilebres/orb/tsconfig.json",
+		"/Users/emilebres/orb/src/js/orb.aggregation.ts",
+		"/Users/emilebres/orb/src/js/orb.aggregation.js",
+		"/Users/emilebres/orb/src/js/react/orb.react.Grid.tsx",
+		"/Users/emilebres/orb/webpack.config.js",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.SizingManager.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotChart.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Dialog.tsx",
+		"/Users/emilebres/orb/package.json",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotChart.js",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotCell.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.ScrollBars.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Dropdown.tsx",
+		"/Users/emilebres/orb/src/js/orb.filtering.ts",
+		"/Users/emilebres/orb/src/js/react/orb.react.DragManager.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.FilterPanel.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Toolbar.tsx",
+		"/Users/emilebres/orb/src/js/orb.utils.dom.ts",
+		"/Users/emilebres/orb/orb.sublime-project",
+		"/Users/emilebres/orb/src/js/react/orb.react.Chart.tsx",
+		"/Users/emilebres/orb/src/js/orb.utils.ts",
+		"/Users/emilebres/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/emilebres/orb/src/js/orb.ui.rows.ts",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropIndicator.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropTargetVertical.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotRow.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.ColumnButtons.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.ColumnHeaders.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.DataCells.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.RowButtons.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.RowHeaders.tsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.FilterPanel.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotButton.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Toolbar.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Chart.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Dialog.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Dropdown.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropIndicator.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropTarget.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.DropTargetVertical.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.Grid.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotCell.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotChart.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotRow.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.ColumnButtons.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.ColumnHeaders.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.DataCells.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.RowButtons.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.RowHeaders.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.PivotTable.UpperButtons.jsx",
+		"/Users/emilebres/orb/src/js/react/orb.react.ScrollBars.jsx",
+		"/Users/emilebres/orb/src/js/orb.pgrid.js",
+		"/Users/emilebres/orb/src/js/react/orb.react.DragManager.jsx",
+		"/Users/emilebres/orb/src/index.js",
+		"/Users/emilebres/orb/src/js/orb.utils.dom.js",
+		"/Users/emilebres/orb/src/js/orb.themes.js",
+		"/Users/emilebres/orb/demo/demo.html",
+		"/Users/emilebres/orb/gulp-tasks/buildcss.js",
+		"/Users/emilebres/orb/src/js/orb.js",
+		"/Users/emilebres/orb/demo/demo.data.js",
+		"/Users/emilebres/orb/gulpfile.js",
+		"/Users/emilebres/orb/gulp-tasks/buildjs.js",
+		"/Users/emilebres/orb/src/js/orb.filtering.js",
+		"/Users/emilebres/orb/src/js/orb.ui.header.ts",
+		"/Users/emilebres/orb/src/js/orb.themes.ts",
+		"/Users/emilebres/orb/src/js/orb.ui.cols.ts",
+		"/Users/emilebres/orb/src/js/orb.ui.axe.ts",
+		"/Users/emilebres/orb/src/js/orb.dimension.js",
+		"/Users/emilebres/orb/src/js/orb.store.ts",
+		"/Users/emilebres/orb/src/js/orb.query.ts",
+		"/Users/emilebres/orb/src/js/orb.query.js",
+		"/Users/emilebres/orb/src/js/orb.dimension.ts",
+		"/Users/emilebres/orb/src/js/orb.pubsub.ts",
+		"/Users/emilebres/orb/src/js/orb.axe.js",
+		"/Users/emilebres/orb/src/js/orb.pubsub.js",
+		"/Users/emilebres/orb/.gitignore",
+		"/Users/emilebres/orb/demo/demo.data.csv",
+		"/Users/emilebres/orb/src/js/orb.ui.header.js",
+		"/Users/emilebres/orb/demo/data.csv",
+		"/Users/emilebres/webpack_app/src/app/services/zebulon.service.ts",
+		"/Users/emilebres/webpack_app/src/app/app.component.ts",
+		"/Users/emilebres/webpack_app/src/app/components/orb-grid/orb-grid.component.ts",
+		"/Users/emilebres/webpack_app/src/app/app.component.html",
+		"/Users/emilebres/webpack_app/config/webpack.dev.js",
+		"/Users/emilebres/webpack_app/package.json",
+		"/Users/emilebres/webpack_app/config/helpers.js",
+		"/Users/emilebres/webpack_app/src/app/components/grid/grid.component.ts",
+		"/Users/emilebres/webpack_app/src/app/services/store.service.ts",
+		"/Users/emilebres/webpack_app/src/app/actions/grid.actions.ts",
+		"/Users/emilebres/webpack_app/src/index.html",
+		"/Users/emilebres/webpack_app/src/app/components/orb-grid/orb-grid.component.css",
+		"/Users/emilebres/webpack_app/src/assets/react-0.12.2.js",
+		"/Users/emilebres/webpack_app/src/assets/orb-data.json",
+		"/Users/emilebres/webpack_app/src/app/components/orb-grid/bootstrap-3.3.1.css",
+		"/Users/emilebres/webpack_app/src/app/components/orb-grid/orb-grid.component.html",
+		"/Users/emilebres/webpack_app/src/app/components/cube-filter/cube-filter.component.ts",
+		"/Users/emilebres/webpack_app/src/app/components/cube-filter/cube-filter.component.html",
+		"/Users/emilebres/webpack_app/src/app/components/grid/grid.component.html",
+		"/Users/emilebres/webpack_app/src/app/components/query-configuration/query-configuration.component.ts",
+		"/Users/emilebres/webpack_app/src/app/components/query-configuration/query-configuration.component.html",
+		"/Users/emilebres/webpack_app/src/app/components/query-form/query-form.component.html",
+		"/Users/emilebres/webpack_app/src/custom-typings.d.ts",
+		"/Users/emilebres/webpack_app/src/app/app.component.e2e.ts",
+		"/Users/emilebres/orb/",
+		"/Users/emilebres/webpack_app/src/app/components/measures/measures.component.ts",
+		"/Users/emilebres/webpack_app/tsconfig.json",
+		"/Users/emilebres/webpack_app/config/protractor.conf.js",
+		"/Users/emilebres/webpack_app/src/main.browser.ts",
+		"/Users/emilebres/webpack_app/src/app/services/zebulon.service.mock.ts",
+		"/Users/emilebres/webpack_app/src/app/components/query-form/query-form.component.ts",
+		"/Users/emilebres/webpack_app/src/app/components/filter-form/filter-form.component.ts",
+		"/Users/emilebres/webpack_app/src/app/actions/cubes.actions.spec.ts"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/Users/emilebres/orb/src",
+			"",
+			"*.ts",
+			"",
+			"/Users/emilebres/dissertation_option/application,-*.ipynb",
+			"/Users/emilebres/dissertation_option/application",
+			"application",
+			"",
+			"/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface,/Users/emilebres/dev/2-projects",
+			"/Users/emilebres/dev/1-zebulon_interface",
+			"/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface,/Users/emilebres/dev/2-projects",
+			"/Users/emilebres/dev/2-projects,/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface",
+			"/Users/emilebres/dev/2-projects,/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interfacd",
+			"/Users/emilebres/dev/2-projects,/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interfa",
+			"/Users/emilebres/dev/2-projects,/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface",
+			"/Users/emilebres/dev/2-projects",
+			"/Users/emilebres/dev/2-projects/book",
+			"/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface,/Users/emilebres/dev/2-projects",
+			"",
+			"/Users/emilebres/dev/2-projects/book",
+			"/Users/emilebres/dev/0-zebulon,/Users/emilebres/dev/1-zebulon_interface,/Users/emilebres/dev/2-projects",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"stage",
+			"dragging",
+			"mousedown",
+			"startpos",
+			"pos",
+			"pbid",
+			"axe",
+			"console",
+			"func",
+			"aggregation",
+			"getfield",
+			"function",
+			"ensureFieldConfig",
+			"import",
+			"node",
+			"this.node",
+			"///",
+			"target",
+			"import domUtils from '../orb.utils.dom';",
+			"import utils from '../orb.utils';",
+			"axe.Typ",
+			"axe",
+			"clearFil",
+			"},",
+			"minContainerHeight",
+			"minContainerWidth",
+			"valuesTableElem",
+			"outerContainerElem",
+			"resizeGripElem",
+			",",
+			"mousedownpos",
+			"isMouseDown",
+			"this.",
+			"const",
+			"this.this",
+			"INDETERMINATE",
+			"this.reactComp",
+			"this",
+			"reactComp",
+			"this.",
+			"checkboxVisible",
+			"operator",
+			"savedCheckedValues",
+			"this.this.lastSearchTerm",
+			"lastSearchTerm",
+			"isRegexMode",
+			"operator",
+			"lastSearchTerm",
+			"checkedList",
+			"= () =>",
+			"this.",
+			"lastSearchTerm",
+			"isSearchMode",
+			"initialFilterObject",
+			"self",
+			"applyInitialFilterObject",
+			"function",
+			"operator",
+			"resizeManager",
+			"blankCheckbox",
+			"blankCheckBox",
+			"blanckCheckbox",
+			"elems",
+			"newOperator",
+			"this.",
+			"let",
+			"const",
+			"selectValue",
+			"},",
+			"filtering",
+			"utils",
+			"UpperButtons",
+			"import UpperButtons from './orb.react.PivotTable.UpperButtons';\n",
+			"Toolbar",
+			"import Toolbar from './orb.react.Toolbar';\n",
+			"domUtils.",
+			"domUtils",
+			"SizingManager",
+			"childType",
+			"=> ",
+			"domUtils",
+			"domUtils.updateTableColGroup",
+			"domUtils",
+			"DragManager",
+			"browser",
+			"Dialog.create",
+			"mixin",
+			"},",
+			"browser",
+			"utils",
+			"domUtils",
+			"module.exports.",
+			"SizingManager",
+			"getAllColumnsWidth",
+			"self.",
+			"this.",
+			") {",
+			"SizingManager",
+			"setTableWidths",
+			"setTa",
+			"ComponentSizeInfo",
+			"SizingManager.",
+			"},",
+			"import ReactDOM from 'react-dom'",
+			"import React from 'react'",
+			"import React = require('react');",
+			"import ReactDOM = require('react-dom');",
+			"import React",
+			".jsx",
+			"axe",
+			"axe.Type",
+			"mouse ",
+			"// ",
+			"//",
+			"// ",
+			"//",
+			" //",
+			"//",
+			"/",
+			"//",
+			"return",
+			"<",
+			"},\n",
+			"console.l",
+			"findDOMNode",
+			"ReactDOM",
+			"SizingManager",
+			"DragManager"
+		],
+		"highlight": false,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"import * as domUtils from '../orb.utils.dom';",
+			"import * as utils from '../orb.utils';",
+			"import * as ReactDOM from 'react-dom'",
+			"import * as React from 'react'",
+			"",
+			"import * as utils from './orb.utils'",
+			"const React ",
+			"template: require($1),",
+			"nonSimilarDev",
+			"visualisation",
+			"print\\($1\\)\\n\n",
+			"print\\({}\\)\\n\n",
+			"'\n",
+			"StudentTTest",
+			"easy_stat_analysis",
+			", ",
+			"h[",
+			".zeb_nod.spec",
+			"___default___",
+			"other___",
+			".zeb_nod_mng.nss[`__other__]",
+			".zeb_nod_mng.nss[`q]",
+			".zeb_nod_mng.nss[`zebulon]",
+			"/9-csv",
+			"Searching",
+			"f_init",
+			".zeb_rdb.f_get_seq",
+			"`sqr",
+			"`seq",
+			"`p_hdb`sp_hdb`sp1!(();();()),",
+			"`p_hdb`ctx`sp1`sp2!(();();();()),",
+			"`p_hdb`simul!(();()),",
+			"`p_hdb`simul!(();())",
+			"noreg",
+			".zeb_trc.",
+			"id_ln_xmain",
+			"id_ln_xbackup",
+			".zeb_err.tst",
+			".zeb_err.b_old",
+			".zeb_env.dbs[.zeb_nod.project]",
+			"rdb_spec",
+			"mem_spec",
+			".zeb_env.db_paths[.zeb_nod.project]",
+			".zeb_env.log_paths",
+			".zeb_env.db_paths",
+			".zeb_env.dbs",
+			".zeb_trc.sh_ln",
+			".zeb_trc.sh",
+			".zeb_util.sh",
+			"zeb_util.f_l",
+			"f_l[\"",
+			".zeb_lck_mng",
+			"id_backup",
+			"max_nod",
+			"or ",
+			"Vitanim",
+			"e",
+			","
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.doc":
+	{
+		"height": 0.0
+	},
+	"output.errorlist":
+	{
+		"height": 496.0
+	},
+	"output.exec":
+	{
+		"height": 1021.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 367.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 365.0
+	},
+	"pinned_build_system": "",
+	"project": "orb.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"pgri",
+				"src/js/orb.pgrid.ts"
+			],
+			[
+				"in",
+				"src/index.ts"
+			],
+			[
+				"bab",
+				".babelrc"
+			],
+			[
+				"si",
+				"src/js/react/orb.react.PivotTable.SizingManager.tsx"
+			],
+			[
+				"siz",
+				"src/js/react/orb.react.PivotTable.SizingManager.jsx"
+			],
+			[
+				"pivot",
+				"src/js/react/orb.react.PivotButton.tsx"
+			],
+			[
+				"upper",
+				"src/js/react/orb.react.PivotTable.UpperButtons.tsx"
+			],
+			[
+				"drop",
+				"src/js/react/orb.react.DropTarget.tsx"
+			],
+			[
+				"ts",
+				"tsconfig.json"
+			],
+			[
+				"orba",
+				"src/js/orb.axe.ts"
+			],
+			[
+				"agg",
+				"src/js/orb.aggregation.js"
+			],
+			[
+				"aggr",
+				"src/js/orb.aggregation.ts"
+			],
+			[
+				"orbgr",
+				"src/js/orb.pgrid.ts"
+			],
+			[
+				"confg",
+				"src/js/orb.config.ts"
+			],
+			[
+				"expoex",
+				"src/js/orb.export.excel.ts"
+			],
+			[
+				"orb.ts",
+				"src/js/orb.ts"
+			],
+			[
+				"inde",
+				"src/index.ts"
+			],
+			[
+				"gri",
+				"src/js/react/orb.react.Grid.tsx"
+			],
+			[
+				"pgrid",
+				"src/js/orb.ui.pgridwidget.ts"
+			],
+			[
+				"we",
+				"webpack.config.js"
+			],
+			[
+				"pgr",
+				"src/js/orb.ui.pgridwidget.ts"
+			],
+			[
+				"pa",
+				"package.json"
+			],
+			[
+				"pivcha",
+				"src/js/react/orb.react.PivotChart.tsx"
+			],
+			[
+				"pivottab",
+				"src/js/react/orb.react.PivotTable.tsx"
+			],
+			[
+				"dro",
+				"src/js/react/orb.react.Dropdown.tsx"
+			],
+			[
+				"fil",
+				"src/js/orb.filtering.ts"
+			],
+			[
+				"pivobu",
+				"src/js/react/orb.react.PivotButton.tsx"
+			],
+			[
+				"upp",
+				"src/js/react/orb.react.PivotTable.UpperButtons.tsx"
+			],
+			[
+				"too",
+				"src/js/react/orb.react.Toolbar.tsx"
+			],
+			[
+				"utildo",
+				"src/js/orb.utils.dom.ts"
+			],
+			[
+				"drag",
+				"src/js/react/orb.react.DragManager.tsx"
+			],
+			[
+				"pivo",
+				"src/js/react/orb.react.PivotChart.tsx"
+			],
+			[
+				"dia",
+				"src/js/react/orb.react.Dialog.tsx"
+			],
+			[
+				"su",
+				"orb.sublime-project"
+			],
+			[
+				"pg",
+				"src/js/orb.ui.pgridwidget.ts"
+			],
+			[
+				"uti",
+				"src/js/orb.utils.ts"
+			],
+			[
+				"dial",
+				"src/js/react/orb.react.Dialog.tsx"
+			],
+			[
+				"tsx",
+				"src/js/react/orb.react.Chart.tsx"
+			],
+			[
+				"con",
+				"src/js/orb.config.ts"
+			],
+			[
+				"tool",
+				"src/js/react/orb.react.Toolbar.tsx"
+			],
+			[
+				"dra",
+				"src/js/react/orb.react.DragManager.tsx"
+			],
+			[
+				"scr",
+				"src/js/react/orb.react.ScrollBars.tsx"
+			],
+			[
+				"pivta",
+				"src/js/react/orb.react.PivotTable.tsx"
+			],
+			[
+				"scro",
+				"src/js/react/orb.react.ScrollBars.tsx"
+			],
+			[
+				"fipan",
+				"src/js/react/orb.react.FilterPanel.jsx"
+			],
+			[
+				"pita",
+				"src/js/react/orb.react.PivotTable.jsx"
+			],
+			[
+				"axe",
+				"src/js/orb.axe.ts"
+			],
+			[
+				"pivch",
+				"src/js/react/orb.react.PivotChart.jsx"
+			],
+			[
+				"pivotb",
+				"src/js/react/orb.react.PivotButton.jsx"
+			],
+			[
+				"ivoce",
+				"src/js/react/orb.react.PivotCell.jsx"
+			],
+			[
+				"rowhe",
+				"src/js/react/orb.react.PivotTable.RowHeaders.jsx"
+			],
+			[
+				"coluhe",
+				"src/js/react/orb.react.PivotTable.ColumnHeaders.jsx"
+			],
+			[
+				"pgrwid",
+				"src/js/orb.ui.pgridwidget.js"
+			],
+			[
+				"utidom",
+				"src/js/orb.utils.dom.js"
+			],
+			[
+				"pivoce",
+				"src/js/react/orb.react.PivotCell.jsx"
+			],
+			[
+				"p",
+				"package.json"
+			],
+			[
+				"or",
+				"src/js/orb.js"
+			],
+			[
+				"dem",
+				"demo/demo.html"
+			],
+			[
+				"buijs",
+				"gulp-tasks/buildjs.js"
+			],
+			[
+				"gul",
+				"gulpfile.js"
+			],
+			[
+				"demo",
+				"demo/demo.data.js"
+			],
+			[
+				"gui",
+				"gulp-tasks/buildjs.js"
+			],
+			[
+				"gu",
+				"gulpfile.js"
+			],
+			[
+				"util",
+				"src/js/orb.utils.ts"
+			],
+			[
+				"head",
+				"src/js/orb.ui.header.ts"
+			],
+			[
+				"them",
+				"src/js/orb.themes.ts"
+			],
+			[
+				"exce",
+				"src/js/orb.export.excel.ts"
+			],
+			[
+				"conf",
+				"src/js/orb.config.ts"
+			],
+			[
+				"uicols",
+				"src/js/orb.ui.cols.ts"
+			],
+			[
+				"uihe",
+				"src/js/orb.ui.header.ts"
+			],
+			[
+				"uia",
+				"src/js/orb.ui.axe.ts"
+			],
+			[
+				"uirow",
+				"src/js/orb.ui.rows.ts"
+			],
+			[
+				"stor",
+				"src/js/orb.store.ts"
+			],
+			[
+				"dime",
+				"src/js/orb.dimension.ts"
+			],
+			[
+				"que",
+				"src/js/orb.query.ts"
+			],
+			[
+				"ag",
+				"src/js/orb.aggregation.ts"
+			],
+			[
+				"quer",
+				"src/js/orb.query.ts"
+			],
+			[
+				"orthe",
+				"src/js/orb.themes.ts"
+			],
+			[
+				"config",
+				"src/js/orb.config.ts"
+			],
+			[
+				"dim",
+				"src/js/orb.dimension.ts"
+			],
+			[
+				"orts",
+				"src/js/orb.ts"
+			],
+			[
+				"subl",
+				"orb.sublime-project"
+			],
+			[
+				"de",
+				"demo/demo.html"
+			],
+			[
+				"da",
+				"demo/data.csv"
+			],
+			[
+				"pgrwi",
+				"src/js/orb.ui.pgridwidget.js"
+			],
+			[
+				"ze",
+				"src/app/services/zebulon.service.ts"
+			],
+			[
+				"ap",
+				"src/app/app.component.html"
+			],
+			[
+				"orgri",
+				"src/app/components/orb-grid/orb-grid.component.ts"
+			],
+			[
+				"orb",
+				"src/app/components/orb-grid/orb-grid.component.ts"
+			],
+			[
+				"hel",
+				"config/helpers.js"
+			],
+			[
+				"web",
+				"config/webpack.dev.js"
+			],
+			[
+				"grid",
+				"src/app/components/grid/grid.component.ts"
+			],
+			[
+				"app",
+				"src/app/app.component.ts"
+			],
+			[
+				"pack",
+				"package.json"
+			],
+			[
+				"gridac",
+				"src/app/actions/grid.actions.ts"
+			],
+			[
+				"store",
+				"src/app/services/store.service.ts"
+			],
+			[
+				"zeb",
+				"src/app/services/zebulon.service.ts"
+			],
+			[
+				"gr",
+				"src/app/components/grid/grid.component.ts"
+			],
+			[
+				"webpa",
+				"config/webpack.dev.js"
+			],
+			[
+				"webp",
+				"config/webpack.dev.js"
+			],
+			[
+				"webpade",
+				"config/webpack.dev.js"
+			],
+			[
+				"appts",
+				"src/app/app.component.ts"
+			],
+			[
+				"cufil",
+				"src/app/components/cube-filter/cube-filter.component.html"
+			],
+			[
+				"cubfil",
+				"src/app/components/cube-filter/cube-filter.component.ts"
+			],
+			[
+				"grco",
+				"src/app/components/grid/grid.component.ts"
+			],
+			[
+				"",
+				"src/app/components/orb-grid/orb-grid.component.html"
+			],
+			[
+				"pac",
+				"package.json"
+			],
+			[
+				"cut",
+				"src/custom-typings.d.ts"
+			],
+			[
+				"appcom",
+				"src/app/app.component.html"
+			],
+			[
+				"pro",
+				"config/protractor.conf.js"
+			],
+			[
+				"mai",
+				"src/main.browser.ts"
+			],
+			[
+				"quecon",
+				"src/app/components/query-configuration/query-configuration.component.ts"
+			],
+			[
+				"sto",
+				"src/app/services/store.service.ts"
+			],
+			[
+				"cucom",
+				"src/app/components/cube-filter/cube-filter.component.ts"
+			],
+			[
+				"meas",
+				"src/app/components/measures/measures.component.ts"
+			],
+			[
+				"prot",
+				"config/protractor.conf.js"
+			],
+			[
+				"qufcomht",
+				"src/app/components/query-form/query-form.component.html"
+			],
+			[
+				"actospe",
+				"src/app/actions/cubes.actions.spec.ts"
+			],
+			[
+				"main",
+				"src/main.browser.ts"
+			],
+			[
+				"webso",
+				"src/app/services/angular2-websocket.ts"
+			],
+			[
+				"zebu",
+				"src/app/services/zebulon.service.ts"
+			],
+			[
+				"seleactspe",
+				"src/app/actions/selected-cube.actions.spec.ts"
+			],
+			[
+				"karm",
+				"config/karma.conf.js"
+			],
+			[
+				"zemo",
+				"src/app/services/meta.zeb.mock.json"
+			],
+			[
+				"obje",
+				"src/app/models/objects.ts"
+			],
+			[
+				"sle",
+				"src/app/actions/selected-cube.actions.ts"
+			],
+			[
+				"cubemo",
+				"src/app/models/cubes.mock.json"
+			],
+			[
+				"meta",
+				"src/app/services/meta.zeb.mock.json"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/dissertation_option/application/dissert-report.sublime-project"
+			],
+			[
+				"dev",
+				"~/dev/dev.sublime-project"
+			],
+			[
+				"de",
+				"~/dev/dev.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 67.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"getpivotc",
+				"getPivotClasses"
+			],
+			[
+				"dime",
+				"Dimension"
+			],
+			[
+				"publi",
+				"publish"
+			],
+			[
+				"getr",
+				"getRowIndexes"
+			],
+			[
+				"cell",
+				"CellBase"
+			],
+			[
+				"sele",
+				"selectCube"
+			],
+			[
+				"exceq",
+				"execQuery"
+			],
+			[
+				"onform",
+				"onFormSubmit"
+			],
+			[
+				"diag",
+				"diagnostic"
+			],
+			[
+				"onPa",
+				"onParameterChange"
+			],
+			[
+				"add",
+				"addCubes"
+			],
+			[
+				"togg",
+				"toggleDimension"
+			],
+			[
+				"ondi",
+				"onDimMonitor"
+			],
+			[
+				"to",
+				"toggleDimension"
+			],
+			[
+				"",
+				"buildDimViews"
+			],
+			[
+				"import",
+				"import_data"
+			],
+			[
+				"cross",
+				"f.crosstab"
+			],
+			[
+				"noav",
+				"f_not_available_nodes"
+			],
+			[
+				"exie",
+				"f_exit_env"
+			],
+			[
+				"zeberr",
+				"zeb_err.err"
+			],
+			[
+				"ferrip",
+				"f_err_ipc"
+			],
+			[
+				"secses",
+				"zeb_sec.session"
+			],
+			[
+				"fbro",
+				"f_broadcast"
+			],
+			[
+				"fdiag",
+				"f_diagnose"
+			],
+			[
+				"h_int",
+				"zeb_zp.h_int"
+			],
+			[
+				"zebzplnfr",
+				"zeb_zp.ln_from"
+			],
+			[
+				"ln_fr",
+				"ln_from"
+			],
+			[
+				"lnfr",
+				"ln_from"
+			],
+			[
+				"exite",
+				"f_exit_env"
+			],
+			[
+				"seqne",
+				"seq_next"
+			],
+			[
+				"fche",
+				"f_chk_open"
+			],
+			[
+				"fchop",
+				"f_chk_open"
+			],
+			[
+				"f_trc",
+				"f_trc"
+			],
+			[
+				"f_g",
+				"f_g"
+			],
+			[
+				"finfo",
+				"f_info"
+			],
+			[
+				"h",
+				"h.HOME"
+			],
+			[
+				"fendt",
+				"f_end_trc"
+			],
+			[
+				"finitdt",
+				"f_init_dt"
+			],
+			[
+				"oo",
+				"f_oo"
+			],
+			[
+				"fini",
+				"f_init"
+			],
+			[
+				"finitobj",
+				"f_xml_init_object"
+			],
+			[
+				"floa",
+				"f_load"
+			],
+			[
+				"fcsvt",
+				"f_csv_to_tbl"
+			],
+			[
+				"prjnss",
+				"zeb_nod_mng.prj_nss"
+			],
+			[
+				"frwnss",
+				"zeb_nod_mng.frw_nss"
+			],
+			[
+				"zenomngns",
+				"zeb_nod_mng.q_nss"
+			],
+			[
+				"fcase",
+				"f_case"
+			],
+			[
+				"finit",
+				"f_init"
+			],
+			[
+				"utilg",
+				"zeb_util.debug"
+			],
+			[
+				"map",
+				"map"
+			],
+			[
+				"zebobjm",
+				"zeb_obj.map"
+			],
+			[
+				"zph",
+				"zeb_zp.h_crypt"
+			],
+			[
+				"zebenvpro",
+				"zeb_env.projects"
+			],
+			[
+				"getseq",
+				"f_get_seq"
+			],
+			[
+				"zebobjmp",
+				"zeb_obj.m_p"
+			],
+			[
+				"finino",
+				"f_init_nod"
+			],
+			[
+				"fconfn",
+				"f_config_nod"
+			],
+			[
+				"flofr",
+				"f_load_framework"
+			],
+			[
+				"dbpaths",
+				"zeb_env.db_paths"
+			],
+			[
+				"mptpn",
+				"m_p_tp_n"
+			],
+			[
+				"m_p_t",
+				"m_p_tp"
+			],
+			[
+				"zebobjoj",
+				"zeb_obj.obj"
+			],
+			[
+				"finien",
+				"f_init_eng"
+			],
+			[
+				"fl",
+				"f_l"
+			],
+			[
+				"idprcroot",
+				"idprcroot"
+			],
+			[
+				"zeb_ipc.idtrs",
+				"zeb_ipc.idtrs"
+			],
+			[
+				"zebzpuser",
+				"zeb_zp.user"
+			],
+			[
+				"zebzp.user",
+				"zeb_zp.user"
+			],
+			[
+				"zezpusr",
+				"zeb_zp.user"
+			],
+			[
+				"ftrc",
+				"f_trc"
+			],
+			[
+				"zebzpip",
+				"zeb_zp.ip"
+			],
+			[
+				"floafra",
+				"f_load_framework"
+			],
+			[
+				"trs",
+				"trs"
+			],
+			[
+				"fclo",
+				"f_close"
+			],
+			[
+				"fconno",
+				"f_config_nod"
+			],
+			[
+				"fconod",
+				"f_config_nod"
+			],
+			[
+				"fcxt",
+				"f_cx_tp"
+			],
+			[
+				"flos",
+				"f_load_system"
+			],
+			[
+				"cxadm",
+				"zeb_nod.cx_adm"
+			],
+			[
+				"seq",
+				"seq_next"
+			],
+			[
+				"obj.o",
+				"zeb_obj.obj"
+			],
+			[
+				"home",
+				"zeb_nod.home"
+			],
+			[
+				"dbpath",
+				"zeb_env.db_paths"
+			],
+			[
+				"finise",
+				"f_init_seq"
+			],
+			[
+				"finiob",
+				"f_init_obj"
+			],
+			[
+				"fcon",
+				"f_concat"
+			],
+			[
+				"fnext",
+				"f_next"
+			],
+			[
+				"fmsg",
+				"f_msg"
+			],
+			[
+				"seqn",
+				"seq_next"
+			],
+			[
+				"zebseq",
+				"zeb_seq.seq_next"
+			],
+			[
+				"fop",
+				"f_open_instance"
+			],
+			[
+				"fsm",
+				"f_s_mem"
+			],
+			[
+				"flonod",
+				"f_load_nod"
+			],
+			[
+				"fidtp",
+				"f_id_tp"
+			],
+			[
+				"zpg",
+				"z.pg"
+			],
+			[
+				"zebutils",
+				"zeb_util.bshow"
+			],
+			[
+				"zebenvl",
+				"zeb_env.ln"
+			],
+			[
+				"idmain",
+				"id_main"
+			],
+			[
+				"finidt",
+				"f_init_dt"
+			],
+			[
+				"fgf",
+				"f_g_f"
+			],
+			[
+				"finiten",
+				"f_init_eng"
+			],
+			[
+				"fpost",
+				"f_post_msg"
+			],
+			[
+				"locou",
+				"loc_out"
+			],
+			[
+				"zebzpfe",
+				"zeb_zp.f_exec"
+			],
+			[
+				"fexec",
+				"f_exec"
+			],
+			[
+				"zps",
+				"z.ps"
+			],
+			[
+				"pg",
+				"z.pg"
+			],
+			[
+				"flfr",
+				"f_load_framework"
+			],
+			[
+				"flono",
+				"f_load_nod"
+			],
+			[
+				"zeenvlo",
+				"zeb_env.loc_out"
+			],
+			[
+				"fapp",
+				"f_apply_config"
+			],
+			[
+				"fln",
+				"f_ln"
+			],
+			[
+				"finito",
+				"f_init_obj"
+			],
+			[
+				"focnno",
+				"f_config_nod"
+			],
+			[
+				"fconfog",
+				"f_config_nod"
+			],
+			[
+				"zebenvdb",
+				"zeb_env.db_path"
+			],
+			[
+				"fappl",
+				"f_apply_config"
+			],
+			[
+				"zeendb",
+				"zeb_env.db"
+			],
+			[
+				"ftry",
+				"f_try_catch"
+			],
+			[
+				"ferr",
+				"f_err_ipc"
+			],
+			[
+				"sh",
+				"sh_ln"
+			],
+			[
+				"zebenvfl",
+				"zeb_env.f_l"
+			],
+			[
+				"lofr",
+				"f_load_framework"
+			],
+			[
+				"zebtrcsh",
+				"zeb_trc.b_trc_show"
+			],
+			[
+				"zebenf",
+				"zeb_env.f_l"
+			],
+			[
+				"fresto",
+				"f_restore"
+			],
+			[
+				"fcrea",
+				"f_create_nod"
+			],
+			[
+				"zebnodcx",
+				"zeb_nod.cx"
+			]
+		],
+		"width": 1020.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"last_automatic_layout":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		]
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 395.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

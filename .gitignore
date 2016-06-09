@@ -1,13 +1,6 @@
+.DS_Store
 node_modules
 npm-debug.log
-tmp
-.sublime*
-/.vs/*
-/.vscode/*
-project.*
-orb.xproj*
-orb.sln
-.node_libraries
-*.sublime-*
+build
+coverage
 dist
-tags
