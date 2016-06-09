@@ -32,17 +32,10 @@ export class PivotButton extends React.Component<any,any>{
 		const filterButtonPos = domUtils.getOffset(filterButton);
 		const filterContainer = document.createElement('div');
 
-    filterContainer.className = this.props.pivotTableComp.pgrid.config.theme.getFilterClasses().container;
 		filterContainer.style.position = 'fixed';
-    filterContainer.style.top = `${filterButtonPos.y}px`;
-    filterContainer.style.left = `${filterButtonPos.x}px`;
-		filterContainer.style.backgroundColor= 'white';
-		filterContainer.style.fontSize= '90%';
-		filterContainer.style.width= '301px';
-		filterContainer.style.height= '223px';
-		filterContainer.style.padding= '3px';
-		filterContainer.style.border= 'solid 1px';
-		filterContainer.style.boxShadow= '0 5px 15px #9d9d9d';
+		filterContainer.style.top = `${filterButtonPos.y}px`;
+		filterContainer.style.left = `${filterButtonPos.x}px`;
+
     document.body.appendChild(filterContainer);
 
     ReactDOM.render(<FilterPanel field={this.props.field.name} pivotTableComp={this.props.pivotTableComp}/>, filterContainer);

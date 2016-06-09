@@ -72,6 +72,7 @@ export class OrbGrid extends React.Component<any,{}>{
             rowHeight={this._cellHeight}
             columnCount={this._columnHorizontalCount+this._rowHorizontalCount}
             rowCount={this._columnVerticalCount+this._rowVerticalCount}
+            cellRenderer={()=>null}
             cellRangeRenderer={this.cellRangeRenderer}
             overscanRowCount={0}
             overscanColumnCount={0}
@@ -138,7 +139,7 @@ export class OrbGrid extends React.Component<any,{}>{
               left:columnIndex*this._cellWidth+this._rowHeadersWidth,
               top:(this._columnVerticalCount - this._columnHeaders[columnIndex].length + columnHeaderIndex)*this._cellHeight + scrollTop,
               height:this._cellHeight*columnHeader.vspan(),
-              width:this._cellWidth*columnHeader.hspan(),
+              width:this._cellWidth*(columnHeader.subheaders.length || 1),
               zIndex: 1,
               backgroundColor: '#eef8fb'
             }}
@@ -165,7 +166,7 @@ export class OrbGrid extends React.Component<any,{}>{
               position: 'fixed',
               left:(this._rowHorizontalCount - this._rowHeaders[rowIndex].length+rowHeaderIndex)*this._cellWidth + scrollLeft,
               top:rowIndex*this._cellHeight + this._columnHeadersHeight,
-              height:this._cellHeight*rowHeader.vspan(),
+              height:this._cellHeight*(rowHeader.subheaders.length || 1),
               width:this._cellWidth*rowHeader.hspan(),
               zIndex: 1,
               backgroundColor: '#eef8fb'

@@ -45,14 +45,14 @@ export default class UpperButtonsComponent extends React.Component<any,any>{
     // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
       .filter(field => field.aggregateFuncName !== null)
       .map((field, index) =>
-      <div style={{padding:'0px 4px'}}>
-      <DataButton key={field.name}
-                   field={field}
-                   axetype={AxeType.DATA}
-                   position={index}
-                   active={config.dataFields.filter(fld => fld.name===field.name).length ? true : false}
-                   pgrid={this.props.pivotTableComp.pgridwidgetstore.pgrid}>
-      </DataButton>
+      <div style={{padding:'0px 4px'}} key={'div-'+field.name}>
+        <DataButton key={field.name}
+                     field={field}
+                     axetype={AxeType.DATA}
+                     position={index}
+                     active={config.dataFields.filter(fld => fld.name===field.name).length ? true : false}
+                     pgrid={this.props.pivotTableComp.pgridwidgetstore.pgrid}>
+        </DataButton>
       </div>
     );
 
