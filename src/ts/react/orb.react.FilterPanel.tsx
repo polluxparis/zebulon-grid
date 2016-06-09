@@ -107,7 +107,7 @@ export default class FilterPanelComponent extends React.Component<IFilterPanelPr
 		const checkboxes =
 			<VirtualizedCheckbox
 				options={this.checkboxes}
-				onOk={(result) => this.onFilter('','',result,[])}
+				onOk={(result) => this.onFilter('','',result,false)}
 				onCancel={() => this.destroy()}
 				maxHeight={this.startingHeight}
 			/>
