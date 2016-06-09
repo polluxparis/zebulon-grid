@@ -59,27 +59,27 @@ export default (() => {
     }
   }
 
-  function getDropTarget () {
-    return utils.forEach(_dropTargets, target => {
-      if (target.component.state.isover) {
-        return target
-      }
-    })
-  }
-
-  function getDropIndicator () {
-    return utils.forEach(_dropIndicators, indicator => {
-      if (indicator.component.state.isover) {
-        return indicator
-      }
-    })
-  }
-
-  var _initialized = false
+  // function getDropTarget () {
+  //   return utils.forEach(_dropTargets, target => {
+  //     if (target.component.state.isover) {
+  //       return target
+  //     }
+  //   })
+  // }
+  //
+  // function getDropIndicator () {
+  //   return utils.forEach(_dropIndicators, indicator => {
+  //     if (indicator.component.state.isover) {
+  //       return indicator
+  //     }
+  //   })
+  // }
+  //
+  // var _initialized = false
 
   return {
     init (pivotComp) {
-      _initialized = true
+      // _initialized = true
       _pivotComp = pivotComp
     },
     setDragElement (elem) {

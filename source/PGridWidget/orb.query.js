@@ -90,7 +90,7 @@ class PGridQuery extends QueryBase {
   }
 
   cleanOptions (options, innerArgs, outerArgs) {
-    var opjs = {
+    var opts = {
       fieldNames: [],
       aggregateFunc: null,
       multiFieldNames: []
@@ -98,26 +98,26 @@ class PGridQuery extends QueryBase {
 
     if (outerArgs.multi === true) {
       if (options && typeof options === 'object') {
-        opjs.aggregateFunc = options.aggregateFunc
-        opjs.multiFieldNames = options.fields
+        opts.aggregateFunc = options.aggregateFunc
+        opts.multiFieldNames = options.fields
       } else {
-        opjs.aggregateFunc = outerArgs.aggregateFunc
-        opjs.multiFieldNames = innerArgs
+        opts.aggregateFunc = outerArgs.aggregateFunc
+        opts.multiFieldNames = innerArgs
       }
 
-      for (let ai = 0; ai < opjs.multiFieldNames.length; ai++) {
-        opjs.fieldNames.push(this.getCaptionName(opjs.multiFieldNames[ai]))
+      for (let ai = 0; ai < opts.multiFieldNames.length; ai++) {
+        opts.fieldNames.push(this.getCaptionName(opts.multiFieldNames[ai]))
       }
     } else {
-      opjs.aggregateFunc = options
-      opjs.fieldNames.push(outerArgs.datafieldname)
+      opts.aggregateFunc = options
+      opts.fieldNames.push(outerArgs.datafieldname)
     }
 
-    if (opjs.aggregateFunc) {
-      opjs.aggregateFunc = aggregation.toAggregateFunc(opjs.aggregateFunc)
+    if (opts.aggregateFunc) {
+      opts.aggregateFunc = aggregation.toAggregateFunc(opts.aggregateFunc)
     }
 
-    return opjs
+    return opts
   }
 
   setup (parameters) {
@@ -250,7 +250,7 @@ class ArrayQuery extends QueryBase {
   }
 
   cleanOptions (options, innerArgs, outerArgs) {
-    var opjs = {
+    var opts = {
       fieldNames: [],
       aggregateFunc: null,
       multiFieldNames: []
@@ -258,22 +258,22 @@ class ArrayQuery extends QueryBase {
 
     if (outerArgs.multi === true) {
       if (options && typeof options === 'object') {
-        opjs.aggregateFunc = options.aggregateFunc
-        opjs.multiFieldNames = options.fields
+        opts.aggregateFunc = options.aggregateFunc
+        opts.multiFieldNames = options.fields
       } else {
-        opjs.aggregateFunc = outerArgs.aggregateFunc
-        opjs.multiFieldNames = innerArgs
+        opts.aggregateFunc = outerArgs.aggregateFunc
+        opts.multiFieldNames = innerArgs
       }
 
-      for (let ai = 0; ai < opjs.multiFieldNames.length; ai++) {
-        opjs.fieldNames.push(this.getCaptionName(opjs.multiFieldNames[ai]))
+      for (let ai = 0; ai < opts.multiFieldNames.length; ai++) {
+        opts.fieldNames.push(this.getCaptionName(opts.multiFieldNames[ai]))
       }
     } else {
-      opjs.aggregateFunc = options || outerArgs.aggregateFunc
-      opjs.fieldNames.push(outerArgs.datafieldname)
+      opts.aggregateFunc = options || outerArgs.aggregateFunc
+      opts.fieldNames.push(outerArgs.datafieldname)
     }
 
-    return opjs
+    return opts
   }
 
   setup (fieldsConfig) {

@@ -2,8 +2,8 @@
 
 export function toAggregateFunc (func) {
   if (func) {
-    if (typeof func === 'string' && eval(func)) {
-      return eval(func)
+    if (typeof func === 'string' && eval(func)) { // eslint-disable-line no-eval
+      return eval(func)  // eslint-disable-line no-eval
     } else if (typeof func === 'function') {
       return func
     } else {

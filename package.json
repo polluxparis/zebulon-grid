@@ -49,7 +49,9 @@
     "ignore": [
       "dist",
       "playground",
-      "source/vendor"
+      "source/vendor",
+      "old",
+      "source/css"
     ],
     "global": [
       "afterAll",

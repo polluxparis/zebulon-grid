@@ -1,15 +1,15 @@
 import 'expose?Perf!react-addons-perf'
 import { PGridWidget } from './js/orb.ui.pgridwidget'
 
-function getMockDataSource (data_repetition, n_toto) {
-  const n_titi = 100
-  const n_tutu = 2
+function getMockDataSource (dataRepetition, nToto) {
+  const nTiti = 100
+  const nTutu = 2
   var arr = []
   var res = []
-  for (var k = 0; k < data_repetition; k++) {
-    for (var ll = 0; ll < n_toto; ll++) {
-      for (var l = 0; l < n_titi; l++) {
-        for (var j = 0; j < n_tutu; j++) {
+  for (var k = 0; k < dataRepetition; k++) {
+    for (var ll = 0; ll < nToto; ll++) {
+      for (var l = 0; l < nTiti; l++) {
+        for (var j = 0; j < nTutu; j++) {
           arr = []
           arr[0] = 'toto' + String(ll)
           arr[3] = 'titi' + String(l)
@@ -126,15 +126,15 @@ var config = {
   columns: ['Titi', 'Tutu'], // , 'Category' ],
   rows: ['Toto'],
   data: ['Quantity']
-	/*
-	preFilters : {
-	    'Class': { 'Matches': 'Regular' },
-	    'Manufacturer': { 'Matches': /^a|^c/ },
-	    'Category'    : { 'Does Not Match': 'D' },
-	   // 'Amount'      : { '>':  40 },
-	 //   'Quantity'    : [4, 8, 12]
-	}*/
-	}
+/*
+preFilters : {
+    'Class': { 'Matches': 'Regular' },
+    'Manufacturer': { 'Matches': /^a|^c/ },
+    'Category'    : { 'Does Not Match': 'D' },
+   // 'Amount'      : { '>':  40 },
+ //   'Quantity'    : [4, 8, 12]
+}*/
+}
 
 const widget = new PGridWidget(config)
 widget.render(document.getElementById('root'))
