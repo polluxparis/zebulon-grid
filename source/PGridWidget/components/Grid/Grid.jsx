@@ -1,14 +1,14 @@
 import { Component } from 'react'
 import { Grid } from 'react-virtualized'
 
-import { PivotHeaderCell, PivotDataCell } from './orb.react.PivotCells'
-import {DataCell} from './orb.ui.headers'
+import { HeaderCellComp, DataCellComp } from '../PivotCells'
+import {DataCell} from '../../Cells'
 
-export class OrbGrid extends Component {
+export default class OrbGrid extends Component {
 
-  constructor (props) {
-    super(props)
-    this.initLayoutInfos(props)
+  constructor ({columns, rows, layout, dataStore}) {
+    super({columns, rows, layout, dataStore})
+    this.initLayoutInfos({layout})
 
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this)
     this.dataCellRenderer = this.dataCellRenderer.bind(this)
@@ -17,33 +17,32 @@ export class OrbGrid extends Component {
   }
 
   componentWillUpdate (nextProps, nextState) {
-    this.initLayoutInfos(nextProps)
+    const {layout} = nextProps
+    this.initLayoutInfos(layout)
   }
 
-  initLayoutInfos (props) {
-    const {pgridwidgetstore} = props
+  initLayoutInfos (layout) {
+    this._cellHeight = layout.cell.height
+    this._cellWidth = layout.cell.width
 
-    this._cellHeight = pgridwidgetstore.layout.cell.height
-    this._cellWidth = pgridwidgetstore.layout.cell.width
-
-    this._rowVerticalCount = pgridwidgetstore.layout.rowHeaders.height
-    this._rowHorizontalCount = pgridwidgetstore.layout.rowHeaders.width
-    this._columnVerticalCount = pgridwidgetstore.layout.columnHeaders.height
-    this._columnHorizontalCount = pgridwidgetstore.layout.columnHeaders.width
+    this._rowVerticalCount = layout.rowHeaders.height
+    this._rowHorizontalCount = layout.rowHeaders.width
+    this._columnVerticalCount = layout.columnHeaders.height
+    this._columnHorizontalCount = layout.columnHeaders.width
 
     this._rowHeadersWidth = this._rowHorizontalCount * this._cellWidth
     this._columnHeadersHeight = this._columnVerticalCount * this._cellHeight
 
-    this._width = Math.min(pgridwidgetstore.pgrid.config.width, this._rowHeadersWidth + this._columnHorizontalCount * this._cellWidth)
-    this._height = Math.min(pgridwidgetstore.pgrid.config.height, this._columnHeadersHeight + this._rowVerticalCount * this._cellHeight)
+    this._width = Math.min(layout.pivotTable.width, this._rowHeadersWidth + this._columnHorizontalCount * this._cellWidth)
+    this._height = Math.min(layout.pivotTable.height, this._columnHeadersHeight + this._rowVerticalCount * this._cellHeight)
   }
 
   render () {
     console.log('rendering grid')
-    // if (this._grid) {this._grid.forceUpdate()}
+    const {columns, rows} = this.props
 
-    this._columnHeaders = this.props.pgridwidgetstore.columns.headers
-    this._rowHeaders = this.props.pgridwidgetstore.rows.headers
+    this._columnHeaders = columns.headers
+    this._rowHeaders = rows.headers
 
     return (
       <Grid
@@ -176,38 +175,41 @@ export class OrbGrid extends Component {
   }
 
   dataCellRenderer ({columnIndex, rowIndex, isScrolling}) {
-    const rowHeaderRow = this.props.pgridwidgetstore.rows.headers[rowIndex]
+    const {rows, columns, dataStore} = this.props
+    const rowHeaderRow = rows.headers[rowIndex]
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1]
-    const columnHeaderColumn = this.props.pgridwidgetstore.columns.headers[columnIndex]
+    const columnHeaderColumn = columns.headers[columnIndex]
     const columnHeader = columnHeaderColumn[columnHeaderColumn.length - 1]
     const cell = new DataCell(
-      this.props.pgridwidgetstore.pgrid,
+      dataStore,
       () => rowHeader.visible() && columnHeader.visible(),
       rowHeader,
       columnHeader
     )
-    cell.value = this.props.pgridwidgetstore.pgrid.getData(
+    cell.value = dataStore.getData(
       cell.datafield ? cell.datafield.name : null,
       cell.rowDimension,
       cell.columnDimension)
-    return <PivotDataCell key={columnIndex} cell={cell} pgridwidgetstore={this.props.pgridwidgetstore} />
+    return <DataCellComp key={columnIndex} cell={cell} onDoubleClick={undefined} />
   }
 
   columnHeaderRenderer ({columnIndex, rowIndex}) {
-    const cell = this.props.pgridwidgetstore.columns.headers[rowIndex][columnIndex]
+    const {columns} = this.props
+    const cell = columns.headers[rowIndex][columnIndex]
     if (!cell) {
       return null
     } else {
-      return <PivotHeaderCell cell={cell} pgridwidgetstore={this.props.pgridwidgetstore} />
+      return <HeaderCellComp cell={cell} onToggle={undefined} />
     }
   }
 
   rowHeaderRenderer ({columnIndex, rowIndex}) {
-    const cell = this.props.pgridwidgetstore.rows.headers[rowIndex][columnIndex]
+    const {rows} = this.props
+    const cell = rows.headers[rowIndex][columnIndex]
     if (!cell) {
       return null
     } else {
-      return <PivotHeaderCell cell={cell} pgridwidgetstore={this.props.pgridwidgetstore} />
+      return <HeaderCellComp cell={cell} onToggle={undefined} />
     }
   }
 }

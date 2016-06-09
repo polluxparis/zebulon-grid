@@ -1,10 +1,10 @@
 'use strict'
 
-import { PubSub } from './orb.pubsub'
-import { Axe, AxeType } from './orb.axe'
-import { Config } from './orb.config'
-import { ExpressionFilter } from './orb.filtering'
-import * as utils from './orb.utils'
+import { PubSub } from '../Pubsub'
+import { Axe, AxeType } from '../Axe'
+import { Config } from '../Config'
+import { ExpressionFilter } from '../Filtering'
+import * as utils from '../Utils'
 
 // pgrid evenjs
 export const EVENT_UPDATED = 'pgrid:updated'
@@ -20,7 +20,7 @@ export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled'
  * @memberOf orb
  * @param  {object} config - configuration object
  */
-export class PGrid extends PubSub {
+export default class Store extends PubSub {
 
   constructor (config) {
     // inherit PubSub
@@ -53,6 +53,9 @@ export class PGrid extends PubSub {
       case 2: // rows
         this.rows.update()
         this.publish(EVENT_ROWS_UPDATED)
+        break
+      // filter updated is not in an axe
+      case null:
         break
       case -1: // both axes
       default:

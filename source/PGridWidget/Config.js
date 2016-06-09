@@ -1,9 +1,7 @@
-'use strict'
-
-import * as utils from './orb.utils'
-import { AxeType } from './orb.axe'
-import * as aggregation from './orb.aggregation'
-import * as filtering from './orb.filtering'
+import * as utils from './Utils'
+import { AxeType } from './Axe'
+import * as aggregation from './Aggregation'
+import * as filtering from './Filtering'
 // import { ThemeManager } from './orb.themes'
 
 function getpropertyvalue (property, configs, defaultvalue) {

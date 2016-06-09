@@ -39,10 +39,13 @@ module.exports = {
       mangle: false
     })
   ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.css']
+  },
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.js?$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'source')
       },

@@ -1,5 +1,4 @@
-import 'expose?Perf!react-addons-perf'
-import { PGridWidget } from './js/orb.ui.pgridwidget'
+import PGridWidget from '../Pgridwidget'
 
 function getMockDataSource (dataRepetition, nToto) {
   const nTiti = 100
@@ -135,6 +134,7 @@ preFilters : {
  //   'Quantity'    : [4, 8, 12]
 }*/
 }
+console.log(PGridWidget)
 
 const widget = new PGridWidget(config)
 widget.render(document.getElementById('root'))

@@ -3,23 +3,18 @@ import * as ReactDOM from 'react-dom'
 import { ResizableBox } from 'react-resizable'
 import VirtualizedCheckbox from 'react-virtualized-checkbox'
 
-import * as utils from '../orb.utils'
-import { FilterManager } from './FilterManager'
+import * as utils from '../../Utils'
 
 export default class FilterPanelComponent extends Component {
 
-  constructor (props) {
-    super(props)
+  constructor ({field, previousFilter, values, onApply}) {
+    super({field, previousFilter, values, onApply})
     this.startingHeight = 223
     this.startingWidth = 301
-    this._pgridwidgetstore = this.props.pivotTableComp.pgridwidgetstore
-    this.filterManager = new FilterManager(this, null)
 
     this.onFilter = this.onFilter.bind(this)
     this.onMouseDown = this.onMouseDown.bind(this)
-    // this.onMouseWheel = this.onMouseWheel.bind(this)
     this.toggleCheckbox = this.toggleCheckbox.bind(this)
-    this.filterManager.onOperatorChanged = this.filterManager.onOperatorChanged.bind(this.filterManager)
   }
 
   destroy () {
@@ -29,7 +24,8 @@ export default class FilterPanelComponent extends Component {
   }
 
   onFilter (operator, term, staticValue, excludeStatic) {
-    this._pgridwidgetstore.applyFilter(this.props.field, operator, term, staticValue, excludeStatic)
+    const {applyFilter, field} = this.props
+    applyFilter(field, operator, term, staticValue, excludeStatic)
     this.destroy()
   }
 
@@ -45,22 +41,6 @@ export default class FilterPanelComponent extends Component {
 
     this.destroy()
   }
-
-  // onMouseWheel(e) {
-  //   const valuesTable = this.refs.valuesTable
-  //   let target = e.target || e.srcElement
-  //   while(target !== null) {
-  //     if(target == valuesTable) {
-  //       if(valuesTable['scrollHeight'] <= valuesTable['clientHeight']) {
-  //         utils.stopPropagation(e)
-  //         utils.preventDefault(e)
-  //       }
-  //       return
-  //     }
-  //     target = target.parentNode
-  //   }
-  //   this.destroy()
-  // }
 
   componentWillMount () {
     utils.addEventListener(document, 'mousedown', this.onMouseDown)
@@ -87,9 +67,8 @@ export default class FilterPanelComponent extends Component {
   }
 
   render () {
-    this.filterManager.reactComp = this
-    this.filterManager.initialFilterObject = this._pgridwidgetstore.pgrid.getFieldFilter(this.props.field)
-    this.checkboxes = this._pgridwidgetstore.pgrid.getFieldValues(this.props.field).map(val => ({checked: true, label: val}))
+    const {values} = this.props
+    this.checkboxes = values.map(val => ({checked: true, label: val}))
 
     const checkboxes =
       <VirtualizedCheckbox
@@ -97,10 +76,6 @@ export default class FilterPanelComponent extends Component {
         onOk={(result) => this.onFilter('', '', result, false)}
         onCancel={() => this.destroy()}
         maxHeight={this.startingHeight} />
-
-    // const buttonClass = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().orbButton
-
-    // const currentFilter = this._pgridwidgetstore.pgrid.getFieldFilter(this.props.field)
 
     const divStyle = {
       backgroundColor: 'white',
@@ -116,7 +91,7 @@ export default class FilterPanelComponent extends Component {
     }
 
     return (
-      <ResizableBox width={this.startingWidth} height={this.startingHeight} minConstrainjs={[this.startingWidth, this.startingHeight]}>
+      <ResizableBox width={this.startingWidth} height={this.startingHeight} minConstraints={[this.startingWidth, this.startingHeight]}>
         <div style={divStyle}>
           {checkboxes}
         </div>

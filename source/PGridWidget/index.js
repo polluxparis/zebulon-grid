@@ -1,1 +1,1 @@
-export PGridWidget from './orb.ui.pgridwidget'
+export default from './Widget'

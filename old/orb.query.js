@@ -1,7 +1,7 @@
 'use strict'
 
-import * as utils from './orb.utils'
-import { AxeType } from './orb.axe'
+import * as utils from './Utils'
+import { AxeType } from './Axe'
 import * as aggregation from './orb.aggregation'
 
 export class Query {

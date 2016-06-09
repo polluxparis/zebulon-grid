@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom'
-import * as utils from '../orb.utils'
+import * as utils from './Utils'
 
 export default (() => {
   let _pivotComp = null

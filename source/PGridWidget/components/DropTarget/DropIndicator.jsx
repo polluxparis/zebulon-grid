@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import DragManager from './orb.react.DragManager'
+import DragManager from '../../DragManager'
 
 export default class DropIndicatorComponent extends Component {
 

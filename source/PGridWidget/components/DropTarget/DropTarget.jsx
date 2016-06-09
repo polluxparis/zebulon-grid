@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import DragManager from './orb.react.DragManager'
-import DropIndicator from './orb.react.DropIndicator'
+import DragManager from '../../DragManager'
+import DropIndicator from './DropIndicator'
 
 let dtid = 0
 

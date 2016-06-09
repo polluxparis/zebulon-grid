@@ -1,7 +1,7 @@
 'use strict'
 
-import * as utils from './orb.utils'
-import { Dimension } from './orb.dimension'
+import * as utils from './Utils'
+import Dimension from './Dimension'
 
 /**
  * Axe types

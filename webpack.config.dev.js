@@ -21,10 +21,18 @@ module.exports = {
     new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin()
   ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.css']
+  },
   module: {
     loaders: [
       {
         test: /\.js$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'source')
+      },
+      {
+        test: /\.jsx$/,
         loaders: ['babel'],
         include: path.join(__dirname, 'source')
       },
@@ -50,6 +58,6 @@ module.exports = {
   },
   devServer: {
     contentBase: 'build',
-    port: 3001
+    port: 3000
   }
 }

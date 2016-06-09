@@ -1,7 +1,7 @@
 'use strict'
 
-import { AxeType } from './orb.axe'
-import { Header, DataHeader, HeaderType } from './orb.ui.header'
+import { AxeType } from './Axe'
+import { Header, DataHeader, HeaderType } from './Cells'
 
 /**
  * Creates a new instance of rows/columns ui properties.
@@ -9,7 +9,7 @@ import { Header, DataHeader, HeaderType } from './orb.ui.header'
  * @memberOf orb.ui
  * @param  {orb.axe} axe - axe containing all dimensions.
  */
-export class AxeUi {
+export default class AxeUi {
 
   constructor (axeModel) {
     /**

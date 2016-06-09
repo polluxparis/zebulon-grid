@@ -1,13 +1,13 @@
 'use strict'
 
 import {Component} from 'react'
-import {HeaderType} from '../orb.ui.header'
+import {HeaderType} from '../../Cells'
 import ReactDOM from 'react-dom'
-import * as domUtils from '../orb.utils.dom'
+import * as domUtils from '../../Utils.dom'
 let _paddingLeft = null
 let _borderLeft = null
 
-export class PivotHeaderCell extends Component {
+export class HeaderCellComp extends Component {
 
   constructor (props) {
     super(props)
@@ -16,10 +16,10 @@ export class PivotHeaderCell extends Component {
     this.collapse = this.collapse.bind(this)
   }
   expand () {
-    this.props.pgridwidgetstore.expandRow(this.props.cell)
+    this.props.onToggle(this.props.cell, false)
   }
   collapse () {
-    this.props.pgridwidgetstore.collapseRow(this.props.cell)
+    this.props.onToggle(this.props.cell, false)
   }
   updateCellInfos () {
     const node = ReactDOM.findDOMNode(this)
@@ -84,7 +84,7 @@ export class PivotHeaderCell extends Component {
     return true
   }
   render () {
-    const cell = this.props.cell
+    const {cell} = this.props
     const divcontent = []
     let value
     let cellClick
@@ -141,20 +141,19 @@ export class PivotHeaderCell extends Component {
   }
 }
 
-export const PivotDataCell = ({cell}) => {
+export const DataCellComp = ({cell, onDoubleClick}) => {
   this._latestVisibleState = false
 
   this._latestVisibleState = cell.visible()
 
   const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
-  const cellClick = () => this.props.pgridwidgetstore.drilldown(cell)
 
   const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>]
 
   return (
     <div
       style={{ width: '100%', height: '100%' }}
-      onDoubleClick={cellClick}
+      onDoubleClick={onDoubleClick(cell)}
     >
       {divcontent}
     </div>

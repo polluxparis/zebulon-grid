@@ -1,6 +1,6 @@
 'use strict'
 
-import { AxeType } from './orb.axe'
+import { AxeType } from './Axe'
 import { Store } from './orb.store'
 
 export const HeaderType = {

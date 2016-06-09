@@ -10,7 +10,7 @@
  * @param  {int} fieldindex - index of this dimension field in fields array
  * @param  {Boolean} isRoot - whether or not this is the root dimension for a given axe (row/column)
  */
-export class Dimension {
+export default class Dimension {
 
   constructor (id, parent, value, field, depth, isRoot, isLeaf) {
     /**
