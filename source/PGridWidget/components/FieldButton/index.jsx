@@ -8,9 +8,9 @@ import * as utils from '../../Utils'
 import * as domUtils from '../../Utils.dom'
 let pbid = 0
 
-export class PivotButton extends Component {
-  constructor ({field, axetype, store}) {
-    super({field, axetype, store})
+export default class FieldButton extends Component {
+  constructor (props) {
+    super(props)
     this.state = {
       pbid: pbid + 1,
       // initial state, all zero.
@@ -39,13 +39,11 @@ export class PivotButton extends Component {
     filterContainer.style.left = `${filterButtonPos.x}px`
 
     document.body.appendChild(filterContainer)
-
     ReactDOM.render(
       <FilterPanel
         field={field}
-        previousFilter={store.getFieldFilter(field)}
-        values={store.getFieldValues(field)}
-        applyFilter={store.refresh(true, axetype)}
+        store={store}
+        axetype={axetype}
       />, filterContainer)
 
     // prevent event bubbling (to prevent text selection while dragging for example)
@@ -54,13 +52,13 @@ export class PivotButton extends Component {
   }
 
   componentDidUpdate () {
-    if (this.props.pivotTableComp.pgrid.config.canMoveFields) {
+    if (this.props.store.config.canMoveFields) {
       if (!this.state.mousedown) {
-        // mouse not down, don't care about mouse up/move evenjs.
+        // mouse not down, don't care about mouse up/move events.
         DragManager.setDragElement(null)
         utils.removeEventListener(document, 'mousemove', this.onMouseMove)
       } else if (this.state.mousedown) {
-        // mouse down, interested by mouse up/move evenjs.
+        // mouse down, interested by mouse up/move events.
         DragManager.setDragElement(this)
         utils.addEventListener(document, 'mousemove', this.onMouseMove)
       }
@@ -78,7 +76,7 @@ export class PivotButton extends Component {
     if (e.button !== 0) return
 
     if (e.ctrlKey) {
-      this.props.pivotTableComp.pgridwidgetstore.toggleFieldExpansion(this.props.axetype, this.props.field)
+      this.props.store.toggleFieldExpansion(this.props.axetype, this.props.field)
     } else {
       const thispos = domUtils.getOffset(ReactDOM.findDOMNode(this))
       const mousePageXY = utils.getMousePageXY(e)
@@ -121,7 +119,7 @@ export class PivotButton extends Component {
   }
   onMouseMove (e) {
     // if the mouse is not down while moving, return (no drag)
-    if (!this.props.pivotTableComp.pgrid.config.canMoveFields || !this.state.mousedown) return
+    if (!this.props.store.config.canMoveFields || !this.state.mousedown) return
 
     let size = null
     const mousePageXY = utils.getMousePageXY(e)
@@ -151,9 +149,10 @@ export class PivotButton extends Component {
     utils.preventDefault(e)
   }
   updateClasses () {
-    ReactDOM.findDOMNode(this).className = this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton
+    ReactDOM.findDOMNode(this).className = this.props.store.config.theme.getButtonClasses().pivotButton
   }
   render () {
+    const {field, store} = this.props
     const divstyle = {
       left: `${this.state.pos.x}px`,
       top: `${this.state.pos.y}px`,
@@ -174,13 +173,12 @@ export class PivotButton extends Component {
       : (this.props.field.sort.order === 'desc'
         ? 'sort-desc'
         : '')
-    const filterClass = (this.state.dragging ? '' : 'fltr-btn') + (this.props.pivotTableComp.pgrid.isFieldFiltered(this.props.field.name) ? ' fltr-btn-active' : '')
+    const filterClass = (this.state.dragging ? '' : 'fltr-btn') + (store.isFieldFiltered(field.name) ? ' fltr-btn-active' : '')
     const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px'
 
     return (
       <div
-        key={this.props.field.name}
-        className={this.props.pivotTableComp.pgrid.config.theme.getButtonClasses().pivotButton}
+        key={field.name}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         style={divstyle}>
@@ -188,7 +186,7 @@ export class PivotButton extends Component {
           <tbody>
             <tr>
               <td className='caption'>
-                {this.props.field.caption}
+                {field.caption}
               </td>
               <td>
                 <div className={'sort-indicator ' + sortDirectionClass}></div>
@@ -207,26 +205,4 @@ export class PivotButton extends Component {
       </div>
     )
   }
-}
-
-export const DataButton = ({active, field, onClick}) => {
-  const fieldAggFunc = <small>{' (' + field.aggregateFuncName + ')'}</small>
-  const inactiveStyle = {
-    backgroundColor: '#cccccc',
-    borderRadius: 4,
-    padding: 4,
-    cursor: 'default'
-  }
-  const activeStyle = {
-    border: 'solid #cccccc 1px',
-    borderRadius: 4,
-    padding: 4,
-    cursor: 'default'
-  }
-  return (
-    <div style={active ? activeStyle : inactiveStyle} onClick={onClick(field.name)}>
-      {field.caption}
-      {fieldAggFunc}
-    </div>
-  )
 }

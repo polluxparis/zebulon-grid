@@ -1,4 +1,4 @@
-import PGridWidget from '../Pgridwidget'
+import PGridWidget from '../PGridWidget'
 
 function getMockDataSource (dataRepetition, nToto) {
   const nTiti = 100
@@ -134,7 +134,6 @@ preFilters : {
  //   'Quantity'    : [4, 8, 12]
 }*/
 }
-console.log(PGridWidget)
 
 const widget = new PGridWidget(config)
 widget.render(document.getElementById('root'))

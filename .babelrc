@@ -1,15 +1,19 @@
 {
   "env": {
     "commonjs": {
+      "plugins": [
+        "transform-decorators-legacy"
+      ],
       "presets": [
         "es2015",
         "react",
-        "stage-0"
+        "stage-1"
       ]
     },
     "development": {
       "plugins": [
         "typecheck",
+        "transform-decorators-legacy",
         [
           "react-transform",
           {
@@ -37,40 +41,42 @@
       "presets": [
         "es2015",
         "react",
-        "stage-0"
+        "stage-1"
       ]
     },
     "es": {
+      "plugins": [
+        "transform-decorators-legacy"
+      ],
       "presets": [
         "es2015-rollup",
         "react",
-        "stage-0"
+        "stage-1"
       ]
     },
     "production": {
       "comments": false,
       "plugins": [
+        "transform-decorators-legacy",
         "transform-react-inline-elements"
       ],
       "presets": [
         "es2015",
         "react",
-        "stage-0"
+        "stage-1"
       ]
     },
     "test": {
       "comments": false,
       "plugins": [
+        "transform-decorators-legacy",
         "__coverage__"
       ],
       "presets": [
         "es2015",
         "react",
-        "stage-0"
+        "stage-1"
       ]
     }
-  },
-  "plugins": [
-    "transform-decorators-legacy"
-  ]
+  }
 }

@@ -1,6 +1,7 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import DevTools from 'mobx-react-devtools'
+import MobxDevTools from 'mobx-react-devtools'
+import { observer } from 'mobx-react'
 
 // CSS files
 import 'react-virtualized/styles.css'
@@ -21,33 +22,34 @@ let pivotId = 1
 // require('../../../dist/orb.css')
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css')
 
+@observer
 export default class Main extends Component {
 
-  constructor ({config}) {
-    super({config})
+  constructor (props) {
+    super(props)
     this.id = pivotId++
     DragManager.init(this)
 
     // themeChangeCallbacks[this.id] = []
     // this.registerThemeChanged(this.updateClasses)
 
-    this.store = new Store(config)
+    this.store = new Store(props.config)
   }
 
   sort (axetype, field) {
-    this.pgridwidgetstore.sort(axetype, field)
+    this.store.sort(axetype, field)
   }
   moveButton (button, newAxeType, position) {
-    this.pgridwidgetstore.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
+    this.store.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
   }
   toggleSubtotals (axetype) {
-    this.pgridwidgetstore.toggleSubtotals(axetype)
+    this.store.toggleSubtotals(axetype)
   }
   toggleGrandtotal (axetype) {
-    this.pgridwidgetstore.toggleGrandtotal(axetype)
+    this.store.toggleGrandtotal(axetype)
   }
   applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
-    this.pgridwidgetstore.applyFilter(fieldname, operator, term, staticValue, excludeStatic)
+    this.store.applyFilter(fieldname, operator, term, staticValue, excludeStatic)
   }
   // registerThemeChanged (compCallback) {
   //   if (compCallback) {
@@ -61,8 +63,8 @@ export default class Main extends Component {
   //   }
   // }
   // changeTheme (newTheme) {
-  //   if (this.pgridwidgetstore.pgrid.config.setTheme(newTheme)) {
-  //     // notify self/sub-componenjs of the theme change
+  //   if (this.store.config.setTheme(newTheme)) {
+  //     // notify self/sub-components of the theme change
   //     for (let i = 0; i < themeChangeCallbacks[this.id].length; i++) {
   //       themeChangeCallbacks[this.id][i]()
   //     }
@@ -70,7 +72,7 @@ export default class Main extends Component {
   // }
   // updateClasses () {
     // const thisnode = ReactDOM.findDOMNode(this)
-    // const classes = this.pgridwidgetstore.pgrid.config.theme.getPivotClasses()
+    // const classes = this.store.config.theme.getPivotClasses()
     // thisnode.className = classes.container
     // thisnode.children[1].className = classes.table
   // }
@@ -83,42 +85,50 @@ export default class Main extends Component {
     }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    console.log('shouldComponentUpdate')
-  // return shallowCompare(this, nextProps, nextState)
-  }
+  // shouldComponentUpdate (nextProps, nextState) {
+  //   return shallowCompare(this, nextProps, nextState)
+  // }
 
   buildUi () {
     const rows = new AxeUi(this.store.rows)
     const columns = new AxeUi(this.store.columns)
-    const layout = {
-      rowHeaders: {
-        width: (this.store.rows.fields.length || 1) +
-          (this.store.config.dataHeadersLocation === 'rows' && this.store.config.dataFieldsCount > 1 ? 1 : 0),
-        height: this.rows.headers.length
-      },
-      columnHeaders: {
-        width: this.columns.headers.length,
-        height: (this.store.columns.fields.length || 1) +
-          (this.store.config.dataHeadersLocation === 'columns' && this.store.config.dataFieldsCount > 1 ? 1 : 0)
-      },
-      pivotTable: {
-        width: this.layout.rowHeaders.width + this.layout.columnHeaders.width,
-        height: this.layout.rowHeaders.height + this.layout.columnHeaders.height
-      }
+    const rowHeaders = {
+      width: (this.store.rows.fields.length || 1) +
+        (this.store.config.dataHeadersLocation === 'rows' && this.store.config.dataFieldsCount > 1 ? 1 : 0),
+      height: rows.headers.length
     }
-    return {rows, columns, layout}
+    const columnHeaders = {
+      width: columns.headers.length,
+      height: (this.store.columns.fields.length || 1) +
+        (this.store.config.dataHeadersLocation === 'columns' && this.store.config.dataFieldsCount > 1 ? 1 : 0)
+    }
+    const pivotTable = {
+      width: rowHeaders.width + columnHeaders.width,
+      height: rowHeaders.height + columnHeaders.height
+    }
+    const layout = {columnHeaders, rowHeaders, pivotTable}
+    const cell = {
+      height: 30,
+      width: 100
+    }
+    const grid = {
+      width: this.store.config.width,
+      height: this.store.config.height
+    }
+    const sizes = {cell, grid}
+    return {rows, columns, layout, sizes}
   }
 
   render () {
-    const {columns, rows, layout} = this.buildUi()
+    const {columns, rows, layout, sizes} = this.buildUi()
+    console.log(this.store, columns, rows, layout, sizes)
     return (
       <div>
-        <DevTools />
+        <MobxDevTools />
         <div className={'orb'}>
           <UpperButtons store={this.store} />
           <div style={{width: layout.pivotTable.width, height: layout.pivotTable.height}}>
-            <Grid columns={columns} rows={rows} layout={layout} />
+            <Grid columns={columns} rows={rows} layout={layout} sizes={sizes} store={this.store} />
           </div>
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
         </div>

@@ -1,3 +1,7 @@
+'use strict'
+
+import { observable } from 'mobx'
+
 import * as utils from './Utils'
 import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
@@ -16,7 +20,7 @@ function getpropertyvalue (property, configs, defaultvalue) {
 function mergefieldconfigs (...args) {
   var merged = {
     configs: [],
-    sorjs: [],
+    sorts: [],
     subtotals: [],
     functions: []
   }
@@ -24,7 +28,7 @@ function mergefieldconfigs (...args) {
   for (let i = 0; i < args.length; i++) {
     var nnconfig = args[i] || {}
     merged.configs.push(nnconfig)
-    merged.sorjs.push(nnconfig.sort || {})
+    merged.sorts.push(nnconfig.sort || {})
     merged.subtotals.push(nnconfig.subTotal || {})
     merged.functions.push({
       aggregateFuncName: nnconfig.aggregateFuncName,
@@ -72,8 +76,8 @@ function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
     caption: getpropertyvalue('caption', merged.configs, ''),
 
     sort: {
-      order: getpropertyvalue('order', merged.sorjs, null),
-      customfunc: getpropertyvalue('customfunc', merged.sorjs, null)
+      order: getpropertyvalue('order', merged.sorts, null),
+      customfunc: getpropertyvalue('customfunc', merged.sorts, null)
     },
     subTotal: {
       visible: getpropertyvalue('visible', merged.subtotals, true),
@@ -87,106 +91,6 @@ function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
   }, false)
 }
 
-export class GrandTotalConfig {
-
-  constructor (options) {
-    options = options || {}
-
-    this.rowsvisible = options.rowsvisible !== undefined ? options.rowsvisible : true
-    this.columnsvisible = options.columnsvisible !== undefined ? options.columnsvisible : true
-  }
-}
-
-export class SubTotalConfig {
-
-  constructor (options, setdefauljs) {
-    const defauljs = {
-      visible: setdefauljs === true ? true : undefined,
-      collapsible: setdefauljs === true ? true : undefined,
-      collapsed: setdefauljs === true ? false : undefined
-    }
-    options = options || {}
-
-    this.visible = options.visible !== undefined ? options.visible : defauljs.visible
-    this.collapsible = options.collapsible !== undefined ? options.collapsible : defauljs.collapsible
-    this.collapsed = options.collapsed !== undefined ? options.collapsed : defauljs.collapsed
-  }
-}
-
-export class SortConfig {
-
-  constructor (options) {
-    options = options || {}
-
-    this.order = options.order || (options.customfunc ? 'asc' : null)
-    this.customfunc = options.customfunc
-  }
-}
-
-export class ChartConfig {
-
-  constructor (options) {
-    options = options || {}
-
-    this.enabled = options.enabled || false
-    // type can be: 'LineChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
-    this.type = options.type || 'LineChart'
-  }
-}
-
-export class Field {
-
-  constructor (options, createSubOptions) {
-    options = options || {}
-
-    // field name
-    this.name = options.name
-
-    // shared settings
-    this.caption = options.caption || this.name
-
-    // rows & columns settings
-    this.sort = new SortConfig(options.sort)
-    this.subTotal = new SubTotalConfig(options.subTotal)
-
-    this.aggregateFuncName = options.aggregateFuncName ||
-    (options.aggregateFunc
-      ? (utils.isString(options.aggregateFunc)
-        ? options.aggregateFunc : 'custom')
-        : null)
-
-    this.aggregateFunc(options.aggregateFunc)
-    this.formatFunc(options.formatFunc || this.defaultFormatFunc)
-
-    if (createSubOptions !== false) {
-      (this.rowSettings = new Field(options.rowSettings, false)).name = this.name
-      ;(this.columnSettings = new Field(options.columnSettings, false)).name = this.name
-      ;(this.dataSettings = new Field(options.dataSettings, false)).name = this.name
-    }
-  }
-
-  defaultFormatFunc (val) {
-    return val != null ? val.toString() : ''
-  }
-
-  aggregateFunc (func) {
-    if (func) {
-      this._aggregatefunc = aggregation.toAggregateFunc(func)
-    } else {
-      return this._aggregatefunc
-    }
-  }
-
-  formatFunc (func) {
-    if (func) {
-      this._formatfunc = func
-    } else {
-      return this._formatfunc
-    }
-  }
-
-}
-
 /**
  * Creates a new instance of pgrid config
  * @class
@@ -195,6 +99,13 @@ export class Field {
  */
 // module.config(config) {
 export class Config {
+
+  // @observable dataSource = null
+  @observable allFields = []
+  @observable rowFields = []
+  @observable columnFields = []
+  @observable dataFields = []
+  @observable dataFieldsCount = 0
 
   constructor (config) {
     this.config = config
@@ -213,13 +124,11 @@ export class Config {
     this.columnSettings = new Field(config.columnSettings, false)
     this.dataSettings = new Field(config.dataSettings, false)
 
-    this.allFields = (config.fields || []).map(fieldconfig => {
-      var f = new Field(fieldconfig)
-      // map fields names to captions
-      this.dataSourceFieldNames.push(f.name)
-      this.dataSourceFieldCaptions.push(f.caption)
-      return f
-    })
+    this.allFields = (config.fields || []).map(fieldconfig => new Field(fieldconfig))
+
+    // map fields names to captions
+    this.dataSourceFieldNames = this.allFields.map(f => f.name)
+    this.dataSourceFieldCaptions = this.allFields.map(f => f.caption)
 
     this.rowFields = (config.rows || []).map(fieldconfig => {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
@@ -235,8 +144,7 @@ export class Config {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
       return createfield(this, AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
-
-    this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1
+    this.dataFieldsCount = this.dataFields ? this.dataFields.length : 0
 
     this.runtimeVisibility = {
       subtotals: {
@@ -244,8 +152,6 @@ export class Config {
         columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
       }
     }
-    this.dataSourceFieldNames = []
-    this.dataSourceFieldCaptions = []
   }
 
   captionToName (caption) {
@@ -305,7 +211,7 @@ export class Config {
   }
 
   availablefields () {
-    const usedFields = this.rowFields.concat(this.columnFields)
+    const usedFields = [].concat(this.rowFields.peek(), this.columnFields.peek())
     return this.allFields
       // This is a hacky way to detect which fields are measures
       // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
@@ -343,7 +249,6 @@ export class Config {
           }
         })
     }
-
     return prefilters
   }
 
@@ -431,7 +336,7 @@ export class Config {
     }
 
     // update data fields count
-    this.dataFieldsCount = this.dataFields ? (this.dataFields.length || 1) : 1
+    this.dataFieldsCount = this.dataFields ? this.dataFields.length : 0
     return true
   }
 
@@ -491,4 +396,104 @@ export class Config {
       return false
     }
   }
+}
+
+export class GrandTotalConfig {
+
+  constructor (options) {
+    options = options || {}
+
+    this.rowsvisible = options.rowsvisible !== undefined ? options.rowsvisible : true
+    this.columnsvisible = options.columnsvisible !== undefined ? options.columnsvisible : true
+  }
+}
+
+export class SubTotalConfig {
+
+  constructor (options, setdefaults) {
+    const defaults = {
+      visible: setdefaults === true ? true : undefined,
+      collapsible: setdefaults === true ? true : undefined,
+      collapsed: setdefaults === true ? false : undefined
+    }
+    options = options || {}
+
+    this.visible = options.visible !== undefined ? options.visible : defaults.visible
+    this.collapsible = options.collapsible !== undefined ? options.collapsible : defaults.collapsible
+    this.collapsed = options.collapsed !== undefined ? options.collapsed : defaults.collapsed
+  }
+}
+
+export class SortConfig {
+
+  constructor (options) {
+    options = options || {}
+
+    this.order = options.order || (options.customfunc ? 'asc' : null)
+    this.customfunc = options.customfunc
+  }
+}
+
+export class ChartConfig {
+
+  constructor (options) {
+    options = options || {}
+
+    this.enabled = options.enabled || false
+    // type can be: 'LineChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
+    this.type = options.type || 'LineChart'
+  }
+}
+
+export class Field {
+
+  constructor (options, createSubOptions) {
+    options = options || {}
+
+    // field name
+    this.name = options.name
+
+    // shared settings
+    this.caption = options.caption || this.name
+
+    // rows & columns settings
+    this.sort = new SortConfig(options.sort)
+    this.subTotal = new SubTotalConfig(options.subTotal)
+
+    this.aggregateFuncName = options.aggregateFuncName ||
+    (options.aggregateFunc
+      ? (utils.isString(options.aggregateFunc)
+        ? options.aggregateFunc : 'custom')
+        : null)
+
+    this.aggregateFunc(options.aggregateFunc)
+    this.formatFunc(options.formatFunc || this.defaultFormatFunc)
+
+    if (createSubOptions !== false) {
+      (this.rowSettings = new Field(options.rowSettings, false)).name = this.name
+      ;(this.columnSettings = new Field(options.columnSettings, false)).name = this.name
+      ;(this.dataSettings = new Field(options.dataSettings, false)).name = this.name
+    }
+  }
+
+  defaultFormatFunc (val) {
+    return val != null ? val.toString() : ''
+  }
+
+  aggregateFunc (func) {
+    if (func) {
+      this._aggregatefunc = aggregation.toAggregateFunc(func)
+    } else {
+      return this._aggregatefunc
+    }
+  }
+
+  formatFunc (func) {
+    if (func) {
+      this._formatfunc = func
+    } else {
+      return this._formatfunc
+    }
+  }
+
 }

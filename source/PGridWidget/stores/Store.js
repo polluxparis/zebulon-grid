@@ -1,12 +1,14 @@
 'use strict'
 
+import { observable } from 'mobx'
+
 import { PubSub } from '../Pubsub'
 import { Axe, AxeType } from '../Axe'
 import { Config } from '../Config'
 import { ExpressionFilter } from '../Filtering'
 import * as utils from '../Utils'
 
-// pgrid evenjs
+// pgrid events
 export const EVENT_UPDATED = 'pgrid:updated'
 export const EVENT_COLUMNS_UPDATED = 'pgrid:columns-updated'
 export const EVENT_ROWS_UPDATED = 'pgrid:rows-updated'
@@ -21,6 +23,13 @@ export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled'
  * @param  {object} config - configuration object
  */
 export default class Store extends PubSub {
+
+  @observable filters = []
+  @observable rows = null
+  @observable columns = null
+  @observable dataMatrix = {}
+  @observable config = {}
+  // @observable filteredDataSource = null
 
   constructor (config) {
     // inherit PubSub
@@ -366,10 +375,10 @@ export default class Store extends PubSub {
 
       if (this.columns.dimensionsCount > 0) {
         var p = 0
-        var parenjs = [this.columns.root]
+        var parents = [this.columns.root]
 
-        while (p < parenjs.length) {
-          var parent = parenjs[p]
+        while (p < parents.length) {
+          var parent = parents[p]
           var rowindexes = rowDim.isRoot
           ? null
           : (parent.isRoot
@@ -388,7 +397,7 @@ export default class Store extends PubSub {
             data[subdim.id] = this.computeValue(rowindexes, this._iCache[cid], rowDim.isRoot ? null : rowDim.getRowIndexes())
 
             if (!subdim.isLeaf) {
-              parenjs.push(subdim)
+              parents.push(subdim)
               if (rowindexes) {
                 this._iCache[cid] = []
                 for (let ur = 0; ur < rowindexes.length; ur++) {
@@ -418,19 +427,19 @@ export default class Store extends PubSub {
     // this.dataMatrix[this.rows.root.id] = this.computeRowValues(this.rows.root)
 
     if (this.rows.dimensionsCount > 0) {
-      var parenjs = [this.rows.root]
+      var parents = [this.rows.root]
       var p = 0
       var parent
-      while (p < parenjs.length) {
-        parent = parenjs[p]
+      while (p < parents.length) {
+        parent = parents[p]
         // calc children rows
         for (let i = 0; i < parent.values.length; i++) {
           var subdim = parent.subdimvals[parent.values[i]]
           // calc child row
           this.dataMatrix[subdim.id] = this.computeRowValues(subdim)
-          // if row is not a leaf, add it to parenjs array to process ijs children
+          // if row is not a leaf, add it to parents array to process ijs children
           if (!subdim.isLeaf) {
-            parenjs.push(subdim)
+            parents.push(subdim)
           }
         }
         // next parent

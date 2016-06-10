@@ -100,12 +100,12 @@ export class CellBase {
      */
     this.hspan = options.hspan || (() => 1)
     /**
-     * gejs header cell's height
+     * gets header cell's height
      * @return {Number}
      */
     this.vspan = options.vspan || (() => 1)
     /**
-     * gejs wether header cell is visible
+     * gets wether header cell is visible
      * @return {Boolean}
      */
     this.visible = options.isvisible || (() => true)
@@ -233,7 +233,7 @@ export class Header extends CellBase {
         if (this.subheaders.length > 0) {
           for (let i = 0; i < this.subheaders.length; i++) {
             var subheader = this.subheaders[i]
-            // if ijs not an array
+            // if it's not an array
             if (!subheader.dim.isLeaf) {
               subSpan = this.isRowsAxe ? subheader.vspan() : subheader.hspan()
               jspan += subSpan
@@ -241,14 +241,14 @@ export class Header extends CellBase {
                 addone = true
               }
             } else {
-              jspan += this.datafieldscount
+              jspan += (this.datafieldscount || 1)
             }
           }
         } else {
-          jspan += this.datafieldscount
+          jspan += (this.datafieldscount || 1)
         }
       } else {
-        return this.datafieldscount
+        return (this.datafieldscount || 1)
       }
       return jspan + (addone ? 1 : 0)
     }
@@ -274,23 +274,23 @@ export class DataHeader extends CellBase {
 
 export class DataCell extends CellBase {
 
-  constructor (pgrid, isvisible, rowinfo, colinfo) {
+  constructor (store, isvisible, rowinfo, colinfo) {
     const rowDimension = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.dim : rowinfo.dim
     const columnDimension = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.dim : colinfo.dim
     const rowType = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.type : rowinfo.type
     const colType = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.type : colinfo.type
 
-    const datafield = pgrid.config.dataFieldsCount > 1
-      ? (pgrid.config.dataHeadersLocation === 'rows'
+    const datafield = store.config.dataFieldsCount > 1
+      ? (store.config.dataHeadersLocation === 'rows'
         ? rowinfo.value
         : colinfo.value)
-      : pgrid.config.dataFields[0]
+      : store.config.dataFields[0]
 
     super({
       axetype: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
-      // value: pgrid.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
+      // value: store.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
       cssclass: 'cell ' + HeaderType.getCellClass(rowType, colType),
       isvisible: isvisible
     })

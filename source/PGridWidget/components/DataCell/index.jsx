@@ -1,0 +1,26 @@
+'use strict'
+
+import React, {Component} from 'react'
+
+export default class DataCellComp extends Component {
+  render () {
+    const {cell, onDoubleClick} = this.props
+    this._latestVisibleState = false
+
+    this._latestVisibleState = cell.visible()
+
+    const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
+
+    const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>]
+
+    return (
+      <div
+        style={{ width: '100%', height: '100%' }}
+        onDoubleClick={onDoubleClick}
+      >
+        {divcontent}
+      </div>
+         )
+  }
+
+}

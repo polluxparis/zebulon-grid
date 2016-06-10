@@ -1,17 +1,17 @@
 'use strict'
 
 /**
- * Creates a namespcae hierarchy if not exisjs
+ * Creates a namespcae hierarchy if not exists
  * @param  {string} identifier - namespace identifier
  * @return {object}
  */
 export function ns (identifier, parent) {
-  var parjs = identifier.split('.')
+  var parts = identifier.split('.')
   var i = 0
   parent = parent || window
-  while (i < parjs.length) {
-    parent[parjs[i]] = parent[parjs[i]] || {}
-    parent = parent[parjs[i]]
+  while (i < parts.length) {
+    parent[parts[i]] = parent[parts[i]] || {}
+    parent = parent[parts[i]]
     i++
   }
   return parent
@@ -217,14 +217,14 @@ export function getMousePageXY (e) {
 //                 var block, charCode, idx = 0, map = chars, output = ''
 //                 // if the next str index does not exist:
 //                 // change the mapping table to "="
-//                 // check if d has no fractional digijs
+//                 // check if d has no fractional digits
 //                 str.charAt(idx | 0) || (map = '=', idx % 1)
 //                 // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
 //                 output += map.charAt(63 & block >> 8 - idx % 1 * 8)
 //             ) {
 //                 charCode = str.charCodeAt(idx += 3 / 4)
 //                 if (charCode > 0xFF) {
-//                     throw new InvalidCharacterError("'btoa' failed: The string to be encoded contains characters oujside of the Latin1 range.")
+//                     throw new InvalidCharacterError("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.")
 //                 }
 //                 block = block << 8 | charCode
 //             }
@@ -248,10 +248,10 @@ export function getMousePageXY (e) {
 //             var bc = 0, bs, buffer, idx = 0, output = ''
 //             // get next character
 //             (buffer = str.charAt(idx++))
-//             // character found in table? initialize bit storage and add ijs ascii value
+//             // character found in table? initialize bit storage and add its ascii value
 //             ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
 //                 // and if not first of each 4 characters,
-//                 // convert the first 8 bijs to one ascii character
+//                 // convert the first 8 bits to one ascii character
 //                 bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
 //         ) {
 //             // try to find character in table (0-63, not found => -1)

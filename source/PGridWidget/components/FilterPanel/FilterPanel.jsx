@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import React, { Component } from 'react'
 import * as ReactDOM from 'react-dom'
 import { ResizableBox } from 'react-resizable'
 import VirtualizedCheckbox from 'react-virtualized-checkbox'
@@ -7,8 +7,9 @@ import * as utils from '../../Utils'
 
 export default class FilterPanelComponent extends Component {
 
-  constructor ({field, previousFilter, values, onApply}) {
-    super({field, previousFilter, values, onApply})
+  constructor (props) {
+    super(props)
+    console.log(props)
     this.startingHeight = 223
     this.startingWidth = 301
 
@@ -24,8 +25,9 @@ export default class FilterPanelComponent extends Component {
   }
 
   onFilter (operator, term, staticValue, excludeStatic) {
-    const {applyFilter, field} = this.props
-    applyFilter(field, operator, term, staticValue, excludeStatic)
+    console.log('onFilter')
+    const {store} = this.props
+    store.applyFilter(store.field, operator, term, staticValue, excludeStatic)
     this.destroy()
   }
 
@@ -67,7 +69,12 @@ export default class FilterPanelComponent extends Component {
   }
 
   render () {
-    const {values} = this.props
+    // previousFilter={store.getFieldFilter(field)}
+    // values={store.getFieldValues(field)}
+    // applyFilter={store.refresh(true, axetype)}
+
+    const {store, field} = this.props
+    const values = store.getFieldValues(field.name)
     this.checkboxes = values.map(val => ({checked: true, label: val}))
 
     const checkboxes =

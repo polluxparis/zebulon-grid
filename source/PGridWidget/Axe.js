@@ -102,16 +102,16 @@ export class Axe {
       }
 
       // var depth = this.dimensionsCount - this.getfieldindex(field)
-      // var parenjs = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1]
-      var parenjs = [this.root]
-      for (let i = 0; i < parenjs.length; i++) {
+      // var parents = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1]
+      var parents = [this.root]
+      for (let i = 0; i < parents.length; i++) {
         if (field.sort.customfunc != null) {
-          parenjs[i].values.sort(field.sort.customfunc)
+          parents[i].values.sort(field.sort.customfunc)
         } else {
-          parenjs[i].values.sort()
+          parents[i].values.sort()
         }
         if (field.sort.order === 'desc') {
-          parenjs[i].values.reverse()
+          parents[i].values.reverse()
         }
       }
     }

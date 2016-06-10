@@ -1,13 +1,13 @@
 'use strict'
 
-import {Component} from 'react'
+import React, {Component} from 'react'
 import {HeaderType} from '../../Cells'
 import ReactDOM from 'react-dom'
 import * as domUtils from '../../Utils.dom'
 let _paddingLeft = null
 let _borderLeft = null
 
-export class HeaderCellComp extends Component {
+export default class HeaderCellComp extends Component {
 
   constructor (props) {
     super(props)
@@ -139,23 +139,4 @@ export class HeaderCellComp extends Component {
       </div>
     )
   }
-}
-
-export const DataCellComp = ({cell, onDoubleClick}) => {
-  this._latestVisibleState = false
-
-  this._latestVisibleState = cell.visible()
-
-  const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
-
-  const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>]
-
-  return (
-    <div
-      style={{ width: '100%', height: '100%' }}
-      onDoubleClick={onDoubleClick(cell)}
-    >
-      {divcontent}
-    </div>
-       )
 }

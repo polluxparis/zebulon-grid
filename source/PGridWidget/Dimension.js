@@ -52,6 +52,11 @@ export default class Dimension {
      * Dimension's set of all values
      * @type {Array}
      */
+    this.values = []
+    /**
+     * Dimension's set of all values
+     * @type {Array}
+     */
     this.subdimvals = {}
     /**
      * Direct descendant subdimensions dictionary

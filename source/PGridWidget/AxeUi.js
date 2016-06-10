@@ -36,7 +36,7 @@ export default class AxeUi {
         headers.push([])
 
         // Fill Rows layout infos
-        this.getUiInfo(headers, this.axe.root)
+        this.getUiInfo(headers, this.axe.root, this.axe.type)
 
         if (this.axe.pgrid.config.grandTotal.rowsvisible) {
           var lastrow = headers[headers.length - 1]
@@ -77,8 +77,9 @@ export default class AxeUi {
    * Fills the infos array given in argument with the dimension layout infos as row.
    * @param  {orb.dimension}  dimension - the dimension to get ui info for
    * @param  {object}  infos - array to fill with ui dimension info
+   * @param  {number}  axetype - type of the axe (rows or columns)
    */
-  getUiInfo (infos, dimension) {
+  getUiInfo (infos, dimension, axetype) {
     if (dimension.values.length > 0) {
       var infosMaxIndex = infos.length - 1
       var lastInfosArray = infos[infosMaxIndex]
@@ -90,12 +91,12 @@ export default class AxeUi {
 
         var subTotalHeader
         if (!subdim.isLeaf && subdim.field.subTotal.visible) {
-          subTotalHeader = new Header(AxeType.ROWS, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount())
+          subTotalHeader = new Header(axetype, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount())
         } else {
           subTotalHeader = null
         }
 
-        var newHeader = new Header(AxeType.ROWS, null, subdim, parent, this.dataFieldsCount(), subTotalHeader)
+        var newHeader = new Header(axetype, null, subdim, parent, this.dataFieldsCount(), subTotalHeader)
 
         if (valIndex > 0) {
           infos.push((lastInfosArray = []))
