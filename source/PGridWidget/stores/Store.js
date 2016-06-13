@@ -1,6 +1,6 @@
 'use strict'
 
-import { observable } from 'mobx'
+import { observable, computed, asMap } from 'mobx'
 
 import { PubSub } from '../Pubsub'
 import { Axe, AxeType } from '../Axe'
@@ -24,70 +24,32 @@ export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled'
  */
 export default class Store extends PubSub {
 
-  @observable filters = []
-  @observable rows = null
-  @observable columns = null
+  // filters is a Mobx Map ==> needs special functions (set, get and merge)
+  // the special functions are only used in this file
+  @observable filters = asMap({})
+  // @observable rows = null
+  // @observable columns = null
   @observable dataMatrix = {}
   @observable config = {}
-  // @observable filteredDataSource = null
+  // @computed filteredDataSource = asFlat([])
 
   constructor (config) {
     // inherit PubSub
     super()
     this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
-    this.filters = this.config.getPreFilters()
-    this.filteredDataSource = this.config.dataSource
+    this.filters.merge(this.config.getPreFilters())
+    // this.filteredDataSource = this.config.dataSource
 
     // this.dataSourceMap = this.buildDataSourceMap()
 
-    this.rows = new Axe(this, AxeType.ROWS)
-    this.columns = new Axe(this, AxeType.COLUMNS)
+    // this.rows = new Axe(this, AxeType.ROWS)
+    // this.columns = new Axe(this, AxeType.COLUMNS)
     this.dataMatrix = {}
 
     // this.query = new Query(this)
 
-    this.refresh()
-  }
-
-  refresh (refreshFilters, axe) {
-    if (refreshFilters !== false) {
-      this.refreshFilteredDataSource()
-    }
-    switch (axe) {
-      case 1: // columns
-        this.columns.update()
-        this.publish(EVENT_COLUMNS_UPDATED)
-        break
-      case 2: // rows
-        this.rows.update()
-        this.publish(EVENT_ROWS_UPDATED)
-        break
-      // filter updated is not in an axe
-      case null:
-        break
-      case -1: // both axes
-      default:
-        this.rows.update()
-        this.columns.update()
-        this.publish(EVENT_UPDATED)
-        break
-    }
-  }
-
-  refreshDataFields () {
-    switch (this.config.dataHeadersLocation) {
-      case 'rows':
-        this.rows.update()
-        break
-      case 'columns':
-        this.columns.update()
-        break
-      default:
-        console.error(`pgrid.config.dataHeadersLocation should be 'rows' or 'columns', instead is ${this.config.dataHeadersLocation}`)
-        break
-    }
-    this.publish(DATAFIELD_TOGGLED)
+    // this.refresh()
   }
 
   // buildDataSourceMap(){
@@ -111,17 +73,17 @@ export default class Store extends PubSub {
   //   return dimMap
   //   }
 
-  refreshFilteredDataSource () {
-    var filterFields = utils.ownProperties(this.filters)
+  @computed get filteredDataSource () {
+    var filterFields = this.filters.keys()
     if (filterFields.length > 0) {
-      this.filteredDataSource = []
+      var res = []
 
       for (var i = 0; i < this.config.dataSource.length; i++) {
         var row = this.config.dataSource[i]
         var exclude = false
         for (var fi = 0; fi < filterFields.length; fi++) {
           var fieldname = filterFields[fi]
-          var fieldFilter = this.filters[fieldname]
+          var fieldFilter = this.filters.get(fieldname)
 
           if (fieldFilter && !fieldFilter.test(row[fieldname])) {
             exclude = true
@@ -129,12 +91,21 @@ export default class Store extends PubSub {
           }
         }
         if (!exclude) {
-          this.filteredDataSource.push(row)
+          res.push(row)
         }
       }
+      return res
     } else {
-      this.filteredDataSource = this.config.dataSource
+      return this.config.dataSource
     }
+  }
+
+  @computed get rows () {
+    return new Axe(this, AxeType.ROWS)
+  }
+
+  @computed get columns () {
+    return new Axe(this, AxeType.COLUMNS)
   }
 
   sort (axetype, field) {
@@ -150,13 +121,13 @@ export default class Store extends PubSub {
   }
 
   moveField (fieldname, oldaxetype, newaxetype, position) {
-    const axe = this.config.moveField(fieldname, oldaxetype, newaxetype, position)
-    this.refresh(false, axe)
+    this.config.moveField(fieldname, oldaxetype, newaxetype, position)
+    // this.refresh(false, axe)
   }
 
   toggleDataField (fieldname) {
     if (this.config.toggleDataField(fieldname)) {
-      this.refreshDataFields()
+      // this.refreshDataFields()
       return true
     } else {
       return false
@@ -164,13 +135,13 @@ export default class Store extends PubSub {
   }
 
   applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
-    this.filters[fieldname] = new ExpressionFilter(operator, term, staticValue, excludeStatic)
-    this.refresh()
+    this.filters.set(fieldname, new ExpressionFilter(operator, term, staticValue, excludeStatic))
+    // this.refresh()
   }
 
   refreshData (data) {
     this.config.dataSource = data
-    this.refresh()
+    // this.refresh()
   }
 
   toggleSubtotals (axetype) {
@@ -315,7 +286,7 @@ export default class Store extends PubSub {
       }
 
       var emptyIntersection = intersection && intersection.length === 0
-      // var datasource = this.filteredDataSource
+      var datasource = this.filteredDataSource
       var datafield
       var datafields = []
 
@@ -352,7 +323,7 @@ export default class Store extends PubSub {
         if (emptyIntersection) {
           res[datafield.field.name] = null
         } else {
-          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', this.filteredDataSource, origRowIndexes || rowIndexes, colIndexes)
+          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', datasource, origRowIndexes || rowIndexes, colIndexes)
         }
       }
     }

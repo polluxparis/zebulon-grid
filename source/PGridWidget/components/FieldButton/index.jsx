@@ -26,6 +26,7 @@ export default class FieldButton extends Component {
   }
 
   onFilterMouseDown (e) {
+    console.log('onFilterMouseDown')
     const {field, store, axetype} = this.props
     // left mouse button only
     if (e.button !== 0) return
@@ -72,11 +73,13 @@ export default class FieldButton extends Component {
     utils.removeEventListener(document, 'mousemove', this.onMouseMove)
   }
   onMouseDown (e) {
+    console.log('onMouseDown')
+    const { store, axetype, field } = this.props
     // drag/sort with left mouse button
     if (e.button !== 0) return
 
     if (e.ctrlKey) {
-      this.props.store.toggleFieldExpansion(this.props.axetype, this.props.field)
+      store.toggleFieldExpansion(axetype, field)
     } else {
       const thispos = domUtils.getOffset(ReactDOM.findDOMNode(this))
       const mousePageXY = utils.getMousePageXY(e)
@@ -100,6 +103,8 @@ export default class FieldButton extends Component {
     utils.preventDefault(e)
   }
   onMouseUp (e) {
+    console.log('onMouseUp')
+    const { store, axetype, field } = this.props
     const isdragged = this.state.dragging
 
     this.setState({
@@ -114,31 +119,33 @@ export default class FieldButton extends Component {
 
     if (!e.ctrlKey && !isdragged) {
       // if button was not dragged, proceed as a click
-      this.props.pivotTableComp.sort(this.props.axetype, this.props.field)
+      store.sort(axetype, field)
     }
   }
   onMouseMove (e) {
+    console.log('onMouseMove')
+    const { mousedown, size, dragging, mouseoffset, pos } = this.state
     // if the mouse is not down while moving, return (no drag)
-    if (!this.props.store.config.canMoveFields || !this.state.mousedown) return
+    if (!this.props.store.config.canMoveFields || !mousedown) return
 
-    let size = null
+    let tempSize = null
     const mousePageXY = utils.getMousePageXY(e)
 
-    if (!this.state.dragging) {
-      size = domUtils.getSize(ReactDOM.findDOMNode(this))
+    if (!dragging) {
+      tempSize = domUtils.getSize(ReactDOM.findDOMNode(this))
     } else {
-      size = this.state.size
+      tempSize = size
     }
 
     const newpos = {
-      x: mousePageXY.pageX + this.state.mouseoffset.x,
-      y: mousePageXY.pageY + this.state.mouseoffset.y
+      x: mousePageXY.pageX + mouseoffset.x,
+      y: mousePageXY.pageY + mouseoffset.y
     }
 
-    if (!this.state.dragging || newpos.x !== this.state.pos.x || newpos.y !== this.state.pos.y) {
+    if (!dragging || newpos.x !== pos.x || newpos.y !== pos.y) {
       this.setState({
         dragging: true,
-        size,
+        tempSize,
         pos: newpos
       })
 

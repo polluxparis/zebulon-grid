@@ -113,7 +113,6 @@ export default class OrbGrid extends Component {
             {renderedCell}
           </div>
         )
-        console.log(`hspan of header ${columnHeader.hspan()}`)
       }
     }
 

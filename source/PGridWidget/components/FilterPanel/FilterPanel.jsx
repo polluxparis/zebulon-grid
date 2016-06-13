@@ -26,8 +26,8 @@ export default class FilterPanelComponent extends Component {
 
   onFilter (operator, term, staticValue, excludeStatic) {
     console.log('onFilter')
-    const {store} = this.props
-    store.applyFilter(store.field, operator, term, staticValue, excludeStatic)
+    const {store, field} = this.props
+    store.applyFilter(field.name, operator, term, staticValue, excludeStatic)
     this.destroy()
   }
 

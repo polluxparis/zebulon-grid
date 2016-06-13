@@ -223,7 +223,7 @@ export class Header extends CellBase {
   calcSpan (ignoreVisibility) {
     // console.log('calcSpan')
     // console.log(this)
-    var jspan = 0
+    var span = 0
     var subSpan
     var addone = false
 
@@ -236,23 +236,23 @@ export class Header extends CellBase {
             // if it's not an array
             if (!subheader.dim.isLeaf) {
               subSpan = this.isRowsAxe ? subheader.vspan() : subheader.hspan()
-              jspan += subSpan
+              span += subSpan
               if (i === 0 && (subSpan === 0)) {
                 addone = true
               }
             } else {
-              jspan += (this.datafieldscount || 1)
+              span += (this.datafieldscount || 1)
             }
           }
         } else {
-          jspan += (this.datafieldscount || 1)
+          span += (this.datafieldscount || 1)
         }
       } else {
         return (this.datafieldscount || 1)
       }
-      return jspan + (addone ? 1 : 0)
+      return span + (addone ? 1 : 0)
     }
-    return jspan
+    return span
   }
 }
 

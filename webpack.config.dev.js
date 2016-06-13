@@ -6,7 +6,7 @@ const webpack = require('webpack')
 module.exports = {
   devtool: 'eval',
   entry: {
-    demo: './source/demo/ApplicationReact'
+    demo: './source/demo/Application'
   },
   output: {
     path: 'build',

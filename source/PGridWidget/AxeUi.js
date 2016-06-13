@@ -32,13 +32,13 @@ export default class AxeUi {
     var grandtotalHeader
 
     if (this.axe != null) {
-      if (this.axe.root.values.length > 0 || this.axe.pgrid.config.grandTotal.rowsvisible) {
+      if (this.axe.root.values.length > 0 || this.axe.store.config.grandTotal.rowsvisible) {
         headers.push([])
 
         // Fill Rows layout infos
         this.getUiInfo(headers, this.axe.root, this.axe.type)
 
-        if (this.axe.pgrid.config.grandTotal.rowsvisible) {
+        if (this.axe.store.config.grandTotal.rowsvisible) {
           var lastrow = headers[headers.length - 1]
           grandtotalHeader = new Header(AxeType.ROWS, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount())
           if (lastrow.length === 0) {
@@ -65,7 +65,7 @@ export default class AxeUi {
     if (this.isMultiDataFields()) {
       var lastInfosArray = infos[infos.length - 1]
       for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
-        lastInfosArray.push(new DataHeader(this.axe.pgrid.config.dataFields[datafieldindex], parent))
+        lastInfosArray.push(new DataHeader(this.axe.store.config.dataFields[datafieldindex], parent))
         if (datafieldindex < this.dataFieldsCount() - 1) {
           infos.push((lastInfosArray = []))
         }
@@ -121,9 +121,9 @@ export default class AxeUi {
   }
 
   dataFieldsCount () {
-    return (this.axe.pgrid.config.dataHeadersLocation === 'columns' && this.axe.type === AxeType.COLUMNS) ||
-    (this.axe.pgrid.config.dataHeadersLocation === 'rows' && this.axe.type === AxeType.ROWS)
-      ? this.axe.pgrid.config.dataFieldsCount : 1
+    return (this.axe.store.config.dataHeadersLocation === 'columns' && this.axe.type === AxeType.COLUMNS) ||
+    (this.axe.store.config.dataHeadersLocation === 'rows' && this.axe.type === AxeType.ROWS)
+      ? this.axe.store.config.dataFieldsCount : 1
   }
 
   isMultiDataFields () {

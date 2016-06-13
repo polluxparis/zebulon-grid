@@ -1,5 +1,7 @@
 'use strict'
 
+import { observable } from 'mobx'
+
 import * as utils from './Utils'
 import Dimension from './Dimension'
 
@@ -18,17 +20,33 @@ export const AxeType = {
  * Creates a new instance of an axe's dimensions list.
  * @class
  * @memberOf orb
- * @param  {array} pgrid - Parent pivot grid
+ * @param  {array} store - Parent pivot grid
  * @param  {orb.axe.Type} type - Axe type (rows, columns, data)
  */
 export class Axe {
 
-  constructor (pgrid, type) {
+  /**
+   * Number of dimensions in this axe
+   * @type {Number}
+   */
+  dimensionsCount = null
+  /**
+   * Root dimension
+   * @type {orb.dimension}
+   */
+  @observable root = null
+/**
+ * Dimensions dictionary indexed by depth
+ * @type {Object} Dictionary of (depth, arrays)
+ */
+// this.dimensionsByDepth = null
+
+  constructor (store, type) {
     /**
      * Parent pivot grid
-     * @type {orb.pgrid}
+     * @type {orb.store}
      */
-    this.pgrid = pgrid
+    this.store = store
     /**
      * Axe type (rows, columns, data)
      * @type {orb.axe.Type}
@@ -41,33 +59,19 @@ export class Axe {
     this.fields = []
     switch (type) {
       case AxeType.COLUMNS:
-        this.fields = this.pgrid.config.columnFields
+        this.fields = this.store.config.columnFields
         break
       case AxeType.ROWS:
-        this.fields = this.pgrid.config.rowFields
+        this.fields = this.store.config.rowFields
         break
       case AxeType.DATA:
-        this.fields = this.pgrid.config.dataFields
+        this.fields = this.store.config.dataFields
         break
       default:
         this.fields = []
     }
 
-    /**
-     * Number of dimensions in this axe
-     * @type {Number}
-     */
-    this.dimensionsCount = null
-    /**
-     * Root dimension
-     * @type {orb.dimension}
-     */
-    this.root = null
-  /**
-   * Dimensions dictionary indexed by depth
-   * @type {Object} Dictionary of (depth, arrays)
-   */
-  // this.dimensionsByDepth = null
+    this.update()
   }
 
   update () {
@@ -153,8 +157,8 @@ export class Axe {
    *   - filling the rowIndexes array of each dimension of the axe (used for calculating aggregations)
    */
   fill () {
-    if (this.pgrid.filteredDataSource != null && this.dimensionsCount > 0) {
-      var datasource = this.pgrid.filteredDataSource
+    if (this.store.filteredDataSource != null && this.dimensionsCount > 0) {
+      var datasource = this.store.filteredDataSource
       if (datasource != null && utils.isArray(datasource) && datasource.length > 0) {
         for (let rowIndex = 0, dataLength = datasource.length; rowIndex < dataLength; rowIndex++) {
           var row = datasource[rowIndex]
@@ -184,7 +188,7 @@ export class Axe {
   // for (let findex = 0; findex < this.dimensionsCount; findex++) {
   //   var depth = this.dimensionsCount - findex
   //   var subfield = this.fields[findex]
-  //   var dimMap = this.pgrid.dataSourceMap[subfield.name]
+  //   var dimMap = this.store.dataSourceMap[subfield.name]
   //   Object.keys(dimMap).forEach(k => {
   //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, subfield, depth, false, findex == this.dimensionsCount - 1))
   //     dim.rowIndexes = dimMap[k]
