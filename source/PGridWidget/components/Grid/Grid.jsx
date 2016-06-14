@@ -42,7 +42,7 @@ export default class OrbGrid extends Component {
 
   render () {
     console.log('rendering grid')
-    if (this._grid) { this._grid.forceUpdate() }
+    // if (this._grid) { this._grid.forceUpdate() }
     const {columns, rows} = this.props
 
     this._columnHeaders = columns.headers

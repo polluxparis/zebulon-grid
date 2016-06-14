@@ -74,8 +74,10 @@ export default class FilterPanelComponent extends Component {
     // applyFilter={store.refresh(true, axetype)}
 
     const {store, field} = this.props
+    const filter = store.filters.get(field.name)
     const values = store.getFieldValues(field.name)
-    this.checkboxes = values.map(val => ({checked: true, label: val}))
+    const checkedValues = filter && filter.staticValue.length < values.length ? utils.arrayIntersect(values, filter.staticValue) : values
+    this.checkboxes = values.map(val => ({checked: checkedValues.indexOf(val) > -1, label: val}))
 
     const checkboxes =
       <VirtualizedCheckbox

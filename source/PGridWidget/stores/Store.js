@@ -1,55 +1,35 @@
 'use strict'
 
-import { observable, computed, asMap } from 'mobx'
+import { observable, computed, asMap, asFlat } from 'mobx'
 
-import { PubSub } from '../Pubsub'
 import { Axe, AxeType } from '../Axe'
 import { Config } from '../Config'
 import { ExpressionFilter } from '../Filtering'
 import * as utils from '../Utils'
 
-// pgrid events
-export const EVENT_UPDATED = 'pgrid:updated'
-export const EVENT_COLUMNS_UPDATED = 'pgrid:columns-updated'
-export const EVENT_ROWS_UPDATED = 'pgrid:rows-updated'
-export const EVENT_SORT_CHANGED = 'pgrid:sort-changed'
-export const EVENT_CONFIG_CHANGED = 'pgrid:config-changed'
-export const DATAFIELD_TOGGLED = 'pgrid:datafield-toggled'
-
 /**
- * Creates a new instance of pgrid
+ * Creates a new instance of store
  * @class
  * @memberOf orb
  * @param  {object} config - configuration object
  */
-export default class Store extends PubSub {
+export default class Store {
 
-  // filters is a Mobx Map ==> needs special functions (set, get and merge)
-  // the special functions are only used in this file
   @observable filters = asMap({})
-  // @observable rows = null
-  // @observable columns = null
+  @observable lastFilter = undefined
   @observable dataMatrix = {}
   @observable config = {}
-  // @computed filteredDataSource = asFlat([])
 
   constructor (config) {
-    // inherit PubSub
-    super()
     this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
     this.filters.merge(this.config.getPreFilters())
-    // this.filteredDataSource = this.config.dataSource
-
-    // this.dataSourceMap = this.buildDataSourceMap()
-
-    // this.rows = new Axe(this, AxeType.ROWS)
-    // this.columns = new Axe(this, AxeType.COLUMNS)
     this.dataMatrix = {}
 
-    // this.query = new Query(this)
+    // copy of filteredDataSource to allow to reuse the previous datasource and only
+    this._previousDataSource = this.filteredDataSource
 
-    // this.refresh()
+    // this.query = new Query(this)
   }
 
   // buildDataSourceMap(){
@@ -78,14 +58,15 @@ export default class Store extends PubSub {
     if (filterFields.length > 0) {
       var res = []
 
-      for (var i = 0; i < this.config.dataSource.length; i++) {
-        var row = this.config.dataSource[i]
+      var tempDatasource = this.config.dataSource
+      for (var i = 0; i < tempDatasource.length; i++) {
+        var row = tempDatasource[i]
         var exclude = false
         for (var fi = 0; fi < filterFields.length; fi++) {
           var fieldname = filterFields[fi]
-          var fieldFilter = this.filters.get(fieldname)
+          var filter = this.filters.get(fieldname)
 
-          if (fieldFilter && !fieldFilter.test(row[fieldname])) {
+          if (filter && !filter.test(row[fieldname])) {
             exclude = true
             break
           }
@@ -117,12 +98,11 @@ export default class Store extends PubSub {
       return
     }
 
-    this.publish(EVENT_SORT_CHANGED)
+    // this.publish(EVENT_SORT_CHANGED)
   }
 
   moveField (fieldname, oldaxetype, newaxetype, position) {
     this.config.moveField(fieldname, oldaxetype, newaxetype, position)
-    // this.refresh(false, axe)
   }
 
   toggleDataField (fieldname) {
@@ -136,23 +116,21 @@ export default class Store extends PubSub {
 
   applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
     this.filters.set(fieldname, new ExpressionFilter(operator, term, staticValue, excludeStatic))
-    // this.refresh()
   }
 
   refreshData (data) {
     this.config.dataSource = data
-    // this.refresh()
   }
 
   toggleSubtotals (axetype) {
     if (this.config.toggleSubtotals(axetype)) {
-      this.publish(EVENT_CONFIG_CHANGED)
+      // this.publish(EVENT_CONFIG_CHANGED)
     }
   }
 
   toggleGrandtotal (axetype) {
     if (this.config.toggleGrandtotal(axetype)) {
-      this.publish(EVENT_CONFIG_CHANGED)
+      // this.publish(EVENT_CONFIG_CHANGED)
     }
   }
 
@@ -239,38 +217,6 @@ export default class Store extends PubSub {
     return str
   }
 
-  // getChartData() {
-  //
-  //     var config = this.config
-  //
-  //
-  //     var hAxisLabel = this.getAxisLabel(config.columnFields)
-  //     var vAxisLabel = config.dataFields[0].aggregateFuncName + '(' + config.dataFields[0].caption + ')'
-  //     var legendsLabel = this.getAxisLabel(config.rowFields)
-  //
-  //     var rowLeafDimensions = this.rows.flattenValues()
-  //     var colLeafDimensions = this.columns.flattenValues()
-  //     var data = []
-  //
-  //     for(var ci=0; ci < colLeafDimensions.length; ci++) {
-  //         var cdim = colLeafDimensions[ci]
-  //         var currData = [cdim.name]
-  //         for(var rri=0; rri < rowLeafDimensions.length; rri++) {
-  //             currData.push(this.getData(config.dataFields[0].name, rowLeafDimensions[rri].dim, cdim.dim))
-  //         }
-  //         data.push(currData)
-  //     }
-  //
-  //     return {
-  //         title: vAxisLabel + ': ' + hAxisLabel + ' by ' + legendsLabel,
-  //         hAxisLabel: hAxisLabel,
-  //         vAxisLabel: vAxisLabel,
-  //         legendsLabel: legendsLabel,
-  //         colNames: rowLeafDimensions.map(function(d) { return d.name; }),
-  //         dataTable: data
-  //     }
-  // }
-
   computeValue (rowIndexes, colIndexes, origRowIndexes, fieldNames, aggregateFunc) {
     var res = {}
 
@@ -282,7 +228,7 @@ export default class Store extends PubSub {
       } else if (colIndexes === null) {
         intersection = rowIndexes
       } else {
-        intersection = utils.arrayIntersect([colIndexes, rowIndexes])
+        intersection = utils.arrayIntersect(colIndexes, rowIndexes)
       }
 
       var emptyIntersection = intersection && intersection.length === 0

@@ -262,19 +262,19 @@ export function getMousePageXY (e) {
 //   }
 //
 
-export function arrayIntersect (args) {
-  const n = args[0].length
-  const m = args[1].length
+export function arrayIntersect (arg0, arg1) {
+  const n = arg0.length
+  const m = arg1.length
   var i = 0
   var j = 0
   var res = []
   while (i < n && j < m) {
-    if (args[0][i] > args[1][j]) {
+    if (arg0[i] > arg1[j]) {
       j++
-    } else if (args[0][i] < args[1][j]) {
+    } else if (arg0[i] < arg1[j]) {
       i++
     } else {
-      res.push(args[0][i])
+      res.push(arg0[i])
       i++
       j++
     }
