@@ -1,6 +1,6 @@
 'use strict'
 
-import { observable } from 'mobx'
+import { observable, computed } from 'mobx'
 
 import * as utils from './Utils'
 import { AxeType } from './Axe'
@@ -100,25 +100,23 @@ function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
 // module.config(config) {
 export class Config {
 
-  // @observable dataSource = null
-  @observable allFields = []
-  @observable rowFields = []
-  @observable columnFields = []
-  @observable dataFields = []
-  @observable dataFieldsCount = 0
+  @observable allFields
+  @observable rowFields
+  @observable columnFields
+  @observable dataFields
 
   constructor (config) {
     this.config = config
-    this.dataSource = config.dataSource || []
+    // this.dataSource = config.dataSource
     this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true
     this.dataHeadersLocation = config.dataHeadersLocation === 'columns' ? 'columns' : 'rows'
     this.grandTotal = new GrandTotalConfig(config.grandTotal)
     this.subTotal = new SubTotalConfig(config.subTotal, true)
     this.width = config.width
     this.height = config.height
-    this.toolbar = config.toolbar
+    // this.toolbar = config.toolbar
     // this.theme = new ThemeManager()
-    this.chartMode = new ChartConfig(config.chartMode)
+    // this.chartMode = new ChartConfig(config.chartMode)
 
     this.rowSettings = new Field(config.rowSettings, false)
     this.columnSettings = new Field(config.columnSettings, false)
@@ -144,7 +142,6 @@ export class Config {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
       return createfield(this, AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
-    this.dataFieldsCount = this.dataFields ? this.dataFields.length : 0
 
     this.runtimeVisibility = {
       subtotals: {
@@ -152,6 +149,14 @@ export class Config {
         columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
       }
     }
+  }
+
+  @computed get dataFieldsCount () {
+    return this.dataFields ? this.dataFields.length : 0
+  }
+
+  @computed get dataSource () {
+    return this.config.dataSource || []
   }
 
   captionToName (caption) {
@@ -210,7 +215,7 @@ export class Config {
     return this.getfield(this.dataFields, fieldname)
   }
 
-  availablefields () {
+  @computed get availableFields () {
     const usedFields = [].concat(this.rowFields.peek(), this.columnFields.peek())
     return this.allFields
       // This is a hacky way to detect which fields are measures
@@ -219,20 +224,7 @@ export class Config {
       .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
   }
 
-  getDataSourceFieldCaptions () {
-    var row0
-    if (this.dataSource && (row0 = this.dataSource[0])) {
-      var fieldNames = utils.ownProperties(row0)
-      var headers = []
-      for (var i = 0; i < fieldNames.length; i++) {
-        headers.push(this.nameToCaption(fieldNames[i]))
-      }
-      return headers
-    }
-    return null
-  }
-
-  getPreFilters () {
+  @computed get preFilters () {
     var prefilters = {}
     if (this.config['preFilters']) {
       utils.forEach(
@@ -334,9 +326,6 @@ export class Config {
     } else {
       this.dataFields = newDataFields
     }
-
-    // update data fields count
-    this.dataFieldsCount = this.dataFields ? this.dataFields.length : 0
     return true
   }
 

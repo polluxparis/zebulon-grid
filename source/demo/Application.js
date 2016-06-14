@@ -1,7 +1,7 @@
 import PGridWidget from '../PGridWidget'
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 100
+  const nTiti = 10
   const nTutu = 2
   var arr = []
   var res = []
@@ -23,7 +23,7 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const data = getMockDataSource(1, 100)
+const data = getMockDataSource(1, 10)
 
 var config = {
   dataSource: data,

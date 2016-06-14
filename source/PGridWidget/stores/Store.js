@@ -1,8 +1,9 @@
 'use strict'
 
-import { observable, computed, asMap, asFlat } from 'mobx'
+import { observable, computed, action, asMap } from 'mobx'
 
 import { Axe, AxeType } from '../Axe'
+import AxeUi from '../AxeUi'
 import { Config } from '../Config'
 import { ExpressionFilter } from '../Filtering'
 import * as utils from '../Utils'
@@ -16,42 +17,16 @@ import * as utils from '../Utils'
 export default class Store {
 
   @observable filters = asMap({})
-  @observable lastFilter = undefined
-  @observable dataMatrix = {}
   @observable config = {}
 
   constructor (config) {
     this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
-    this.filters.merge(this.config.getPreFilters())
+    this.filters.merge(this.config.preFilters)
     this.dataMatrix = {}
-
-    // copy of filteredDataSource to allow to reuse the previous datasource and only
-    this._previousDataSource = this.filteredDataSource
 
     // this.query = new Query(this)
   }
-
-  // buildDataSourceMap(){
-  //   var dimMap = this.config.allFields.reduce(
-  //     (myMap, curr) => {
-  //       // This is a hacky way to detect which fields are measures in order to avoid mapping them
-  //       // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
-  //       if (curr.aggregateFuncName === null){
-  //         myMap[curr.name] = {} }
-  //         return myMap
-  //       },
-  //     {})
-  //   dimMap = this.config.dataSource.reduce(
-  //     (myMap, curr, currIndex) => {
-  //       Object.keys(myMap).forEach(dim => {
-  //         if (myMap[dim][curr[dim]] === undefined){myMap[dim][curr[dim]]=[]}
-  //         myMap[dim][curr[dim]].push(currIndex)
-  //       })
-  //       return myMap
-  //     }, dimMap)
-  //   return dimMap
-  //   }
 
   @computed get filteredDataSource () {
     var filterFields = this.filters.keys()
@@ -82,14 +57,52 @@ export default class Store {
   }
 
   @computed get rows () {
-    return new Axe(this, AxeType.ROWS)
+    return new Axe(AxeType.ROWS, this.config.rowFields, this)
   }
 
   @computed get columns () {
-    return new Axe(this, AxeType.COLUMNS)
+    return new Axe(AxeType.COLUMNS, this.config.columnFields, this)
   }
 
-  sort (axetype, field) {
+  @computed get rowsUi () {
+    return new AxeUi(this.rows)
+  }
+
+  @computed get columnsUi () {
+    return new AxeUi(this.columns)
+  }
+
+  @computed get layout () {
+    const rowHeaders = {
+      width: (this.rows.fields.length || 1) +
+        (this.config.dataHeadersLocation === 'rows' && this.config.dataFieldsCount > 1 ? 1 : 0),
+      height: this.rowsUi.headers.length
+    }
+    const columnHeaders = {
+      width: this.columnsUi.headers.length,
+      height: (this.columns.fields.length || 1) +
+        (this.config.dataHeadersLocation === 'columns' && this.config.dataFieldsCount > 1 ? 1 : 0)
+    }
+    const pivotTable = {
+      width: rowHeaders.width + columnHeaders.width,
+      height: rowHeaders.height + columnHeaders.height
+    }
+    return {columnHeaders, rowHeaders, pivotTable}
+  }
+
+  @computed get sizes () {
+    const cell = {
+      height: 30,
+      width: 100
+    }
+    const grid = {
+      width: this.config.width,
+      height: this.config.height
+    }
+    return {cell, grid}
+  }
+
+  @action sort (axetype, field) {
     if (axetype === AxeType.ROWS) {
       this.rows.sort(field)
     } else if (axetype === AxeType.COLUMNS) {
@@ -101,11 +114,11 @@ export default class Store {
     // this.publish(EVENT_SORT_CHANGED)
   }
 
-  moveField (fieldname, oldaxetype, newaxetype, position) {
+  @action moveField (fieldname, oldaxetype, newaxetype, position) {
     this.config.moveField(fieldname, oldaxetype, newaxetype, position)
   }
 
-  toggleDataField (fieldname) {
+  @action toggleDataField (fieldname) {
     if (this.config.toggleDataField(fieldname)) {
       // this.refreshDataFields()
       return true
@@ -114,7 +127,7 @@ export default class Store {
     }
   }
 
-  applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
+  @action applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
     this.filters.set(fieldname, new ExpressionFilter(operator, term, staticValue, excludeStatic))
   }
 

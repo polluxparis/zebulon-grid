@@ -17,7 +17,7 @@ export default class UpperButtonsComponent extends Component {
     const dropTargetContainerStyle = {display: 'flex', alignItems: 'center'}
 
     if (config.canMoveFields) {
-      const fieldsButtons = config.availablefields().map((field, index) =>
+      const fieldsButtons = config.availableFields.map((field, index) =>
         <FieldButton
           key={field.name}
           field={field}

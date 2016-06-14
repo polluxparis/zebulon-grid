@@ -1,6 +1,6 @@
 'use strict'
 
-import { observable } from 'mobx'
+import { computed } from 'mobx'
 
 import * as utils from './Utils'
 import Dimension from './Dimension'
@@ -29,19 +29,19 @@ export class Axe {
    * Number of dimensions in this axe
    * @type {Number}
    */
-  dimensionsCount = null
+  // dimensionsCount = null
   /**
    * Root dimension
    * @type {orb.dimension}
    */
-  @observable root = null
+  // @observable root
 /**
  * Dimensions dictionary indexed by depth
  * @type {Object} Dictionary of (depth, arrays)
  */
 // this.dimensionsByDepth = null
 
-  constructor (store, type) {
+  constructor (type, fields, store) {
     /**
      * Parent pivot grid
      * @type {orb.store}
@@ -56,27 +56,15 @@ export class Axe {
      * This axe dimension fields
      * @type {Array}
      */
-    this.fields = []
-    switch (type) {
-      case AxeType.COLUMNS:
-        this.fields = this.store.config.columnFields
-        break
-      case AxeType.ROWS:
-        this.fields = this.store.config.rowFields
-        break
-      case AxeType.DATA:
-        this.fields = this.store.config.dataFields
-        break
-      default:
-        this.fields = []
-    }
-
-    this.update()
+    this.fields = fields
   }
 
-  update () {
-    this.dimensionsCount = this.fields.length
-    this.root = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false)
+  @computed get dimensionsCount () {
+    return this.fields.length
+  }
+
+  @computed get root () {
+    const dim = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false)
 
     // this.dimensionsByDepth = {}
     // for (let depth = 1; depth <= this.dimensionsCount; depth++) {
@@ -84,18 +72,19 @@ export class Axe {
     // }
 
     // fill data
-    this.fill()
+    this.fill(dim, this.store.filteredDataSource)
 
     // initial sort
     for (let findex = 0; findex < this.fields.length; findex++) {
       var ffield = this.fields[findex]
       if (ffield.sort.order === 'asc' || ffield.sort.order === 'desc') {
-        this.sort(ffield, true)
+        this.sort(dim, ffield, true)
       }
     }
+    return dim
   }
 
-  sort (field, donottoggle) {
+  sort (root, field, donottoggle) {
     if (field != null) {
       if (donottoggle !== true) {
         if (field.sort.order !== 'asc') {
@@ -107,7 +96,7 @@ export class Axe {
 
       // var depth = this.dimensionsCount - this.getfieldindex(field)
       // var parents = depth === this.dimensionsCount ? [this.root] : this.dimensionsByDepth[depth + 1]
-      var parents = [this.root]
+      var parents = [root]
       for (let i = 0; i < parents.length; i++) {
         if (field.sort.customfunc != null) {
           parents[i].values.sort(field.sort.customfunc)
@@ -156,13 +145,12 @@ export class Axe {
    *   - filling the subdimvals array of each dimension of the axe
    *   - filling the rowIndexes array of each dimension of the axe (used for calculating aggregations)
    */
-  fill () {
-    if (this.store.filteredDataSource != null && this.dimensionsCount > 0) {
-      var datasource = this.store.filteredDataSource
-      if (datasource != null && utils.isArray(datasource) && datasource.length > 0) {
-        for (let rowIndex = 0, dataLength = datasource.length; rowIndex < dataLength; rowIndex++) {
-          var row = datasource[rowIndex]
-          var dim = this.root
+  fill (root, dataSource) {
+    if (dataSource != null && this.dimensionsCount > 0) {
+      if (dataSource != null && utils.isArray(dataSource) && dataSource.length > 0) {
+        for (let rowIndex = 0, dataLength = dataSource.length; rowIndex < dataLength; rowIndex++) {
+          var row = dataSource[rowIndex]
+          var dim = root
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
             var depth = this.dimensionsCount - findex
             var subfield = this.fields[findex]
@@ -183,6 +171,7 @@ export class Axe {
           }
         }
       }
+      return root
     }
   // var dim = this.root
   // for (let findex = 0; findex < this.dimensionsCount; findex++) {

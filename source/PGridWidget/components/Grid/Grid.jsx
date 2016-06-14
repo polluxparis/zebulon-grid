@@ -11,17 +11,10 @@ export default class OrbGrid extends Component {
 
   constructor (props) {
     super(props)
-    this.initLayoutInfos(props.layout, props.sizes)
-
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this)
     this.dataCellRenderer = this.dataCellRenderer.bind(this)
     this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this)
     this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this)
-  }
-
-  componentWillUpdate (nextProps, nextState) {
-    const {layout, sizes} = nextProps
-    this.initLayoutInfos(layout, sizes)
   }
 
   initLayoutInfos (layout, sizes) {
@@ -40,13 +33,19 @@ export default class OrbGrid extends Component {
     this._height = Math.min(sizes.grid.height, this._columnHeadersHeight + this._rowVerticalCount * this._cellHeight)
   }
 
+  componentWillUpdate (nextProps, nextState) {
+    this._grid.forceUpdate()
+  }
+
   render () {
     console.log('rendering grid')
-    // if (this._grid) { this._grid.forceUpdate() }
-    const {columns, rows} = this.props
+    const {store} = this.props
+    const {rowsUi, columnsUi, layout, sizes} = store
 
-    this._columnHeaders = columns.headers
-    this._rowHeaders = rows.headers
+    this.initLayoutInfos(layout, sizes)
+
+    this._columnHeaders = columnsUi.headers
+    this._rowHeaders = rowsUi.headers
 
     return (
       <Grid
@@ -177,10 +176,11 @@ export default class OrbGrid extends Component {
   }
 
   dataCellRenderer ({columnIndex, rowIndex, isScrolling}) {
-    const {rows, columns, store} = this.props
-    const rowHeaderRow = rows.headers[rowIndex]
+    const {store} = this.props
+    const {rowsUi, columnsUi} = store
+    const rowHeaderRow = rowsUi.headers[rowIndex]
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1]
-    const columnHeaderColumn = columns.headers[columnIndex]
+    const columnHeaderColumn = columnsUi.headers[columnIndex]
     const columnHeader = columnHeaderColumn[columnHeaderColumn.length - 1]
     const cell = new DataCell(
       store,
@@ -196,8 +196,7 @@ export default class OrbGrid extends Component {
   }
 
   columnHeaderRenderer ({columnIndex, rowIndex}) {
-    const {columns} = this.props
-    const cell = columns.headers[rowIndex][columnIndex]
+    const cell = this.props.store.columnsUi.headers[rowIndex][columnIndex]
     if (!cell) {
       return null
     } else {
@@ -206,8 +205,7 @@ export default class OrbGrid extends Component {
   }
 
   rowHeaderRenderer ({columnIndex, rowIndex}) {
-    const {rows} = this.props
-    const cell = rows.headers[rowIndex][columnIndex]
+    const cell = this.props.store.rowsUi.headers[rowIndex][columnIndex]
     if (!cell) {
       return null
     } else {

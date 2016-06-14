@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import MobxDevTools from 'mobx-react-devtools'
 import { observer } from 'mobx-react'
+import MobxDevTools from 'mobx-react-devtools'
+import {useStrict} from 'mobx'
 
 // CSS files
 import 'react-virtualized/styles.css'
@@ -12,8 +13,9 @@ import Grid from '../Grid'
 import Store from '../../stores/Store'
 
 import DragManager from '../../DragManager'
-import AxeUi from '../../AxeUi'
 import * as domUtils from '../../Utils.dom'
+
+useStrict(false)
 
 let pivotId = 1
 // const themeChangeCallbacks = {}
@@ -89,46 +91,46 @@ export default class Main extends Component {
   //   return shallowCompare(this, nextProps, nextState)
   // }
 
-  buildUi () {
-    const rows = new AxeUi(this.store.rows)
-    const columns = new AxeUi(this.store.columns)
-    const rowHeaders = {
-      width: (this.store.rows.fields.length || 1) +
-        (this.store.config.dataHeadersLocation === 'rows' && this.store.config.dataFieldsCount > 1 ? 1 : 0),
-      height: rows.headers.length
-    }
-    const columnHeaders = {
-      width: columns.headers.length,
-      height: (this.store.columns.fields.length || 1) +
-        (this.store.config.dataHeadersLocation === 'columns' && this.store.config.dataFieldsCount > 1 ? 1 : 0)
-    }
-    const pivotTable = {
-      width: rowHeaders.width + columnHeaders.width,
-      height: rowHeaders.height + columnHeaders.height
-    }
-    const layout = {columnHeaders, rowHeaders, pivotTable}
-    const cell = {
-      height: 30,
-      width: 100
-    }
-    const grid = {
-      width: this.store.config.width,
-      height: this.store.config.height
-    }
-    const sizes = {cell, grid}
-    return {rows, columns, layout, sizes}
-  }
+  // buildUi () {
+    // const rows = new AxeUi(this.store.rows)
+    // const columns = new AxeUi(this.store.columns)
+    // const rowHeaders = {
+    //   width: (this.store.rows.fields.length || 1) +
+    //     (this.store.config.dataHeadersLocation === 'rows' && this.store.config.dataFieldsCount > 1 ? 1 : 0),
+    //   height: rows.headers.length
+    // }
+    // const columnHeaders = {
+    //   width: columns.headers.length,
+    //   height: (this.store.columns.fields.length || 1) +
+    //     (this.store.config.dataHeadersLocation === 'columns' && this.store.config.dataFieldsCount > 1 ? 1 : 0)
+    // }
+    // const pivotTable = {
+    //   width: rowHeaders.width + columnHeaders.width,
+    //   height: rowHeaders.height + columnHeaders.height
+    // }
+    // const layout = {columnHeaders, rowHeaders, pivotTable}
+    // const cell = {
+    //   height: 30,
+    //   width: 100
+    // }
+    // const grid = {
+    //   width: this.store.config.width,
+    //   height: this.store.config.height
+    // }
+    // const sizes = {cell, grid}
+    // return {rows, columns, layout, sizes}
+  // }
 
   render () {
-    const {columns, rows, layout, sizes} = this.buildUi()
-    console.log(this.store, columns, rows, layout, sizes)
+    // const {columns, rows, layout, sizes} = this.buildUi()
+    console.log(this.store)
     return (
       <div>
         <MobxDevTools />
         <div className={'orb'}>
           <UpperButtons store={this.store} />
-          <div style={{width: layout.pivotTable.width, height: layout.pivotTable.height}}>
-            <Grid columns={columns} rows={rows} layout={layout} sizes={sizes} store={this.store} />
+          <div style={{width: this.store.layout.pivotTable.width, height: this.store.layout.pivotTable.height}}>
+            <Grid store={this.store} />
           </div>
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
         </div>
