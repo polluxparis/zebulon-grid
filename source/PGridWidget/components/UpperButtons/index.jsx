@@ -32,7 +32,7 @@ export default class UpperButtonsComponent extends Component {
             Fields
           </div>
           <div style={{padding: '7px 4px'}} className='av-flds'>
-            <DropTarget buttons={fieldsButtons} axetype={null} />
+            <DropTarget buttons={fieldsButtons} axetype={AxeType.FIELDS} />
           </div>
         </div>
     } else {

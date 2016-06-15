@@ -24,10 +24,10 @@ export default class FilterPanelComponent extends Component {
     container.parentNode.removeChild(container)
   }
 
-  onFilter (operator, term, staticValue, excludeStatic) {
+  onFilter (all, operator, term, staticValue, excludeStatic) {
     console.log('onFilter')
     const {store, field} = this.props
-    store.applyFilter(field.name, operator, term, staticValue, excludeStatic)
+    store.applyFilter(field.name, all, operator, term, staticValue, excludeStatic)
     this.destroy()
   }
 
@@ -69,22 +69,19 @@ export default class FilterPanelComponent extends Component {
   }
 
   render () {
-    // previousFilter={store.getFieldFilter(field)}
-    // values={store.getFieldValues(field)}
-    // applyFilter={store.refresh(true, axetype)}
-
     const {store, field} = this.props
     const filter = store.filters.get(field.name)
     const values = store.getFieldValues(field.name)
-    const checkedValues = filter && filter.staticValue.length < values.length ? utils.arrayIntersect(values, filter.staticValue) : values
+    const checkedValues = filter && filter.staticValue.length < values.length ? utils.twoArraysIntersect(values, filter.staticValue) : values
     this.checkboxes = values.map(val => ({checked: checkedValues.indexOf(val) > -1, label: val}))
 
     const checkboxes =
       <VirtualizedCheckbox
         options={this.checkboxes}
-        onOk={(result) => this.onFilter('', '', result, false)}
+        onOk={(all, result) => this.onFilter(all, '', '', result, false)}
         onCancel={() => this.destroy()}
-        maxHeight={this.startingHeight} />
+        maxHeight={this.startingHeight}
+      />
 
     const divStyle = {
       backgroundColor: 'white',

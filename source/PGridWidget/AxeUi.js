@@ -40,7 +40,7 @@ export default class AxeUi {
 
         if (this.axe.store.config.grandTotal.rowsvisible) {
           var lastrow = headers[headers.length - 1]
-          grandtotalHeader = new Header(AxeType.ROWS, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount())
+          grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount())
           if (lastrow.length === 0) {
             lastrow.push(grandtotalHeader)
           } else {
@@ -50,7 +50,7 @@ export default class AxeUi {
       }
 
       if (headers.length === 0) {
-        headers.push([grandtotalHeader = new Header(AxeType.ROWS, HeaderType.INNER, this.axe.root, null, this.dataFieldsCount())])
+        headers.push([grandtotalHeader = new Header(this.axe.type, HeaderType.INNER, this.axe.root, null, this.dataFieldsCount())])
       }
 
       if (grandtotalHeader) {
@@ -105,7 +105,7 @@ export default class AxeUi {
         lastInfosArray.push(newHeader)
 
         if (!subdim.isLeaf) {
-          this.getUiInfo(infos, subdim)
+          this.getUiInfo(infos, subdim, axetype)
           if (subdim.field.subTotal.visible) {
             infos.push([subTotalHeader])
 

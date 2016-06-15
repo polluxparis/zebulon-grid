@@ -24,36 +24,6 @@ export default class Store {
     this.config = new Config(config)
     this.filters.merge(this.config.preFilters)
     this.dataMatrix = {}
-
-    // this.query = new Query(this)
-  }
-
-  @computed get filteredDataSource () {
-    var filterFields = this.filters.keys()
-    if (filterFields.length > 0) {
-      var res = []
-
-      var tempDatasource = this.config.dataSource
-      for (var i = 0; i < tempDatasource.length; i++) {
-        var row = tempDatasource[i]
-        var exclude = false
-        for (var fi = 0; fi < filterFields.length; fi++) {
-          var fieldname = filterFields[fi]
-          var filter = this.filters.get(fieldname)
-
-          if (filter && !filter.test(row[fieldname])) {
-            exclude = true
-            break
-          }
-        }
-        if (!exclude) {
-          res.push(row)
-        }
-      }
-      return res
-    } else {
-      return this.config.dataSource
-    }
   }
 
   @computed get rows () {
@@ -110,8 +80,6 @@ export default class Store {
     } else {
       return
     }
-
-    // this.publish(EVENT_SORT_CHANGED)
   }
 
   @action moveField (fieldname, oldaxetype, newaxetype, position) {
@@ -120,30 +88,31 @@ export default class Store {
 
   @action toggleDataField (fieldname) {
     if (this.config.toggleDataField(fieldname)) {
-      // this.refreshDataFields()
       return true
     } else {
       return false
     }
   }
 
-  @action applyFilter (fieldname, operator, term, staticValue, excludeStatic) {
-    this.filters.set(fieldname, new ExpressionFilter(operator, term, staticValue, excludeStatic))
-  }
-
-  refreshData (data) {
-    this.config.dataSource = data
-  }
-
-  toggleSubtotals (axetype) {
-    if (this.config.toggleSubtotals(axetype)) {
-      // this.publish(EVENT_CONFIG_CHANGED)
+  @action applyFilter (fieldname, all, operator, term, staticValue, excludeStatic) {
+    if (all && this.filters.has(fieldname)) {
+      this.filters.delete(fieldname)
+    } else if (!all) {
+      this.filters.set(fieldname, new ExpressionFilter(fieldname, operator, term, staticValue, excludeStatic, this.config.dataSource))
     }
   }
 
-  toggleGrandtotal (axetype) {
+  @action refreshData (data) {
+    this.config.dataSource = data
+  }
+
+  @action toggleSubtotals (axetype) {
+    if (this.config.toggleSubtotals(axetype)) {
+    }
+  }
+
+  @action toggleGrandtotal (axetype) {
     if (this.config.toggleGrandtotal(axetype)) {
-      // this.publish(EVENT_CONFIG_CHANGED)
     }
   }
 
@@ -219,18 +188,6 @@ export default class Store {
   }
 
   calcAggregation (rowIndexes, colIndexes, fieldNames, aggregateFunc) {
-    return this.computeValue(rowIndexes, colIndexes, rowIndexes, fieldNames, aggregateFunc)
-  }
-
-  getAxisLabel (axisFields) {
-    var str = ''
-    for (let ti = 0; ti < axisFields.length; ti++) {
-      str += (ti > 0 ? ' - ' : '') + axisFields[ti].caption
-    }
-    return str
-  }
-
-  computeValue (rowIndexes, colIndexes, origRowIndexes, fieldNames, aggregateFunc) {
     var res = {}
 
     if (this.config.dataFieldsCount > 0) {
@@ -241,11 +198,11 @@ export default class Store {
       } else if (colIndexes === null) {
         intersection = rowIndexes
       } else {
-        intersection = utils.arrayIntersect(colIndexes, rowIndexes)
+        intersection = utils.twoArraysIntersect(colIndexes, rowIndexes)
       }
 
       var emptyIntersection = intersection && intersection.length === 0
-      var datasource = this.filteredDataSource
+      var datasource = this.config.dataSource
       var datafield
       var datafields = []
 
@@ -282,99 +239,11 @@ export default class Store {
         if (emptyIntersection) {
           res[datafield.field.name] = null
         } else {
-          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', datasource, origRowIndexes || rowIndexes, colIndexes)
+          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', datasource, rowIndexes, colIndexes)
         }
       }
     }
 
     return res
-  }
-
-  computeRowValues (rowDim) {
-    if (rowDim) {
-      var data = {}
-      var rid = 'r' + rowDim.id
-
-      // set cached row indexes for current row dimension
-      if (this._iCache[rid] === undefined) {
-        this._iCache[rid] = rowDim.isRoot ? null : (this._iCache[rowDim.parent.id] || rowDim.getRowIndexes())
-      }
-
-      // calc grand-total cell
-      data[this.columns.root.id] = this.computeValue(rowDim.isRoot ? null : this._iCache[rid].slice(0), null)
-
-      if (this.columns.dimensionsCount > 0) {
-        var p = 0
-        var parents = [this.columns.root]
-
-        while (p < parents.length) {
-          var parent = parents[p]
-          var rowindexes = rowDim.isRoot
-          ? null
-          : (parent.isRoot
-             ? this._iCache[rid].slice(0)
-              : this._iCache['c' + parent.id].slice(0))
-
-          for (let i = 0; i < parent.values.length; i++) {
-            var subdim = parent.subdimvals[parent.values[i]]
-            var cid = 'c' + subdim.id
-
-            // set cached row indexes for this column leaf dimension
-            if (this._iCache[cid] === undefined) {
-              this._iCache[cid] = this._iCache[cid] || subdim.getRowIndexes().slice(0)
-            }
-
-            data[subdim.id] = this.computeValue(rowindexes, this._iCache[cid], rowDim.isRoot ? null : rowDim.getRowIndexes())
-
-            if (!subdim.isLeaf) {
-              parents.push(subdim)
-              if (rowindexes) {
-                this._iCache[cid] = []
-                for (let ur = 0; ur < rowindexes.length; ur++) {
-                  var vr = rowindexes[ur]
-                  if (vr !== -1 && vr < 0) {
-                    this._iCache[cid].push(0 - (vr + 2))
-                    rowindexes[ur] = -1
-                  }
-                }
-              }
-            }
-          }
-          this._iCache['c' + parent.id] = undefined
-          p++
-        }
-      }
-
-      return data
-    }
-  }
-
-  computeValues () {
-    this.dataMatrix = {}
-    this._iCache = {}
-
-    // calc grand total row
-    // this.dataMatrix[this.rows.root.id] = this.computeRowValues(this.rows.root)
-
-    if (this.rows.dimensionsCount > 0) {
-      var parents = [this.rows.root]
-      var p = 0
-      var parent
-      while (p < parents.length) {
-        parent = parents[p]
-        // calc children rows
-        for (let i = 0; i < parent.values.length; i++) {
-          var subdim = parent.subdimvals[parent.values[i]]
-          // calc child row
-          this.dataMatrix[subdim.id] = this.computeRowValues(subdim)
-          // if row is not a leaf, add it to parents array to process ijs children
-          if (!subdim.isLeaf) {
-            parents.push(subdim)
-          }
-        }
-        // next parent
-        p++
-      }
-    }
   }
 }

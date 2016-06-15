@@ -155,9 +155,11 @@ export default class FieldButton extends Component {
     utils.stopPropagation(e)
     utils.preventDefault(e)
   }
+
   updateClasses () {
     ReactDOM.findDOMNode(this).className = this.props.store.config.theme.getButtonClasses().pivotButton
   }
+
   render () {
     const {field, store} = this.props
     const divstyle = {

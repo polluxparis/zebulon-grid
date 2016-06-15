@@ -13,7 +13,8 @@ import Dimension from './Dimension'
 export const AxeType = {
   COLUMNS: 1,
   ROWS: 2,
-  DATA: 3
+  DATA: 3,
+  FIELDS: 4
 }
 
 /**
@@ -59,6 +60,10 @@ export class Axe {
     this.fields = fields
   }
 
+  @computed get filters () {
+    return this.fields.reduce((curr, res) => { res[curr.name] = this.store.filters.get(curr.name) }, {})
+  }
+
   @computed get dimensionsCount () {
     return this.fields.length
   }
@@ -72,7 +77,7 @@ export class Axe {
     // }
 
     // fill data
-    this.fill(dim, this.store.filteredDataSource)
+    this.fill(dim, this.store.config.dataSource)
 
     // initial sort
     for (let findex = 0; findex < this.fields.length; findex++) {
@@ -149,25 +154,28 @@ export class Axe {
     if (dataSource != null && this.dimensionsCount > 0) {
       if (dataSource != null && utils.isArray(dataSource) && dataSource.length > 0) {
         for (let rowIndex = 0, dataLength = dataSource.length; rowIndex < dataLength; rowIndex++) {
-          var row = dataSource[rowIndex]
+          const row = dataSource[rowIndex]
           var dim = root
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
-            var depth = this.dimensionsCount - findex
-            var subfield = this.fields[findex]
-            var subvalue = row[subfield.name]
-            var subdimvals = dim.subdimvals
-
-            if (subdimvals[subvalue] !== undefined) {
-              dim = subdimvals[subvalue]
+            const depth = this.dimensionsCount - findex
+            const field = this.fields[findex]
+            const filter = this.store.filters.has(field.name) ? this.store.filters.get(field.name) : undefined
+            const subvalue = row[field.name]
+            const subdimvals = dim.subdimvals
+            if (filter && !filter.test(subvalue)) {
+              break
             } else {
-              dim.values.push(subvalue)
-              dim = new Dimension(++this.dimid, dim, subvalue, subfield, depth, false, findex === this.dimensionsCount - 1)
-              subdimvals[subvalue] = dim
-              dim.rowIndexes = []
-            // this.dimensionsByDepth[depth].push(dim)
+              if (subdimvals[subvalue] !== undefined) {
+                dim = subdimvals[subvalue]
+              } else {
+                dim.values.push(subvalue)
+                dim = new Dimension(++this.dimid, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
+                subdimvals[subvalue] = dim
+                dim.rowIndexes = []
+                // this.dimensionsByDepth[depth].push(dim)
+              }
+              dim.rowIndexes.push(rowIndex)
             }
-
-            dim.rowIndexes.push(rowIndex)
           }
         }
       }
@@ -176,10 +184,10 @@ export class Axe {
   // var dim = this.root
   // for (let findex = 0; findex < this.dimensionsCount; findex++) {
   //   var depth = this.dimensionsCount - findex
-  //   var subfield = this.fields[findex]
-  //   var dimMap = this.store.dataSourceMap[subfield.name]
+  //   var field = this.fields[findex]
+  //   var dimMap = this.store.dataSourceMap[field.name]
   //   Object.keys(dimMap).forEach(k => {
-  //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, subfield, depth, false, findex == this.dimensionsCount - 1))
+  //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, field, depth, false, findex == this.dimensionsCount - 1))
   //     dim.rowIndexes = dimMap[k]
   //   })
   // }

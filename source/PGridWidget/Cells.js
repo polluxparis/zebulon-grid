@@ -156,7 +156,7 @@ export class Header extends CellBase {
     }
 
     const options = {
-      axetype: axetype,
+      axetype,
       type: headerType,
       template: isRowsAxe ? 'cell-template-row-header' : 'cell-template-column-header',
       value: value,
@@ -165,6 +165,7 @@ export class Header extends CellBase {
 
     super(options)
 
+    this.isRowsAxe = isRowsAxe
     this.hspan = hspan != null ? () => hspan : this.calcSpan
     this.vspan = vspan != null ? () => vspan : this.calcSpan
     this.isvisible = this.isParentExpanded

@@ -107,7 +107,7 @@ export class Config {
 
   constructor (config) {
     this.config = config
-    // this.dataSource = config.dataSource
+    this.dataSource = config.dataSource
     this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true
     this.dataHeadersLocation = config.dataHeadersLocation === 'columns' ? 'columns' : 'rows'
     this.grandTotal = new GrandTotalConfig(config.grandTotal)
@@ -155,8 +155,33 @@ export class Config {
     return this.dataFields ? this.dataFields.length : 0
   }
 
-  @computed get dataSource () {
-    return this.config.dataSource || []
+  get availableFields () {
+    const usedFields = [].concat(this.rowFields.peek(), this.columnFields.peek())
+    return this.allFields
+      // This is a hacky way to detect which fields are measures
+      // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
+      .filter(field => field.aggregateFuncName === null)
+      .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
+  }
+
+  @computed get preFilters () {
+    var prefilters = {}
+    if (this.config['preFilters']) {
+      utils.forEach(
+        utils.ownProperties(this.config['preFilters']),
+        function (filteredField) {
+          var prefilterConfig = this.config.preFilters[filteredField]
+          if (utils.isArray(prefilterConfig)) {
+            prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(null, null, prefilterConfig, false)
+          } else {
+            var opname = utils.ownProperties(prefilterConfig)[0]
+            if (opname) {
+              prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(opname, prefilterConfig[opname])
+            }
+          }
+        })
+    }
+    return prefilters
   }
 
   captionToName (caption) {
@@ -215,35 +240,6 @@ export class Config {
     return this.getfield(this.dataFields, fieldname)
   }
 
-  @computed get availableFields () {
-    const usedFields = [].concat(this.rowFields.peek(), this.columnFields.peek())
-    return this.allFields
-      // This is a hacky way to detect which fields are measures
-      // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
-      .filter(field => field.aggregateFuncName === null)
-      .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
-  }
-
-  @computed get preFilters () {
-    var prefilters = {}
-    if (this.config['preFilters']) {
-      utils.forEach(
-        utils.ownProperties(this.config['preFilters']),
-        function (filteredField) {
-          var prefilterConfig = this.config.preFilters[filteredField]
-          if (utils.isArray(prefilterConfig)) {
-            prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(null, null, prefilterConfig, false)
-          } else {
-            var opname = utils.ownProperties(prefilterConfig)[0]
-            if (opname) {
-              prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(opname, prefilterConfig[opname])
-            }
-          }
-        })
-    }
-    return prefilters
-  }
-
   moveField (fieldname, oldaxetype, newaxetype, position) {
     var oldaxe, oldposition
     var newaxe
@@ -258,6 +254,9 @@ export class Config {
         case AxeType.COLUMNS:
           oldaxe = this.columnFields
           break
+        case AxeType.FIELDS:
+          oldaxe = this.availableFields
+          break
         default:
           break
       }
@@ -270,6 +269,10 @@ export class Config {
         case AxeType.COLUMNS:
           newaxe = this.columnFields
           fieldConfig = this.getColumnField(fieldname)
+          break
+        case AxeType.FIELDS:
+          newaxe = this.availableFields
+          fieldConfig = this.getField(fieldname)
           break
         default:
           break

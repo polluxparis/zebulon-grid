@@ -1,5 +1,7 @@
 'use strict'
 
+import { computed } from 'mobx'
+
 import * as utils from './Utils'
 
 export const ALL = '#All#'
@@ -8,7 +10,8 @@ export const BLANK = '#Blank#"'
 
 export class ExpressionFilter {
 
-  constructor (operator, term, staticValue, excludeStatic) {
+  constructor (fieldname, operator, term, staticValue, excludeStatic, dataSource) {
+    this.fieldname = fieldname
     this.regexpMode = false
     this.operator = Operators.get(operator)
     this.term = term || null
@@ -23,6 +26,18 @@ export class ExpressionFilter {
 
     this.staticValue = staticValue
     this.excludeStatic = excludeStatic
+    this.dataSource = this.dataSource
+  }
+
+  @computed get filteredIds () {
+    var res = []
+    for (var i = 0; i < this.dataSource.length; i++) {
+      var row = this.dataSource[i]
+      if (this.test(row[this.fieldname])) {
+        res.push(i)
+      }
+    }
+    return res
   }
 
   test (value) {

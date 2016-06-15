@@ -262,7 +262,7 @@ export function getMousePageXY (e) {
 //   }
 //
 
-export function arrayIntersect (arg0, arg1) {
+export function twoArraysIntersect (arg0, arg1) {
   const n = arg0.length
   const m = arg1.length
   var i = 0
@@ -280,4 +280,38 @@ export function arrayIntersect (arg0, arg1) {
     }
   }
   return res
+}
+
+export function arraysIntersect () {
+  var n, len
+  var ret = []
+  var obj = {}
+  var nOthers = arguments.length - 1
+  var nShortest = arguments[0].length
+  var shortest = 0
+  for (let i = 0; i <= nOthers; i++) {
+    n = arguments[i].length
+    if (n < nShortest) {
+      shortest = i
+      nShortest = n
+    }
+  }
+  for (let i = 0; i <= nOthers; i++) {
+    n = (i === shortest) ? 0 : (i || shortest) // Read the shortest array first. Read the first array instead of the shortest
+    len = arguments[n].length
+    for (let j = 0; j < len; j++) {
+      var elem = arguments[n][j]
+      if (obj[elem] === i - 1) {
+        if (i === nOthers) {
+          ret.push(elem)
+          obj[elem] = 0
+        } else {
+          obj[elem] = i
+        }
+      } else if (i === 0) {
+        obj[elem] = 0
+      }
+    }
+  }
+  return ret
 }
