@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { Grid } from 'react-virtualized'
-import { observer } from 'mobx-react'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
-
 
 export default class OrbGrid extends Component {
 

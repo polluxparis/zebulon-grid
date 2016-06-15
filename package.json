@@ -68,8 +68,6 @@
     ]
   },
   "dependencies": {
-    "mobx": "^2.3.0",
-    "mobx-react": "^3.1.0",
     "react": "~15.1.0",
     "react-addons-shallow-compare": "^15.1.0",
     "react-dom": "~15.1.0",
@@ -115,7 +113,6 @@
     "karma-sourcemap-loader": "^0.3.6",
     "karma-spec-reporter": "0.0.23",
     "karma-webpack": "^1.7.0",
-    "mobx-react-devtools": "^4.2.0",
     "phantomjs": "^1.9.19",
     "postcss": "^5.0.14",
     "postcss-cli": "^2.3.3",
