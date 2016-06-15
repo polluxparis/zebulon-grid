@@ -1,7 +1,5 @@
 'use strict'
 
-import { computed } from 'mobx'
-
 import * as utils from './Utils'
 import Dimension from './Dimension'
 
@@ -35,7 +33,7 @@ export class Axe {
    * Root dimension
    * @type {orb.dimension}
    */
-  // @observable root
+  // root
 /**
  * Dimensions dictionary indexed by depth
  * @type {Object} Dictionary of (depth, arrays)
@@ -58,17 +56,22 @@ export class Axe {
      * @type {Array}
      */
     this.fields = fields
+    this.filters = this.getfilters()
+    this.dimensionsCount = this.getdimensionsCount()
+    this.root = this.getroot()
   }
 
-  @computed get filters () {
-    return this.fields.reduce((curr, res) => { res[curr.name] = this.store.filters.get(curr.name) }, {})
+  getfilters () {
+    return this.fields
+      .filter(field => this.store.filters.has(field.name))
+      .reduce((curr, res) => { res[curr.name] = this.store.filters.get(curr.name) }, {})
   }
 
-  @computed get dimensionsCount () {
+  getdimensionsCount () {
     return this.fields.length
   }
 
-  @computed get root () {
+  getroot () {
     const dim = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false)
 
     // this.dimensionsByDepth = {}
