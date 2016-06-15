@@ -26,8 +26,8 @@ export default class FilterPanelComponent extends Component {
 
   onFilter (all, operator, term, staticValue, excludeStatic) {
     console.log('onFilter')
-    const {store, field} = this.props
-    store.applyFilter(field.name, all, operator, term, staticValue, excludeStatic)
+    const {store, field, axetype} = this.props
+    store.applyFilter(field.name, axetype, all, operator, term, staticValue, excludeStatic)
     this.destroy()
   }
 
@@ -46,17 +46,11 @@ export default class FilterPanelComponent extends Component {
 
   componentWillMount () {
     utils.addEventListener(document, 'mousedown', this.onMouseDown)
-    // utils.addEventListener(document, 'wheel', this.onMouseWheel)
     utils.addEventListener(window, 'resize', this.destroy)
-  }
-
-  componentDidMount () {
-    // this.filterManager.init(ReactDOM.findDOMNode(this))
   }
 
   componentWillUnmount () {
     utils.removeEventListener(document, 'mousedown', this.onMouseDown)
-    // utils.removeEventListener(document, 'wheel', this.onMouseWheel)
     utils.removeEventListener(window, 'resize', this.destroy)
   }
 

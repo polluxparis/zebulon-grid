@@ -19,7 +19,7 @@ export default class UpperButtonsComponent extends Component {
         <FieldButton
           key={field.name}
           field={field}
-          axetype={null}
+          axetype={AxeType.FIELDS}
           position={index}
           store={store} />
 

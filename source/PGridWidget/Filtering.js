@@ -24,7 +24,7 @@ export class ExpressionFilter {
 
     this.staticValue = staticValue
     this.excludeStatic = excludeStatic
-    this.dataSource = this.dataSource
+    this.dataSource = dataSource
     this.filteredIds = this.getfilteredIds()
   }
 

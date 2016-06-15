@@ -17,11 +17,11 @@ export default class Store {
   filters = {}
   config = {}
 
-  constructor (config) {
+  constructor (component, config) {
+    this.component = component
     this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
     this.filters = new Map()
-    // const preFilters = this.config.preFilters || []
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
     this.dataMatrix = {}
     this.rows = this.getrows()
@@ -89,23 +89,70 @@ export default class Store {
   }
 
   moveField (fieldname, oldaxetype, newaxetype, position) {
-    this.config.moveField(fieldname, oldaxetype, newaxetype, position)
+    const axeType = this.config.moveField(fieldname, oldaxetype, newaxetype, position)
+    switch (axeType) {
+      case AxeType.COLUMNS:
+        this.columns = this.getcolumns()
+        this.columnsUi = this.getcolumnsUi()
+        break
+      case AxeType.ROWS:
+        this.rows = this.getrows()
+        this.rowsUi = this.getrowsUi()
+        break
+      default:
+        this.columns = this.getcolumns()
+        this.columnsUi = this.getcolumnsUi()
+        this.rows = this.getrows()
+        this.rowsUi = this.getrowsUi()
+    }
+    this.layout = this.getlayout()
+    this.component.forceUpdate()
   }
 
   toggleDataField (fieldname) {
-    if (this.config.toggleDataField(fieldname)) {
-      return true
-    } else {
-      return false
+    this.config.toggleDataField(fieldname)
+    switch (this.config.dataHeadersLocation) {
+      case 'columns':
+        this.columns = this.getcolumns()
+        this.columnsUi = this.getcolumnsUi()
+        break
+      case 'rows':
+        this.rows = this.getrows()
+        this.rowsUi = this.getrowsUi()
+        break
+      default:
+        break
     }
+    this.layout = this.getlayout()
+    this.component.forceUpdate()
   }
 
-  applyFilter (fieldname, all, operator, term, staticValue, excludeStatic) {
+  applyFilter (fieldname, axetype, all, operator, term, staticValue, excludeStatic) {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname)
     } else if (!all) {
       this.filters.set(fieldname, new ExpressionFilter(fieldname, operator, term, staticValue, excludeStatic, this.config.dataSource))
     }
+    switch (axetype) {
+      case AxeType.COLUMNS:
+        this.columns = this.getcolumns()
+        this.columnsUi = this.getcolumnsUi()
+        break
+      case AxeType.ROWS:
+        this.rows = this.getrows()
+        this.rowsUi = this.getrowsUi()
+        break
+      case AxeType.FIELDS:
+        this.columns = this.getcolumns()
+        this.columnsUi = this.getcolumnsUi()
+        this.rows = this.getrows()
+        this.rowsUi = this.getrowsUi()
+        break
+      default:
+        break
+    }
+    this.layout = this.getlayout()
+    this.component.forceUpdate()
   }
 
   refreshData (data) {

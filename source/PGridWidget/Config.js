@@ -311,9 +311,9 @@ export class Config {
             newaxe.push(field)
           }
         }
-        if (newaxetype === null) {
+        if (newaxetype === AxeType.FIELDS) {
           return oldaxetype
-        } else if (oldaxetype === null) {
+        } else if (oldaxetype === AxeType.FIELDS) {
           return newaxetype
         } else {
           return -1
@@ -330,7 +330,7 @@ export class Config {
     } else {
       this.dataFields = newDataFields
     }
-    return true
+    this.dataFieldsCount = this.getdataFieldsCount()
   }
 
   toggleSubtotals (axetype) {
