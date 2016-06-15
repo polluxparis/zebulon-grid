@@ -1,7 +1,5 @@
 'use strict'
 
-import { computed } from 'mobx'
-
 import * as utils from './Utils'
 
 export const ALL = '#All#'
@@ -27,9 +25,10 @@ export class ExpressionFilter {
     this.staticValue = staticValue
     this.excludeStatic = excludeStatic
     this.dataSource = this.dataSource
+    this.filteredIds = this.getfilteredIds()
   }
 
-  @computed get filteredIds () {
+  getfilteredIds () {
     var res = []
     for (var i = 0; i < this.dataSource.length; i++) {
       var row = this.dataSource[i]

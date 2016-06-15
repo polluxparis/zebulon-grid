@@ -1,7 +1,5 @@
 'use strict'
 
-import { observable, computed, action, asMap } from 'mobx'
-
 import { Axe, AxeType } from '../Axe'
 import AxeUi from '../AxeUi'
 import { Config } from '../Config'
@@ -16,33 +14,41 @@ import * as utils from '../Utils'
  */
 export default class Store {
 
-  @observable filters = asMap({})
-  @observable config = {}
+  filters = {}
+  config = {}
 
   constructor (config) {
     this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
-    this.filters.merge(this.config.preFilters)
+    this.filters = new Map()
+    // const preFilters = this.config.preFilters || []
+    Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
     this.dataMatrix = {}
+    this.rows = this.getrows()
+    this.columns = this.getcolumns()
+    this.rowsUi = this.getrowsUi()
+    this.columnsUi = this.getcolumnsUi()
+    this.layout = this.getlayout()
+    this.sizes = this.getsizes()
   }
 
-  @computed get rows () {
+  getrows () {
     return new Axe(AxeType.ROWS, this.config.rowFields, this)
   }
 
-  @computed get columns () {
+  getcolumns () {
     return new Axe(AxeType.COLUMNS, this.config.columnFields, this)
   }
 
-  @computed get rowsUi () {
+  getrowsUi () {
     return new AxeUi(this.rows)
   }
 
-  @computed get columnsUi () {
+  getcolumnsUi () {
     return new AxeUi(this.columns)
   }
 
-  @computed get layout () {
+  getlayout () {
     const rowHeaders = {
       width: (this.rows.fields.length || 1) +
         (this.config.dataHeadersLocation === 'rows' && this.config.dataFieldsCount > 1 ? 1 : 0),
@@ -60,7 +66,7 @@ export default class Store {
     return {columnHeaders, rowHeaders, pivotTable}
   }
 
-  @computed get sizes () {
+  getsizes () {
     const cell = {
       height: 30,
       width: 100
@@ -72,7 +78,7 @@ export default class Store {
     return {cell, grid}
   }
 
-  @action sort (axetype, field) {
+  sort (axetype, field) {
     if (axetype === AxeType.ROWS) {
       this.rows.sort(field)
     } else if (axetype === AxeType.COLUMNS) {
@@ -82,11 +88,11 @@ export default class Store {
     }
   }
 
-  @action moveField (fieldname, oldaxetype, newaxetype, position) {
+  moveField (fieldname, oldaxetype, newaxetype, position) {
     this.config.moveField(fieldname, oldaxetype, newaxetype, position)
   }
 
-  @action toggleDataField (fieldname) {
+  toggleDataField (fieldname) {
     if (this.config.toggleDataField(fieldname)) {
       return true
     } else {
@@ -94,7 +100,7 @@ export default class Store {
     }
   }
 
-  @action applyFilter (fieldname, all, operator, term, staticValue, excludeStatic) {
+  applyFilter (fieldname, all, operator, term, staticValue, excludeStatic) {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname)
     } else if (!all) {
@@ -102,16 +108,16 @@ export default class Store {
     }
   }
 
-  @action refreshData (data) {
+  refreshData (data) {
     this.config.dataSource = data
   }
 
-  @action toggleSubtotals (axetype) {
+  toggleSubtotals (axetype) {
     if (this.config.toggleSubtotals(axetype)) {
     }
   }
 
-  @action toggleGrandtotal (axetype) {
+  toggleGrandtotal (axetype) {
     if (this.config.toggleGrandtotal(axetype)) {
     }
   }

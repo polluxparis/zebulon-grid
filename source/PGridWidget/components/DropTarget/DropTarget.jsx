@@ -6,7 +6,7 @@ import DropIndicator from './DropIndicator'
 
 let dtid = 0
 
-@observer
+
 export default class DropTarget extends Component {
   constructor (props) {
     super(props)

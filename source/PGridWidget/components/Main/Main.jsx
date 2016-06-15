@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { observer } from 'mobx-react'
-import MobxDevTools from 'mobx-react-devtools'
-import {useStrict} from 'mobx'
 
 // CSS files
 import 'react-virtualized/styles.css'
@@ -15,8 +12,6 @@ import Store from '../../stores/Store'
 import DragManager from '../../DragManager'
 import * as domUtils from '../../Utils.dom'
 
-useStrict(false)
-
 let pivotId = 1
 // const themeChangeCallbacks = {}
 
@@ -24,7 +19,6 @@ let pivotId = 1
 // require('../../../dist/orb.css')
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css')
 
-@observer
 export default class Main extends Component {
 
   constructor (props) {
@@ -126,7 +120,6 @@ export default class Main extends Component {
     console.log(this.store)
     return (
       <div>
-        <MobxDevTools />
         <div className={'orb'}>
           <UpperButtons store={this.store} />
           <div style={{width: this.store.layout.pivotTable.width, height: this.store.layout.pivotTable.height}}>

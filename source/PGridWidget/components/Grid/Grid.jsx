@@ -6,7 +6,7 @@ import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
 
-@observer
+
 export default class OrbGrid extends Component {
 
   constructor (props) {

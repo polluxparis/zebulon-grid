@@ -1,7 +1,5 @@
 'use strict'
 
-import { observable, computed } from 'mobx'
-
 import * as utils from './Utils'
 import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
@@ -100,10 +98,10 @@ function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
 // module.config(config) {
 export class Config {
 
-  @observable allFields
-  @observable rowFields
-  @observable columnFields
-  @observable dataFields
+  allFields
+  rowFields
+  columnFields
+  dataFields
 
   constructor (config) {
     this.config = config
@@ -149,14 +147,17 @@ export class Config {
         columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
       }
     }
+    this.dataFieldsCount = this.getdataFieldsCount()
+    this.availableFields = this.getavailableFields()
+    this.preFilters = this.getpreFilters()
   }
 
-  @computed get dataFieldsCount () {
+  getdataFieldsCount () {
     return this.dataFields ? this.dataFields.length : 0
   }
 
-  get availableFields () {
-    const usedFields = [].concat(this.rowFields.peek(), this.columnFields.peek())
+  getavailableFields () {
+    const usedFields = [].concat(this.rowFields, this.columnFields)
     return this.allFields
       // This is a hacky way to detect which fields are measures
       // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
@@ -164,7 +165,7 @@ export class Config {
       .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
   }
 
-  @computed get preFilters () {
+  getpreFilters () {
     var prefilters = {}
     if (this.config['preFilters']) {
       utils.forEach(

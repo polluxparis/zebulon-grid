@@ -1,12 +1,10 @@
 import React, {Component} from 'react'
-import { observer } from 'mobx-react'
 
 import FieldButton from '../FieldButton'
 import DataButton from '../DataButton'
 import DropTarget from '../DropTarget'
 import { AxeType } from '../../Axe'
 
-@observer
 export default class UpperButtonsComponent extends Component {
 
   render () {
