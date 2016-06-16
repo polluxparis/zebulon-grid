@@ -50,6 +50,11 @@ module.exports = {
         include: path.join(__dirname, 'source')
       },
       {
+        test: /\.jsx$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'source')
+      },
+      {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('css-loader!autoprefixer-loader?{browsers:["last 2 version", "Firefox 15"]}'),
         include: path.join(__dirname, 'source')

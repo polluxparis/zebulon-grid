@@ -35,6 +35,11 @@ module.exports = {
         include: path.join(__dirname, 'source')
       },
       {
+        test: /\.jsx$/,
+        loaders: ['babel'],
+        include: path.join(__dirname, 'source')
+      },
+      {
         test: /\.css$/,
         loaders: ['style', 'css?modules&importLoaders=1', 'postcss'],
         include: path.join(__dirname, 'source')
