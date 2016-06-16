@@ -61,9 +61,7 @@ export default class Main extends Component {
           <UpperButtons
             store={this.store}
           />
-          <div style={{width: this.store.layout.pivotTable.width, height: this.store.layout.pivotTable.height}}>
-            <Grid store={this.store} />
-          </div>
+          <Grid store={this.store} />
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
         </div>
       </div>

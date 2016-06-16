@@ -29,10 +29,12 @@ export default class OrbGrid extends Component {
     this._columnHorizontalCount = layout.columnHeaders.width
 
     this._rowHeadersWidth = this._rowHorizontalCount * this._cellWidth
+    this._rowHeadersHeight = this._rowVerticalCount * this._cellHeight
     this._columnHeadersHeight = this._columnVerticalCount * this._cellHeight
+    this._columnHeadersWidth = this._columnHorizontalCount * this._cellWidth
 
-    this._width = Math.min(sizes.grid.width, this._rowHeadersWidth + this._columnHorizontalCount * this._cellWidth)
-    this._height = Math.min(sizes.grid.height, this._columnHeadersHeight + this._rowVerticalCount * this._cellHeight)
+    this._width = Math.min(sizes.grid.width, this._rowHeadersWidth + this._columnHeadersWidth)
+    this._height = Math.min(sizes.grid.height, this._columnHeadersHeight + this._rowHeadersHeight)
   }
 
   render () {
@@ -57,7 +59,8 @@ export default class OrbGrid extends Component {
         cellRenderer={this._mockCellRenderer}
         cellRangeRenderer={this.cellRangeRenderer}
         overscanRowCount={0}
-        overscanColumnCount={0} />
+        overscanColumnCount={0}
+      />
     )
   }
 
