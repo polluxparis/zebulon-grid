@@ -23,7 +23,7 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const data = getMockDataSource(1, 100)
+const data = getMockDataSource(1, 500)
 
 var config = {
   dataSource: data,
