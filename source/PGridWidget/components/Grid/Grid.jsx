@@ -31,10 +31,6 @@ export default class OrbGrid extends Component {
     this._height = Math.min(sizes.grid.height, this._columnHeadersHeight + this._rowVerticalCount * this._cellHeight)
   }
 
-  componentWillUpdate (nextProps, nextState) {
-    this._grid.forceUpdate()
-  }
-
   render () {
     console.log('rendering grid')
     const {store} = this.props
@@ -186,11 +182,7 @@ export default class OrbGrid extends Component {
       rowHeader,
       columnHeader
     )
-    cell.value = store.getData(
-      cell.datafield ? cell.datafield.name : null,
-      cell.rowDimension,
-      cell.columnDimension)
-    return <DataCellComp key={columnIndex} cell={cell} onDoubleClick={() => 33} />
+    return <DataCellComp key={`data-${rowIndex}-${columnIndex}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
   }
 
   columnHeaderRenderer ({columnIndex, rowIndex}) {
@@ -198,7 +190,7 @@ export default class OrbGrid extends Component {
     if (!cell) {
       return null
     } else {
-      return <HeaderCellComp cell={cell} onToggle={() => 33} />
+      return <HeaderCellComp key={`column-${rowIndex}-${columnIndex}`} cell={cell} onToggle={() => 33} />
     }
   }
 
@@ -207,7 +199,7 @@ export default class OrbGrid extends Component {
     if (!cell) {
       return null
     } else {
-      return <HeaderCellComp cell={cell} onToggle={() => 33} />
+      return <HeaderCellComp key={`row-${rowIndex}-${columnIndex}`} cell={cell} onToggle={() => 33} />
     }
   }
 

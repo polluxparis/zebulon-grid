@@ -139,6 +139,8 @@ export class Config {
 
     this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1)
 
+    this.drilldown = config.drilldown || ((cell) => console.log('drilldown on cell', cell))
+
     this.runtimeVisibility = {
       subtotals: {
         rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,

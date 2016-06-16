@@ -23,7 +23,7 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const data = getMockDataSource(1, 500)
+const data = getMockDataSource(1, 100)
 
 var config = {
   dataSource: data,
@@ -126,7 +126,8 @@ var config = {
   ],
   columns: ['Titi', 'Tutu'], // , 'Category' ],
   rows: ['Toto'],
-  data: ['Quantity']
+  data: ['Quantity'],
+  drilldown: (cell) => console.log('drilldown (config) on cell', cell)
 /*
 preFilters : {
     'Class': { 'Matches': 'Regular' },

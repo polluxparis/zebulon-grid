@@ -291,7 +291,7 @@ export class DataCell extends CellBase {
       axetype: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
-      // value: store.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
+      value: store.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
       cssclass: 'cell ' + HeaderType.getCellClass(rowType, colType),
       isvisible: isvisible
     })

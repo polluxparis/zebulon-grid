@@ -155,6 +155,10 @@ export default class Store {
     this.component.forceUpdate()
   }
 
+  drilldown (cell) {
+    return this.config.drilldown(cell)
+  }
+
   refreshData (data) {
     this.config.dataSource = data
   }
