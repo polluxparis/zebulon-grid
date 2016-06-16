@@ -101,7 +101,7 @@ export class Config {
   allFields
   rowFields
   columnFields
-  dataFields
+  activatedDataFields
 
   constructor (config) {
     this.config = config
@@ -120,7 +120,8 @@ export class Config {
     this.columnSettings = new Field(config.columnSettings, false)
     this.dataSettings = new Field(config.dataSettings, false)
 
-    this.allFields = (config.fields || []).map(fieldconfig => new Field(fieldconfig))
+    this.allFields = (config.fields || []).map(fieldConfig => new Field(fieldConfig))
+    this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig))
 
     // map fields names to captions
     this.dataSourceFieldNames = this.allFields.map(f => f.name)
@@ -136,10 +137,7 @@ export class Config {
       return createfield(this, AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
 
-    this.dataFields = (config.data || []).map(fieldconfig => {
-      fieldconfig = this.ensureFieldConfig(fieldconfig)
-      return createfield(this, AxeType.DATA, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
-    })
+    this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1)
 
     this.runtimeVisibility = {
       subtotals: {
@@ -147,21 +145,18 @@ export class Config {
         columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
       }
     }
-    this.dataFieldsCount = this.getdataFieldsCount()
+    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount()
     this.availableFields = this.getavailableFields()
     this.preFilters = this.getpreFilters()
   }
 
-  getdataFieldsCount () {
-    return this.dataFields ? this.dataFields.length : 0
+  getactivatedDataFieldsCount () {
+    return this.activatedDataFields ? this.activatedDataFields.length : 0
   }
 
   getavailableFields () {
     const usedFields = [].concat(this.rowFields, this.columnFields)
     return this.allFields
-      // This is a hacky way to detect which fields are measures
-      // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
-      .filter(field => field.aggregateFuncName === null)
       .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
   }
 
@@ -323,14 +318,14 @@ export class Config {
   }
 
   toggleDataField (fieldname) {
-    const defaultFieldConfig = this.getfield(this.allFields, fieldname)
-    const newDataFields = this.dataFields.filter(fld => fld.name !== fieldname)
-    if (this.dataFields.length === newDataFields.length) {
-      this.dataFields.push(defaultFieldConfig)
+    const defaultFieldConfig = this.getDataField(fieldname)
+    const newDataFields = this.activatedDataFields.filter(fld => fld.name !== fieldname)
+    if (this.activatedDataFields.length === newDataFields.length) {
+      this.activatedDataFields.push(defaultFieldConfig)
     } else {
-      this.dataFields = newDataFields
+      this.activatedDataFields = newDataFields
     }
-    this.dataFieldsCount = this.getdataFieldsCount()
+    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount()
   }
 
   toggleSubtotals (axetype) {

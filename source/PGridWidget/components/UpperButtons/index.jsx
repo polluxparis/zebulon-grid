@@ -37,17 +37,14 @@ export default class UpperButtonsComponent extends Component {
       fieldsDropTarget = null
     }
 
-    const dataButtons = config.allFields
-      // This is a hacky way to detect which fields are measures in order to avoid mapping them
-      // This will have to be solved later as part of a bigger overhaul where dimension and measures will be clearly separated
-      .filter(field => field.aggregateFuncName !== null)
+    const dataButtons = config.dataFields
       .map((field, index) =>
         <div style={{padding: '0px 4px'}} key={'div-' + field.name}>
           <DataButton
             key={field.name}
             field={field}
             position={index}
-            active={config.dataFields.filter(fld => fld.name === field.name).length}
+            active={config.activatedDataFields.filter(fld => fld.name === field.name).length}
             store={store}
             />
         </div>

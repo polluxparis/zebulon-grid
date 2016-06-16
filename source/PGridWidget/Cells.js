@@ -281,11 +281,11 @@ export class DataCell extends CellBase {
     const rowType = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.type : rowinfo.type
     const colType = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.type : colinfo.type
 
-    const datafield = store.config.dataFieldsCount > 1
+    const datafield = store.config.activatedDataFieldsCount > 1
       ? (store.config.dataHeadersLocation === 'rows'
         ? rowinfo.value
         : colinfo.value)
-      : store.config.dataFields[0]
+      : store.config.activatedDataFields[0]
 
     super({
       axetype: null,

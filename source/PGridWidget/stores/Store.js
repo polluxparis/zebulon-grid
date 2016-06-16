@@ -51,13 +51,13 @@ export default class Store {
   getlayout () {
     const rowHeaders = {
       width: (this.rows.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'rows' && this.config.dataFieldsCount > 1 ? 1 : 0),
+        (this.config.dataHeadersLocation === 'rows' && this.config.activatedDataFieldsCount > 1 ? 1 : 0),
       height: this.rowsUi.headers.length
     }
     const columnHeaders = {
       width: this.columnsUi.headers.length,
       height: (this.columns.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'columns' && this.config.dataFieldsCount > 1 ? 1 : 0)
+        (this.config.dataHeadersLocation === 'columns' && this.config.activatedDataFieldsCount > 1 ? 1 : 0)
     }
     const pivotTable = {
       width: rowHeaders.width + columnHeaders.width,
@@ -229,7 +229,7 @@ export default class Store {
   getData (field, rowdim, coldim, aggregateFunc) {
     let value
     if (rowdim && coldim) {
-      const datafieldName = field || (this.config.dataFields[0] || this.defaultfield).name
+      const datafieldName = field || (this.config.activatedDataFields[0] || this.defaultfield).name
       value = this.calcAggregation(
         rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
         coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
@@ -243,7 +243,7 @@ export default class Store {
   calcAggregation (rowIndexes, colIndexes, fieldNames, aggregateFunc) {
     var res = {}
 
-    if (this.config.dataFieldsCount > 0) {
+    if (this.config.activatedDataFieldsCount > 0) {
       var intersection
 
       if (rowIndexes === null) {
@@ -278,8 +278,8 @@ export default class Store {
           }
         }
       } else {
-        for (let datafieldIndex = 0; datafieldIndex < this.config.dataFieldsCount; datafieldIndex++) {
-          datafield = this.config.dataFields[datafieldIndex] || this.defaultfield
+        for (let datafieldIndex = 0; datafieldIndex < this.config.activatedDataFieldsCount; datafieldIndex++) {
+          datafield = this.config.activatedDataFields[datafieldIndex] || this.defaultfield
           if (aggregateFunc || datafield.aggregateFunc) {
             datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc() })
           }

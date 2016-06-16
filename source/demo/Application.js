@@ -60,19 +60,6 @@ var config = {
   },
   fields: [
     {
-      name: '1',
-      caption: 'Amount',
-      aggregateFunc: 'sum'
-
-    // dataSettings: {
-    //     aggregateFunc: 'sum',
-    //     aggregateFuncName: 'whatever',
-    //     formatFunc: function(value) {
-    //         return value ? Number(value).toFixed(0) + ' $' : ''
-    //     }
-    // }
-    },
-    {
       name: '0',
       caption: 'Toto'
     },
@@ -101,7 +88,7 @@ var config = {
     {
       name: '4',
       caption: 'Tutu'
-    },
+    }
     // {
     //     name: '4',
     //     caption: 'Category',
@@ -116,10 +103,25 @@ var config = {
     //         }
     //     }
     // },
+  ],
+  dataFields: [
     {
       name: '2',
       caption: 'Quantity',
       aggregateFunc: 'sum'
+    },
+    {
+      name: '1',
+      caption: 'Amount',
+      aggregateFunc: 'sum'
+
+    // dataSettings: {
+    //     aggregateFunc: 'sum',
+    //     aggregateFuncName: 'whatever',
+    //     formatFunc: function(value) {
+    //         return value ? Number(value).toFixed(0) + ' $' : ''
+    //     }
+    // }
     }
   ],
   columns: ['Titi', 'Tutu'], // , 'Category' ],
