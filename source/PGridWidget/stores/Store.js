@@ -24,12 +24,38 @@ export default class Store {
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
     this.dataMatrix = {}
-    this.rows = this.getrows()
-    this.columns = this.getcolumns()
+    this.filteredDataSource = this.getfilteredDataSource()
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
     this.sizes = this.getsizes()
+  }
+
+  getfilteredDataSource () {
+    let filterFields = [...this.filters.keys()]
+    if (filterFields.length > 0) {
+      const res = []
+
+      for (let i = 0; i < this.config.dataSource.length; i++) {
+        let row = this.config.dataSource[i]
+        let exclude = false
+        for (let fi = 0; fi < filterFields.length; fi++) {
+          let fieldname = filterFields[fi]
+          let fieldFilter = this.filters.get(fieldname)
+
+          if (fieldFilter && !fieldFilter.test(row[fieldname])) {
+            exclude = true
+            break
+          }
+        }
+        if (!exclude) {
+          res.push(row)
+        }
+      }
+      return res
+    } else {
+      return this.config.dataSource
+    }
   }
 
   getrows () {
@@ -41,10 +67,12 @@ export default class Store {
   }
 
   getrowsUi () {
+    this.rows = this.getrows()
     return new AxeUi(this.rows)
   }
 
   getcolumnsUi () {
+    this.columns = this.getcolumns()
     return new AxeUi(this.columns)
   }
 
@@ -92,17 +120,13 @@ export default class Store {
     const axeType = this.config.moveField(fieldname, oldaxetype, newaxetype, position)
     switch (axeType) {
       case AxeType.COLUMNS:
-        this.columns = this.getcolumns()
         this.columnsUi = this.getcolumnsUi()
         break
       case AxeType.ROWS:
-        this.rows = this.getrows()
         this.rowsUi = this.getrowsUi()
         break
       default:
-        this.columns = this.getcolumns()
         this.columnsUi = this.getcolumnsUi()
-        this.rows = this.getrows()
         this.rowsUi = this.getrowsUi()
     }
     this.layout = this.getlayout()
@@ -115,11 +139,9 @@ export default class Store {
     if (this.config.toggleDataField(fieldname)) {
       switch (this.config.dataHeadersLocation) {
         case 'columns':
-          this.columns = this.getcolumns()
           this.columnsUi = this.getcolumnsUi()
           break
         case 'rows':
-          this.rows = this.getrows()
           this.rowsUi = this.getrowsUi()
           break
         default:
@@ -134,26 +156,11 @@ export default class Store {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname)
     } else if (!all) {
-      this.filters.set(fieldname, new ExpressionFilter(fieldname, this.config.dataSource, operator, term, staticValue, excludeStatic))
+      this.filters.set(fieldname, new ExpressionFilter(fieldname, this.filteredDataSource, operator, term, staticValue, excludeStatic))
     }
-    switch (axetype) {
-      case AxeType.COLUMNS:
-        this.columns = this.getcolumns()
-        this.columnsUi = this.getcolumnsUi()
-        break
-      case AxeType.ROWS:
-        this.rows = this.getrows()
-        this.rowsUi = this.getrowsUi()
-        break
-      case AxeType.FIELDS:
-        this.columns = this.getcolumns()
-        this.columnsUi = this.getcolumnsUi()
-        this.rows = this.getrows()
-        this.rowsUi = this.getrowsUi()
-        break
-      default:
-        break
-    }
+    this.filteredDataSource = this.getfilteredDataSource()
+    this.columnsUi = this.getcolumnsUi()
+    this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()
     this.component.forceUpdate()
   }
@@ -163,7 +170,7 @@ export default class Store {
   }
 
   refreshData (data) {
-    this.config.dataSource = data
+    this.filteredDataSource = data
   }
 
   toggleSubtotals (axetype) {
@@ -185,12 +192,13 @@ export default class Store {
   }
 
   getFieldValues (field, filterFunc) {
-    var values1 = []
-    var values = []
-    var containsBlank = false
-    for (var i = 0; i < this.config.dataSource.length; i++) {
-      var row = this.config.dataSource[i]
-      var val = row[field]
+    let values1 = []
+    let values = []
+    let containsBlank = false
+    // We use config.dataSource here instead of filteredDataSource because otherwise you lose the filtered values the next time you open a Filter Panel
+    for (let i = 0; i < this.config.dataSource.length; i++) {
+      let row = this.config.dataSource[i]
+      let val = row[field]
       if (filterFunc !== undefined) {
         if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
           values1.push(val)
@@ -210,7 +218,7 @@ export default class Store {
         values1.sort()
       }
 
-      for (var vi = 0; vi < values1.length; vi++) {
+      for (let vi = 0; vi < values1.length; vi++) {
         if (vi === 0 || values1[vi] !== values[values.length - 1]) {
           values.push(values1[vi])
         }
@@ -229,7 +237,7 @@ export default class Store {
   }
 
   isFieldFiltered (field) {
-    var filter = this.getFieldFilter(field)
+    let filter = this.getFieldFilter(field)
     return filter != null && !filter.isAlwaysTrue()
   }
 
@@ -248,10 +256,10 @@ export default class Store {
   }
 
   calcAggregation (rowIndexes, colIndexes, fieldNames, aggregateFunc) {
-    var res = {}
+    let res = {}
 
     if (this.config.activatedDataFieldsCount > 0) {
-      var intersection
+      let intersection
 
       if (rowIndexes === null) {
         intersection = colIndexes
@@ -261,10 +269,10 @@ export default class Store {
         intersection = utils.twoArraysIntersect(colIndexes, rowIndexes)
       }
 
-      var emptyIntersection = intersection && intersection.length === 0
-      var datasource = this.config.dataSource
-      var datafield
-      var datafields = []
+      const emptyIntersection = intersection && intersection.length === 0
+      const datasource = this.filteredDataSource
+      let datafield
+      let datafields = []
 
       if (fieldNames) {
         for (let fieldnameIndex = 0; fieldnameIndex < fieldNames.length; fieldnameIndex++) {
@@ -293,7 +301,7 @@ export default class Store {
         }
       }
 
-      for (var dfi = 0; dfi < datafields.length; dfi++) {
+      for (let dfi = 0; dfi < datafields.length; dfi++) {
         datafield = datafields[dfi]
         // no data
         if (emptyIntersection) {

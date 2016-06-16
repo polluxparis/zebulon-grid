@@ -9,13 +9,11 @@ export default class FilterPanelComponent extends Component {
 
   constructor (props) {
     super(props)
-    console.log(props)
     this.startingHeight = 223
     this.startingWidth = 301
 
     this.onFilter = this.onFilter.bind(this)
     this.onMouseDown = this.onMouseDown.bind(this)
-    this.toggleCheckbox = this.toggleCheckbox.bind(this)
   }
 
   destroy () {
@@ -52,10 +50,6 @@ export default class FilterPanelComponent extends Component {
   componentWillUnmount () {
     utils.removeEventListener(document, 'mousedown', this.onMouseDown)
     utils.removeEventListener(window, 'resize', this.destroy)
-  }
-
-  toggleCheckbox (value) {
-    console.log(`toggling ${value.value}`)
   }
 
   getVisibleCheckboxes () {

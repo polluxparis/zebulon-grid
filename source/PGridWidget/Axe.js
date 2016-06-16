@@ -56,16 +56,16 @@ export class Axe {
      * @type {Array}
      */
     this.fields = fields
-    this.filters = this.getfilters()
+    // this.filters = this.getfilters()
     this.dimensionsCount = this.getdimensionsCount()
     this.root = this.getroot()
   }
 
-  getfilters () {
-    return this.fields
-      .filter(field => this.store.filters.has(field.name))
-      .reduce((curr, res) => { res[curr.name] = this.store.filters.get(curr.name) }, {})
-  }
+  // getfilters () {
+  //   return this.fields
+  //     .filter(field => this.store.filters.has(field.name))
+  //     .reduce((curr, res) => { res[curr.name] = this.store.filters.get(curr.name) }, {})
+  // }
 
   getdimensionsCount () {
     return this.fields.length
@@ -80,7 +80,7 @@ export class Axe {
     // }
 
     // fill data
-    this.fill(dim, this.store.config.dataSource)
+    this.fill(dim, this.store.filteredDataSource)
 
     // initial sort
     for (let findex = 0; findex < this.fields.length; findex++) {
@@ -162,12 +162,12 @@ export class Axe {
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
             const depth = this.dimensionsCount - findex
             const field = this.fields[findex]
-            const filter = this.store.filters.has(field.name) ? this.store.filters.get(field.name) : undefined
+            // const filter = this.store.filters.has(field.name) ? this.store.filters.get(field.name) : undefined
             const subvalue = row[field.name]
             const subdimvals = dim.subdimvals
-            if (filter && !filter.test(subvalue)) {
-              break
-            } else {
+            // if (filter && !filter.test(subvalue)) {
+            //   break
+            // } else {
               if (subdimvals[subvalue] !== undefined) {
                 dim = subdimvals[subvalue]
               } else {
@@ -178,7 +178,7 @@ export class Axe {
                 // this.dimensionsByDepth[depth].push(dim)
               }
               dim.rowIndexes.push(rowIndex)
-            }
+            // }
           }
         }
       }
