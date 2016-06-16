@@ -6,20 +6,23 @@ function getMockDataSource (dataRepetition, nToto) {
   var arr = []
   var res = []
   for (var k = 0; k < dataRepetition; k++) {
-    for (var ll = 0; ll < nToto; ll++) {
-      for (var l = 0; l < nTiti; l++) {
-        for (var j = 0; j < nTutu; j++) {
-          arr = []
-          arr[0] = 'toto' + String(ll)
-          arr[3] = 'titi' + String(l)
-          arr[4] = 'tutu' + String(j)
-          arr[1] = k + 10 * j + 100 * l * 1000 * ll + 1 // +9999999999.1234567890123456
-          arr[2] = k + 10 * j + 100 * l * 1000 * ll + 1 // +9999999999.1234567890123456
-          res.push(arr)
+    for (var o = 0; o < nToto; o++) {
+      for (var i = 0; i < nTiti; i++) {
+        for (var u = 0; u < nTutu; u++) {
+          if (i !== 1 || u !== 0) {
+            arr = []
+            arr[0] = 'toto' + String(o)
+            arr[3] = 'titi' + String(i)
+            arr[4] = 'tutu' + String(u)
+            arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+            arr[2] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+            res.push(arr)
+          }
         }
       }
     }
   }
+  // res.push(['toto0', 33, 33, 'titi1', 'tutu0'])
   return res
 }
 
@@ -123,12 +126,12 @@ var config = {
   data: ['Quantity'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
   preFilters: {
-    'Titi': ['titi0']
-      // 'Class': { 'Matches': 'Regular' },
-      // 'Manufacturer': { 'Matches': /^a|^c/ },
-      // 'Category'    : { 'Does Not Match': 'D' },
-     // 'Amount'      : { '>':  40 },
-   //   'Quantity'    : [4, 8, 12]
+    // 'Titi': ['titi0']
+    // 'Class': { 'Matches': 'Regular' },
+    // 'Manufacturer': { 'Matches': /^a|^c/ },
+    // 'Category': { 'Does Not Match': 'D' },
+    // 'Amount': { '>': 40 },
+    // 'Quantity': [4, 8, 12]
   }
 }
 
