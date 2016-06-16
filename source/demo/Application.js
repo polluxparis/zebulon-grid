@@ -9,20 +9,17 @@ function getMockDataSource (dataRepetition, nToto) {
     for (var o = 0; o < nToto; o++) {
       for (var i = 0; i < nTiti; i++) {
         for (var u = 0; u < nTutu; u++) {
-          if (i !== 1 || u !== 0) {
-            arr = []
-            arr[0] = 'toto' + String(o)
-            arr[3] = 'titi' + String(i)
-            arr[4] = 'tutu' + String(u)
-            arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
-            arr[2] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
-            res.push(arr)
-          }
+          arr = []
+          arr[0] = 'toto' + String(o)
+          arr[3] = 'titi' + String(i)
+          arr[4] = 'tutu' + String(u)
+          arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+          arr[2] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+          res.push(arr)
         }
       }
     }
   }
-  // res.push(['toto0', 33, 33, 'titi1', 'tutu0'])
   return res
 }
 
