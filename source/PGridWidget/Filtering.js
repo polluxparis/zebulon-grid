@@ -8,7 +8,7 @@ export const BLANK = '#Blank#"'
 
 export class ExpressionFilter {
 
-  constructor (fieldname, operator, term, staticValue, excludeStatic, dataSource) {
+  constructor (fieldname, dataSource, operator, term, staticValue, excludeStatic) {
     this.fieldname = fieldname
     this.regexpMode = false
     this.operator = Operators.get(operator)

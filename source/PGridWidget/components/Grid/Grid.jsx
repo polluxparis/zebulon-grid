@@ -7,6 +7,10 @@ import { DataCell } from '../../Cells'
 
 export default class OrbGrid extends Component {
 
+  componentWillUpdate (nextProps, nextState) {
+    this._grid.forceUpdate() // to handle case where all data fields are unactivated
+  }
+
   constructor (props) {
     super(props)
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this)

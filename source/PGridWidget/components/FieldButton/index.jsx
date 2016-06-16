@@ -26,7 +26,6 @@ export default class FieldButton extends Component {
   }
 
   onFilterMouseDown (e) {
-    console.log('onFilterMouseDown')
     const {field, store, axetype} = this.props
     // left mouse button only
     if (e.button !== 0) return
@@ -73,7 +72,6 @@ export default class FieldButton extends Component {
     utils.removeEventListener(document, 'mousemove', this.onMouseMove)
   }
   onMouseDown (e) {
-    console.log('onMouseDown')
     const { store, axetype, field } = this.props
     // drag/sort with left mouse button
     if (e.button !== 0) return
@@ -103,7 +101,6 @@ export default class FieldButton extends Component {
     utils.preventDefault(e)
   }
   onMouseUp (e) {
-    console.log('onMouseUp')
     const { store, axetype, field } = this.props
     const isdragged = this.state.dragging
 
@@ -123,7 +120,6 @@ export default class FieldButton extends Component {
     }
   }
   onMouseMove (e) {
-    console.log('onMouseMove')
     const { mousedown, size, dragging, mouseoffset, pos } = this.state
     // if the mouse is not down while moving, return (no drag)
     if (!this.props.store.config.canMoveFields || !mousedown) return

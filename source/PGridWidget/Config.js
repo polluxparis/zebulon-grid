@@ -3,7 +3,7 @@
 import * as utils from './Utils'
 import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
-import * as filtering from './Filtering'
+import { ExpressionFilter } from './Filtering'
 // import { ThemeManager } from './orb.themes'
 
 function getpropertyvalue (property, configs, defaultvalue) {
@@ -164,17 +164,18 @@ export class Config {
 
   getpreFilters () {
     var prefilters = {}
-    if (this.config['preFilters']) {
+    if (this.config.preFilters) {
       utils.forEach(
-        utils.ownProperties(this.config['preFilters']),
-        function (filteredField) {
+        utils.ownProperties(this.config.preFilters),
+        (filteredField) => {
+          const filterName = this.captionToName(filteredField)
           var prefilterConfig = this.config.preFilters[filteredField]
           if (utils.isArray(prefilterConfig)) {
-            prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(null, null, prefilterConfig, false)
+            prefilters[filterName] = new ExpressionFilter(filterName, this.dataSource, null, null, prefilterConfig, false)
           } else {
             var opname = utils.ownProperties(prefilterConfig)[0]
             if (opname) {
-              prefilters[this.captionToName(filteredField)] = new filtering.ExpressionFilter(opname, prefilterConfig[opname])
+              prefilters[filterName] = new ExpressionFilter(filterName, this.dataSource, opname, prefilterConfig[opname])
             }
           }
         })
@@ -328,6 +329,7 @@ export class Config {
       this.activatedDataFields = newDataFields
     }
     this.activatedDataFieldsCount = this.getactivatedDataFieldsCount()
+    return this.activatedDataFieldsCount
   }
 
   toggleSubtotals (axetype) {

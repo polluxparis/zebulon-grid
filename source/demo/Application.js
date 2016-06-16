@@ -113,29 +113,23 @@ var config = {
     {
       name: '1',
       caption: 'Amount',
-      aggregateFunc: 'sum'
-
-    // dataSettings: {
-    //     aggregateFunc: 'sum',
-    //     aggregateFuncName: 'whatever',
-    //     formatFunc: function(value) {
-    //         return value ? Number(value).toFixed(0) + ' $' : ''
-    //     }
-    // }
+      aggregateFunc: 'sum',
+      aggregateFuncName: 'whatever',
+      formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
     }
   ],
   columns: ['Titi', 'Tutu'], // , 'Category' ],
   rows: ['Toto'],
   data: ['Quantity'],
-  drilldown: (cell) => console.log('drilldown (config) on cell', cell)
-/*
-preFilters : {
-    'Class': { 'Matches': 'Regular' },
-    'Manufacturer': { 'Matches': /^a|^c/ },
-    'Category'    : { 'Does Not Match': 'D' },
-   // 'Amount'      : { '>':  40 },
- //   'Quantity'    : [4, 8, 12]
-}*/
+  drilldown: (cell) => console.log('drilldown (config) on cell', cell),
+  preFilters: {
+    'Titi': ['titi0']
+      // 'Class': { 'Matches': 'Regular' },
+      // 'Manufacturer': { 'Matches': /^a|^c/ },
+      // 'Category'    : { 'Does Not Match': 'D' },
+     // 'Amount'      : { '>':  40 },
+   //   'Quantity'    : [4, 8, 12]
+  }
 }
 
 const widget = new PGridWidget(config)

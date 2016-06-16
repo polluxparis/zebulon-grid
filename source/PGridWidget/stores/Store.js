@@ -110,20 +110,23 @@ export default class Store {
   }
 
   toggleDataField (fieldname) {
-    this.config.toggleDataField(fieldname)
-    switch (this.config.dataHeadersLocation) {
-      case 'columns':
-        this.columns = this.getcolumns()
-        this.columnsUi = this.getcolumnsUi()
-        break
-      case 'rows':
-        this.rows = this.getrows()
-        this.rowsUi = this.getrowsUi()
-        break
-      default:
-        break
+    // toggleDataField returns the count of activated data fields.
+    // If it is 0, there is no need to recompute the axes as the only effect is to make the data cells blank.
+    if (this.config.toggleDataField(fieldname)) {
+      switch (this.config.dataHeadersLocation) {
+        case 'columns':
+          this.columns = this.getcolumns()
+          this.columnsUi = this.getcolumnsUi()
+          break
+        case 'rows':
+          this.rows = this.getrows()
+          this.rowsUi = this.getrowsUi()
+          break
+        default:
+          break
+      }
+      this.layout = this.getlayout()
     }
-    this.layout = this.getlayout()
     this.component.forceUpdate()
   }
 
@@ -131,7 +134,7 @@ export default class Store {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname)
     } else if (!all) {
-      this.filters.set(fieldname, new ExpressionFilter(fieldname, operator, term, staticValue, excludeStatic, this.config.dataSource))
+      this.filters.set(fieldname, new ExpressionFilter(fieldname, this.config.dataSource, operator, term, staticValue, excludeStatic))
     }
     switch (axetype) {
       case AxeType.COLUMNS:
