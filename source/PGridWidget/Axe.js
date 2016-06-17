@@ -80,7 +80,7 @@ export class Axe {
     // }
 
     // fill data
-    this.fill(dim, this.store.filteredDataSource)
+    this.fill(dim, this.store.filteredData)
 
     // initial sort
     for (let findex = 0; findex < this.fields.length; findex++) {
@@ -153,11 +153,11 @@ export class Axe {
    *   - filling the subdimvals array of each dimension of the axe
    *   - filling the rowIndexes array of each dimension of the axe (used for calculating aggregations)
    */
-  fill (root, dataSource) {
-    if (dataSource != null && this.dimensionsCount > 0) {
-      if (dataSource != null && utils.isArray(dataSource) && dataSource.length > 0) {
-        for (let rowIndex = 0, dataLength = dataSource.length; rowIndex < dataLength; rowIndex++) {
-          const row = dataSource[rowIndex]
+  fill (root, data) {
+    if (data != null && this.dimensionsCount > 0) {
+      if (data != null && utils.isArray(data) && data.length > 0) {
+        for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex++) {
+          const row = data[rowIndex]
           var dim = root
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
             const depth = this.dimensionsCount - findex
@@ -188,7 +188,7 @@ export class Axe {
   // for (let findex = 0; findex < this.dimensionsCount; findex++) {
   //   var depth = this.dimensionsCount - findex
   //   var field = this.fields[findex]
-  //   var dimMap = this.store.dataSourceMap[field.name]
+  //   var dimMap = this.store.dataMap[field.name]
   //   Object.keys(dimMap).forEach(k => {
   //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, field, depth, false, findex == this.dimensionsCount - 1))
   //     dim.rowIndexes = dimMap[k]

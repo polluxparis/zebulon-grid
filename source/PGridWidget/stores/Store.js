@@ -14,30 +14,50 @@ import * as utils from '../Utils'
  */
 export default class Store {
 
-  filters = {}
-  config = {}
+  init = false
+  data = []
+  filteredData = []
+  dataMatrix = {}
+  defaultfield = { name: '#undefined#' }
 
   constructor (component, config) {
     this.component = component
-    this.defaultfield = { name: '#undefined#' }
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
-    this.dataMatrix = {}
-    this.filteredDataSource = this.getfilteredDataSource()
+    this.config.dataSource.subscribe(this.handleData.bind(this))
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
     this.sizes = this.getsizes()
+    this.init = true
   }
 
-  getfilteredDataSource () {
+  handleData (payload) {
+    let pushed
+    if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
+      payload.forEach(line => this.data.push(line))
+      pushed = payload
+    } else if (Array.isArray(payload) || typeof payload === 'object') {
+      this.data.push(payload)
+      pushed = [payload]
+    }
+    if (pushed) {
+      this.filteredData = this.getfilteredData() // can optimize a lot by only considering the pushed values
+      this.columnsUi = this.getcolumnsUi()
+      this.rowsUi = this.getrowsUi()
+      this.layout = this.getlayout()
+      if (this.init) { this.component.forceUpdate() }
+    }
+  }
+
+  getfilteredData () {
     let filterFields = [...this.filters.keys()]
     if (filterFields.length > 0) {
       const res = []
 
-      for (let i = 0; i < this.config.dataSource.length; i++) {
-        let row = this.config.dataSource[i]
+      for (let i = 0; i < this.data.length; i++) {
+        let row = this.data[i]
         let exclude = false
         for (let fi = 0; fi < filterFields.length; fi++) {
           let fieldname = filterFields[fi]
@@ -54,7 +74,7 @@ export default class Store {
       }
       return res
     } else {
-      return this.config.dataSource
+      return this.data
     }
   }
 
@@ -156,9 +176,9 @@ export default class Store {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname)
     } else if (!all) {
-      this.filters.set(fieldname, new ExpressionFilter(fieldname, this.filteredDataSource, operator, term, staticValue, excludeStatic))
+      this.filters.set(fieldname, new ExpressionFilter(fieldname, this.filteredData, operator, term, staticValue, excludeStatic))
     }
-    this.filteredDataSource = this.getfilteredDataSource()
+    this.filteredData = this.getfilteredData()
     this.columnsUi = this.getcolumnsUi()
     this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()
@@ -170,7 +190,7 @@ export default class Store {
   }
 
   refreshData (data) {
-    this.filteredDataSource = data
+    this.filteredData = data
   }
 
   toggleSubtotals (axetype) {
@@ -195,9 +215,9 @@ export default class Store {
     let values1 = []
     let values = []
     let containsBlank = false
-    // We use config.dataSource here instead of filteredDataSource because otherwise you lose the filtered values the next time you open a Filter Panel
-    for (let i = 0; i < this.config.dataSource.length; i++) {
-      let row = this.config.dataSource[i]
+    // We use config.data here instead of filteredData because otherwise you lose the filtered values the next time you open a Filter Panel
+    for (let i = 0; i < this.data.length; i++) {
+      let row = this.data[i]
       let val = row[field]
       if (filterFunc !== undefined) {
         if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
@@ -270,7 +290,7 @@ export default class Store {
       }
 
       const emptyIntersection = intersection && intersection.length === 0
-      const datasource = this.filteredDataSource
+      const data = this.filteredData
       let datafield
       let datafields = []
 
@@ -307,7 +327,7 @@ export default class Store {
         if (emptyIntersection) {
           res[datafield.field.name] = null
         } else {
-          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', datasource, rowIndexes, colIndexes)
+          res[datafield.field.name] = datafield.aggregateFunc(datafield.field.name, intersection || 'all', data, rowIndexes, colIndexes)
         }
       }
     }

@@ -1,10 +1,11 @@
 'use strict'
 
+import { Observable } from 'rx-lite'
+
 import * as utils from './Utils'
 import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
 import { ExpressionFilter } from './Filtering'
-// import { ThemeManager } from './orb.themes'
 
 function getpropertyvalue (property, configs, defaultvalue) {
   for (let i = 0; i < configs.length; i++) {
@@ -105,16 +106,19 @@ export class Config {
 
   constructor (config) {
     this.config = config
-    this.dataSource = config.dataSource
     this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true
     this.dataHeadersLocation = config.dataHeadersLocation === 'columns' ? 'columns' : 'rows'
     this.grandTotal = new GrandTotalConfig(config.grandTotal)
     this.subTotal = new SubTotalConfig(config.subTotal, true)
     this.width = config.width
     this.height = config.height
-    // this.toolbar = config.toolbar
-    // this.theme = new ThemeManager()
-    // this.chartMode = new ChartConfig(config.chartMode)
+    // config.dataSource can be an observable, an array of arrays or an array of objects
+    if (Array.isArray(config.dataSource) && (Array.isArray(config.dataSource[0]) || typeof config.dataSource[0] === 'object')) {
+      this.dataSource = Observable.of(config.dataSource)
+    } else if (Observable.isObservable(config.dataSource)) {
+      // config.dataSource is a Rxjs observable
+      this.dataSource = config.dataSource
+    }
 
     this.rowSettings = new Field(config.rowSettings, false)
     this.columnSettings = new Field(config.columnSettings, false)
@@ -124,8 +128,8 @@ export class Config {
     this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig))
 
     // map fields names to captions
-    this.dataSourceFieldNames = this.allFields.map(f => f.name)
-    this.dataSourceFieldCaptions = this.allFields.map(f => f.caption)
+    this.dataFieldNames = this.allFields.map(f => f.name)
+    this.dataFieldCaptions = this.allFields.map(f => f.caption)
 
     this.rowFields = (config.rows || []).map(fieldconfig => {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
@@ -171,11 +175,11 @@ export class Config {
           const filterName = this.captionToName(filteredField)
           var prefilterConfig = this.config.preFilters[filteredField]
           if (utils.isArray(prefilterConfig)) {
-            prefilters[filterName] = new ExpressionFilter(filterName, this.dataSource, null, null, prefilterConfig, false)
+            prefilters[filterName] = new ExpressionFilter(filterName, this.data, null, null, prefilterConfig, false)
           } else {
             var opname = utils.ownProperties(prefilterConfig)[0]
             if (opname) {
-              prefilters[filterName] = new ExpressionFilter(filterName, this.dataSource, opname, prefilterConfig[opname])
+              prefilters[filterName] = new ExpressionFilter(filterName, this.data, opname, prefilterConfig[opname])
             }
           }
         })
@@ -184,15 +188,14 @@ export class Config {
   }
 
   captionToName (caption) {
-    var fcaptionIndex = this.dataSourceFieldCaptions.indexOf(caption)
-    return fcaptionIndex >= 0 ? this.dataSourceFieldNames[fcaptionIndex] : caption
+    var fcaptionIndex = this.dataFieldCaptions.indexOf(caption)
+    return fcaptionIndex >= 0 ? this.dataFieldNames[fcaptionIndex] : caption
   }
 
   nameToCaption (name) {
-    var fnameIndex = this.dataSourceFieldNames.indexOf(name)
-    return fnameIndex >= 0 ? this.dataSourceFieldCaptions[fnameIndex] : name
+    var fnameIndex = this.dataFieldNames.indexOf(name)
+    return fnameIndex >= 0 ? this.dataFieldCaptions[fnameIndex] : name
   }
-
   // setTheme (newTheme) {
   //   return this.theme.current() !== this.theme.current(newTheme)
   // }

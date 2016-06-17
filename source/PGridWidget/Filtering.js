@@ -8,7 +8,7 @@ export const BLANK = '#Blank#"'
 
 export class ExpressionFilter {
 
-  constructor (fieldname, dataSource, operator, term, staticValue, excludeStatic) {
+  constructor (fieldname, data, operator, term, staticValue, excludeStatic) {
     this.fieldname = fieldname
     this.regexpMode = false
     this.operator = Operators.get(operator)
@@ -24,14 +24,14 @@ export class ExpressionFilter {
 
     this.staticValue = staticValue
     this.excludeStatic = excludeStatic
-    this.dataSource = dataSource
+    this.data = data
     this.filteredIds = this.getfilteredIds()
   }
 
   getfilteredIds () {
     var res = []
-    for (var i = 0; i < this.dataSource.length; i++) {
-      var row = this.dataSource[i]
+    for (var i = 0; i < this.data.length; i++) {
+      var row = this.data[i]
       if (this.test(row[this.fieldname])) {
         res.push(i)
       }
