@@ -25,7 +25,7 @@ export default class Store {
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
-    this.config.dataSource.subscribe(this.handleData.bind(this))
+    this.config.dataSource.subscribe(this.push.bind(this))
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
@@ -33,7 +33,7 @@ export default class Store {
     this.init = true
   }
 
-  handleData (payload) {
+  push (payload) {
     let pushed
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
       payload.forEach(line => this.data.push(line))
@@ -43,21 +43,24 @@ export default class Store {
       pushed = [payload]
     }
     if (pushed) {
-      this.filteredData = this.getfilteredData() // can optimize a lot by only considering the pushed values
-      this.columnsUi = this.getcolumnsUi()
-      this.rowsUi = this.getrowsUi()
-      this.layout = this.getlayout()
-      if (this.init) { this.component.forceUpdate() }
+      const filteredPush = this.filter(pushed)
+      if (filteredPush.length) {
+        filteredPush.forEach(line => this.filteredData.push(line))
+        this.columnsUi = this.getcolumnsUi()
+        this.rowsUi = this.getrowsUi()
+        this.layout = this.getlayout()
+        if (this.init) { this.component.forceUpdate() }
+      }
     }
   }
 
-  getfilteredData () {
+  filter (data) {
     let filterFields = [...this.filters.keys()]
     if (filterFields.length > 0) {
       const res = []
 
-      for (let i = 0; i < this.data.length; i++) {
-        let row = this.data[i]
+      for (let i = 0; i < data.length; i++) {
+        let row = data[i]
         let exclude = false
         for (let fi = 0; fi < filterFields.length; fi++) {
           let fieldname = filterFields[fi]
@@ -74,7 +77,7 @@ export default class Store {
       }
       return res
     } else {
-      return this.data
+      return data
     }
   }
 
@@ -178,7 +181,7 @@ export default class Store {
     } else if (!all) {
       this.filters.set(fieldname, new ExpressionFilter(fieldname, this.filteredData, operator, term, staticValue, excludeStatic))
     }
-    this.filteredData = this.getfilteredData()
+    this.filteredData = this.filter(this.data)
     this.columnsUi = this.getcolumnsUi()
     this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()

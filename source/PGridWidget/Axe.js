@@ -162,38 +162,22 @@ export class Axe {
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
             const depth = this.dimensionsCount - findex
             const field = this.fields[findex]
-            // const filter = this.store.filters.has(field.name) ? this.store.filters.get(field.name) : undefined
             const subvalue = row[field.name]
             const subdimvals = dim.subdimvals
-            // if (filter && !filter.test(subvalue)) {
-            //   break
-            // } else {
-              if (subdimvals[subvalue] !== undefined) {
-                dim = subdimvals[subvalue]
-              } else {
-                dim.values.push(subvalue)
-                dim = new Dimension(++this.dimid, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
-                subdimvals[subvalue] = dim
-                dim.rowIndexes = []
-                // this.dimensionsByDepth[depth].push(dim)
-              }
-              dim.rowIndexes.push(rowIndex)
-            // }
+            if (subdimvals[subvalue] !== undefined) {
+              dim = subdimvals[subvalue]
+            } else {
+              dim.values.push(subvalue)
+              dim = new Dimension(++this.dimid, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
+              subdimvals[subvalue] = dim
+              dim.rowIndexes = []
+            }
+            dim.rowIndexes.push(rowIndex)
           }
         }
       }
       return root
     }
-  // var dim = this.root
-  // for (let findex = 0; findex < this.dimensionsCount; findex++) {
-  //   var depth = this.dimensionsCount - findex
-  //   var field = this.fields[findex]
-  //   var dimMap = this.store.dataMap[field.name]
-  //   Object.keys(dimMap).forEach(k => {
-  //     dim.subdimvals.push(new Dimension(++this.dimid, dim, k, field, depth, false, findex == this.dimensionsCount - 1))
-  //     dim.rowIndexes = dimMap[k]
-  //   })
-  // }
   }
 
 }

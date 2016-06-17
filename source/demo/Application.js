@@ -3,7 +3,7 @@ import { Observable } from 'rx-lite'
 import PGridWidget from '../PGridWidget'
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 10
+  const nTiti = 100
   const nTutu = 2
   var arr = []
   var res = []
@@ -27,9 +27,10 @@ function getMockDataSource (dataRepetition, nToto) {
 
 const dataSourceArray = [
   getMockDataSource(1, 10),
-  ['toto21', 33, 666, 'titi0', 'tutu0'],
+  ['toto11', 33, 666, 'titi0', 'tutu0'],
   ['toto0', 1, 10, 'titi0', 'tutu0'],
-  [['toto0', 100, 1000, 'titi0', 'tutu0'], ['toto22', 44, 777, 'titi0', 'tutu0']]
+  [['toto1', 10, 100, 'titi0', 'tutu0'], ['toto12', 44, 777, 'titi0', 'tutu0']],
+  ['toto2', 10, 100, 'titi0', 'tutu0']
 ]
 
 const dataSource = Observable.interval(2000).take(dataSourceArray.length)
@@ -71,7 +72,10 @@ var config = {
   fields: [
     {
       name: '0',
-      caption: 'Toto'
+      caption: 'Toto',
+      sort: {
+        order: 'asc'
+      }
     },
     // {
     //     name: '1',
