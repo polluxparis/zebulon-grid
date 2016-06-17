@@ -7,71 +7,123 @@ import { DataCell } from '../../Cells'
 
 export default class OrbGrid extends Component {
 
+  componentWillReceiveProps (nextProps, nextState) {
+    const layout = this.getLayout(nextProps.store)
+
+    this.setState({ ...layout })
+
+    // Change scroll values to stay at the same position when modifying the layout
+    this.scrollLeft = this._grid.state.scrollLeft * (layout.columnHorizontalCount / this.state.columnHorizontalCount)
+    this.scrollTop = this._grid.state.scrollTop * (layout.rowVerticalCount / this.state.rowVerticalCount)
+  }
+
   componentWillUpdate (nextProps, nextState) {
-    this._grid.forceUpdate() // to handle case where all data fields are unactivated
+    // to handle case where all data fields are unactivated
+    this._grid.forceUpdate()
   }
 
   constructor (props) {
     super(props)
+
+    this.state = {
+      ...this.getLayout(props.store)
+    }
+
+    this.scrollLeft = 0
+    this.scrollTop = 0
+
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this)
     this.dataCellRenderer = this.dataCellRenderer.bind(this)
     this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this)
     this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this)
   }
 
-  initLayoutInfos (layout, sizes) {
-    this._cellHeight = sizes.cell.height
-    this._cellWidth = sizes.cell.width
+  getLayout ({layout, sizes}) {
+    const cellHeight = sizes.cell.height
+    const cellWidth = sizes.cell.width
 
-    this._rowVerticalCount = layout.rowHeaders.height
-    this._rowHorizontalCount = layout.rowHeaders.width
-    this._columnVerticalCount = layout.columnHeaders.height
-    this._columnHorizontalCount = layout.columnHeaders.width
+    const rowVerticalCount = layout.rowHeaders.height
+    const rowHorizontalCount = layout.rowHeaders.width
+    const columnVerticalCount = layout.columnHeaders.height
+    const columnHorizontalCount = layout.columnHeaders.width
 
-    this._rowHeadersWidth = this._rowHorizontalCount * this._cellWidth
-    this._rowHeadersHeight = this._rowVerticalCount * this._cellHeight
-    this._columnHeadersHeight = this._columnVerticalCount * this._cellHeight
-    this._columnHeadersWidth = this._columnHorizontalCount * this._cellWidth
+    const rowHeadersWidth = rowHorizontalCount * cellWidth
+    const rowHeadersHeight = rowVerticalCount * cellHeight
+    const columnHeadersHeight = columnVerticalCount * cellHeight
+    const columnHeadersWidth = columnHorizontalCount * cellWidth
 
-    this._width = Math.min(sizes.grid.width, this._rowHeadersWidth + this._columnHeadersWidth)
-    this._height = Math.min(sizes.grid.height, this._columnHeadersHeight + this._rowHeadersHeight)
+    const height = Math.min(sizes.grid.height, columnHeadersHeight + rowHeadersHeight)
+    const width = Math.min(sizes.grid.width, rowHeadersWidth + columnHeadersWidth)
+
+    return ({
+      cellHeight,
+      cellWidth,
+      rowVerticalCount,
+      rowHorizontalCount,
+      columnVerticalCount,
+      columnHorizontalCount,
+      rowHeadersWidth,
+      rowHeadersHeight,
+      columnHeadersHeight,
+      columnHeadersWidth,
+      height,
+      width
+    })
   }
 
   render () {
     console.log('rendering grid')
-    const {store} = this.props
-    const {rowsUi, columnsUi, layout, sizes} = store
-
-    this.initLayoutInfos(layout, sizes)
-
-    this._columnHeaders = columnsUi.headers
-    this._rowHeaders = rowsUi.headers
-
+    const {
+      columnHorizontalCount,
+      rowHorizontalCount,
+      cellHeight,
+      cellWidth,
+      height,
+      columnVerticalCount,
+      rowVerticalCount,
+      width
+    } = this.state
     return (
       <Grid
-        ref={ref => { this._grid = ref }}
-        width={this._width}
-        height={this._height}
-        columnWidth={this._cellWidth}
-        rowHeight={this._cellHeight}
-        columnCount={this._columnHorizontalCount + this._rowHorizontalCount}
-        rowCount={this._columnVerticalCount + this._rowVerticalCount}
-        cellRenderer={this._mockCellRenderer}
         cellRangeRenderer={this.cellRangeRenderer}
+        cellRenderer={this._mockCellRenderer}
+        columnCount={columnHorizontalCount + rowHorizontalCount}
+        columnWidth={cellWidth}
+        height={height}
         overscanRowCount={0}
         overscanColumnCount={0}
+        ref={ref => { this._grid = ref }}
+        rowCount={columnVerticalCount + rowVerticalCount}
+        rowHeight={cellHeight}
+        scrollToAlignment={'start'}
+        scrollLeft={this.scrollLeft}
+        scrollTop={this.scrollTop}
+        width={width}
       />
     )
   }
 
   cellRangeRenderer ({columnSizeAndPositionManager, columnStartIndex, columnStopIndex, isScrolling, rowSizeAndPositionManager, rowStartIndex, rowStopIndex, scrollLeft, scrollTop}) {
+    const {columnsUi, rowsUi} = this.props.store
+    const columnHeaders = columnsUi.headers
+    const rowHeaders = rowsUi.headers
+    const {
+      rowHorizontalCount,
+      columnHorizontalCount,
+      columnVerticalCount,
+      rowVerticalCount,
+      rowHeadersWidth,
+      columnHeadersHeight,
+      cellWidth,
+      cellHeight
+    } = this.state
     const renderedCells = []
 
     // to avoid rendering empty cells
     // there is a difference between columnCount (the prop of the Grid object) and the column count except the row headers
     // the -1 is here because there are inferior or equal signs in the loops
-    const _columnStopIndex = Math.min(columnStopIndex - this._rowHorizontalCount, this._columnHorizontalCount - 1)
-    const _rowStopIndex = Math.min(rowStopIndex - this._columnVerticalCount, this._rowVerticalCount - 1)
+    const _columnStopIndex = Math.min(columnStopIndex - rowHorizontalCount, columnHorizontalCount - 1)
+    const _rowStopIndex = Math.min(rowStopIndex - columnVerticalCount, rowVerticalCount - 1)
 
     // Top-left corner piece
     renderedCells.push(
@@ -82,8 +134,8 @@ export default class OrbGrid extends Component {
           position: 'fixed',
           left: scrollLeft,
           top: scrollTop,
-          width: this._rowHeadersWidth,
-          height: this._columnHeadersHeight,
+          width: rowHeadersWidth,
+          height: columnHeadersHeight,
           zIndex: 2,
           backgroundColor: '#fff'}}>
       </div>
@@ -91,22 +143,22 @@ export default class OrbGrid extends Component {
 
     // Render fixed header rows
     for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
-      for (let columnHeaderIndex = 0; columnHeaderIndex < this._columnHeaders[columnIndex].length; columnHeaderIndex++) {
+      for (let columnHeaderIndex = 0; columnHeaderIndex < columnHeaders[columnIndex].length; columnHeaderIndex++) {
         let renderedCell = this.columnHeaderRenderer({
           rowIndex: columnIndex,
           columnIndex: columnHeaderIndex
         })
-        let columnHeader = this._columnHeaders[columnIndex][columnHeaderIndex]
+        let columnHeader = columnHeaders[columnIndex][columnHeaderIndex]
         renderedCells.push(
           <div
             key={`fixedrow-${columnHeaderIndex}-${columnIndex}`}
             className={'Grid__cell'}
             style={{
               position: 'fixed',
-              left: columnIndex * this._cellWidth + this._rowHeadersWidth,
-              top: (this._columnVerticalCount - this._columnHeaders[columnIndex].length + columnHeaderIndex) * this._cellHeight + scrollTop,
-              height: this._cellHeight * columnHeader.vspan(),
-              width: this._cellWidth * columnHeader.hspan(),
+              left: columnIndex * cellWidth + rowHeadersWidth,
+              top: (columnVerticalCount - columnHeaders[columnIndex].length + columnHeaderIndex) * cellHeight + scrollTop,
+              height: cellHeight * columnHeader.vspan(),
+              width: cellWidth * columnHeader.hspan(),
               zIndex: 1,
               backgroundColor: '#eef8fb'
             }}>
@@ -118,21 +170,21 @@ export default class OrbGrid extends Component {
 
     // Render fixed left columns
     for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
-      for (let rowHeaderIndex = 0; rowHeaderIndex < this._rowHeaders[rowIndex].length; rowHeaderIndex++) {
+      for (let rowHeaderIndex = 0; rowHeaderIndex < rowHeaders[rowIndex].length; rowHeaderIndex++) {
         let renderedCell = this.rowHeaderRenderer({
           columnIndex: rowHeaderIndex,
           rowIndex})
-        let rowHeader = this._rowHeaders[rowIndex][rowHeaderIndex]
+        let rowHeader = rowHeaders[rowIndex][rowHeaderIndex]
         renderedCells.push(
           <div
             key={`fixedcol-${rowHeaderIndex}-${rowIndex}`}
             className={'Grid__cell'}
             style={{
               position: 'fixed',
-              left: (this._rowHorizontalCount - this._rowHeaders[rowIndex].length + rowHeaderIndex) * this._cellWidth + scrollLeft,
-              top: rowIndex * this._cellHeight + this._columnHeadersHeight,
-              height: this._cellHeight * rowHeader.vspan(),
-              width: this._cellWidth * rowHeader.hspan(),
+              left: (rowHorizontalCount - rowHeaders[rowIndex].length + rowHeaderIndex) * cellWidth + scrollLeft,
+              top: rowIndex * cellHeight + columnHeadersHeight,
+              height: cellHeight * rowHeader.vspan(),
+              width: cellWidth * rowHeader.hspan(),
               zIndex: 1,
               backgroundColor: '#eef8fb'
             }}>
@@ -160,10 +212,10 @@ export default class OrbGrid extends Component {
               key={key}
               className='Grid__cell'
               style={{
-                height: this._cellHeight,
-                width: this._cellWidth,
-                left: columnDatum.offset + this._rowHeadersWidth,
-                top: rowDatum.offset + this._columnHeadersHeight
+                height: cellHeight,
+                width: cellWidth,
+                left: columnDatum.offset + rowHeadersWidth,
+                top: rowDatum.offset + columnHeadersHeight
               }}>
               {renderedCell}
             </div>
