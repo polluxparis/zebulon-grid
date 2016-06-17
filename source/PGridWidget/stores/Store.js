@@ -89,13 +89,13 @@ export default class Store {
     return new Axe(AxeType.COLUMNS, this.config.columnFields, this)
   }
 
-  getrowsUi () {
-    this.rows = this.getrows()
+  getrowsUi (noNewAxe) {
+    if (!noNewAxe) { this.rows = this.getrows() }
     return new AxeUi(this.rows)
   }
 
-  getcolumnsUi () {
-    this.columns = this.getcolumns()
+  getcolumnsUi (noNewAxe) {
+    if (!noNewAxe) { this.columns = this.getcolumns() }
     return new AxeUi(this.columns)
   }
 
@@ -130,12 +130,26 @@ export default class Store {
   }
 
   sort (axetype, field) {
+    let sorted = false
     if (axetype === AxeType.ROWS) {
       this.rows.sort(field)
+      sorted = true
     } else if (axetype === AxeType.COLUMNS) {
       this.columns.sort(field)
-    } else {
-      return
+      sorted = true
+    }
+    if (sorted && this.init) {
+      switch (axetype) {
+        case AxeType.ROWS:
+          this.rowsUi = this.getrowsUi(true)
+          break
+        case AxeType.COLUMNS:
+          this.columnsUi = this.getcolumnsUi(true)
+          break
+        default:
+          break
+      }
+      this.component.forceUpdate()
     }
   }
 
