@@ -95,7 +95,6 @@ export default class OrbGrid extends Component {
         ref={ref => { this._grid = ref }}
         rowCount={columnVerticalCount + rowVerticalCount}
         rowHeight={cellHeight}
-        scrollToAlignment={'start'}
         scrollLeft={this.scrollLeft}
         scrollTop={this.scrollTop}
         width={width}
@@ -103,7 +102,23 @@ export default class OrbGrid extends Component {
     )
   }
 
-  cellRangeRenderer ({columnSizeAndPositionManager, columnStartIndex, columnStopIndex, isScrolling, rowSizeAndPositionManager, rowStartIndex, rowStopIndex, scrollLeft, scrollTop}) {
+  cellRangeRenderer ({
+    cellCache,
+    cellClassName,
+    cellRenderer,
+    cellStyle,
+    columnSizeAndPositionManager,
+    columnStartIndex,
+    columnStopIndex,
+    horizontalOffsetAdjustment,
+    isScrolling,
+    rowSizeAndPositionManager,
+    rowStartIndex,
+    rowStopIndex,
+    scrollLeft,
+    scrollTop,
+    verticalOffsetAdjustment
+  }) {
     const {columnsUi, rowsUi} = this.props.store
     const columnHeaders = columnsUi.headers
     const rowHeaders = rowsUi.headers
@@ -155,7 +170,7 @@ export default class OrbGrid extends Component {
             className={'Grid__cell'}
             style={{
               position: 'fixed',
-              left: columnIndex * cellWidth + rowHeadersWidth,
+              left: columnIndex * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment,
               top: (columnVerticalCount - columnHeaders[columnIndex].length + columnHeaderIndex) * cellHeight + scrollTop,
               height: cellHeight * columnHeader.vspan(),
               width: cellWidth * columnHeader.hspan(),
@@ -182,7 +197,7 @@ export default class OrbGrid extends Component {
             style={{
               position: 'fixed',
               left: (rowHorizontalCount - rowHeaders[rowIndex].length + rowHeaderIndex) * cellWidth + scrollLeft,
-              top: rowIndex * cellHeight + columnHeadersHeight,
+              top: rowIndex * cellHeight + columnHeadersHeight + verticalOffsetAdjustment,
               height: cellHeight * rowHeader.vspan(),
               width: cellWidth * rowHeader.hspan(),
               zIndex: 1,
@@ -214,8 +229,8 @@ export default class OrbGrid extends Component {
               style={{
                 height: cellHeight,
                 width: cellWidth,
-                left: columnDatum.offset + rowHeadersWidth,
-                top: rowDatum.offset + columnHeadersHeight
+                left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
+                top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
               }}>
               {renderedCell}
             </div>
