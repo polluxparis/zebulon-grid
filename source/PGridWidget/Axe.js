@@ -92,7 +92,7 @@ export class Axe {
 
   // perhaps introduce a result parameter to obtain tail call optimisation
   getDimensionsByDepth (depth, dim) {
-    if (!dim) { dim = [this.root] }
+    if (!dim) { dim = this.root }
     if (depth === this.dimensionsCount + 1) { return [dim] }
     return [].concat(...Object.keys(dim.subdimvals).map(dimValue => this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])))
   }
