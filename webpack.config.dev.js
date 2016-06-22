@@ -59,5 +59,10 @@ module.exports = {
   devServer: {
     contentBase: 'build',
     port: 3000
+  },
+  externals: {
+    'react/addons': true,
+    'react/lib/ExecutionEnvironment': true,
+    'react/lib/ReactContext': true
   }
 }
