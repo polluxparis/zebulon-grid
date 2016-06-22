@@ -24,6 +24,8 @@ export default class AxeUi {
      */
     this.headers = []
 
+    this._x = 0
+
     this.build()
   }
 
@@ -61,15 +63,17 @@ export default class AxeUi {
     this.headers = headers
   }
 
-  addDataHeaders (infos, parent) {
+  addDataHeaders (infos, parent, y) {
     if (this.isMultiDataFields()) {
       var lastInfosArray = infos[infos.length - 1]
       for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
-        lastInfosArray.push(new DataHeader(this.axe.store.config.activatedDataFields[datafieldindex], parent))
+        lastInfosArray.push(new DataHeader(this.axe.store.config.activatedDataFields[datafieldindex], parent, this._x++, y))
         if (datafieldindex < this.dataFieldsCount() - 1) {
           infos.push((lastInfosArray = []))
         }
       }
+    } else {
+      this._x++
     }
   }
 
@@ -79,7 +83,7 @@ export default class AxeUi {
    * @param  {object}  infos - array to fill with ui dimension info
    * @param  {number}  axetype - type of the axe (rows or columns)
    */
-  getUiInfo (infos, dimension, axetype) {
+  getUiInfo (infos, dimension, axetype, y = 0) {
     if (dimension.values.length > 0) {
       var infosMaxIndex = infos.length - 1
       var lastInfosArray = infos[infosMaxIndex]
@@ -91,12 +95,13 @@ export default class AxeUi {
 
         var subTotalHeader
         if (!subdim.isLeaf && subdim.field.subTotal.visible) {
-          subTotalHeader = new Header(axetype, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount())
+          // x here will probably create bugs. To change when necessary
+          subTotalHeader = new Header(axetype, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount(), this._x, y)
         } else {
           subTotalHeader = null
         }
 
-        var newHeader = new Header(axetype, null, subdim, parent, this.dataFieldsCount(), subTotalHeader)
+        var newHeader = new Header(axetype, null, subdim, parent, this.dataFieldsCount(), this._x, y, subTotalHeader)
 
         if (valIndex > 0) {
           infos.push((lastInfosArray = []))
@@ -105,16 +110,16 @@ export default class AxeUi {
         lastInfosArray.push(newHeader)
 
         if (!subdim.isLeaf) {
-          this.getUiInfo(infos, subdim, axetype)
+          this.getUiInfo(infos, subdim, axetype, y + 1)
           if (subdim.field.subTotal.visible) {
             infos.push([subTotalHeader])
 
             // add sub-total data headers if more than 1 data field and they will be the leaf headers
-            this.addDataHeaders(infos, subTotalHeader)
+            this.addDataHeaders(infos, subTotalHeader, y + 1)
           }
         } else {
           // add data headers if more than 1 data field and they will be the leaf headers
-          this.addDataHeaders(infos, newHeader)
+          this.addDataHeaders(infos, newHeader, y + 1)
         }
       }
     }

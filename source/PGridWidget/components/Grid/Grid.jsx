@@ -128,9 +128,7 @@ export default class OrbGrid extends Component {
       columnVerticalCount,
       rowVerticalCount,
       rowHeadersWidth,
-      columnHeadersHeight,
-      cellWidth,
-      cellHeight
+      columnHeadersHeight
     } = this.state
     const renderedCells = []
 
@@ -157,55 +155,38 @@ export default class OrbGrid extends Component {
     )
 
     // Render fixed header rows
+
+    // Render big cells on top of current cells if necessary
+    if (columnHeaders[columnStartIndex].length < columnVerticalCount) {
+      let columnHeader = columnHeaders[columnStartIndex][0]
+      while (columnHeader.parent) {
+        columnHeader = columnHeader.parent
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollTop, horizontalOffsetAdjustment}))
+      }
+    }
+
     for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
       for (let columnHeaderIndex = 0; columnHeaderIndex < columnHeaders[columnIndex].length; columnHeaderIndex++) {
-        let renderedCell = this.columnHeaderRenderer({
-          rowIndex: columnIndex,
-          columnIndex: columnHeaderIndex
-        })
         let columnHeader = columnHeaders[columnIndex][columnHeaderIndex]
-        renderedCells.push(
-          <div
-            key={`fixedrow-${columnHeaderIndex}-${columnIndex}`}
-            className={'Grid__cell'}
-            style={{
-              position: 'fixed',
-              left: columnIndex * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment,
-              top: (columnVerticalCount - columnHeaders[columnIndex].length + columnHeaderIndex) * cellHeight + scrollTop,
-              height: cellHeight * columnHeader.vspan(),
-              width: cellWidth * columnHeader.hspan(),
-              zIndex: 1,
-              backgroundColor: '#eef8fb'
-            }}>
-            {renderedCell}
-          </div>
-        )
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollTop, horizontalOffsetAdjustment}))
       }
     }
 
     // Render fixed left columns
+
+    // Render big cells on the left of current cells if necessary
+    if (rowHeaders[rowStartIndex].length < rowHorizontalCount) {
+      let rowHeader = rowHeaders[rowStartIndex][0]
+      while (rowHeader.parent) {
+        const rowHeader = rowHeader.parent
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, verticalOffsetAdjustment}))
+      }
+    }
+
     for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       for (let rowHeaderIndex = 0; rowHeaderIndex < rowHeaders[rowIndex].length; rowHeaderIndex++) {
-        let renderedCell = this.rowHeaderRenderer({
-          columnIndex: rowHeaderIndex,
-          rowIndex})
         let rowHeader = rowHeaders[rowIndex][rowHeaderIndex]
-        renderedCells.push(
-          <div
-            key={`fixedcol-${rowHeaderIndex}-${rowIndex}`}
-            className={'Grid__cell'}
-            style={{
-              position: 'fixed',
-              left: (rowHorizontalCount - rowHeaders[rowIndex].length + rowHeaderIndex) * cellWidth + scrollLeft,
-              top: rowIndex * cellHeight + columnHeadersHeight + verticalOffsetAdjustment,
-              height: cellHeight * rowHeader.vspan(),
-              width: cellWidth * rowHeader.hspan(),
-              zIndex: 1,
-              backgroundColor: '#eef8fb'
-            }}>
-            {renderedCell}
-          </div>
-        )
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, verticalOffsetAdjustment}))
       }
     }
 
@@ -213,29 +194,9 @@ export default class OrbGrid extends Component {
     if (!isScrolling) {
       for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
         let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
-
         for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
           let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-          let key = `${rowIndex}-${columnIndex}`
-          let renderedCell = this.dataCellRenderer({
-            columnIndex,
-            isScrolling,
-            rowIndex})
-
-          let child = (
-            <div
-              key={key}
-              className='Grid__cell'
-              style={{
-                height: cellHeight,
-                width: cellWidth,
-                left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
-                top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
-              }}>
-              {renderedCell}
-            </div>
-          )
-          renderedCells.push(child)
+          renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, verticalOffsetAdjustment}))
         }
       }
     }
@@ -243,7 +204,8 @@ export default class OrbGrid extends Component {
     return renderedCells
   }
 
-  dataCellRenderer ({columnIndex, rowIndex, isScrolling}) {
+  dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, verticalOffsetAdjustment}) {
+    const {cellHeight, cellWidth, rowHeadersWidth, columnHeadersHeight} = this.state
     const {store} = this.props
     const {rowsUi, columnsUi} = store
     const rowHeaderRow = rowsUi.headers[rowIndex]
@@ -256,25 +218,64 @@ export default class OrbGrid extends Component {
       rowHeader,
       columnHeader
     )
-    return <DataCellComp key={`data-${rowIndex}-${columnIndex}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
+    const renderedCell = <DataCellComp key={`data-${rowIndex}-${columnIndex}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
+    return (
+      <div
+        key={`${rowIndex}-${columnIndex}`}
+        className='Grid__cell'
+        style={{
+          height: cellHeight,
+          width: cellWidth,
+          left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
+          top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
+        }}>
+        {renderedCell}
+      </div>
+    )
   }
 
-  columnHeaderRenderer ({columnIndex, rowIndex}) {
-    const cell = this.props.store.columnsUi.headers[rowIndex][columnIndex]
-    if (!cell) {
-      return null
-    } else {
-      return <HeaderCellComp key={`column-${rowIndex}-${columnIndex}`} cell={cell} onToggle={() => 33} />
-    }
+  columnHeaderRenderer ({columnHeader, scrollTop, horizontalOffsetAdjustment}) {
+    const {cellWidth, cellHeight, rowHeadersWidth} = this.state
+    let {x, y} = columnHeader
+    let renderedCell = <HeaderCellComp key={`row-${x}-${y}`} cell={columnHeader} onToggle={() => 33} />
+    return (
+      <div
+        key={`fixedrow-${x}-${y}`}
+        className={'Grid__cell'}
+        style={{
+          position: 'fixed',
+          left: x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment,
+          top: y * cellHeight + scrollTop,
+          height: cellHeight * columnHeader.vspan(),
+          width: cellWidth * columnHeader.hspan(),
+          zIndex: 1,
+          backgroundColor: '#eef8fb'
+        }}>
+        {renderedCell}
+      </div>
+    )
   }
 
-  rowHeaderRenderer ({columnIndex, rowIndex}) {
-    const cell = this.props.store.rowsUi.headers[rowIndex][columnIndex]
-    if (!cell) {
-      return null
-    } else {
-      return <HeaderCellComp key={`row-${rowIndex}-${columnIndex}`} cell={cell} onToggle={() => 33} />
-    }
+  rowHeaderRenderer ({rowHeader, scrollLeft, verticalOffsetAdjustment}) {
+    const {cellWidth, cellHeight, columnHeadersHeight} = this.state
+    let {x, y} = rowHeader
+    let renderedCell = <HeaderCellComp key={`col-${x}-${y}`} cell={rowHeader} onToggle={() => 33} />
+    return (
+      <div
+        key={`fixedcol-${x}-${y}`}
+        className={'Grid__cell'}
+        style={{
+          position: 'fixed',
+          left: y * cellWidth + scrollLeft,
+          top: x * cellHeight + columnHeadersHeight + verticalOffsetAdjustment,
+          height: cellHeight * rowHeader.vspan(),
+          width: cellWidth * rowHeader.hspan(),
+          zIndex: 1,
+          backgroundColor: '#eef8fb'
+        }}>
+        {renderedCell}
+      </div>
+    )
   }
 
   _mockCellRenderer ({columnIndex, rowIndex}) {

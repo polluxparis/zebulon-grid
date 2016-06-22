@@ -61,9 +61,15 @@ export const HeaderType = {
   }
 }
 
-export class CellBase {
+class CellBase {
 
   constructor (options) {
+    // CellBase is an abstract class
+    // Symbol new.target does not pass in Uglify.js
+    // if (new.target === CellBase) {
+    //   throw new Error('CellBase is an abstract class and cannot be instantiated directly.')
+    // }
+
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
      * @type {orb.AxeType}
@@ -130,7 +136,7 @@ export class CellBase {
  */
 export class Header extends CellBase {
 
-  constructor (axetype, headerTypeP, dim, parent, datafieldscount, subtotalHeader) {
+  constructor (axetype, headerTypeP, dim, parent, datafieldscount, x, y, subtotalHeader) {
     const isRowsAxe = axetype === AxeType.ROWS
     const headerType = headerTypeP || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER)
     var value
@@ -181,6 +187,9 @@ export class Header extends CellBase {
     }
 
     this.datafieldscount = datafieldscount
+
+    this.x = x
+    this.y = y
   }
 
   expand () {
@@ -259,7 +268,7 @@ export class Header extends CellBase {
 
 export class DataHeader extends CellBase {
 
-  constructor (datafield, parent) {
+  constructor (datafield, parent, x, y) {
     super({
       axetype: null,
       type: HeaderType.DATA_HEADER,
@@ -270,6 +279,9 @@ export class DataHeader extends CellBase {
     })
 
     this.parent = parent
+
+    this.x = x
+    this.y = y
   }
 }
 
