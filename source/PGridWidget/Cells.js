@@ -65,9 +65,10 @@ class CellBase {
 
   constructor (options) {
     // CellBase is an abstract class
-    if (new.target === CellBase) {
-      throw new Error('CellBase is an abstract class and cannot be instantiated directly.')
-    }
+    // Symbol new.target does not pass in Uglify.js
+    // if (new.target === CellBase) {
+    //   throw new Error('CellBase is an abstract class and cannot be instantiated directly.')
+    // }
 
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
