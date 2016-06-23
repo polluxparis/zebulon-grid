@@ -165,7 +165,7 @@ export class Header extends CellBase {
       axetype,
       type: headerType,
       template: isRowsAxe ? 'cell-template-row-header' : 'cell-template-column-header',
-      value: value,
+      value,
       cssclass: HeaderType.getHeaderClass(headerType, axetype)
     }
 

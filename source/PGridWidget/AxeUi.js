@@ -30,19 +30,20 @@ export default class AxeUi {
   }
 
   build () {
-    var headers = []
-    var grandtotalHeader
+    const headers = []
+    let grandtotalHeader
+    let y
 
     if (this.axe != null) {
       if (this.axe.root.values.length > 0 || this.axe.store.config.grandTotal.rowsvisible) {
         headers.push([])
 
         // Fill Rows layout infos
-        this.getUiInfo(headers, this.axe.root, this.axe.type)
+        y = this.getUiInfo(headers, this.axe.root, this.axe.type)
 
         if (this.axe.store.config.grandTotal.rowsvisible) {
           var lastrow = headers[headers.length - 1]
-          grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount())
+          grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount(), this._x, y)
           if (lastrow.length === 0) {
             lastrow.push(grandtotalHeader)
           } else {
@@ -52,12 +53,12 @@ export default class AxeUi {
       }
 
       if (headers.length === 0) {
-        headers.push([grandtotalHeader = new Header(this.axe.type, HeaderType.INNER, this.axe.root, null, this.dataFieldsCount())])
+        headers.push([grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount(), this._x, y = 0)])
       }
 
       if (grandtotalHeader) {
         // add grand-total data headers if more than 1 data field and they will be the leaf headers
-        this.addDataHeaders(headers, grandtotalHeader)
+        this.addDataHeaders(headers, grandtotalHeader, y + 1)
       }
     }
     this.headers = headers
@@ -123,6 +124,7 @@ export default class AxeUi {
         }
       }
     }
+    return y
   }
 
   dataFieldsCount () {
