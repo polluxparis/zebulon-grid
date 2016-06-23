@@ -161,14 +161,14 @@ export default class OrbGrid extends Component {
       let columnHeader = columnHeaders[columnStartIndex][0]
       while (columnHeader.parent) {
         columnHeader = columnHeader.parent
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollTop, horizontalOffsetAdjustment}))
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}))
       }
     }
 
     for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
       for (let columnHeaderIndex = 0; columnHeaderIndex < columnHeaders[columnIndex].length; columnHeaderIndex++) {
         let columnHeader = columnHeaders[columnIndex][columnHeaderIndex]
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollTop, horizontalOffsetAdjustment}))
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}))
       }
     }
 
@@ -178,15 +178,15 @@ export default class OrbGrid extends Component {
     if (rowHeaders[rowStartIndex].length < rowHorizontalCount) {
       let rowHeader = rowHeaders[rowStartIndex][0]
       while (rowHeader.parent) {
-        const rowHeader = rowHeader.parent
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, verticalOffsetAdjustment}))
+        rowHeader = rowHeader.parent
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}))
       }
     }
 
     for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       for (let rowHeaderIndex = 0; rowHeaderIndex < rowHeaders[rowIndex].length; rowHeaderIndex++) {
         let rowHeader = rowHeaders[rowIndex][rowHeaderIndex]
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, verticalOffsetAdjustment}))
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}))
       }
     }
 
@@ -234,32 +234,40 @@ export default class OrbGrid extends Component {
     )
   }
 
-  columnHeaderRenderer ({columnHeader, scrollTop, horizontalOffsetAdjustment}) {
+  columnHeaderRenderer ({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}) {
     const {cellWidth, cellHeight, rowHeadersWidth} = this.state
     let {x, y} = columnHeader
     let renderedCell = <HeaderCellComp key={`row-${x}-${y}`} cell={columnHeader} onToggle={() => 33} />
+    const left = x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment
+    const width = cellWidth * columnHeader.hspan()
+    const affix = width > cellWidth && x <= columnStartIndex
     return (
       <div
         key={`fixedrow-${x}-${y}`}
         className={'Grid__cell'}
         style={{
           position: 'fixed',
-          left: x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment,
+          left,
           top: y * cellHeight + scrollTop,
           height: cellHeight * columnHeader.vspan(),
-          width: cellWidth * columnHeader.hspan(),
+          width,
           zIndex: 1,
           backgroundColor: '#eef8fb'
         }}>
-        {renderedCell}
+        <div style={affix ? {position: 'relative', left: Math.min(scrollLeft % width, width - cellWidth), color: 'red'} : {}}>
+          {renderedCell}
+        </div>
       </div>
     )
   }
 
-  rowHeaderRenderer ({rowHeader, scrollLeft, verticalOffsetAdjustment}) {
+  rowHeaderRenderer ({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}) {
     const {cellWidth, cellHeight, columnHeadersHeight} = this.state
     let {x, y} = rowHeader
     let renderedCell = <HeaderCellComp key={`col-${x}-${y}`} cell={rowHeader} onToggle={() => 33} />
+    const top = x * cellHeight + columnHeadersHeight + verticalOffsetAdjustment
+    const height = cellHeight * rowHeader.vspan()
+    const affix = height > cellHeight && x <= rowStartIndex
     return (
       <div
         key={`fixedcol-${x}-${y}`}
@@ -267,13 +275,15 @@ export default class OrbGrid extends Component {
         style={{
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
-          top: x * cellHeight + columnHeadersHeight + verticalOffsetAdjustment,
-          height: cellHeight * rowHeader.vspan(),
+          top,
+          height,
           width: cellWidth * rowHeader.hspan(),
           zIndex: 1,
           backgroundColor: '#eef8fb'
         }}>
-        {renderedCell}
+        <div style={affix ? {position: 'relative', top: Math.min(scrollTop % height, height - cellHeight), color: 'red'} : {}}>
+          {renderedCell}
+        </div>
       </div>
     )
   }
