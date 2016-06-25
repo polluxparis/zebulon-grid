@@ -138,6 +138,9 @@ export default class OrbGrid extends Component {
     const _columnStopIndex = Math.min(columnStopIndex - rowHorizontalCount, columnHorizontalCount - 1)
     const _rowStopIndex = Math.min(rowStopIndex - columnVerticalCount, rowVerticalCount - 1)
 
+    const visibleRows = (_rowStopIndex - rowStartIndex) + 1
+    const visibleColumns = (_columnStopIndex - columnStartIndex) + 1
+
     // Top-left corner piece
     renderedCells.push(
       <div
@@ -161,14 +164,14 @@ export default class OrbGrid extends Component {
       let columnHeader = columnHeaders[columnStartIndex][0]
       while (columnHeader.parent) {
         columnHeader = columnHeader.parent
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}))
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment}))
       }
     }
 
     for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
       for (let columnHeaderIndex = 0; columnHeaderIndex < columnHeaders[columnIndex].length; columnHeaderIndex++) {
         let columnHeader = columnHeaders[columnIndex][columnHeaderIndex]
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}))
+        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment}))
       }
     }
 
@@ -179,14 +182,14 @@ export default class OrbGrid extends Component {
       let rowHeader = rowHeaders[rowStartIndex][0]
       while (rowHeader.parent) {
         rowHeader = rowHeader.parent
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}))
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, visibleRows, verticalOffsetAdjustment}))
       }
     }
 
     for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
       for (let rowHeaderIndex = 0; rowHeaderIndex < rowHeaders[rowIndex].length; rowHeaderIndex++) {
         let rowHeader = rowHeaders[rowIndex][rowHeaderIndex]
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}))
+        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, rowStartIndex, visibleRows, verticalOffsetAdjustment}))
       }
     }
 
@@ -196,7 +199,7 @@ export default class OrbGrid extends Component {
         let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
         for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
           let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-          renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, verticalOffsetAdjustment}))
+          renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
         }
       }
     }
@@ -204,7 +207,7 @@ export default class OrbGrid extends Component {
     return renderedCells
   }
 
-  dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, verticalOffsetAdjustment}) {
+  dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}) {
     const {cellHeight, cellWidth, rowHeadersWidth, columnHeadersHeight} = this.state
     const {store} = this.props
     const {rowsUi, columnsUi} = store
@@ -218,10 +221,10 @@ export default class OrbGrid extends Component {
       rowHeader,
       columnHeader
     )
-    const renderedCell = <DataCellComp key={`data-${rowIndex}-${columnIndex}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
+    const renderedCell = <DataCellComp key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
     return (
       <div
-        key={`${rowIndex}-${columnIndex}`}
+        key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
         className='Grid__cell'
         style={{
           height: cellHeight,
@@ -234,16 +237,16 @@ export default class OrbGrid extends Component {
     )
   }
 
-  columnHeaderRenderer ({columnHeader, scrollLeft, scrollTop, columnStartIndex, horizontalOffsetAdjustment}) {
+  columnHeaderRenderer ({columnHeader, scrollLeft, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment}) {
     const {cellWidth, cellHeight, rowHeadersWidth} = this.state
     let {x, y} = columnHeader
-    let renderedCell = <HeaderCellComp key={`row-${x}-${y}`} cell={columnHeader} onToggle={() => 33} />
+    let renderedCell = <HeaderCellComp key={`row-${x % visibleColumns}-${y}`} cell={columnHeader} onToggle={() => 33} />
     const left = x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment
     const width = cellWidth * columnHeader.hspan()
     const affix = width > cellWidth && x <= columnStartIndex
     return (
       <div
-        key={`fixedrow-${x}-${y}`}
+        key={`fixedrow-${x % visibleColumns}-${y}`}
         className={'Grid__cell'}
         style={{
           position: 'fixed',
@@ -261,16 +264,16 @@ export default class OrbGrid extends Component {
     )
   }
 
-  rowHeaderRenderer ({rowHeader, scrollLeft, scrollTop, rowStartIndex, verticalOffsetAdjustment}) {
+  rowHeaderRenderer ({rowHeader, scrollLeft, scrollTop, rowStartIndex, visibleRows, visibleColumns, verticalOffsetAdjustment}) {
     const {cellWidth, cellHeight, columnHeadersHeight} = this.state
     let {x, y} = rowHeader
-    let renderedCell = <HeaderCellComp key={`col-${x}-${y}`} cell={rowHeader} onToggle={() => 33} />
+    let renderedCell = <HeaderCellComp key={`col-${x % visibleRows}-${y}`} cell={rowHeader} onToggle={() => 33} />
     const top = x * cellHeight + columnHeadersHeight + verticalOffsetAdjustment
     const height = cellHeight * rowHeader.vspan()
     const affix = height > cellHeight && x <= rowStartIndex
     return (
       <div
-        key={`fixedcol-${x}-${y}`}
+        key={`fixedcol-${x % visibleRows}-${y}`}
         className={'Grid__cell'}
         style={{
           position: 'fixed',
