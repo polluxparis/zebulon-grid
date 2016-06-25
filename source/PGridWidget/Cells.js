@@ -145,7 +145,7 @@ export class Header extends CellBase {
 
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
-        value = 'Grand Total'
+        value = 'Total'
         hspan = isRowsAxe ? dim.depth - 1 || 1 : datafieldscount
         vspan = isRowsAxe ? datafieldscount : dim.depth - 1 || 1
         break
