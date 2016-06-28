@@ -1,4 +1,5 @@
 import { Observable } from 'rx-lite'
+// import { TestRunner } from 'fps-measurer'
 
 import PGridWidget from '../PGridWidget'
 
@@ -150,3 +151,51 @@ var config = {
 
 const widget = new PGridWidget(config)
 widget.render(document.getElementById('root'))
+
+// /** Tests a specific use case- scrolling a large FlexTable */
+// function testCase (completedCallback) {
+//   const grid = document.querySelector('.Grid')
+//   grid.scrollTop = 0
+
+//   const maxScrollTop = grid.scrollHeight
+
+//   var interval = 1
+//   var scrollTop = 0
+
+//   function incrementScrollTop () {
+//     if (!testRunner.isRunning()) {
+//       return
+//     }
+
+//     interval *= 1.05
+//     scrollTop = Math.min(scrollTop + interval, maxScrollTop)
+
+//     grid.scrollTop = scrollTop
+
+//     if (scrollTop < maxScrollTop) {
+//       requestAnimationFrame(incrementScrollTop)
+//     } else {
+//       completedCallback()
+//     }
+//   }
+
+//   incrementScrollTop()
+// }
+
+// const testRunner = new TestRunner(testCase, 5)
+
+// const fpsTestButton = document.createElement('input')
+// fpsTestButton.id = 'fps-test'
+// fpsTestButton.type = 'button'
+// fpsTestButton.value = 'Launch FPS test'
+// fpsTestButton.style = ''
+
+// document.body.insertBefore(fpsTestButton, document.getElementById('root'))
+
+// document.getElementById('fps-test').addEventListener('click', function (event) {
+//   if (testRunner.isRunning()) {
+//     testRunner.stop()
+//   } else {
+//     testRunner.start()
+//   }
+// })

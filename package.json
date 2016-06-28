@@ -102,6 +102,7 @@
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
+    "fps-measurer": "0.0.2",
     "fs-extra": "^0.26.2",
     "gh-pages": "^0.6.0",
     "html-webpack-plugin": "^1.7.0",
