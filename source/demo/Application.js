@@ -1,7 +1,7 @@
 import { Observable } from 'rx-lite'
 // import { TestRunner } from 'fps-measurer'
 
-import PGridWidget from '../PGridWidget'
+import PGridWidget from '../index'
 
 function getMockDataSource (dataRepetition, nToto) {
   const nTiti = 100

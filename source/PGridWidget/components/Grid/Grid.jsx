@@ -194,7 +194,7 @@ export default class OrbGrid extends Component {
     }
 
     // Render data cells
-    // if (!isScrolling) {
+    if (!isScrolling) {
       for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
         let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
         for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
@@ -202,7 +202,7 @@ export default class OrbGrid extends Component {
           renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
         }
       }
-    // }
+    }
 
     return renderedCells
   }
