@@ -21,28 +21,33 @@ let pivotId = 1
 
 export default class Main extends Component {
 
+  componentWillReceiveProps (newProps) {
+    console.log('main received props', newProps)
+    this.setState({store: new Store(this, newProps.config)})
+  }
+
   constructor (props) {
     super(props)
     this.id = pivotId++
     DragManager.init(this)
 
-    this.store = new Store(this, props.config)
+    this.state = {store: new Store(this, props.config)}
   }
 
   sort (axetype, field) {
-    this.store.sort(axetype, field)
+    this.state.store.sort(axetype, field)
   }
 
   moveButton (button, newAxeType, position) {
-    this.store.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
+    this.state.store.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
   }
 
   toggleSubtotals (axetype) {
-    this.store.toggleSubtotals(axetype)
+    this.state.store.toggleSubtotals(axetype)
   }
 
   toggleGrandtotal (axetype) {
-    this.store.toggleGrandtotal(axetype)
+    this.state.store.toggleGrandtotal(axetype)
   }
 
   componentDidMount () {
@@ -54,14 +59,15 @@ export default class Main extends Component {
   }
 
   render () {
-    console.log(this.store)
+    const {store} = this.state
+    console.log(store)
     return (
       <div>
         <div className={'orb'}>
           <UpperButtons
-            store={this.store}
+            store={store}
           />
-          <Grid store={this.store} />
+          <Grid store={store} />
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
         </div>
       </div>
