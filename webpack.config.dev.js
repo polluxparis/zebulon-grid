@@ -58,7 +58,7 @@ module.exports = {
   },
   devServer: {
     contentBase: 'build',
-    port: 3000
+    port: 4000
   },
   externals: {
     'react/addons': true,

@@ -20,8 +20,8 @@ export default class Store {
   dataMatrix = {}
   defaultfield = { name: '#undefined#' }
 
-  constructor (component, config) {
-    this.component = component
+  constructor (config, forceUpdateCallback) {
+    this.forceUpdateCallback = forceUpdateCallback
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
@@ -49,7 +49,7 @@ export default class Store {
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
-        if (this.init) { this.component.forceUpdate() }
+        if (this.init) { this.forceUpdateCallback() }
       }
     }
   }
@@ -149,7 +149,7 @@ export default class Store {
         default:
           break
       }
-      this.component.forceUpdate()
+      this.forceUpdateCallback()
     }
   }
 
@@ -167,7 +167,7 @@ export default class Store {
         this.rowsUi = this.getrowsUi()
     }
     this.layout = this.getlayout()
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   toggleDataField (fieldname) {
@@ -186,7 +186,7 @@ export default class Store {
       }
       this.layout = this.getlayout()
     }
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   applyFilter (fieldname, axetype, all, operator, term, staticValue, excludeStatic) {
@@ -199,7 +199,7 @@ export default class Store {
     this.columnsUi = this.getcolumnsUi()
     this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   drilldown (cell) {
