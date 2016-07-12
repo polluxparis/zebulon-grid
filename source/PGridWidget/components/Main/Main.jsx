@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 import 'react-virtualized/styles.css'
 import 'react-resizable/css/styles.css'
 
-import UpperButtons from '../UpperButtons'
+import Configuration from '../Configuration'
 import Grid from '../Grid'
 import Store from '../../stores/Store'
 
@@ -64,9 +64,7 @@ export default class Main extends Component {
     return (
       <div>
         <div className={'orb'}>
-          <UpperButtons
-            store={store}
-          />
+          <Configuration store={store} />
           <Grid store={store} />
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
         </div>

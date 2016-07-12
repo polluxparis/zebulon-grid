@@ -25,11 +25,11 @@ export default class Store {
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
-    this.config.dataSource.subscribe(this.push.bind(this))
+    this.sizes = this.getsizes()
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
-    this.sizes = this.getsizes()
+    this.config.dataSource.subscribe(this.push.bind(this))
     this.init = true
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "pivot-table",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "license": "UNLICENSED",
   "publish-Config":{"registry":"http://localhost:4873"},
   "description": "Pivot table javascript library",

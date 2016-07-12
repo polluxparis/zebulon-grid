@@ -7,7 +7,7 @@ import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
 import { ExpressionFilter } from './Filtering'
 
-function getpropertyvalue (property, configs, defaultvalue) {
+const getpropertyvalue = (property, configs, defaultvalue) => {
   for (let i = 0; i < configs.length; i++) {
     if (configs[i][property] != null) {
       return configs[i][property]
@@ -16,7 +16,7 @@ function getpropertyvalue (property, configs, defaultvalue) {
   return defaultvalue
 }
 
-function mergefieldconfigs (...args) {
+const mergefieldconfigs = (...args) => {
   var merged = {
     configs: [],
     sorts: [],
@@ -39,7 +39,7 @@ function mergefieldconfigs (...args) {
   return merged
 }
 
-function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
+const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
   var axeconfig
   var fieldAxeconfig
 
