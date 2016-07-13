@@ -1,4 +1,5 @@
 'use strict'
+import { Observable } from 'rx-lite'
 
 import { Axe, AxeType } from '../Axe'
 import AxeUi from '../AxeUi'
@@ -20,17 +21,30 @@ export default class Store {
   dataMatrix = {}
   defaultfield = { name: '#undefined#' }
 
-  constructor (component, config) {
-    this.component = component
+  constructor (config, forceUpdateCallback) {
+    this.forceUpdateCallback = forceUpdateCallback
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
-    this.config.dataSource.subscribe(this.push.bind(this))
+    this.sizes = this.getsizes()
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
-    this.sizes = this.getsizes()
     this.init = true
+  }
+
+  subscribe (datasource) {
+    this.data = []
+    this.filteredData = []
+    let observableDatasource = null
+    // datasource can be an observable, an array of arrays or an array of objects
+    if (Array.isArray(datasource) && (Array.isArray(datasource[0]) || typeof datasource[0] === 'object')) {
+      observableDatasource = Observable.of(datasource)
+    } else if (Observable.isObservable(datasource)) {
+      // datasource is a Rxjs observable
+      observableDatasource = datasource
+    }
+    if (observableDatasource) observableDatasource.subscribe(this.push.bind(this))
   }
 
   push (payload) {
@@ -49,7 +63,7 @@ export default class Store {
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
-        if (this.init) { this.component.forceUpdate() }
+        if (this.init) { this.forceUpdateCallback() }
       }
     }
   }
@@ -149,7 +163,7 @@ export default class Store {
         default:
           break
       }
-      this.component.forceUpdate()
+      this.forceUpdateCallback()
     }
   }
 
@@ -167,7 +181,7 @@ export default class Store {
         this.rowsUi = this.getrowsUi()
     }
     this.layout = this.getlayout()
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   toggleDataField (fieldname) {
@@ -186,7 +200,7 @@ export default class Store {
       }
       this.layout = this.getlayout()
     }
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   applyFilter (fieldname, axetype, all, operator, term, staticValue, excludeStatic) {
@@ -199,7 +213,7 @@ export default class Store {
     this.columnsUi = this.getcolumnsUi()
     this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()
-    this.component.forceUpdate()
+    this.forceUpdateCallback()
   }
 
   drilldown (cell) {

@@ -1,13 +1,11 @@
 'use strict'
 
-import { Observable } from 'rx-lite'
-
 import * as utils from './Utils'
 import { AxeType } from './Axe'
 import * as aggregation from './Aggregation'
 import { ExpressionFilter } from './Filtering'
 
-function getpropertyvalue (property, configs, defaultvalue) {
+const getpropertyvalue = (property, configs, defaultvalue) => {
   for (let i = 0; i < configs.length; i++) {
     if (configs[i][property] != null) {
       return configs[i][property]
@@ -16,7 +14,7 @@ function getpropertyvalue (property, configs, defaultvalue) {
   return defaultvalue
 }
 
-function mergefieldconfigs (...args) {
+const mergefieldconfigs = (...args) => {
   var merged = {
     configs: [],
     sorts: [],
@@ -39,7 +37,7 @@ function mergefieldconfigs (...args) {
   return merged
 }
 
-function createfield (rootconfig, axetype, fieldconfig, defaultfieldconfig) {
+const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
   var axeconfig
   var fieldAxeconfig
 
@@ -112,13 +110,6 @@ export class Config {
     this.subTotal = new SubTotalConfig(config.subTotal, true)
     this.width = config.width
     this.height = config.height
-    // config.dataSource can be an observable, an array of arrays or an array of objects
-    if (Array.isArray(config.dataSource) && (Array.isArray(config.dataSource[0]) || typeof config.dataSource[0] === 'object')) {
-      this.dataSource = Observable.of(config.dataSource)
-    } else if (Observable.isObservable(config.dataSource)) {
-      // config.dataSource is a Rxjs observable
-      this.dataSource = config.dataSource
-    }
 
     this.rowSettings = new Field(config.rowSettings, false)
     this.columnSettings = new Field(config.columnSettings, false)

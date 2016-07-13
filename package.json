@@ -1,7 +1,8 @@
 {
   "name": "pivot-table",
-  "version": "0.0.1",
-  "license": "MIT",
+  "version": "0.0.6",
+  "license": "UNLICENSED",
+  "publish-Config":{"registry":"http://localhost:4873"},
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
   "main": "dist/commonjs/index.js",
@@ -21,7 +22,6 @@
     "deploy": "gh-pages -d build",
     "lint": "standard",
     "prebuild": "npm run lint",
-    "postpublish": "npm run deploy",
     "posttest": "codecov",
     "prepublish": "npm run build",
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline --config webpack.config.dev.js",

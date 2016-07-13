@@ -34,10 +34,11 @@ const dataSourceArray = [
   ['toto2', 10, 100, 'titi0', 'tutu0']
 ]
 
-const dataSource = Observable.of(dataSourceArray[0])
+const dataSource = Observable.interval(1000).take(1)
+  .map(i => dataSourceArray[i])
+// .of(dataSourceArray[0])
 
 // const dataSource = Observable.interval(2000).take(dataSourceArray.length)
-//   .map(i => dataSourceArray[i])
 
 var config = {
   dataSource,
