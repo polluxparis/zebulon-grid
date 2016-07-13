@@ -33,10 +33,10 @@ export default class Store {
     this.init = true
   }
 
-  subscribeDatasource (datasource) {
+  subscribe (datasource) {
     this.data = []
     this.filteredData = []
-    let observableDatasource
+    let observableDatasource = null
     // datasource can be an observable, an array of arrays or an array of objects
     if (Array.isArray(datasource) && (Array.isArray(datasource[0]) || typeof datasource[0] === 'object')) {
       observableDatasource = Observable.of(datasource)
@@ -44,7 +44,7 @@ export default class Store {
       // datasource is a Rxjs observable
       observableDatasource = datasource
     }
-    observableDatasource.subscribe(this.push.bind(this))
+    if (observableDatasource) observableDatasource.subscribe(this.push.bind(this))
   }
 
   push (payload) {
