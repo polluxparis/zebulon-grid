@@ -1,4 +1,5 @@
 'use strict'
+import { Observable } from 'rx-lite'
 
 import { Axe, AxeType } from '../Axe'
 import AxeUi from '../AxeUi'
@@ -29,8 +30,21 @@ export default class Store {
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
-    this.config.dataSource.subscribe(this.push.bind(this))
     this.init = true
+  }
+
+  subscribeDatasource (datasource) {
+    this.data = []
+    this.filteredData = []
+    let observableDatasource
+    // datasource can be an observable, an array of arrays or an array of objects
+    if (Array.isArray(datasource) && (Array.isArray(datasource[0]) || typeof datasource[0] === 'object')) {
+      observableDatasource = Observable.of(datasource)
+    } else if (Observable.isObservable(datasource)) {
+      // datasource is a Rxjs observable
+      observableDatasource = datasource
+    }
+    observableDatasource.subscribe(this.push.bind(this))
   }
 
   push (payload) {
