@@ -26,7 +26,7 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const dataSourceArray = [
+const datasourceArray = [
   getMockDataSource(1, 100),
   ['toto11', 33, 666, 'titi0', 'tutu0'],
   ['toto0', 1, 10, 'titi0', 'tutu0'],
@@ -34,14 +34,13 @@ const dataSourceArray = [
   ['toto2', 10, 100, 'titi0', 'tutu0']
 ]
 
-const dataSource = Observable.interval(1000).take(1)
-  .map(i => dataSourceArray[i])
-// .of(dataSourceArray[0])
+const datasource = Observable.interval(0).take(1)
+  .map(i => datasourceArray[i])
+// .of(datasourceArray[0])
 
-// const dataSource = Observable.interval(2000).take(dataSourceArray.length)
+// const datasource = Observable.interval(2000).take(datasourceArray.length)
 
 var config = {
-  dataSource,
   canMoveFields: true,
   dataHeadersLocation: 'columns',
   width: 1099,
@@ -150,53 +149,5 @@ var config = {
   }
 }
 
-const widget = new PGridWidget(config)
+const widget = new PGridWidget(config, datasource)
 widget.render(document.getElementById('root'))
-
-// /** Tests a specific use case- scrolling a large FlexTable */
-// function testCase (completedCallback) {
-//   const grid = document.querySelector('.Grid')
-//   grid.scrollTop = 0
-
-//   const maxScrollTop = grid.scrollHeight
-
-//   var interval = 1
-//   var scrollTop = 0
-
-//   function incrementScrollTop () {
-//     if (!testRunner.isRunning()) {
-//       return
-//     }
-
-//     interval *= 1.05
-//     scrollTop = Math.min(scrollTop + interval, maxScrollTop)
-
-//     grid.scrollTop = scrollTop
-
-//     if (scrollTop < maxScrollTop) {
-//       requestAnimationFrame(incrementScrollTop)
-//     } else {
-//       completedCallback()
-//     }
-//   }
-
-//   incrementScrollTop()
-// }
-
-// const testRunner = new TestRunner(testCase, 5)
-
-// const fpsTestButton = document.createElement('input')
-// fpsTestButton.id = 'fps-test'
-// fpsTestButton.type = 'button'
-// fpsTestButton.value = 'Launch FPS test'
-// fpsTestButton.style = ''
-
-// document.body.insertBefore(fpsTestButton, document.getElementById('root'))
-
-// document.getElementById('fps-test').addEventListener('click', function (event) {
-//   if (testRunner.isRunning()) {
-//     testRunner.stop()
-//   } else {
-//     testRunner.start()
-//   }
-// })

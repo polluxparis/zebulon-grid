@@ -23,7 +23,9 @@ export default class Main extends Component {
 
   componentWillReceiveProps (newProps) {
     console.log('main received props', newProps)
-    this.setState({store: new Store(newProps.config, this.forceUpdate.bind(this))})
+    const store = new Store(newProps.config, this.forceUpdate.bind(this))
+    store.subscribe(newProps.datasource)
+    this.setState({store})
   }
 
   constructor (props) {
@@ -31,7 +33,9 @@ export default class Main extends Component {
     this.id = pivotId++
     DragManager.init(this)
 
-    this.state = {store: new Store(props.config, this.forceUpdate.bind(this))}
+    const store = new Store(props.config, this.forceUpdate.bind(this))
+    store.subscribe(props.datasource)
+    this.state = {store}
   }
 
   sort (axetype, field) {
