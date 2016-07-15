@@ -153,7 +153,8 @@ export default class OrbGrid extends Component {
           width: rowHeadersWidth,
           height: columnHeadersHeight,
           zIndex: 2,
-          backgroundColor: '#fff'}}>
+          backgroundColor: '#fff'
+        }}>
       </div>
     )
 

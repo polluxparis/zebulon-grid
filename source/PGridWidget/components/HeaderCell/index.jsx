@@ -103,7 +103,7 @@ export default class HeaderCellComp extends Component {
           divcontent.push(
             <div key='header-value' ref='cellContent'>
               <div className='orb-tgl-btn'><div className={'orb-tgl-btn-' + (isWrapper ? 'down' : 'right')} onClick={(isWrapper ? this.collapse : this.expand)}></div></div>
-              <div className='hdr-val'><div dangerouslySetInnerHTML={{__html: cell.value || '&#160'}}></div></div>
+              <div className='hdr-val'>{cell.value}</div>
             </div>
           )
         } else {
@@ -127,7 +127,7 @@ export default class HeaderCellComp extends Component {
       //   const transfo = `translate(0px,${this.props.scrollTop}px`
       //   style={transform: transfo}
       // }
-      divcontent.push(<div key='cell-value' ref='cellContent' className={headerClassName}><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>)
+      divcontent.push(<div key='cell-value' ref='cellContent' className={headerClassName}>{value}</div>)
     }
 
     return (
@@ -148,7 +148,7 @@ export const DataCellComp = ({cell, onDoubleClick}) => {
 
   const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
 
-  const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>]
+  const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'>{value}</div>]
 
   return (
     <div

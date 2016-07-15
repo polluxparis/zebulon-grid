@@ -11,7 +11,7 @@ export default class DataCellComp extends Component {
 
     const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
 
-    const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'><div dangerouslySetInnerHTML={{__html: value || '&#160'}}></div></div>]
+    const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'>{value}</div>]
 
     return (
       <div
