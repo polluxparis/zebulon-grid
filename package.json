@@ -1,8 +1,10 @@
 {
   "name": "pivot-table",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "UNLICENSED",
-  "publish-Config":{"registry":"http://localhost:4873"},
+  "publish-Config": {
+    "registry": "http://localhost:4873"
+  },
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
   "main": "dist/commonjs/index.js",
@@ -68,6 +70,7 @@
     ]
   },
   "dependencies": {
+    "immutable": "^3.8.1",
     "react-addons-shallow-compare": "^15.1.0",
     "react-resizable": "^1.4.1",
     "react-virtualized": "^7.11.6",

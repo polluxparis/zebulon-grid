@@ -31,7 +31,7 @@ export default class Main extends Component {
   constructor (props) {
     super(props)
     this.id = pivotId++
-    DragManager.init(this)
+    DragManager.init(this.moveButton.bind(this))
 
     const store = new Store(props.config, this.forceUpdate.bind(this))
     store.subscribe(props.datasource)
