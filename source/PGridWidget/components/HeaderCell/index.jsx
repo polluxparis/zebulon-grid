@@ -107,7 +107,7 @@ export default class HeaderCellComp extends Component {
             </div>
           )
         } else {
-          value = (cell.value || '&#160') + (cell.type === HeaderType.SUB_TOTAL ? ' Total' : '')
+          value = cell.value + (cell.type === HeaderType.SUB_TOTAL ? ' Total' : '')
         }
         break
       case 'cell-template-dataheader':
