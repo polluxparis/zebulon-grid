@@ -9,7 +9,6 @@ import Configuration from '../Configuration'
 import Grid from '../Grid'
 import Store from '../../stores/Store'
 
-import DragManager from '../../DragManager'
 import * as domUtils from '../../Utils.dom'
 
 let pivotId = 1
@@ -31,7 +30,6 @@ export default class Main extends Component {
   constructor (props) {
     super(props)
     this.id = pivotId++
-    DragManager.init(this.moveButton.bind(this))
 
     const store = new Store(props.config, this.forceUpdate.bind(this))
     store.subscribe(props.datasource)
@@ -40,10 +38,6 @@ export default class Main extends Component {
 
   sort (axetype, field) {
     this.state.store.sort(axetype, field)
-  }
-
-  moveButton (button, newAxeType, position) {
-    this.state.store.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
   }
 
   toggleSubtotals (axetype) {

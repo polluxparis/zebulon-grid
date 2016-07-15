@@ -1,5 +1,4 @@
 'use strict'
-// import {Map, List} from 'immutable'
 import { Observable } from 'rx-lite'
 
 import { Axe, AxeType } from '../Axe'
