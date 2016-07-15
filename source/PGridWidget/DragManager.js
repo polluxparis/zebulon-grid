@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom'
 import * as utils from './Utils'
 
 export default (() => {
-  let _pivotComp = null
+  let _moveButton = null
 
   let _currDragElement = null
   let _currDropTarget = null
@@ -78,9 +78,9 @@ export default (() => {
   // var _initialized = false
 
   return {
-    init (pivotComp) {
+    init (moveButton) {
       // _initialized = true
-      _pivotComp = pivotComp
+      _moveButton = moveButton
     },
     setDragElement (elem) {
       const prevDragElement = _currDragElement
@@ -89,7 +89,7 @@ export default (() => {
         if (elem == null) {
           if (_currDropTarget) {
             const position = _currDropIndicator != null ? _currDropIndicator.position : null
-            _pivotComp.moveButton(prevDragElement, _currDropTarget.component.props.axetype, position)
+            _moveButton(prevDragElement, _currDropTarget.component.props.axetype, position)
           }
 
           _dragNode = null

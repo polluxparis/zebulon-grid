@@ -16,8 +16,6 @@ import * as utils from '../Utils'
 export default class Store {
 
   init = false
-  data = []
-  filteredData = []
   dataMatrix = {}
   defaultfield = { name: '#undefined#' }
 
@@ -49,23 +47,29 @@ export default class Store {
 
   push (payload) {
     let pushed
+    let _data = this.data
+    console.log(this.filteredData)
+    console.log([...this.data])
+    console.log(payload)
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
-      payload.forEach(line => this.data.push(line))
+      payload.forEach(line => { _data.push(line) })
       pushed = payload
     } else if (Array.isArray(payload) || typeof payload === 'object') {
-      this.data.push(payload)
+      _data = _data.push(payload)
       pushed = [payload]
     }
     if (pushed) {
       const filteredPush = this.filter(pushed)
       if (filteredPush.length) {
-        filteredPush.forEach(line => this.filteredData.push(line))
+        filteredPush.forEach(line => { this.filteredData.push(line) })
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
         if (this.init) { this.forceUpdateCallback() }
       }
     }
+    this.data = _data
+    console.log([...this.data])
   }
 
   filter (data) {
