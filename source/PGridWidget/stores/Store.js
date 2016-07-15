@@ -1,5 +1,5 @@
 'use strict'
-import {Map, List} from 'immutable'
+// import {Map, List} from 'immutable'
 import { Observable } from 'rx-lite'
 
 import { Axe, AxeType } from '../Axe'
@@ -33,8 +33,8 @@ export default class Store {
   }
 
   subscribe (datasource) {
-    this.data = List()
-    this.filteredData = List()
+    this.data = []
+    this.filteredData = []
     let observableDatasource = null
     // datasource can be an observable, an array of arrays or an array of objects
     if (Array.isArray(datasource) && (Array.isArray(datasource[0]) || typeof datasource[0] === 'object')) {
@@ -49,29 +49,28 @@ export default class Store {
   push (payload) {
     let pushed
     let _data = this.data
-    let _filteredData = this.filteredData
-    console.log(this.data)
+    console.log(this.filteredData)
+    console.log([...this.data])
     console.log(payload)
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
-      payload.forEach(line => { _data = _data.push(line) })
+      payload.forEach(line => { _data.push(line) })
       pushed = payload
     } else if (Array.isArray(payload) || typeof payload === 'object') {
       _data = _data.push(payload)
       pushed = [payload]
     }
-    console.log([...this.data])
     if (pushed) {
       const filteredPush = this.filter(pushed)
       if (filteredPush.length) {
-        filteredPush.forEach(line => { _filteredData = _filteredData.push(line) })
-        this.filteredData = _filteredData
+        filteredPush.forEach(line => { this.filteredData.push(line) })
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
-        // if (this.init) { this.forceUpdateCallback() }
+        if (this.init) { this.forceUpdateCallback() }
       }
     }
     this.data = _data
+    console.log([...this.data])
   }
 
   filter (data) {
