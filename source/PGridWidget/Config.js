@@ -97,11 +97,6 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 // module.config(config) {
 export class Config {
 
-  allFields
-  rowFields
-  columnFields
-  activatedDataFields
-
   constructor (config) {
     this.config = config
     this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true

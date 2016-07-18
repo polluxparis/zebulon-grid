@@ -253,7 +253,8 @@ export default class OrbGrid extends Component {
     const affix = width > cellWidth && x <= columnStartIndex
     return (
       <div
-        key={`fixedrow-${x % visibleColumns}-${y}`}
+      // add 1 to key modulo to avoid collision when rendering parent cells
+        key={`fixedrow-${x % (visibleColumns + 1)}-${y}`}
         className={'Grid__cell'}
         style={{
           position: 'fixed',
@@ -280,7 +281,8 @@ export default class OrbGrid extends Component {
     const affix = height > cellHeight && x <= rowStartIndex
     return (
       <div
-        key={`fixedcol-${x % visibleRows}-${y}`}
+        // add 1 to key modulo to avoid collision when rendering parent cells
+        key={`fixedcol-${x % (visibleRows + 1)}-${y}`}
         className={'Grid__cell'}
         style={{
           position: 'fixed',
