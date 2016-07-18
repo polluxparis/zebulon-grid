@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid } from 'react-virtualized'
+import { Grid, AutoSizer } from 'react-virtualized'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -74,31 +74,36 @@ export default class OrbGrid extends Component {
   render () {
     console.log('rendering grid')
     const {
-      columnHorizontalCount,
-      rowHorizontalCount,
       cellHeight,
       cellWidth,
-      height,
+      columnHeadersHeight,
+      columnHeadersWidth,
+      columnHorizontalCount,
       columnVerticalCount,
-      rowVerticalCount,
-      width
+      rowHeadersHeight,
+      rowHeadersWidth,
+      rowHorizontalCount,
+      rowVerticalCount
     } = this.state
     return (
-      <Grid
-        cellRangeRenderer={this.cellRangeRenderer}
-        cellRenderer={this._mockCellRenderer}
-        columnCount={columnHorizontalCount + rowHorizontalCount}
-        columnWidth={cellWidth}
-        height={height}
-        overscanRowCount={0}
-        overscanColumnCount={0}
-        ref={ref => { this._grid = ref }}
-        rowCount={columnVerticalCount + rowVerticalCount}
-        rowHeight={cellHeight}
-        scrollLeft={this.scrollLeft}
-        scrollTop={this.scrollTop}
-        width={width}
-      />
+      <AutoSizer>
+        {({width, height}) =>
+          <Grid
+            cellRangeRenderer={this.cellRangeRenderer}
+            cellRenderer={this._mockCellRenderer}
+            columnCount={columnHorizontalCount + rowHorizontalCount}
+            columnWidth={cellWidth}
+            height={Math.min(height, columnHeadersHeight + rowHeadersHeight)}
+            overscanRowCount={0}
+            overscanColumnCount={0}
+            ref={ref => { this._grid = ref }}
+            rowCount={columnVerticalCount + rowVerticalCount}
+            rowHeight={cellHeight}
+            scrollLeft={this.scrollLeft}
+            scrollTop={this.scrollTop}
+            width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
+          />}
+      </AutoSizer>
     )
   }
 

@@ -60,12 +60,10 @@ export default class Main extends Component {
     const {store} = this.state
     console.log(store)
     return (
-      <div>
-        <div className={'orb'}>
-          <Configuration store={store} />
-          <Grid store={store} />
-          <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
-        </div>
+      <div style={{top: 0, bottom: 0, left: 0, right: 0, position: 'absolute', display: 'flex'}}>
+        <Configuration store={store} />
+        <Grid store={store} />
+        <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
       </div>
     )
   }
