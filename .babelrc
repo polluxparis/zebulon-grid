@@ -23,12 +23,10 @@
     },
     "production": {
       "comments": false,
-      "plugins": [
-        "transform-react-inline-elements"
-      ],
       "presets": [
         "es2015-webpack",
-        "react"
+        "react",
+        "react-optimize"
       ]
     },
     "test": {
