@@ -1,82 +1,46 @@
 {
   "env": {
     "commonjs": {
-      "plugins": [
-        "transform-decorators-legacy"
-      ],
       "presets": [
         "es2015",
-        "react",
-        "stage-1"
+        "react"
       ]
     },
-    "development": {
-      "plugins": [
-        "typecheck",
-        "transform-decorators-legacy",
-        [
-          "react-transform",
-          {
-            "transforms": [
-              {
-                "transform": "react-transform-hmr",
-                "imports": [
-                  "react"
-                ],
-                "locals": [
-                  "module"
-                ]
-              },
-              {
-                "transform": "react-transform-catch-errors",
-                "imports": [
-                  "react",
-                  "redbox-react"
-                ]
-              }
-            ]
-          }
-        ]
-      ],
+    "development":{
       "presets": [
-        "es2015",
-        "react",
-        "stage-1"
+        "es2015-webpack",
+        "react"
+      ],
+      "plugins": [
+        "react-hot-loader/babel"
       ]
     },
     "es": {
-      "plugins": [
-        "transform-decorators-legacy"
-      ],
       "presets": [
         "es2015-rollup",
-        "react",
-        "stage-1"
+        "react"
       ]
     },
     "production": {
       "comments": false,
       "plugins": [
-        "transform-decorators-legacy",
         "transform-react-inline-elements"
       ],
       "presets": [
-        "es2015",
-        "react",
-        "stage-1"
+        "es2015-webpack",
+        "react"
       ]
     },
     "test": {
-      "comments": false,
-      "plugins": [
-        "transform-decorators-legacy",
-        "__coverage__"
-      ],
       "presets": [
         "es2015",
-        "react",
-        "stage-1"
+        "react"
       ]
-    }
-  }
+    },
+  },
+  "plugins": [
+    "transform-es2015-destructuring",
+    "transform-object-rest-spread",
+    "transform-runtime"
+  ]
 }

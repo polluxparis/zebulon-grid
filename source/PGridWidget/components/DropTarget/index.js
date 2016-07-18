@@ -1,1 +1,1 @@
-export default from './DropTarget'
+export {default} from './DropTarget'

@@ -15,11 +15,10 @@ import * as utils from '../Utils'
  */
 export default class Store {
 
-  init = false
-  dataMatrix = {}
-  defaultfield = { name: '#undefined#' }
-
   constructor (config, forceUpdateCallback) {
+    this.init = false
+    this.dataMatrix = {}
+    this.defaultfield = { name: '#undefined#' }
     this.forceUpdateCallback = forceUpdateCallback
     this.config = new Config(config)
     this.filters = new Map()
