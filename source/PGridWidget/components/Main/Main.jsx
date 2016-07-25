@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import {Card, CardHeader, CardText} from 'material-ui/Card'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+var injectTapEventPlugin = require('react-tap-event-plugin')
+injectTapEventPlugin()
 
 // CSS files
 import 'react-virtualized/styles.css'
@@ -66,11 +70,33 @@ export default class Main extends Component {
     const {store} = this.state
     console.log(store)
     return (
-      <div style={{top: 0, bottom: 0, left: 0, right: 0, position: 'absolute'}}>
-        <Configuration store={store} />
-        <Grid store={store} drilldown={this.onDrilldown} />
-        <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
-      </div>
+      <MuiThemeProvider>
+        <div>
+          <Card>
+            <CardHeader
+              title='Configuration'
+              expanded
+              actAsExpander
+              showExpandableButton
+            />
+            <CardText expandable>
+              <Configuration store={store} />
+            </CardText>
+          </Card>
+          <Card>
+            <CardHeader
+              title='Display'
+              expanded
+              actAsExpander
+              showExpandableButton
+            />
+            <CardText expandable style={{height: 1000}}>
+              <Grid store={store} drilldown={this.onDrilldown} />
+            </CardText>
+          </Card>
+          <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
+        </div>
+      </MuiThemeProvider>
     )
   }
 }
