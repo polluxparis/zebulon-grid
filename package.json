@@ -1,6 +1,6 @@
 {
   "name": "pivot-table",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "license": "UNLICENSED",
   "publish-Config": {
     "registry": "http://localhost:4873"
@@ -21,7 +21,6 @@
     "clean:es": "rimraf dist/es",
     "clean:umd": "rimraf dist/umd",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "deploy": "gh-pages -d build",
     "lint": "standard",
     "posttest": "nyc report",
     "postpublish": "npm run deploy",
