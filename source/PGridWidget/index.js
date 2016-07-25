@@ -1,6 +1,11 @@
 export {default} from './Widget'
 
-export {PivotTable} from './components/Main'
-export {Configuration} from './components/Configuration'
-export {Grid} from './components/Grid'
-export {Store} from './stores/Store'
+import PivotTable from './components/Main'
+import Configuration from './components/Configuration'
+import Grid from './components/Grid'
+import Store from './stores/Store'
+
+export {PivotTable}
+export {Configuration}
+export {Grid}
+export {Store}
