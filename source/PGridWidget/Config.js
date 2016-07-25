@@ -129,7 +129,7 @@ export class Config {
 
     this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1)
 
-    this.drilldown = config.drilldown || ((cell) => console.log('drilldown on cell', cell))
+    this.drilldown = config.drilldown || ((cell) => console.log('drilldown on cell (default)', cell))
 
     this.runtimeVisibility = {
       subtotals: {

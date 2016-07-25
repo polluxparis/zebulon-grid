@@ -20,13 +20,6 @@ let pivotId = 1
 
 export default class Main extends Component {
 
-  componentWillReceiveProps (newProps) {
-    console.log('main received props', newProps)
-    const store = new Store(newProps.config, this.forceUpdate.bind(this))
-    store.subscribe(newProps.datasource)
-    this.setState({store})
-  }
-
   constructor (props) {
     super(props)
     this.id = pivotId++
@@ -34,6 +27,15 @@ export default class Main extends Component {
     const store = new Store(props.config, this.forceUpdate.bind(this))
     store.subscribe(props.datasource)
     this.state = {store}
+
+    this.onDrilldown = this.onDrilldown.bind(this)
+  }
+
+  componentWillReceiveProps (newProps) {
+    console.log('main received props', newProps)
+    const store = new Store(newProps.config, this.forceUpdate.bind(this))
+    store.subscribe(newProps.datasource)
+    this.setState({store})
   }
 
   sort (axetype, field) {
@@ -56,14 +58,17 @@ export default class Main extends Component {
     }
   }
 
+  onDrilldown (cell) {
+    console.log('drilldown prop', cell)
+  }
+
   render () {
     const {store} = this.state
-    const {config} = this.props
     console.log(store)
     return (
       <div style={{top: 0, bottom: 0, left: 0, right: 0, position: 'absolute'}}>
         <Configuration store={store} />
-        <Grid store={store} drilldown={config.drilldown} />
+        <Grid store={store} drilldown={this.onDrilldown} />
         <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
       </div>
     )
