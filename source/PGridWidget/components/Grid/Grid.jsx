@@ -215,7 +215,7 @@ export default class OrbGrid extends Component {
 
   dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}) {
     const {cellHeight, cellWidth, rowHeadersWidth, columnHeadersHeight} = this.state
-    const {store} = this.props
+    const {store, drilldown} = this.props
     const {rowsUi, columnsUi} = store
     const rowHeaderRow = rowsUi.headers[rowIndex]
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1]
@@ -227,7 +227,7 @@ export default class OrbGrid extends Component {
       rowHeader,
       columnHeader
     )
-    const renderedCell = <DataCellComp key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`} cell={cell} onDoubleClick={() => store.drilldown(cell)} />
+    const renderedCell = <DataCellComp key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`} cell={cell} onDoubleClick={() => drilldown(cell)} />
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}

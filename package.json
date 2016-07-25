@@ -1,6 +1,6 @@
 {
   "name": "pivot-table",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "license": "UNLICENSED",
   "publish-Config": {
     "registry": "http://localhost:4873"
@@ -82,7 +82,7 @@
     "babel-preset-react-optimize": "^1.0.1",
     "babel-register": "^6.9.0",
     "codecov": "^1.0.1",
-    "cross-env": "^1.0.8",
+    "cross-env": "^2.0.0",
     "css-loader": "^0.23.1",
     "enzyme": "^2.4.0",
     "gh-pages": "^0.11.0",

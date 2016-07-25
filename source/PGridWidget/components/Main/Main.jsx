@@ -58,11 +58,12 @@ export default class Main extends Component {
 
   render () {
     const {store} = this.state
+    const {config} = this.props
     console.log(store)
     return (
       <div style={{top: 0, bottom: 0, left: 0, right: 0, position: 'absolute'}}>
         <Configuration store={store} />
-        <Grid store={store} />
+        <Grid store={store} drilldown={config.drilldown} />
         <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
       </div>
     )
