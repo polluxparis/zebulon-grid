@@ -23,7 +23,6 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "standard",
     "posttest": "nyc report",
-    "postpublish": "npm run deploy",
     "prebuild": "npm run lint",
     "prepublish": "npm run build",
     "start": "cross-env NODE_ENV=development webpack-dev-server --env.dev --config webpack.config.js",
