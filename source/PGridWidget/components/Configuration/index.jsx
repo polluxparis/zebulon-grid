@@ -1,26 +1,29 @@
 import React, {Component} from 'react'
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 import DragManager from '../../DragManager'
 import FieldButton from '../FieldButton'
 import DataButton from '../DataButton'
-import DropTarget from '../DropTarget'
+import FieldList from '../FieldList'
 import { AxeType } from '../../Axe'
 
 class Configuration extends Component {
   constructor (props) {
     super(props)
+    this.moveButton = this.moveButton.bind(this)
     DragManager.init(this.moveButton.bind(this))
   }
 
-  moveButton (button, newAxeType, position) {
+  moveButton (buttonId, oldAxeType, newAxeType, position) {
     const {store} = this.props
-    store.moveField(button.props.field.name, button.props.axetype, newAxeType, position)
+    store.moveField(buttonId, oldAxeType, newAxeType, position)
   }
 
   render () {
     const {store} = this.props
     const {config} = store
-    let fieldsDropTarget
+    let unusedFieldList
     const dropTargetContainerStyle = {display: 'flex', alignItems: 'center'}
 
     if (config.canMoveFields) {
@@ -33,17 +36,17 @@ class Configuration extends Component {
           store={store} />
 
       )
-      fieldsDropTarget =
+      unusedFieldList =
         <div style={dropTargetContainerStyle}>
           <div style={{padding: '7px 4px'}} className='flds-grp-cap av-flds text-muted'>
             Fields
           </div>
           <div style={{padding: '7px 4px'}} className='av-flds'>
-            <DropTarget buttons={fieldsButtons} axetype={AxeType.FIELDS} />
+            <FieldList buttons={fieldsButtons} axetype={AxeType.FIELDS} moveButton={this.moveButton} />
           </div>
         </div>
     } else {
-      fieldsDropTarget = null
+      unusedFieldList = null
     }
 
     const dataButtons = config.dataFields
@@ -82,13 +85,13 @@ class Configuration extends Component {
         store={store} />
     )
 
-    const columnDropTarget =
+    const columnFieldList =
       <div style={dropTargetContainerStyle}>
         <div style={{padding: '7px 4px'}} className='flds-grp-cap text-muted'>
           Columns
         </div>
         <div style={{padding: '7px 4px'}}>
-          <DropTarget buttons={columnButtons} axetype={AxeType.COLUMNS} />
+          <FieldList buttons={columnButtons} axetype={AxeType.COLUMNS} moveButton={this.moveButton} />
         </div>
       </div>
 
@@ -101,13 +104,13 @@ class Configuration extends Component {
         store={store} />
     )
 
-    const rowDropTarget =
+    const rowFieldList =
       <div style={dropTargetContainerStyle}>
         <div style={{padding: '7px 4px'}} className='flds-grp-cap text-muted'>
           Rows
         </div>
         <div style={{padding: '7px 4px'}}>
-          <DropTarget buttons={rowButtons} axetype={AxeType.ROWS} />
+          <FieldList buttons={rowButtons} axetype={AxeType.ROWS} moveButton={this.moveButton} />
         </div>
       </div>
 
@@ -118,9 +121,9 @@ class Configuration extends Component {
     return (
       <div className='inner-table upper-buttons' style={style}>
         <div>
-          {fieldsDropTarget}
-          {columnDropTarget}
-          {rowDropTarget}
+          {unusedFieldList}
+          {columnFieldList}
+          {rowFieldList}
         </div>
         {dataButtonsContainer}
       </div>
@@ -128,4 +131,4 @@ class Configuration extends Component {
   }
 }
 
-export default Configuration
+export default DragDropContext(HTML5Backend)(Configuration)

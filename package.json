@@ -1,6 +1,6 @@
 {
   "name": "pivot-table",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "license": "UNLICENSED",
   "publish-Config": {
     "registry": "http://localhost:4873"
@@ -58,8 +58,10 @@
   "dependencies": {
     "react": "^15.2.1",
     "react-addons-shallow-compare": "^15.1.0",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.2.1",
-    "react-resizable": "^1.4.1",
+    "react-resizable": "^1.4.2",
     "react-virtualized": "^7.11.6",
     "react-virtualized-checkbox": "^1.0.6",
     "rx-lite": "^4.0.8"

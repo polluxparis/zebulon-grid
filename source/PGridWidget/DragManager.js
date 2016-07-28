@@ -83,6 +83,8 @@ export default (() => {
       _moveButton = moveButton
     },
     setDragElement (elem) {
+      console.log('_currDropTarget', _currDropTarget)
+      console.log(elem)
       const prevDragElement = _currDragElement
       _currDragElement = elem
       if (_currDragElement !== prevDragElement) {
