@@ -47,9 +47,6 @@ export default class Store {
   push (payload) {
     let pushed
     let _data = this.data
-    console.log(this.filteredData)
-    console.log([...this.data])
-    console.log(payload)
     // Push data (array of objects, array of arrays or object) to this.data
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
       payload.forEach(line => { _data.push(line) })
@@ -70,7 +67,6 @@ export default class Store {
       }
     }
     this.data = _data
-    console.log([...this.data])
   }
 
   filter (data) {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Grid, AutoSizer } from 'react-virtualized'
 
+import styles from './Grid.css'
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
@@ -10,7 +11,7 @@ export default class OrbGrid extends Component {
   componentWillReceiveProps (nextProps, nextState) {
     const layout = this.getLayout(nextProps.store)
 
-    this.setState({ ...layout })
+    this.setState({ ...layout, cellsCache: this._datacells })
 
     // Change scroll values to stay at the same position when modifying the layout
     this.scrollLeft = this._grid.state.scrollLeft * (layout.columnHorizontalCount / this.state.columnHorizontalCount)
@@ -19,14 +20,20 @@ export default class OrbGrid extends Component {
 
   componentWillUpdate (nextProps, nextState) {
     // to handle case where all data fields are unactivated
+    this._isUpdating = true
     this._grid.forceUpdate()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    this._isUpdating = false
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      ...this.getLayout(props.store)
+      ...this.getLayout(props.store),
+      cellsCache: new Map()
     }
 
     this.scrollLeft = 0
@@ -72,7 +79,6 @@ export default class OrbGrid extends Component {
   }
 
   render () {
-    console.log('rendering grid')
     const {
       cellHeight,
       cellWidth,
@@ -128,12 +134,12 @@ export default class OrbGrid extends Component {
     const columnHeaders = columnsUi.headers
     const rowHeaders = rowsUi.headers
     const {
-      rowHorizontalCount,
+      columnHeadersHeight,
       columnHorizontalCount,
       columnVerticalCount,
-      rowVerticalCount,
       rowHeadersWidth,
-      columnHeadersHeight
+      rowHorizontalCount,
+      rowVerticalCount
     } = this.state
     const renderedCells = []
 
@@ -200,6 +206,7 @@ export default class OrbGrid extends Component {
     }
 
     // Render data cells
+    this._datacells = new Map()
     if (!isScrolling) {
       for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
         let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
@@ -227,18 +234,28 @@ export default class OrbGrid extends Component {
       rowHeader,
       columnHeader
     )
+    let style = {
+      position: 'fixed',
+      height: cellHeight,
+      width: cellWidth,
+      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
+      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
+    }
+    const key = `${rowHeader.key}-//-${columnHeader.key}`
+    this._datacells.set(key, cell)
     const renderedCell = <DataCellComp key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`} cell={cell} onDoubleClick={() => drilldown(cell)} />
+    let valueHasChanged = false
+    if (this._isUpdating) {
+      const oldcell = this.state.cellsCache.get(key)
+      if (oldcell && cell.value !== oldcell.value) {
+        valueHasChanged = true
+      }
+    }
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className='Grid__cell'
-        style={{
-          position: 'fixed',
-          height: cellHeight,
-          width: cellWidth,
-          left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
-          top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
-        }}>
+        className={valueHasChanged ? `Grid__cell ${styles.highlighted}` : `Grid__cell ${styles.normal}`}
+        style={style}>
         {renderedCell}
       </div>
     )
