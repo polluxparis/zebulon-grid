@@ -47,16 +47,15 @@ export default class Store {
   push (payload) {
     let pushed
     let _data = this.data
-    console.log(this.filteredData)
-    console.log([...this.data])
-    console.log(payload)
+    // Push data (array of objects, array of arrays or object) to this.data
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
       payload.forEach(line => { _data.push(line) })
       pushed = payload
     } else if (Array.isArray(payload) || typeof payload === 'object') {
-      _data = _data.push(payload)
+      _data.push(payload)
       pushed = [payload]
     }
+    // Push filtered data and refresh Ui
     if (pushed) {
       const filteredPush = this.filter(pushed)
       if (filteredPush.length) {
@@ -68,7 +67,6 @@ export default class Store {
       }
     }
     this.data = _data
-    console.log([...this.data])
   }
 
   filter (data) {

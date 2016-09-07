@@ -188,6 +188,8 @@ export class Header extends CellBase {
 
     this.datafieldscount = datafieldscount
 
+    this.key = parent ? `${parent.key}-/-${this.value}` : this.value
+
     this.x = x
     this.y = y
   }
@@ -268,9 +270,9 @@ export class Header extends CellBase {
 
 export class DataHeader extends CellBase {
 
-  constructor (datafield, parent, x, y) {
+  constructor (axetype, datafield, parent, x, y) {
     super({
-      axetype: null,
+      axetype,
       type: HeaderType.DATA_HEADER,
       template: 'cell-template-dataheader',
       value: datafield,
@@ -279,6 +281,8 @@ export class DataHeader extends CellBase {
     })
 
     this.parent = parent
+
+    this.key = parent ? `${parent.key}-/-${datafield.name}` : datafield.name
 
     this.x = x
     this.y = y

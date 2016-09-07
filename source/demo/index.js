@@ -38,17 +38,18 @@ function getMockDataSource (dataRepetition, nToto) {
 
 const datasourceArray = [
   getMockDataSource(1, 100),
-  ['toto11', 33, 666, 'titi0', 'tutu0'],
-  ['toto0', 1, 10, 'titi0', 'tutu0'],
-  [['toto1', 10, 100, 'titi0', 'tutu0'], ['toto12', 44, 777, 'titi0', 'tutu0']],
-  ['toto2', 10, 100, 'titi0', 'tutu0']
+  ['toto11', 33, 666, 'titi0', '0'],
+  ['toto0', 1, 10, 'titi0', '0'],
+  [['toto1', 10, 100, 'titi0', '0'], ['toto12', 44, 777, 'titi0', '0']],
+  ['toto2', 10, 100, 'titi0', '0']
 ]
 
-const datasource = Observable.interval(0).take(1)
-  .map(i => datasourceArray[i])
+// const datasource = Observable.interval(0).take(1)
+  // .map(i => datasourceArray[i])
 // .of(datasourceArray[0])
 
-// const datasource = Observable.interval(2000).take(datasourceArray.length)
+const datasource = Observable.interval(2000).take(5)
+.map(i => datasourceArray[i])
 
 var config = {
   canMoveFields: true,
@@ -147,7 +148,7 @@ var config = {
   ],
   columns: ['Titi', 'Tutu'], // , 'Category' ],
   rows: ['Toto'],
-  data: ['Quantity'],
+  data: ['Quantity', 'Amount'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
   preFilters: {
     // 'Titi': ['titi0']

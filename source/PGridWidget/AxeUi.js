@@ -68,7 +68,13 @@ export default class AxeUi {
     if (this.isMultiDataFields()) {
       var lastInfosArray = infos[infos.length - 1]
       for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
-        lastInfosArray.push(new DataHeader(this.axe.store.config.activatedDataFields[datafieldindex], parent, this._x++, y))
+        lastInfosArray.push(new DataHeader(
+          this.axe.store.config.dataHeadersLocation === 'columns' ? AxeType.COLUMNS : AxeType.ROWS,
+          this.axe.store.config.activatedDataFields[datafieldindex],
+          parent,
+          this._x++,
+          y
+        ))
         if (datafieldindex < this.dataFieldsCount() - 1) {
           infos.push((lastInfosArray = []))
         }
