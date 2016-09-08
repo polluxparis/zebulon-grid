@@ -127,6 +127,8 @@ export class Config {
       return createfield(this, AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
 
+    this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0]
+
     this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1)
 
     this.drilldown = config.drilldown || ((cell) => console.log('drilldown on cell (default)', cell))
@@ -309,6 +311,12 @@ export class Config {
     }
   }
 
+  selectField (fieldname) {
+    this.moveField(this.selectedField.name, AxeType.ROWS, AxeType.FIELDS)
+    this.selectedField = this.getfield(this.allFields, fieldname)
+    this.moveField(this.selectedField.name, null, AxeType.ROWS)
+  }
+
   toggleDataField (fieldname) {
     const defaultFieldConfig = this.getDataField(fieldname)
     const newDataFields = this.activatedDataFields.filter(fld => fld.name !== fieldname)
@@ -421,8 +429,8 @@ export class ChartConfig {
     options = options || {}
 
     this.enabled = options.enabled || false
-    // type can be: 'LineChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
-    this.type = options.type || 'LineChart'
+    // type can be: 'BarChart', 'AreaChart', 'ColumnChart', 'BarChart', 'SteppedAreaChart'
+    this.type = options.type || 'BarChart'
   }
 }
 

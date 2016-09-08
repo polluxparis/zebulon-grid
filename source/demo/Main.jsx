@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 var injectTapEventPlugin = require('react-tap-event-plugin')
 injectTapEventPlugin()
 
-import {Configuration, Grid, Store} from '../index'
+import {ChartConfiguration, BarChart, Store} from '../index'
 
 let pivotId = 1
 
@@ -65,11 +65,12 @@ class Main extends Component {
                 showExpandableButton
               />
               <CardText expandable>
-                <Configuration store={store} />
+                <ChartConfiguration store={store} />
               </CardText>
             </Card>
             <CardText expandable style={{height: 1000}}>
-              <Grid store={store} drilldown={this.onDrilldown} />
+              {/* <Grid store={store} drilldown={this.onDrilldown} /> */}
+              <BarChart store={store} />
             </CardText>
           </Card>
           <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>

@@ -27,7 +27,7 @@ function getMockDataSource (dataRepetition, nToto) {
           arr[3] = 'titi' + String(i)
           arr[4] = String(u)
           arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
-          arr[2] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+          arr[2] = k + 20 * u + 200 * i * 2000 * o + 2 // +9999999999.1234567890123456
           res.push(arr)
         }
       }
@@ -36,19 +36,19 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
+const dataArray = getMockDataSource(1, 100)
 const datasourceArray = [
-  getMockDataSource(1, 100),
+  dataArray.slice(0, 5000),
+  dataArray.slice(5000, 10000),
+  ['toto0', 10000000000, 100000000000, 'titi0', '0'],
   ['toto11', 33, 666, 'titi0', '0'],
-  ['toto0', 1, 10, 'titi0', '0'],
   [['toto1', 10, 100, 'titi0', '0'], ['toto12', 44, 777, 'titi0', '0']],
   ['toto2', 10, 100, 'titi0', '0']
 ]
 
-// const datasource = Observable.interval(0).take(1)
-  // .map(i => datasourceArray[i])
-// .of(datasourceArray[0])
+// const datasource = datasourceArray[0]
 
-const datasource = Observable.interval(2000).take(5)
+const datasource = Observable.interval(2000).take(3)
 .map(i => datasourceArray[i])
 
 var config = {

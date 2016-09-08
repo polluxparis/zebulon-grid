@@ -185,6 +185,12 @@ export default class Store {
     this.forceUpdateCallback()
   }
 
+  selectField (fieldname) {
+    this.config.selectField(fieldname)
+    this.rows = this.getrows()
+    this.forceUpdateCallback()
+  }
+
   toggleDataField (fieldname) {
     // toggleDataField returns the count of activated data fields.
     // If it is 0, there is no need to recompute the axes as the only effect is to make the data cells blank.

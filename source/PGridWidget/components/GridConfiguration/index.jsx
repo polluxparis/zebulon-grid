@@ -8,7 +8,7 @@ import DataButton from '../DataButton'
 import FieldList from '../FieldList'
 import { AxeType } from '../../Axe'
 
-class Configuration extends Component {
+class GridConfiguration extends Component {
   constructor (props) {
     super(props)
     this.moveButton = this.moveButton.bind(this)
@@ -62,7 +62,7 @@ class Configuration extends Component {
         </div>
     )
 
-    var dataButtonsContainer =
+    const dataButtonsContainer =
       <div style={dropTargetContainerStyle}>
         <div style={{padding: '7px 4px'}} className='flds-grp-cap text-muted'>
           <div>
@@ -131,4 +131,4 @@ class Configuration extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(Configuration)
+export default DragDropContext(HTML5Backend)(GridConfiguration)
