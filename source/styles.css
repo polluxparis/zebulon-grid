@@ -1,0 +1,21 @@
+.normal {
+  padding: 2px;
+}
+
+.highlighted {
+    animation-name: anim-info-updated;
+    animation-duration: 2s;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+@keyframes anim-info-updated {
+    0% {
+      border: 2px solid red;
+      color: rgb(128, 0, 0);
+    }
+    100% {
+      border: 2px solid transparent;
+      color: rgb(0, 0, 0);
+    }
+}

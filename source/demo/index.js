@@ -6,6 +6,8 @@ import { Observable } from 'rx-lite'
 import 'react-virtualized/styles.css'
 import 'react-resizable/css/styles.css'
 
+import '../styles.css'
+
 import Main from './Main'
 // const themeChangeCallbacks = {}
 

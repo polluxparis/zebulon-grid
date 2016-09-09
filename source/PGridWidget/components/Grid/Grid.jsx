@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, AutoSizer } from 'react-virtualized'
 
-import styles from './Grid.css'
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
@@ -254,7 +253,7 @@ export default class OrbGrid extends Component {
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className={valueHasChanged ? `Grid__cell ${styles.highlighted}` : `Grid__cell ${styles.normal}`}
+        className={valueHasChanged ? 'Grid__cell highlighted' : 'Grid__cell normal'}
         style={style}>
         {renderedCell}
       </div>

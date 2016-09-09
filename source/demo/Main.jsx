@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 var injectTapEventPlugin = require('react-tap-event-plugin')
 injectTapEventPlugin()
 
-import {ChartConfiguration, BarChart, Store} from '../index'
+import {ChartConfiguration, BarChart, GridConfiguration, Grid, Store} from '../index'
 
 let pivotId = 1
 
@@ -52,7 +52,29 @@ class Main extends Component {
         <div>
           <Card expanded>
             <CardHeader
-              title='Display'
+              title='Grid'
+              expanded
+              actAsExpander
+              showExpandableButton
+            />
+            <Card expanded>
+              <CardHeader
+                title='Configuration'
+                expanded
+                actAsExpander
+                showExpandableButton
+              />
+              <CardText expandable>
+                <GridConfiguration store={store} />
+              </CardText>
+            </Card>
+            <CardText expandable style={{height: 1000}}>
+              <Grid store={store} drilldown={this.onDrilldown} />
+            </CardText>
+          </Card>
+          <Card expanded>
+            <CardHeader
+              title='Chart'
               expanded
               actAsExpander
               showExpandableButton
@@ -69,7 +91,6 @@ class Main extends Component {
               </CardText>
             </Card>
             <CardText expandable style={{height: 1000}}>
-              {/* <Grid store={store} drilldown={this.onDrilldown} /> */}
               <BarChart store={store} />
             </CardText>
           </Card>

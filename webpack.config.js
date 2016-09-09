@@ -26,7 +26,8 @@ module.exports = function (env) {
           test: /\.css$/,
           loaders: [
             'style',
-            {loader: 'css', query: {modules: true, importLoaders: 1}}
+            {loader: 'css', query: {importLoaders: 1}},
+            'postcss'
           ],
           include: path.join(__dirname, 'source')
         },
@@ -34,7 +35,8 @@ module.exports = function (env) {
           test: /\.css$/,
           loaders: [
             'style',
-            {loader: 'css', query: {importLoaders: 1}}
+            {loader: 'css', query: {importLoaders: 1}},
+            'postcss'
           ],
           include: path.join(__dirname, 'styles.css')
         },
