@@ -105,6 +105,8 @@ export class Config {
     this.subTotal = new SubTotalConfig(config.subTotal, true)
     this.width = config.width
     this.height = config.height
+    this.cellWidth = config.cellWidth
+    this.cellHeight = config.cellHeight
 
     this.rowSettings = new Field(config.rowSettings, false)
     this.columnSettings = new Field(config.columnSettings, false)

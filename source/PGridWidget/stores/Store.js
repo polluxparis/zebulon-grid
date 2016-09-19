@@ -134,8 +134,8 @@ export default class Store {
 
   getsizes () {
     const cell = {
-      height: 30,
-      width: 100
+      height: this.config.cellHeight || 30,
+      width: this.config.cellWidth || 100
     }
     const grid = {
       width: this.config.width,

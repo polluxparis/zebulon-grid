@@ -58,6 +58,8 @@ var config = {
   dataHeadersLocation: 'columns',
   width: 1099,
   height: 601,
+  cellHeight: 30,
+  cellWidth: 100,
   theme: 'green',
   toolbar: {
     visible: true
