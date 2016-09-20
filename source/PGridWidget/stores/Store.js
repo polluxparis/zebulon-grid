@@ -45,7 +45,7 @@ export default class Store {
   }
 
   unsubscribe () {
-    if (this.dataSubscription) this.dataSubscription.unsubscribe()
+    if (this.dataSubscription) this.dataSubscription.dispose()
   }
 
   push (payload) {
