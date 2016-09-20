@@ -18,8 +18,8 @@ export default class OrbGrid extends Component {
   }
 
   componentWillUpdate (nextProps, nextState) {
-    // to handle case where all data fields are unactivated
     this._isUpdating = true
+    // to handle case where all data fields are unactivated
     this._grid.forceUpdate()
   }
 

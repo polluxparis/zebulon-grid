@@ -59,7 +59,7 @@ export class Axe {
      * Root dimension
      * @type {orb.dimension}
      */
-    this.root = new Dimension(++this.dimid, null, null, null, this.dimensionsCount + 1, true, false)
+    this.root = new Dimension(-1, null, null, null, this.dimensionsCount + 1, true, false)
     this.fill(this.store.filteredData)
     // initial sort
     this.fields.forEach(field => { field.sort.order === 'asc' || field.sort.order === 'desc' ? this.sort(field, true) : null })
@@ -118,12 +118,13 @@ export class Axe {
             const depth = this.dimensionsCount - findex
             const field = this.fields[findex]
             const subvalue = row[field.name]
+            const id = row[field.code]
             const subdimvals = dim.subdimvals
             if (subdimvals[subvalue] !== undefined) {
               dim = subdimvals[subvalue]
             } else {
               dim.values.push(subvalue)
-              dim = new Dimension(++this.dimid, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
+              dim = new Dimension(id, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
               subdimvals[subvalue] = dim
               dim.rowIndexes = []
             }

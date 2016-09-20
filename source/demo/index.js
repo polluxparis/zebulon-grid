@@ -26,6 +26,7 @@ function getMockDataSource (dataRepetition, nToto) {
         for (var u = 0; u < nTutu; u++) {
           arr = []
           arr[0] = 'toto' + String(o)
+          arr[5] = 'TOTO' + String(o)
           arr[3] = 'titi' + String(i)
           arr[4] = String(u)
           arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
@@ -90,6 +91,7 @@ var config = {
   fields: [
     {
       name: '0',
+      code: '5',
       caption: 'Toto',
       sort: {
         order: 'asc'

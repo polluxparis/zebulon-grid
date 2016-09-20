@@ -72,6 +72,8 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 
     caption: getpropertyvalue('caption', merged.configs, ''),
 
+    code: getpropertyvalue('code', merged.configs, ''),
+
     sort: {
       order: getpropertyvalue('order', merged.sorts, null),
       customfunc: getpropertyvalue('customfunc', merged.sorts, null)
@@ -443,6 +445,7 @@ export class Field {
 
     // field name
     this.name = options.name
+    this.code = options.code || this.name
 
     // shared settings
     this.caption = options.caption || this.name
