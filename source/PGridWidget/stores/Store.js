@@ -41,7 +41,11 @@ export default class Store {
       // datasource is a Rxjs observable
       observableDatasource = datasource
     }
-    if (observableDatasource) observableDatasource.subscribe(this.push.bind(this))
+    if (observableDatasource) this.dataSubscription = observableDatasource.subscribe(this.push.bind(this))
+  }
+
+  unsubscribe () {
+    if (this.dataSubscription) this.dataSubscription.unsubscribe()
   }
 
   push (payload) {
