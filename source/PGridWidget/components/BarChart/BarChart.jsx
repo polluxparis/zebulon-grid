@@ -12,7 +12,7 @@ export default class Chart extends Component {
       {name: dimension.value})
     )
     return (
-      <div className='container' style={{height: 1000}}>
+      <div className='container' style={{height: 600}}>
         <ResponsiveContainer>
           <BarChart data={data}
             margin={{top: 5, right: 30, left: 30, bottom: 5}}>

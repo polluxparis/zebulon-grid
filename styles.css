@@ -1,34 +1,29 @@
-.normal {
-  padding: 2px;
-}
-
 .highlighted {
     -webkit-animation-name: anim-info-updated;
             animation-name: anim-info-updated;
-    -webkit-animation-duration: 2s;
-            animation-duration: 2s;
+    -webkit-animation-duration: 4s;
+            animation-duration: 4s;
     box-sizing: border-box;
-    padding: 0;
 }
 
 @-webkit-keyframes anim-info-updated {
     0% {
-      border: 2px solid red;
+      background-color: red;
       color: rgb(128, 0, 0);
     }
     100% {
-      border: 2px solid transparent;
+      background-color: white;
       color: rgb(0, 0, 0);
     }
 }
 
 @keyframes anim-info-updated {
     0% {
-      border: 2px solid red;
+      background-color: red;
       color: rgb(128, 0, 0);
     }
     100% {
-      border: 2px solid transparent;
+      background-color: white;
       color: rgb(0, 0, 0);
     }
 }
