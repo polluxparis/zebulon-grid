@@ -15,7 +15,7 @@ export default class DataCellComp extends Component {
 
     return (
       <div
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', textAlign: 'right' }}
         onDoubleClick={onDoubleClick}
       >
         {divcontent}
