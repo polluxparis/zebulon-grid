@@ -18,20 +18,20 @@ import Main from './Main'
 function getMockDataSource (dataRepetition, nToto) {
   const nTiti = 100
   const nTutu = 2
-  var arr = []
+  var obj = []
   var res = []
   for (var k = 0; k < dataRepetition; k++) {
     for (var o = 0; o < nToto; o++) {
       for (var i = 0; i < nTiti; i++) {
         for (var u = 0; u < nTutu; u++) {
-          arr = []
-          arr[0] = 'toto' + String(o)
-          arr[5] = 'TOTO' + String(o)
-          arr[3] = 'titi' + String(i)
-          arr[4] = String(u)
-          arr[1] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
-          arr[2] = k + 20 * u + 200 * i * 2000 * o + 2 // +9999999999.1234567890123456
-          res.push(arr)
+          obj = []
+          obj['toto'] = 'toto' + String(o)
+          obj['toto_cd'] = 'TOTO' + String(o)
+          obj['titi'] = 'titi' + String(i)
+          obj['tutu'] = String(u)
+          obj['qty'] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
+          obj['amt'] = k + 20 * u + 200 * i * 2000 * o + 2 // +9999999999.1234567890123456
+          res.push(obj)
         }
       }
     }
@@ -42,17 +42,19 @@ function getMockDataSource (dataRepetition, nToto) {
 const dataArray = getMockDataSource(1, 100)
 const datasourceArray = [
   dataArray.slice(0, 5000),
-  dataArray.slice(5000, 10000),
-  ['toto0', 10000000000, 100000000000, 'titi0', '0'],
-  ['toto11', 33, 666, 'titi0', '0'],
-  [['toto1', 10, 100, 'titi0', '0'], ['toto12', 44, 777, 'titi0', '0']],
-  ['toto2', 10, 100, 'titi0', '0']
+  dataArray.slice(0, 1000),
+  // ['toto0', 10000000000, 100000000000, 'titi0', '0'],
+  // ['toto11', 33, 666, 'titi0', '0'],
+  [{toto: 'toto1', qty: 100, amt: 1000, titi: 'titi0', tutu: '0'}, {toto: 'toto12', qty: 44, amt: 777, titi: 'titi0',
+  tutu: '0'}]
+// ['toto2', 10, 100, 'titi0', '0']
 ]
 
 // const datasource = datasourceArray[0]
 
-const datasource = Observable.interval(2000).take(3)
-.map(i => datasourceArray[i])
+const datasource = Observable.interval(2000).take(2)
+  .map(i => datasourceArray[i])
+  .do(data => console.log('data received', data))
 
 var config = {
   canMoveFields: true,
@@ -90,8 +92,8 @@ var config = {
   },
   fields: [
     {
-      name: '0',
-      code: '5',
+      name: 'toto',
+      code: 'toto_cd',
       caption: 'Toto',
       sort: {
         order: 'asc'
@@ -116,36 +118,36 @@ var config = {
     //     },
     // },
     {
-      name: '3',
+      name: 'titi',
       caption: 'Titi'
     },
     {
-      name: '4',
+      name: 'tutu',
       caption: 'Tutu'
     }
-    // {
-    //     name: '4',
-    //     caption: 'Category',
-    //     sort: {
-    //         customfunc: function(a, b) {
-    //             if(a.trim() == 'Touch Screen Phones'){
-    //              return -1
-    //             }
-    //             if(a < b) return -1
-    //             if(a > b) return 1
-    //             return 0
-    //         }
-    //     }
-    // },
+  // {
+  //     name: '4',
+  //     caption: 'Category',
+  //     sort: {
+  //         customfunc: function(a, b) {
+  //             if(a.trim() == 'Touch Screen Phones'){
+  //              return -1
+  //             }
+  //             if(a < b) return -1
+  //             if(a > b) return 1
+  //             return 0
+  //         }
+  //     }
+  // },
   ],
   dataFields: [
     {
-      name: '2',
+      name: 'qty',
       caption: 'Quantity',
       aggregateFunc: 'sum'
     },
     {
-      name: '1',
+      name: 'amt',
       caption: 'Amount',
       aggregateFunc: 'sum',
       aggregateFuncName: 'whatever',
