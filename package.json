@@ -67,7 +67,7 @@
     "react-resizable": "^1.4.2",
     "react-virtualized": "^8.0.8",
     "react-virtualized-checkbox": "^1.0.6",
-    "recharts": "^0.13.4",
+    "recharts": "^0.14.2",
     "rx-lite": "^4.0.8"
   },
   "devDependencies": {
