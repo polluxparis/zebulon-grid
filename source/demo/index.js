@@ -16,18 +16,29 @@ import Main from './Main'
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css')
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 100
+  const nTiti = 10
   const nTutu = 2
-  var obj = []
-  var res = []
-  for (var k = 0; k < dataRepetition; k++) {
-    for (var o = 0; o < nToto; o++) {
-      for (var i = 0; i < nTiti; i++) {
-        for (var u = 0; u < nTutu; u++) {
+  let obj = []
+  let res = []
+  for (let k = 0; k < dataRepetition; k++) {
+    for (let i = 0; i < 3; i++) {
+      for (let u = 0; u < nTutu; u++) {
+        obj = []
+        obj['toto'] = 'toto ' + String(0)
+        obj['titi'] = 'titi ' + String(i)
+        obj['tutu'] = String(u)
+        obj['qty'] = k + 10 * u + 100 * i * 1000 * 0 + 1 // +9999999999.1234567890123456
+        obj['amt'] = k + 20 * u + 200 * i * 2000 * 0 + 2 // +9999999999.1234567890123456
+        res.push(obj)
+      }
+    }
+    for (let o = 1; o < nToto; o++) {
+      for (let i = 0; i < nTiti; i++) {
+        for (let u = 0; u < nTutu; u++) {
           obj = []
           obj['toto'] = 'toto' + String(o)
           obj['toto_cd'] = 'TOTO' + String(o)
-          obj['titi'] = 'titi' + String(i)
+          obj['titi'] = 'titi ' + String(i)
           obj['tutu'] = String(u)
           obj['qty'] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
           obj['amt'] = k + 20 * u + 200 * i * 2000 * o + 2 // +9999999999.1234567890123456
@@ -42,21 +53,22 @@ function getMockDataSource (dataRepetition, nToto) {
 const dataArray = getMockDataSource(1, 100)
 const datasourceArray = [
   dataArray.slice(0, 5000),
-  dataArray.slice(0, 1000),
-  // ['toto0', 10000000000, 100000000000, 'titi0', '0'],
+  // dataArray.slice(0, 1000),
+  {toto: 'toto0', qty: 1, amt: 2, titi: 'titi000000000000 0', tutu: '0'},
+  {toto: 'toto0', qty: 1, amt: 2, titi: 'titi000000000000 0', tutu: '0'},
   // ['toto11', 33, 666, 'titi0', '0'],
   [{toto: 'toto1', qty: 100, amt: 1000, titi: 'titi0', tutu: '0'}, {toto: 'toto12', qty: 44, amt: 777, titi: 'titi0',
   tutu: '0'}]
 // ['toto2', 10, 100, 'titi0', '0']
 ]
 
-// const datasource = datasourceArray[0]
+const datasource = datasourceArray[0]
 
-const datasource = Observable.interval(2000).take(2)
-  .map(i => datasourceArray[i])
-  .do(data => console.log('data received', data))
+// const datasource = Observable.interval(2000).take(3)
+//   .map(i => datasourceArray[i])
+//   .do(data => console.log('data received', data))
 
-var config = {
+let config = {
   canMoveFields: true,
   dataHeadersLocation: 'columns',
   width: 1099,
@@ -154,8 +166,8 @@ var config = {
       formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
     }
   ],
-  columns: ['Titi', 'Tutu'], // , 'Category' ],
-  rows: ['Toto'],
+  columns: ['Tutu'], // , 'Category' ],
+  rows: ['Toto', 'Titi'],
   data: ['Quantity', 'Amount'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
   preFilters: {

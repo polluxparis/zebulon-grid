@@ -309,7 +309,7 @@ export default class OrbGrid extends Component {
           zIndex: 1,
           backgroundColor: '#eef8fb'
         }}>
-        <div style={affix ? {position: 'relative', top: Math.min(scrollTop % height, height - cellHeight), color: 'red'} : {}}>
+        <div style={affix ? {position: 'relative', top: Math.min(scrollTop + columnHeadersHeight - top, height - cellHeight), color: 'red'} : {}}>
           {renderedCell}
         </div>
       </div>
