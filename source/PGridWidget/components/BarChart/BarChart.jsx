@@ -26,7 +26,7 @@ export default class Chart extends Component {
             {measures.map((mea, index) => {
               // It's necessary to filter afterwards in order to keep the same couple field-color when changing the number of activated data fields
               if (store.config.activatedDataFields.map(field => field.name).indexOf(mea.name) > -1) {
-                return <Bar type='monotone' dataKey={mea.caption} fill={colors[index]} stroke={colors[index]} isAnimationActive={false} />
+                return <Bar type='monotone' dataKey={mea.caption} fill={colors[index]} stroke={colors[index]} />
               }
             })}
           </BarChart>
