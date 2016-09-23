@@ -206,15 +206,15 @@ export default class OrbGrid extends Component {
 
     // Render data cells
     this._datacells = new Map()
-    if (!isScrolling) {
-      for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
-        let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
-        for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
-          let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-          renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
-        }
+    // if (!isScrolling) {
+    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
+      let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
+      for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
+        let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
+        renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
       }
     }
+    // }
 
     return renderedCells
   }
