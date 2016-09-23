@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Observable } from 'rx-lite'
+// import { Observable } from 'rx-lite'
 
 // CSS files
 import 'react-virtualized/styles.css'
@@ -16,12 +16,12 @@ import Main from './Main'
 // require('../../deps/bootstrap-3.3.1/css/bootstrap.css')
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 10
+  const nTiti = 100
   const nTutu = 2
   let obj = []
   let res = []
   for (let k = 0; k < dataRepetition; k++) {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 30; i++) {
       for (let u = 0; u < nTutu; u++) {
         obj = []
         obj['toto'] = 'toto ' + String(0)
