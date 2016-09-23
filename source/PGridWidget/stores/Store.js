@@ -108,6 +108,10 @@ export default class Store {
     return new Axe(AxeType.COLUMNS, this.config.columnFields, this)
   }
 
+  getChartAxe () {
+    return new Axe(AxeType.CHART, [this.config.selectedField], this)
+  }
+
   getrowsUi (noNewAxe) {
     if (!noNewAxe) { this.rows = this.getrows() }
     return new AxeUi(this.rows)

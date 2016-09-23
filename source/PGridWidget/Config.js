@@ -316,9 +316,7 @@ export class Config {
   }
 
   selectField (fieldname) {
-    this.moveField(this.selectedField.name, AxeType.ROWS, AxeType.FIELDS)
     this.selectedField = this.getfield(this.allFields, fieldname)
-    this.moveField(this.selectedField.name, null, AxeType.ROWS)
   }
 
   toggleDataField (fieldname) {

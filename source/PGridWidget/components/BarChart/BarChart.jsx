@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { ResponsiveContainer, BarChart, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Bar } from 'recharts'
+import chroma from 'chroma-js'
 
 export default class Chart extends Component {
   render () {
-    let {store, rootDimension, measures} = this.props
-    rootDimension = store.rows.root
-    measures = store.config.activatedDataFields
-    const data = Object.values(rootDimension.subdimvals).map(dimension =>
+    let {store} = this.props
+    const dimension = store.getChartAxe().root
+    const measures = store.config.dataFields
+    const colors = chroma.scale('Spectral').colors(store.config.dataFields.length)
+    const data = Object.values(dimension.subdimvals).map(dimension =>
       measures.reduce((current, measure) =>
         Object.assign(current, {[measure.caption]: store.getData(measure.name, dimension, {isRoot: true})}),
       {name: dimension.value})
@@ -21,12 +23,12 @@ export default class Chart extends Component {
             <CartesianGrid strokeDasharray='3 3' />
             <Tooltip />
             <Legend />
-            {measures.map(mea => mea.caption).indexOf('Quantity') > -1
-              ? <Bar type='monotone' dataKey='Quantity' fill='#8884d8' stroke='#8884d8' isAnimationActive={false} />
-              : null}
-            {measures.map(mea => mea.caption).indexOf('Amount') > -1
-              ? <Bar type='monotone' dataKey='Amount' fill='#82ca9d' stroke='#82ca9d' isAnimationActive={false} />
-              : null}
+            {measures.map((mea, index) => {
+              // It's necessary to filter afterwards in order to keep the same couple field-color when changing the number of activated data fields
+              if (store.config.activatedDataFields.map(field => field.name).indexOf(mea.name) > -1) {
+                return <Bar type='monotone' dataKey={mea.caption} fill={colors[index]} stroke={colors[index]} isAnimationActive={false} />
+              }
+            })}
           </BarChart>
         </ResponsiveContainer>
       </div>

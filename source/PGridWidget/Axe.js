@@ -12,7 +12,8 @@ export const AxeType = {
   COLUMNS: 1,
   ROWS: 2,
   DATA: 3,
-  FIELDS: 4
+  FIELDS: 4,
+  CHART: 5
 }
 
 /**
