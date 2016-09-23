@@ -1,6 +1,6 @@
 {
   "name": "pivot-table",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "license": "UNLICENSED",
   "publish-Config": {
     "registry": "http://localhost:4873"
