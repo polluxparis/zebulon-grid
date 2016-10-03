@@ -155,7 +155,7 @@ export default class OrbGrid extends Component {
     renderedCells.push(
       <div
         key='fixed-fixed'
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
           position: 'fixed',
           left: scrollLeft,
@@ -234,11 +234,25 @@ export default class OrbGrid extends Component {
       columnHeader
     )
     let style = {
+      border: 'solid lightgrey thin',
+      boxSizing: 'border-box',
+      padding: '0.2em',
       position: 'fixed',
       height: cellHeight,
       width: cellWidth,
       left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
       top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
+    }
+    let unEvenRowStyle = {
+      backgroundColor: 'rgba(211, 211, 211, 0.4)'
+    }
+    let evenRowStyle = {
+      backgroundColor: 'white'
+    }
+    if (rowIndex % 2) {
+      style = {...style, ...unEvenRowStyle}
+    } else {
+      style = {...style, ...evenRowStyle}
     }
     const key = `${rowHeader.key}-//-${columnHeader.key}`
     this._datacells.set(key, cell)
@@ -253,7 +267,7 @@ export default class OrbGrid extends Component {
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className={valueHasChanged ? 'Grid__cell highlighted' : 'Grid__cell normal'}
+        className={valueHasChanged ? 'ReactVirtualized__Grid__cell highlighted' : 'ReactVirtualized__Grid__cell normal'}
         style={style}>
         {renderedCell}
       </div>
@@ -271,8 +285,11 @@ export default class OrbGrid extends Component {
       <div
       // add 1 to key modulo to avoid collision when rendering parent cells
         key={`fixedrow-${x % (visibleColumns + 1)}-${y}`}
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
+          border: 'solid lightgrey thin',
+          boxSizing: 'border-box',
+          padding: '0.2em',
           position: 'fixed',
           left,
           top: y * cellHeight + scrollTop,
@@ -299,8 +316,11 @@ export default class OrbGrid extends Component {
       <div
         // add 1 to key modulo to avoid collision when rendering parent cells
         key={`fixedcol-${x % (visibleRows + 1)}-${y}`}
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
+          border: 'solid lightgrey thin',
+          boxSizing: 'border-box',
+          padding: '0.2em',
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
           top,
