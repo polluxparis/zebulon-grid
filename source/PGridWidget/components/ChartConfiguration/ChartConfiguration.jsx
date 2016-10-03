@@ -20,7 +20,7 @@ class ChartConfiguration extends Component {
     const {store} = this.props
     const {config} = store
     const rowButtons = config.allFields.map((field, index) =>
-      <div style={{padding: '0px 4px'}} onClick={() => this.clickButton(field.name)}>
+      <div key={field.name} style={{padding: '0px 4px'}} onClick={() => this.clickButton(field.name)}>
         <FixedFieldButton
           key={field.name}
           field={field}
