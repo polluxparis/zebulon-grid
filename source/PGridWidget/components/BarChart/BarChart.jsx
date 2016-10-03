@@ -14,24 +14,22 @@ export default class Chart extends Component {
       {name: dimension.value})
     )
     return (
-      <div className='container' style={{height: 600}}>
-        <ResponsiveContainer>
-          <BarChart data={data}
-            margin={{top: 5, right: 30, left: 30, bottom: 5}}>
-            <XAxis dataKey='name' />
-            <YAxis />
-            <CartesianGrid strokeDasharray='3 3' />
-            <Tooltip />
-            <Legend />
-            {measures.map((mea, index) => {
-              // It's necessary to filter afterwards in order to keep the same couple field-color when changing the number of activated data fields
-              if (store.config.activatedDataFields.map(field => field.name).indexOf(mea.name) > -1) {
-                return <Bar type='monotone' dataKey={mea.caption} fill={colors[index]} stroke={colors[index]} />
-              }
-            })}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <ResponsiveContainer>
+        <BarChart data={data}
+          margin={{top: 5, right: 30, left: 30, bottom: 5}}>
+          <XAxis dataKey='name' />
+          <YAxis />
+          <CartesianGrid strokeDasharray='3 3' />
+          <Tooltip />
+          <Legend />
+          {measures.map((mea, index) => {
+            // It's necessary to filter afterwards in order to keep the same couple field-color when changing the number of activated data fields
+            if (store.config.activatedDataFields.map(field => field.name).indexOf(mea.name) > -1) {
+              return <Bar key={index} type='monotone' dataKey={mea.caption} fill={colors[index]} stroke={colors[index]} />
+            }
+          })}
+        </BarChart>
+      </ResponsiveContainer>
     )
   }
 }

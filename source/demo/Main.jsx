@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import {Card, CardHeader, CardText} from 'material-ui/Card'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-var injectTapEventPlugin = require('react-tap-event-plugin')
-injectTapEventPlugin()
+import {ResizableBox} from 'react-resizable'
 
 import {ChartConfiguration, BarChart, GridConfiguration, Grid, Store} from '../index'
 
@@ -48,56 +45,72 @@ class Main extends Component {
     const {store} = this.state
     console.log(store)
     return (
-      <MuiThemeProvider>
+      <div>
         <div>
-          <Card expanded>
-            <CardHeader
-              title='Grid'
-              expanded
-              actAsExpander
-              showExpandableButton
-            />
-            <Card expanded>
-              <CardHeader
-                title='Configuration'
-                expanded
-                actAsExpander
-                showExpandableButton
-              />
-              <CardText expandable>
-                <GridConfiguration store={store} />
-              </CardText>
-            </Card>
-            <CardText expandable style={{height: 1000}}>
-              <Grid store={store} drilldown={this.onDrilldown} />
-            </CardText>
-          </Card>
-          <Card expanded>
-            <CardHeader
-              title='Chart'
-              expanded
-              actAsExpander
-              showExpandableButton
-            />
-            <Card expanded>
-              <CardHeader
-                title='Configuration'
-                expanded
-                actAsExpander
-                showExpandableButton
-              />
-              <CardText expandable>
-                <ChartConfiguration store={store} />
-              </CardText>
-            </Card>
-            <CardText expandable style={{height: 1000}}>
-              <BarChart store={store} />
-            </CardText>
-          </Card>
-          <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
+          <ChartConfiguration store={store} />
+          <ResizableBox height={600} width={800}>
+            <BarChart store={store} />
+          </ResizableBox>
         </div>
-      </MuiThemeProvider>
+        <div>
+          <GridConfiguration store={store} />
+          <ResizableBox height={600} width={800}>
+            <Grid store={store} />
+          </ResizableBox>
+        </div>
+      </div>
     )
+    // return (
+    //   <MuiThemeProvider>
+    //     <div>
+    //       <Card expanded>
+    //         <CardHeader
+    //           title='Grid'
+    //           expanded
+    //           actAsExpander
+    //           showExpandableButton
+    //         />
+    //         <Card expanded>
+    //           <CardHeader
+    //             title='Configuration'
+    //             expanded
+    //             actAsExpander
+    //             showExpandableButton
+    //           />
+    //           <CardText expandable>
+    //             <GridConfiguration store={store} />
+    //           </CardText>
+    //         </Card>
+    //         <CardText expandable style={{height: 1000}}>
+    //           <Grid store={store} drilldown={this.onDrilldown} />
+    //         </CardText>
+    //       </Card>
+    //       <Card expanded>
+    //         <CardHeader
+    //           title='Chart'
+    //           expanded
+    //           actAsExpander
+    //           showExpandableButton
+    //         />
+    //         <Card expanded>
+    //           <CardHeader
+    //             title='Configuration'
+    //             expanded
+    //             actAsExpander
+    //             showExpandableButton
+    //           />
+    //           <CardText expandable>
+    //             <ChartConfiguration store={store} />
+    //           </CardText>
+    //         </Card>
+    //         <CardText expandable style={{height: 1000}}>
+    //           <BarChart store={store} />
+    //         </CardText>
+    //       </Card>
+    //       <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
+    //     </div>
+    //   </MuiThemeProvider>
+    // )
   }
 }
 
