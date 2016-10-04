@@ -10,7 +10,7 @@ export default class OrbGrid extends Component {
   componentWillReceiveProps (nextProps, nextState) {
     const layout = this.getLayout(nextProps.store)
 
-    this.setState({ ...layout, cellsCache: this._datacells })
+    this.setState({ ...layout, cellsCache: this._datacells || new Map() })
 
     // Change scroll values to stay at the same position when modifying the layout
     this.scrollLeft = this._grid.state.scrollLeft * (layout.columnHorizontalCount / this.state.columnHorizontalCount)
