@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {ResizableBox} from 'react-resizable'
 
-import {ChartConfiguration, BarChart, LineChart, GridConfiguration, Grid, Store} from '../index'
+import {ChartConfiguration, Chart, GridConfiguration, Grid, Store} from '../index'
 
 let pivotId = 1
 
@@ -49,13 +49,19 @@ class Main extends Component {
         <div>
           <ChartConfiguration store={store} />
           <ResizableBox height={600} width={800}>
-            <BarChart store={store} />
+            <Chart type='bar' store={store} />
           </ResizableBox>
         </div>
         <div>
           <ChartConfiguration store={store} />
           <ResizableBox height={600} width={800}>
-            <LineChart store={store} />
+            <Chart type='line' store={store} />
+          </ResizableBox>
+        </div>
+        <div>
+          <ChartConfiguration store={store} />
+          <ResizableBox height={600} width={800}>
+            <Chart type='area' store={store} />
           </ResizableBox>
         </div>
         <div>
@@ -66,57 +72,6 @@ class Main extends Component {
         </div>
       </div>
     )
-    // return (
-    //   <MuiThemeProvider>
-    //     <div>
-    //       <Card expanded>
-    //         <CardHeader
-    //           title='Grid'
-    //           expanded
-    //           actAsExpander
-    //           showExpandableButton
-    //         />
-    //         <Card expanded>
-    //           <CardHeader
-    //             title='Configuration'
-    //             expanded
-    //             actAsExpander
-    //             showExpandableButton
-    //           />
-    //           <CardText expandable>
-    //             <GridConfiguration store={store} />
-    //           </CardText>
-    //         </Card>
-    //         <CardText expandable style={{height: 1000}}>
-    //           <Grid store={store} drilldown={this.onDrilldown} />
-    //         </CardText>
-    //       </Card>
-    //       <Card expanded>
-    //         <CardHeader
-    //           title='Chart'
-    //           expanded
-    //           actAsExpander
-    //           showExpandableButton
-    //         />
-    //         <Card expanded>
-    //           <CardHeader
-    //             title='Configuration'
-    //             expanded
-    //             actAsExpander
-    //             showExpandableButton
-    //           />
-    //           <CardText expandable>
-    //             <ChartConfiguration store={store} />
-    //           </CardText>
-    //         </Card>
-    //         <CardText expandable style={{height: 1000}}>
-    //           <BarChart store={store} />
-    //         </CardText>
-    //       </Card>
-    //       <div className='orb-overlay orb-overlay-hidden' id={'drilldialog' + this.id}></div>
-    //     </div>
-    //   </MuiThemeProvider>
-    // )
   }
 }
 
