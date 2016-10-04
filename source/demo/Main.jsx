@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {ResizableBox} from 'react-resizable'
 
-import {ChartConfiguration, BarChart, GridConfiguration, Grid, Store} from '../index'
+import {ChartConfiguration, BarChart, LineChart, GridConfiguration, Grid, Store} from '../index'
 
 let pivotId = 1
 
@@ -50,6 +50,12 @@ class Main extends Component {
           <ChartConfiguration store={store} />
           <ResizableBox height={600} width={800}>
             <BarChart store={store} />
+          </ResizableBox>
+        </div>
+        <div>
+          <ChartConfiguration store={store} />
+          <ResizableBox height={600} width={800}>
+            <LineChart store={store} />
           </ResizableBox>
         </div>
         <div>

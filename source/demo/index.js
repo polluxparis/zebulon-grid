@@ -166,8 +166,8 @@ let config = {
       formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
     }
   ],
-  columns: ['Tutu'], // , 'Category' ],
-  rows: ['Toto', 'Titi'],
+  columns: [], // , 'Category' ],
+  rows: ['Toto', 'Tutu'],
   data: ['Quantity', 'Amount'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
   preFilters: {

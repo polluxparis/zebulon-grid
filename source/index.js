@@ -1,1 +1,1 @@
-export {GridConfiguration, Grid, ChartConfiguration, BarChart, Store} from './PGridWidget'
+export {GridConfiguration, Grid, ChartConfiguration, BarChart, LineChart, Store} from './PGridWidget'
