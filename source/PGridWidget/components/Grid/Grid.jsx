@@ -10,7 +10,7 @@ export default class OrbGrid extends Component {
   componentWillReceiveProps (nextProps, nextState) {
     const layout = this.getLayout(nextProps.store)
 
-    this.setState({ ...layout, cellsCache: this._datacells })
+    this.setState({ ...layout, cellsCache: this._datacells || new Map() })
 
     // Change scroll values to stay at the same position when modifying the layout
     this.scrollLeft = this._grid.state.scrollLeft * (layout.columnHorizontalCount / this.state.columnHorizontalCount)
@@ -155,7 +155,7 @@ export default class OrbGrid extends Component {
     renderedCells.push(
       <div
         key='fixed-fixed'
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
           position: 'fixed',
           left: scrollLeft,
@@ -211,7 +211,7 @@ export default class OrbGrid extends Component {
       let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
       for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
         let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-        renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
+        renderedCells.push(this.dataCellRenderer({columnIndex, rowIndex, columnDatum, rowDatum, scrollLeft, scrollTop, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}))
       }
     }
     // }
@@ -219,7 +219,7 @@ export default class OrbGrid extends Component {
     return renderedCells
   }
 
-  dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment}) {
+  dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment, scrollTop, scrollLeft}) {
     const {cellHeight, cellWidth, rowHeadersWidth, columnHeadersHeight} = this.state
     const {store, drilldown} = this.props
     const {rowsUi, columnsUi} = store
@@ -234,11 +234,27 @@ export default class OrbGrid extends Component {
       columnHeader
     )
     let style = {
+      border: 'solid lightgrey thin',
+      boxSizing: 'border-box',
+      padding: '0.2em',
+      overflow: 'hidden',
       position: 'fixed',
       height: cellHeight,
       width: cellWidth,
-      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
-      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
+      // The modulos allow discrete scrolling
+      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % cellWidth),
+      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % cellHeight)
+    }
+    let unEvenRowStyle = {
+      backgroundColor: 'rgba(211, 211, 211, 0.4)'
+    }
+    let evenRowStyle = {
+      backgroundColor: 'white'
+    }
+    if (rowIndex % 2) {
+      style = {...style, ...unEvenRowStyle}
+    } else {
+      style = {...style, ...evenRowStyle}
     }
     const key = `${rowHeader.key}-//-${columnHeader.key}`
     this._datacells.set(key, cell)
@@ -253,7 +269,7 @@ export default class OrbGrid extends Component {
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className={valueHasChanged ? 'Grid__cell highlighted' : 'Grid__cell normal'}
+        className={valueHasChanged ? 'ReactVirtualized__Grid__cell highlighted' : 'ReactVirtualized__Grid__cell normal'}
         style={style}>
         {renderedCell}
       </div>
@@ -271,17 +287,26 @@ export default class OrbGrid extends Component {
       <div
       // add 1 to key modulo to avoid collision when rendering parent cells
         key={`fixedrow-${x % (visibleColumns + 1)}-${y}`}
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
+          border: 'solid lightgrey thin',
+          boxSizing: 'border-box',
+          padding: '0.2em',
+          overflow: 'hidden',
           position: 'fixed',
-          left,
+          // to have discrete scroll
+          left: left + (scrollLeft % cellWidth),
           top: y * cellHeight + scrollTop,
           height: cellHeight * columnHeader.vspan(),
           width,
           zIndex: 1,
           backgroundColor: '#eef8fb'
         }}>
-        <div style={affix ? {position: 'relative', left: Math.min(scrollLeft % width, width - cellWidth), color: 'red'} : {}}>
+        <div style={affix ? {
+          position: 'relative',
+          // to keep the label visible upon scrolling
+          left: (scrollLeft % width) - ((scrollLeft % width) % cellWidth)
+        } : {}}>
           {renderedCell}
         </div>
       </div>
@@ -299,17 +324,26 @@ export default class OrbGrid extends Component {
       <div
         // add 1 to key modulo to avoid collision when rendering parent cells
         key={`fixedcol-${x % (visibleRows + 1)}-${y}`}
-        className={'Grid__cell'}
+        className={'ReactVirtualized__Grid__cell'}
         style={{
+          border: 'solid lightgrey thin',
+          boxSizing: 'border-box',
+          padding: '0.2em',
+          overflow: 'hidden',
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
-          top,
+          // to have discrete scroll
+          top: top + (scrollTop % cellHeight),
           height,
           width: cellWidth * rowHeader.hspan(),
           zIndex: 1,
           backgroundColor: '#eef8fb'
         }}>
-        <div style={affix ? {position: 'relative', top: Math.min(scrollTop + columnHeadersHeight - top, height - cellHeight), color: 'red'} : {}}>
+        <div style={affix ? {
+          position: 'relative',
+          // to keep the label visible upon scrolling
+          top: (scrollTop % height) - ((scrollTop % height) % cellHeight)
+        } : {}}>
           {renderedCell}
         </div>
       </div>
