@@ -3,6 +3,9 @@ import {ResizableBox} from 'react-resizable'
 
 import {ChartConfiguration, Chart, GridConfiguration, Grid, Store} from './orb'
 
+import './App.css'
+import logo from './logo.svg'
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -43,30 +46,36 @@ class App extends Component {
     const {store} = this.state
     console.log(store)
     return (
-      <div>
-        <div>
-          <ChartConfiguration store={store} />
-          <ResizableBox height={600} width={800}>
-            <Chart type='bar' store={store} />
-          </ResizableBox>
+      <div className='App'>
+        <div className='App-header'>
+          <img src={logo} className='App-logo' alt='logo' />
+          <h2>Zebulon visualization components</h2>
         </div>
-        <div>
-          <ChartConfiguration store={store} />
-          <ResizableBox height={600} width={800}>
-            <Chart type='line' store={store} />
-          </ResizableBox>
-        </div>
-        <div>
-          <ChartConfiguration store={store} />
-          <ResizableBox height={600} width={800}>
-            <Chart type='area' store={store} />
-          </ResizableBox>
-        </div>
-        <div>
-          <GridConfiguration store={store} />
-          <ResizableBox height={600} width={800}>
-            <Grid store={store} />
-          </ResizableBox>
+        <div className='App-body'>
+          <div>
+            <ChartConfiguration store={store} />
+            <ResizableBox height={600} width={800}>
+              <Chart type='bar' store={store} />
+            </ResizableBox>
+          </div>
+          <div>
+            <ChartConfiguration store={store} />
+            <ResizableBox height={600} width={800}>
+              <Chart type='line' store={store} />
+            </ResizableBox>
+          </div>
+          <div>
+            <ChartConfiguration store={store} />
+            <ResizableBox height={600} width={800}>
+              <Chart type='area' store={store} />
+            </ResizableBox>
+          </div>
+          <div>
+            <GridConfiguration store={store} />
+            <ResizableBox height={600} width={800}>
+              <Grid store={store} />
+            </ResizableBox>
+          </div>
         </div>
       </div>
     )

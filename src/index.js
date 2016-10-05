@@ -158,7 +158,7 @@ let config = {
       formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
     }
   ],
-  columns: [], // , 'Category' ],
+  columns: ['Titi'], // , 'Category' ],
   rows: ['Toto', 'Tutu'],
   data: ['Quantity', 'Amount'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
