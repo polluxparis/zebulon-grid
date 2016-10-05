@@ -1,121 +1,35 @@
 {
-  "name": "pivot-table",
+  "name": "orb-private",
   "version": "0.0.35",
-  "license": "UNLICENSED",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
-  "main": "dist/commonjs/index.js",
-  "jsnext:main": "dist/es/index.js",
-  "scripts": {
-    "build": "npm run build:commonjs && npm run build:css && npm run build:es && npm run build:demo && npm run build:umd",
-    "build:commonjs": "npm run clean:commonjs && cross-env NODE_ENV=production cross-env BABEL_ENV=commonjs babel source --out-dir dist/commonjs --ignore *.example.js,*.test.js,source/demo/,source/tests.js",
-    "build:css": "postcss --use autoprefixer source/styles.css > styles.css",
-    "build:demo": "npm run clean:demo && cross-env NODE_ENV=production webpack --env.demo --config webpack.config.js --bail",
-    "build:es": "npm run clean:es && cross-env NODE_ENV=production cross-env BABEL_ENV=es babel source --out-dir dist/es --ignore *.example.js,*.test.js,source/demo/,source/tests.js",
-    "build:umd": "npm run clean:umd && cross-env NODE_ENV=production webpack --env.umd --config webpack.config.js --bail",
-    "clean": "npm run clean:commonjs && npm run clean:demo && npm run clean:es && npm run clean:umd",
-    "clean:commonjs": "rimraf dist/commonjs",
-    "clean:demo": "rimraf build",
-    "clean:es": "rimraf dist/es",
-    "clean:umd": "rimraf dist/umd",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "standard",
-    "posttest": "nyc report",
-    "prebuild": "npm run lint",
-    "prepublish": "npm run build",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --env.dev --config webpack.config.js",
-    "test": "npm run lint && npm run test:unit",
-    "test:unit": "cross-env NODE_ENV=test nyc -s tape 'source/**/*.test.js' | tap-difflet",
-    "watch": "watch 'clear && npm run test -s' source",
-    "watch:nolint": "watch 'clear && npm run test:unit' source"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/emilebres/orb"
-  },
-  "keywords": [
-    "pivot table",
-    "pivot",
-    "table",
-    "pivot grid",
-    "grid",
-    "crosstab",
-    "aggregation",
-    "dimension"
-  ],
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "dist",
-      "playground",
-      "source/vendor",
-      "old",
-      "source/css"
-    ]
+  "main": "dist/index.js",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-react-app": "^0.2.1",
+    "react-scripts": "0.6.1"
   },
   "dependencies": {
     "chroma-js": "^1.2.1",
-    "material-ui": "^0.15.4",
     "react": "^15.3.2",
-    "react-addons-shallow-compare": "^15.1.0",
+    "react-addons-shallow-compare": "^15.3.2",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.3.2",
-    "react-resizable": "^1.4.2",
-    "react-virtualized": "^8.0.8",
-    "react-virtualized-checkbox": "^1.0.6",
-    "recharts": "^0.14.2",
+    "react-resizable": "^1.4.5",
+    "react-virtualized": "^8.0.11",
+    "react-virtualized-checkbox": "^2.0.0",
+    "recharts": "^0.15.1",
     "rx-lite": "^4.0.8"
   },
-  "devDependencies": {
-    "babel-cli": "^6.5.1",
-    "babel-core": "^6.10.4",
-    "babel-eslint": "^6.1.0",
-    "babel-loader": "^6.2.4",
-    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
-    "babel-plugin-transform-react-jsx": "^6.8.0",
-    "babel-plugin-transform-runtime": "^6.9.0",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "babel-preset-es2015-webpack": "^6.4.1",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-react-optimize": "^1.0.1",
-    "babel-register": "^6.9.0",
-    "codecov": "^1.0.1",
-    "cross-env": "^2.0.0",
-    "css-loader": "^0.23.1",
-    "enzyme": "^2.4.0",
-    "gh-pages": "^0.11.0",
-    "html-webpack-plugin": "^2.22.0",
-    "jsdom": "^9.4.1",
-    "nyc": "^7.0.0",
-    "postcss": "^5.2.4",
-    "postcss-cli": "^2.6.0",
-    "postcss-loader": "^0.13.0",
-    "react-addons-test-utils": "^15.2.0",
-    "react-hot-loader": "^3.0.0-beta.2",
-    "react-resizable": "^1.4.5",
-    "rimraf": "^2.5.3",
-    "standard": "^7.1.2",
-    "style-loader": "^0.13.1",
-    "tap-difflet": "^0.6.0",
-    "tape": "^4.6.0",
-    "watch": "^0.19.1",
-    "webpack": "^2.1.0-beta.15",
-    "webpack-dev-server": "^2.1.0-beta.0"
-  },
-  "nyc": {
-    "exclude": [
-      "**/*.test.js",
-      "source/utils"
-    ],
-    "require": [
-      "babel-register"
-    ],
-    "silent": true
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "compile": "NODE_ENV=production babel src/orb -d dist --presets react-app"
   }
 }
