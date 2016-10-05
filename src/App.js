@@ -71,6 +71,12 @@ class App extends Component {
             </ResizableBox>
           </div>
           <div>
+          <ChartConfiguration store={store} />
+          <ResizableBox height={600} width={800}>
+          <Chart type='pie' store={store} />
+          </ResizableBox>
+          </div>
+          <div>
             <GridConfiguration store={store} />
             <ResizableBox height={600} width={800}>
               <Grid store={store} />
