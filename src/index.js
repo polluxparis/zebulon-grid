@@ -1,10 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Observable} from 'rx-lite'
 
 import 'react-virtualized/styles.css'
 import 'react-resizable/css/styles.css'
-
-import './orb/styles.css'
 
 import App from './App'
 
@@ -55,11 +54,11 @@ const datasourceArray = [
 // ['toto2', 10, 100, 'titi0', '0']
 ]
 
-const datasource = datasourceArray[0]
+// const datasource = datasourceArray[0]
 
-// const datasource = Observable.interval(2000).take(3)
-//   .map(i => datasourceArray[i])
-//   .do(data => console.log('data received', data))
+const datasource = Observable.interval(2000).take(3)
+  .map(i => datasourceArray[i])
+  .do(data => console.log('data received', data))
 
 let config = {
   canMoveFields: true,

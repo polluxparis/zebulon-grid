@@ -5,6 +5,8 @@ import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
 
+import './Grid.css'
+
 export default class OrbGrid extends Component {
 
   componentWillReceiveProps (nextProps, nextState) {
