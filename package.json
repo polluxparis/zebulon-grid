@@ -6,10 +6,12 @@
   },
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "devDependencies": {
+    "autoprefixer": "^6.5.0",
     "babel-cli": "^6.16.0",
     "babel-preset-react-app": "^0.2.1",
+    "postcss-cli": "^2.6.0",
     "react-scripts": "0.6.1"
   },
   "dependencies": {
@@ -30,6 +32,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "compile": "NODE_ENV=production babel src/orb -d dist --presets react-app"
+    "compile": "npm run compile:js && npm run compile:css",
+    "compile:js": "NODE_ENV=production babel src/orb -d lib --presets react-app",
+    "compile:css": "postcss --use autoprefixer src/orb/index.css > lib/index.css"
   }
 }

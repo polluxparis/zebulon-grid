@@ -5,7 +5,7 @@ import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
 
-import './Grid.css'
+// import './Grid.css'
 
 export default class OrbGrid extends Component {
 
@@ -271,7 +271,7 @@ export default class OrbGrid extends Component {
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className={valueHasChanged ? 'ReactVirtualized__Grid__cell highlighted' : 'ReactVirtualized__Grid__cell normal'}
+        className={valueHasChanged ? 'ReactVirtualized__Grid__cell OrbGrid-cell-highlighted' : 'ReactVirtualized__Grid__cell normal'}
         style={style}>
         {renderedCell}
       </div>

@@ -1,4 +1,4 @@
-/*.OrbGrid-cell-highlighted {
+.OrbGrid-cell-highlighted {
     animation-name: anim-info-updated;
     animation-duration: 4s;
 }
@@ -12,4 +12,4 @@
       background-color: white;
       color: rgb(0, 0, 0);
     }
-}*/
+}
