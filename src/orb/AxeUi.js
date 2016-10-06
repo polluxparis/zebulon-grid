@@ -1,5 +1,3 @@
-
-
 import { AxeType } from './Axe'
 import { Header, DataHeader, HeaderType } from './Cells'
 
@@ -65,7 +63,7 @@ export default class AxeUi {
   }
 
   addDataHeaders (infos, parent, y) {
-    if (this.isMultiDataFields()) {
+    if (this.hasDataFields()) {
       var lastInfosArray = infos[infos.length - 1]
       for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
         lastInfosArray.push(new DataHeader(
@@ -136,11 +134,11 @@ export default class AxeUi {
   dataFieldsCount () {
     return (this.axe.store.config.dataHeadersLocation === 'columns' && this.axe.type === AxeType.COLUMNS) ||
     (this.axe.store.config.dataHeadersLocation === 'rows' && this.axe.type === AxeType.ROWS)
-      ? this.axe.store.config.activatedDataFieldsCount : 1
+      ? this.axe.store.config.activatedDataFieldsCount : 0
   }
 
-  isMultiDataFields () {
-    return this.dataFieldsCount() > 1
+  hasDataFields () {
+    return this.dataFieldsCount() >= 1
   }
 
   toggleFieldExpansion (field, newState) {

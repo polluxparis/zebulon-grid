@@ -124,13 +124,13 @@ export default class Store {
   getlayout () {
     const rowHeaders = {
       width: (this.rows.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'rows' && this.config.activatedDataFieldsCount > 1 ? 1 : 0),
+        (this.config.dataHeadersLocation === 'rows' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0),
       height: this.rowsUi.headers.length
     }
     const columnHeaders = {
       width: this.columnsUi.headers.length,
       height: (this.columns.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'columns' && this.config.activatedDataFieldsCount > 1 ? 1 : 0)
+        (this.config.dataHeadersLocation === 'columns' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0)
     }
     const pivotTable = {
       width: rowHeaders.width + columnHeaders.width,
