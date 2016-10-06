@@ -279,16 +279,16 @@ export default class OrbGrid extends Component {
   }
 
   columnHeaderRenderer ({columnHeader, scrollLeft, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment}) {
-    const {cellWidth, cellHeight, rowHeadersWidth} = this.state
-    let {x, y} = columnHeader
-    let renderedCell = <HeaderCellComp key={`row-${x % visibleColumns}-${y}`} cell={columnHeader} onToggle={() => 33} />
+    const {cellWidth, cellHeight, rowHeadersWidth, columnHorizontalCount} = this.state
+    const {x, y} = columnHeader
+    const renderedCell = <HeaderCellComp key={`row-${x % visibleColumns}-${y}`} cell={columnHeader} onToggle={() => 33} />
     const left = x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment
     const width = cellWidth * columnHeader.hspan()
     const affix = width > cellWidth && x <= columnStartIndex
     return (
       <div
       // add 1 to key modulo to avoid collision when rendering parent cells
-        key={`fixedrow-${x % (visibleColumns + 1)}-${y}`}
+        key={`fixedrow-${x % (visibleColumns + columnHorizontalCount)}-${y}`}
         className={'ReactVirtualized__Grid__cell'}
         style={{
           border: 'solid lightgrey thin',
@@ -307,7 +307,7 @@ export default class OrbGrid extends Component {
         <div style={affix ? {
           position: 'relative',
           // to keep the label visible upon scrolling
-          left: (scrollLeft % width) - ((scrollLeft % width) % cellWidth)
+          left: Math.floor((scrollLeft + rowHeadersWidth - left) / cellWidth) * cellWidth
         } : {}}>
           {renderedCell}
         </div>
@@ -316,16 +316,17 @@ export default class OrbGrid extends Component {
   }
 
   rowHeaderRenderer ({rowHeader, scrollLeft, scrollTop, rowStartIndex, visibleRows, visibleColumns, verticalOffsetAdjustment}) {
-    const {cellWidth, cellHeight, columnHeadersHeight} = this.state
-    let {x, y} = rowHeader
-    let renderedCell = <HeaderCellComp key={`col-${x % visibleRows}-${y}`} cell={rowHeader} onToggle={() => 33} />
+    const {cellWidth, cellHeight, columnHeadersHeight, rowVerticalCount} = this.state
+    const {x, y} = rowHeader
+    const renderedCell = <HeaderCellComp key={`col-${x % visibleRows}-${y}`} cell={rowHeader} onToggle={() => 33} />
     const top = x * cellHeight + columnHeadersHeight + verticalOffsetAdjustment
     const height = cellHeight * rowHeader.vspan()
     const affix = height > cellHeight && x <= rowStartIndex
+    if (`fixedcol-${x % (visibleRows + 1)}-${y}` === 'fixedcol-3-0') console.log(rowHeader.value, x, visibleRows)
     return (
       <div
         // add 1 to key modulo to avoid collision when rendering parent cells
-        key={`fixedcol-${x % (visibleRows + 1)}-${y}`}
+        key={`fixedcol-${x % (visibleRows + rowVerticalCount)}-${y}`}
         className={'ReactVirtualized__Grid__cell'}
         style={{
           border: 'solid lightgrey thin',
@@ -344,7 +345,7 @@ export default class OrbGrid extends Component {
         <div style={affix ? {
           position: 'relative',
           // to keep the label visible upon scrolling
-          top: (scrollTop % height) - ((scrollTop % height) % cellHeight)
+          top: Math.floor((scrollTop + columnHeadersHeight - top) / cellHeight) * cellHeight
         } : {}}>
           {renderedCell}
         </div>

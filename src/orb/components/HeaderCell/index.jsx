@@ -1,5 +1,3 @@
-
-
 import React, {Component} from 'react'
 import {HeaderType} from '../../Cells'
 import ReactDOM from 'react-dom'
@@ -130,9 +128,11 @@ export default class HeaderCellComp extends Component {
       divcontent.push(<div key='cell-value' ref='cellContent' className={headerClassName}>{value}</div>)
     }
 
+    const style = {textAlign: 'left'}
+
     return (
       <div
-        style={{width: '100%', height: '100%'}}
+        style={style}
         onDoubleClick={cellClick}
       >
           {divcontent}
