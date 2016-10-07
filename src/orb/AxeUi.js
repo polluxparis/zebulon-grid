@@ -1,5 +1,5 @@
 import { AxeType } from './Axe'
-import { Header, DataHeader, HeaderType } from './Cells'
+import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells'
 
 /**
  * Creates a new instance of rows/columns ui properties.
@@ -22,6 +22,12 @@ export default class AxeUi {
      */
     this.headers = []
 
+    /**
+     * Dimension headers render properties
+     * @type {Array}
+     */
+    this.dimensionHeaders = []
+
     this._x = 0
 
     this.build()
@@ -35,7 +41,6 @@ export default class AxeUi {
     if (this.axe != null) {
       if (this.axe.root.values.length > 0 || this.axe.store.config.grandTotal.rowsvisible) {
         headers.push([])
-
         // Fill Rows layout infos
         y = this.getUiInfo(headers, this.axe.root, this.axe.type)
 
@@ -60,6 +65,7 @@ export default class AxeUi {
       }
     }
     this.headers = headers
+    this.dimensionHeaders = this.axe.fields.map((field, index) => new DimensionHeader(this.axe.type, field))
   }
 
   addDataHeaders (infos, parent, y) {

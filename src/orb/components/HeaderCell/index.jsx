@@ -109,6 +109,7 @@ export default class HeaderCellComp extends Component {
         }
         break
       case 'cell-template-dataheader':
+      case 'cell-template-dimensionheader':
         value = cell.value.caption
         break
       default:
