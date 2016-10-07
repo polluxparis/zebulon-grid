@@ -4,7 +4,7 @@ import { Grid, AutoSizer } from 'react-virtualized'
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
-
+import {rightArrow, downArrow} from '../../assets/icons'
 // import './Grid.css'
 
 export default class OrbGrid extends Component {
@@ -44,6 +44,7 @@ export default class OrbGrid extends Component {
     this.dataCellRenderer = this.dataCellRenderer.bind(this)
     this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this)
     this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this)
+    this.dimensionHeaderRenderer = this.dimensionHeaderRenderer.bind(this)
   }
 
   getLayout ({layout, sizes}) {
@@ -134,13 +135,18 @@ export default class OrbGrid extends Component {
     const {columnsUi, rowsUi} = this.props.store
     const columnHeaders = columnsUi.headers
     const rowHeaders = rowsUi.headers
+    const columnDimensionHeaders = columnsUi.dimensionHeaders
+    const rowDimensionHeaders = rowsUi.dimensionHeaders
+
     const {
       columnHeadersHeight,
       columnHorizontalCount,
       columnVerticalCount,
       rowHeadersWidth,
       rowHorizontalCount,
-      rowVerticalCount
+      rowVerticalCount,
+      cellWidth,
+      cellHeight
     } = this.state
     const renderedCells = []
 
@@ -169,6 +175,16 @@ export default class OrbGrid extends Component {
         }}>
       </div>
     )
+
+    // Render dimension headers
+
+    for (let [index, dimensionHeader] of columnDimensionHeaders.entries()) {
+      renderedCells.push(this.dimensionHeaderRenderer({scrollLeft, scrollTop, dimensionHeader, index}))
+    }
+
+    for (let [index, dimensionHeader] of rowDimensionHeaders.entries()) {
+      renderedCells.push(this.dimensionHeaderRenderer({scrollLeft, scrollTop, dimensionHeader, index}))
+    }
 
     // Render fixed header rows
 
@@ -351,6 +367,43 @@ export default class OrbGrid extends Component {
         </div>
       </div>
     )
+  }
+
+  dimensionHeaderRenderer ({dimensionHeader, index, scrollLeft, scrollTop}) {
+    const {rowHeadersWidth, columnHeadersHeight, cellHeight, cellWidth} = this.state
+
+    const axe = dimensionHeader. axetype === 1 ? 'column' : 'row'
+
+    let left
+    let top
+    if (axe === 'column') {
+      left = scrollLeft + rowHeadersWidth - cellWidth
+      top = scrollTop + cellHeight * index
+    } else {
+      left = scrollLeft + cellWidth * index
+      top = scrollTop + columnHeadersHeight - cellHeight
+    }
+    return <div
+      key={`fixed-dim-${axe}-${index}`}
+      className={'ReactVirtualized__Grid__cell'}
+      style={{
+        position: 'fixed',
+        left,
+        top,
+        width: cellWidth,
+        height: cellHeight,
+        zIndex: 3,
+        border: 'lightgrey 0.1em solid',
+        boxSizing: 'border-box',
+        textAlign: 'left',
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '0.2em',
+        backgroundColor: '#fafad2'
+      }}>
+      {dimensionHeader.value.caption}
+      {axe === 'column' ? rightArrow : downArrow}
+    </div>
   }
 
   _mockCellRenderer ({columnIndex, rowIndex}) {

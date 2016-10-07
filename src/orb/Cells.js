@@ -10,6 +10,7 @@ export const HeaderType = {
   WRAPPER: 6,
   SUB_TOTAL: 7,
   GRAND_TOTAL: 8,
+  DIMENSION_HEADER: 9,
   getHeaderClass: function (headerType, axetype) {
     var cssclass = axetype === AxeType.ROWS ? 'header-row' : (axetype === AxeType.COLUMNS ? 'header-col' : '')
     switch (headerType) {
@@ -145,13 +146,13 @@ export class Header extends CellBase {
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
         value = 'Total'
-        hspan = isRowsAxe ? dim.depth - 1 || 1 : datafieldscount
-        vspan = isRowsAxe ? datafieldscount : dim.depth - 1 || 1
+        hspan = isRowsAxe ? dim.depth - 1 || 1 : datafieldscount || 1
+        vspan = isRowsAxe ? datafieldscount || 1 : dim.depth - 1 || 1
         break
       case HeaderType.SUB_TOTAL:
         value = dim.value
-        hspan = isRowsAxe ? dim.depth : datafieldscount
-        vspan = isRowsAxe ? datafieldscount : dim.depth
+        hspan = isRowsAxe ? dim.depth : datafieldscount || 1
+        vspan = isRowsAxe ? datafieldscount || 1 : dim.depth
         break
       default:
         value = dim.value
@@ -285,6 +286,24 @@ export class DataHeader extends CellBase {
 
     this.x = x
     this.y = y
+  }
+}
+
+export class DimensionHeader extends CellBase {
+  constructor (axetype, field, x, y) {
+    super({
+      axetype,
+      type: HeaderType.DIMENSION_HEADER,
+      template: 'cell-template-dimensionheader',
+      value: field,
+      cssclass: HeaderType.getHeaderClass(HeaderType.DIMENSION_HEADER, axetype),
+      isvisible: () => true
+    })
+
+    this.key = field.name
+
+    this.hspan = () => 1
+    this.vspan = () => 1
   }
 }
 
