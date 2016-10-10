@@ -3,6 +3,10 @@
     animation-duration: 4s;
 }
 
+.ReactVirtualized__Grid__cell {
+  user-select: none;
+}
+
 @keyframes anim-info-updated {
     0% {
       background-color: red;

@@ -1,5 +1,3 @@
-
-
 /**
  * Creates a namespcae hierarchy if not exists
  * @param  {string} identifier - namespace identifier
@@ -314,4 +312,20 @@ export function arraysIntersect () {
     }
   }
   return ret
+}
+
+export function isInRange ([rowIndex, columnIndex], [rowIndexStart, columnIndexStart], [rowIndexEnd, columnIndexEnd]) {
+  let inRows = false
+  if (rowIndexStart <= rowIndexEnd) {
+    inRows = rowIndexStart <= rowIndex && rowIndex <= rowIndexEnd
+  } else {
+    inRows = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart
+  }
+  let inColumns = false
+  if (columnIndexStart <= columnIndexEnd) {
+    inColumns = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd
+  } else {
+    inColumns = columnIndexEnd <= columnIndex && columnIndex <= columnIndexStart
+  }
+  return inRows && inColumns
 }

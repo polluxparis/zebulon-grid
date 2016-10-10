@@ -190,6 +190,8 @@ export class Header extends CellBase {
 
     this.key = parent ? `${parent.key}-/-${this.value}` : this.value
 
+    this.caption = this.value
+
     this.x = x
     this.y = y
   }
@@ -284,6 +286,8 @@ export class DataHeader extends CellBase {
 
     this.key = parent ? `${parent.key}-/-${datafield.name}` : datafield.name
 
+    this.caption = this.value.caption
+
     this.x = x
     this.y = y
   }
@@ -335,6 +339,8 @@ export class DataCell extends CellBase {
     this.rowType = rowType
     this.colType = colType
     this.datafield = datafield
+
+    this.caption = (this.datafield && this.datafield.formatFunc) ? this.datafield.formatFunc()(this.value) : this.value
   }
 }
 

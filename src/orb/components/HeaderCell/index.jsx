@@ -141,22 +141,3 @@ export default class HeaderCellComp extends Component {
     )
   }
 }
-
-export const DataCellComp = ({cell, onDoubleClick}) => {
-  this._latestVisibleState = false
-
-  this._latestVisibleState = cell.visible()
-
-  const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
-
-  const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'>{value}</div>]
-
-  return (
-    <div
-      style={{ width: '100%', height: '100%' }}
-      onDoubleClick={onDoubleClick(cell)}
-    >
-      {divcontent}
-    </div>
-       )
-}

@@ -7,12 +7,11 @@ export default class DataCellComp extends Component {
 
     this._latestVisibleState = cell.visible()
 
-    const value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value
-
-    const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'>{value}</div>]
+    const divcontent = [<div key='cell-value' ref='cellContent' className='cell-data'>{cell.caption}</div>]
 
     return (
       <div
+        className='OrbGrid-data-cell'
         style={{ width: '100%', height: '100%', textAlign: 'right' }}
         onDoubleClick={onDoubleClick}
       >
