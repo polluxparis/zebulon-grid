@@ -4,7 +4,6 @@ export const ALL = '#All#'
 export const NONE = '#None#'
 export const BLANK = '#Blank#"'
 
-
 export const Operators = {
   get: function (opname) {
     switch (opname) {

@@ -545,7 +545,7 @@ export default class OrbGrid extends Component {
   dimensionHeaderRenderer ({dimensionHeader, index, scrollLeft, scrollTop}) {
     const {rowHeadersWidth, columnHeadersHeight, cellHeight, cellWidth} = this.state
 
-    const axe = dimensionHeader. axetype === 1 ? 'column' : 'row'
+    const axe = dimensionHeader.axetype === 1 ? 'column' : 'row'
 
     let left
     let top

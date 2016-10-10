@@ -16,7 +16,7 @@ const FilterPanel = ({store, field, onFilter, onCancel}) => {
   const checkboxes =
     <VirtualizedCheckbox
       items={options}
-      onOk={(all, result) => onFilter(all, '', '', result, false)}
+      onOk={(all, result) => onFilter(all, '', '', result.map(box => box.label), false)}
       onCancel={onCancel}
       maxHeight={startingHeight}
     />
