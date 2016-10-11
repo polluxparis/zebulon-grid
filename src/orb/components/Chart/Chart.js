@@ -50,6 +50,7 @@ export default class Chart extends Component {
                     dataKey={mea.caption}
                     fill={colors[index]}
                     stroke={colors[index]}
+                    isAnimationActive={false}
                     />
                 case 'area':
                   return <Area
@@ -58,6 +59,7 @@ export default class Chart extends Component {
                     dataKey={mea.caption}
                     fill={colors[index]}
                     stroke={colors[index]}
+                    isAnimationActive={false}
                     />
                 case 'line':
                   return <Line
@@ -65,6 +67,7 @@ export default class Chart extends Component {
                     type='monotone'
                     dataKey={mea.caption}
                     stroke={colors[index]}
+                    isAnimationActive={false}
                     />
                 case 'pie':
                   const step = Math.floor(100 / measures.length)
@@ -77,6 +80,7 @@ export default class Chart extends Component {
                     innerRadius={`${innerRadius}%`}
                     outerRadius={`${outerRadius}%`}
                     fill={colors[index]}
+                    isAnimationActive={false}
                     />
 
               }
