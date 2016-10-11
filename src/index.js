@@ -40,11 +40,11 @@ const datasourceArray = [
   // tutu: '0'}]
 ]
 
-// const datasource = datasourceArray[0]
+const datasource = datasourceArray[0]
 
-const datasource = Observable.interval(2000).take(2)
-  .map(i => datasourceArray[i])
-  .do(data => console.log('data received', data))
+// const datasource = Observable.interval(2000).take(2)
+//   .map(i => datasourceArray[i])
+//   .do(data => console.log('data received', data))
 
 let config = {
   canMoveFields: true,
