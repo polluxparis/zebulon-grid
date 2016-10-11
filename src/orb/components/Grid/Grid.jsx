@@ -16,12 +16,14 @@ export default class OrbGrid extends Component {
     document.addEventListener('mouseup', this.handleMouseUp)
     document.addEventListener('mousedown', this.handleDocumentMouseDown)
     document.addEventListener('copy', this.handleCopy)
+    document.addEventListener('keydown', this.handleKeyDown)
   }
 
   componentDidUnMount () {
     document.removeEventListener('mouseup', this.handleMouseUp)
     document.removeEventListener('mousedown', this.handleDocumentMouseDown)
     document.removeEventListener('copy', this.handleCopy)
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 
   componentWillReceiveProps (nextProps, nextState) {
@@ -67,6 +69,7 @@ export default class OrbGrid extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseOver = this.handleMouseOver.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this)
     this.handleCopy = this.handleCopy.bind(this)
   }
@@ -127,6 +130,16 @@ export default class OrbGrid extends Component {
       if (!this._isMouseDown) {
         this.setState({selectedCellStart: null, selectedCellEnd: null})
       }
+    }
+  }
+
+  handleKeyDown (e) {
+    const {rowsUi, columnsUi} = this.props.store
+    if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
+      if (findDOMNode(this._grid) === e.target) {
+        this.setState({selectedCellStart: [0, 0], selectedCellEnd: [rowsUi.headers.length, columnsUi.headers.length]})
+      }
+      e.preventDefault()
     }
   }
 
