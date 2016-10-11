@@ -133,16 +133,16 @@ export default class OrbGrid extends Component {
     try {
       if (findDOMNode(this._grid) === document.activeElement) {
         const bodyElement = document.getElementsByTagName('body')[0]
-        const selection = window.getSelection()
-        const clipboardDiv = document.createElement('div')
-        clipboardDiv.style.position = 'absolute'
-        clipboardDiv.style.left = '-10000px'
-        bodyElement.appendChild(clipboardDiv)
-        clipboardDiv.innerHTML = this.getSelectedText()
-        selection.selectAllChildren(clipboardDiv)
-        window.setTimeout(() => { bodyElement.removeChild(clipboardDiv) }, 0)
+        const clipboardTextArea = document.createElement('textarea')
+        clipboardTextArea.style.position = 'absolute'
+        clipboardTextArea.style.left = '-10000px'
+        bodyElement.appendChild(clipboardTextArea)
+        clipboardTextArea.innerHTML = this.getSelectedText()
+        clipboardTextArea.select()
+        window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea) }, 0)
       }
     } catch (error) {
+      console.error('error in handleCopy', error)
     }
   }
 
@@ -189,48 +189,49 @@ export default class OrbGrid extends Component {
     const rowDimensions = rowsUi.dimensionHeaders.map(header => header.value.caption)
     const columnDimensions = columnsUi.dimensionHeaders.map(header => header.value.caption)
 
-    // Format data in a HTML table
-    let output = '<table>'
+    // Format data to text
+    let output = ''
     // First rows with only the dimension and columns headers
     const depth = columns[0].length
     const width = rows[0].length
     for (let y = 0; y < depth; y++) {
-      output += '<tr>'
       for (let x = 0; x < width; x++) {
         if (x === width - 1 && y < depth - 1) {
-          output += `<td>${columnDimensions[y] || ''}</td>`
+          output += `${columnDimensions[y] || ''}\t`
         } else if (y === depth - 1 && x < width - 1) {
-          output += `<td>${rowDimensions[x] || ''}</td>`
+          output += `${rowDimensions[x] || ''}\t`
         } else if (y === depth - 1 && x === width - 1) {
           // Handle corner case
           // Dimension header in bottom right cell can refer to a column header
           // or a row header depending on data headers location
           if (this.props.store.config.dataHeadersLocation === 'columns') {
-            output += `<td>${rowDimensions[x] || ''}</td>`
+            output += `${rowDimensions[x] || ''}\t`
           } else {
-            output += `<td>${columnDimensions[y] || ''}</td>`
+            output += `${columnDimensions[y] || ''}\t`
           }
         } else {
-          output += '<td></td>'
+          output += '\t'
         }
       }
       for (let column of columns) {
-        output += `<td>${column[y]}</td>`
+        output += `${column[y]}\t`
       }
-      output += '</tr>'
+      output = output.slice(0, -1)
+      output += '\n'
     }
     // Other rows with rows headers and data
     for (let y = 0; y < rows.length; y++) {
-      output += '<tr>'
       for (let x = 0; x < width; x++) {
-        output += `<td>${rows[y][x]}</td>`
+        output += `${rows[y][x]}\t`
       }
       for (let x = 0; x < columnHeaderLeafs.length; x++) {
-        output += `<td>${cells[y][x]}</td>`
+        output += `${cells[y][x]}\t`
       }
-      output += '</tr>'
+      output = output.slice(0, -1)
+      output += '\n'
     }
-    output += '</table>'
+    console.log(output)
+    output = output.slice(0, -1)
     return output
   }
 
