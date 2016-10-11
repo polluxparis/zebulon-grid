@@ -150,12 +150,12 @@ export class Header extends CellBase {
         vspan = isRowsAxe ? datafieldscount || 1 : dim.depth - 1 || 1
         break
       case HeaderType.SUB_TOTAL:
-        value = dim.value
+        value = dim.caption
         hspan = isRowsAxe ? dim.depth : datafieldscount || 1
         vspan = isRowsAxe ? datafieldscount || 1 : dim.depth
         break
       default:
-        value = dim.value
+        value = dim.caption
         hspan = isRowsAxe ? 1 : null
         vspan = isRowsAxe ? null : 1
         break

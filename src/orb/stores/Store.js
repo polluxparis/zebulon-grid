@@ -51,18 +51,20 @@ export default class Store {
     let pushed
     let _data = this.data
     // Push data (array of objects, array of arrays or object) to this.data
+    // New data is pushed at the top (using unshift) in order to read the newest data first
+    // when building the axes
     if (Array.isArray(payload) && (Array.isArray(payload[0]) || typeof payload[0] === 'object')) {
-      payload.forEach(line => { _data.push(line) })
+      payload.forEach(line => { _data.unshift(line) })
       pushed = payload
     } else if (Array.isArray(payload) || typeof payload === 'object') {
-      _data.push(payload)
+      _data.unshift(payload)
       pushed = [payload]
     }
     // Push filtered data and refresh Ui
     if (pushed) {
       const filteredPush = this.filter(pushed)
       if (filteredPush.length) {
-        filteredPush.forEach(line => { this.filteredData.push(line) })
+        filteredPush.forEach(line => { this.filteredData.unshift(line) })
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
@@ -100,11 +102,19 @@ export default class Store {
   }
 
   getrows () {
-    return new Axe(AxeType.ROWS, this.config.rowFields, this)
+    const axe = new Axe(AxeType.ROWS, this.config.rowFields, this)
+    for (let field of this.config.rowFields) {
+      axe.sort(field, true)
+    }
+    return axe
   }
 
   getcolumns () {
-    return new Axe(AxeType.COLUMNS, this.config.columnFields, this)
+    const axe = new Axe(AxeType.COLUMNS, this.config.columnFields, this)
+    for (let field of this.config.columnFields) {
+      axe.sort(field, true)
+    }
+    return axe
   }
 
   getChartAxe () {

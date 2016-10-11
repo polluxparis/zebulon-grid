@@ -13,23 +13,12 @@ function getMockDataSource (dataRepetition, nToto) {
   let obj = []
   let res = []
   for (let k = 0; k < dataRepetition; k++) {
-    for (let i = 0; i < 30; i++) {
-      for (let u = 0; u < nTutu; u++) {
-        obj = []
-        obj['toto'] = 'toto ' + String(0)
-        obj['titi'] = 'titi ' + String(i)
-        obj['tutu'] = String(u)
-        obj['qty'] = k + 10 * u + 100 * i * 1000 * 0 + 1 // +9999999999.1234567890123456
-        obj['amt'] = k + 20 * u + 200 * i * 2000 * 0 + 2 // +9999999999.1234567890123456
-        res.push(obj)
-      }
-    }
-    for (let o = 1; o < nToto; o++) {
+    for (let o = 0; o < nToto; o++) {
       for (let i = 0; i < nTiti; i++) {
         for (let u = 0; u < nTutu; u++) {
           obj = []
-          obj['toto'] = 'toto' + String(o)
-          obj['toto_cd'] = 'TOTO' + String(o)
+          obj['toto'] = String(o)
+          obj['toto_lb'] = 'toto ' + String(o)
           obj['titi'] = 'titi ' + String(i)
           obj['tutu'] = String(u)
           obj['qty'] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
@@ -45,17 +34,17 @@ function getMockDataSource (dataRepetition, nToto) {
 const dataArray = getMockDataSource(1, 100)
 const datasourceArray = [
   dataArray.slice(0, 5000),
-  {toto: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1'},
-  {toto: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1'},
-  [{toto: 'toto 1', qty: 100, amt: 1000, titi: 'titi 0', tutu: '0'}, {toto: 'toto 12', qty: 44, amt: 777, titi: 'titi 0',
-  tutu: '0'}]
+  {toto: '0', toto_lb: 'TOTO 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1'}
+  // {toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1'},
+  // [{toto: '1', toto_lb: 'toto 1', qty: 100, amt: 1000, titi: 'titi 0', tutu: '0'}, {toto: '12', toto_lb: 'toto 12', qty: 44, amt: 777, titi: 'titi 0',
+  // tutu: '0'}]
 ]
 
-const datasource = datasourceArray[0]
+// const datasource = datasourceArray[0]
 
-// const datasource = Observable.interval(2000).take(3)
-//   .map(i => datasourceArray[i])
-//   .do(data => console.log('data received', data))
+const datasource = Observable.interval(2000).take(2)
+  .map(i => datasourceArray[i])
+  .do(data => console.log('data received', data))
 
 let config = {
   canMoveFields: true,
@@ -93,8 +82,8 @@ let config = {
   },
   fields: [
     {
-      name: 'toto',
-      code: 'toto_cd',
+      name: 'toto_lb',
+      code: 'toto',
       caption: 'Toto',
       sort: {
         order: 'asc'

@@ -15,6 +15,7 @@ class FieldButton extends Component {
     this.removeFilterPanel = this.removeFilterPanel.bind(this)
     this.onMouseDown = this.onMouseDown.bind(this)
     this.onFilter = this.onFilter.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   addFilterPanel () {
@@ -48,6 +49,11 @@ class FieldButton extends Component {
     this.removeFilterPanel()
   }
 
+  handleClick () {
+    const {store, axetype, field} = this.props
+    store.sort(axetype, field)
+  }
+
   render () {
     const {field, store, axetype, connectDragSource, isDragging} = this.props
     const {filtering} = this.state
@@ -77,7 +83,7 @@ class FieldButton extends Component {
     }
     return connectDragSource(
       <div key={field.name} style={styles.div}>
-        <div>
+        <div onClick={this.handleClick}>
           {field.caption}
         </div>
         <div style={styles.filterPlaceholder}>

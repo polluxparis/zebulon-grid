@@ -10,7 +10,7 @@
  */
 export default class Dimension {
 
-  constructor (id, parent, value, field, depth, isRoot, isLeaf) {
+  constructor (id, parent, caption, field, depth, isRoot, isLeaf) {
     /**
      * unique id within parent orb.axe instance.
      * @type {Number}
@@ -22,10 +22,10 @@ export default class Dimension {
      */
     this.parent = parent
     /**
-     * This instance dimension value
+     * This instance dimension caption
      * @type {object}
      */
-    this.value = value
+    this.caption = caption
     /**
      * Whether or not this is the root dimension for a given axe (row/column)
      * @type {Boolean}

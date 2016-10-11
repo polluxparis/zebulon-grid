@@ -116,15 +116,15 @@ export class Axe {
           for (let findex = 0; findex < this.dimensionsCount; findex++) {
             const depth = this.dimensionsCount - findex
             const field = this.fields[findex]
-            const subvalue = row[field.name]
+            const name = row[field.name]
             const id = row[field.code]
             const subdimvals = dim.subdimvals
-            if (subdimvals[subvalue] !== undefined) {
-              dim = subdimvals[subvalue]
+            if (subdimvals[id] !== undefined) {
+              dim = subdimvals[id]
             } else {
-              dim.values.push(subvalue)
-              dim = new Dimension(id, dim, subvalue, field, depth, false, findex === this.dimensionsCount - 1)
-              subdimvals[subvalue] = dim
+              dim.values.push(id)
+              dim = new Dimension(id, dim, name, field, depth, false, findex === this.dimensionsCount - 1)
+              subdimvals[id] = dim
               dim.rowIndexes = []
             }
             dim.rowIndexes.push(rowIndex)
