@@ -16,12 +16,10 @@
   },
   "dependencies": {
     "chroma-js": "^1.2.1",
-    "react": "^15.3.2",
     "react-addons-shallow-compare": "^15.3.2",
     "react-custom-scrollbars": "^4.0.0",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
-    "react-dom": "^15.3.2",
     "react-resizable": "^1.4.5",
     "react-virtualized": "^8.0.11",
     "react-virtualized-checkbox": "^2.0.3",
@@ -37,5 +35,9 @@
     "compile": "npm run compile:js && npm run compile:css",
     "compile:js": "NODE_ENV=production babel src/orb -d lib --presets react-app",
     "compile:css": "postcss --use autoprefixer --use cssnano -o lib/index.css src/orb/index.css"
+  },
+  "peerDependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
   }
 }
