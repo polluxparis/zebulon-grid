@@ -210,24 +210,24 @@ export default class OrbGrid extends Component {
     for (let y = 0; y < depth; y++) {
       for (let x = 0; x < width; x++) {
         if (x === width - 1 && y < depth - 1) {
-          output += `${columnDimensions[y] || ''}\t`
+          output += `${columnDimensions[y] || (columnDimensions[y] == 0 ? 0: '' )}\t`
         } else if (y === depth - 1 && x < width - 1) {
-          output += `${rowDimensions[x] || ''}\t`
+          output += `${rowDimensions[x] || (rowDimensions[x] == 0 ? 0: '' )}\t`
         } else if (y === depth - 1 && x === width - 1) {
           // Handle corner case
           // Dimension header in bottom right cell can refer to a column header
           // or a row header depending on data headers location
           if (this.props.store.config.dataHeadersLocation === 'columns') {
-            output += `${rowDimensions[x] || ''}\t`
+            output += `${rowDimensions[x] || (rowDimensions[x] == 0 ? 0: '' )}\t`
           } else {
-            output += `${columnDimensions[y] || ''}\t`
+            output += `${columnDimensions[y] || (columnDimensions[y] == 0 ? 0: '' )}\t`
           }
         } else {
           output += '\t'
         }
       }
       for (let column of columns) {
-        output += `${column[y]}\t`
+        output += `${column[y] || (column[y] == 0 ? 0 : '')}\t`
       }
       output = output.slice(0, -1)
       output += '\n'
@@ -235,10 +235,10 @@ export default class OrbGrid extends Component {
     // Other rows with rows headers and data
     for (let y = 0; y < rows.length; y++) {
       for (let x = 0; x < width; x++) {
-        output += `${rows[y][x]}\t`
+        output += `${rows[y][x] || (rows[y][x] == 0 ? 0 : '')}\t`
       }
       for (let x = 0; x < columnHeaderLeafs.length; x++) {
-        output += `${cells[y][x]}\t`
+        output += `${cells[y][x] || (cells[y][x] == 0 ? 0 : '')}\t`
       }
       output = output.slice(0, -1)
       output += '\n'
