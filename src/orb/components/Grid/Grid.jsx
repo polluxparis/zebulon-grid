@@ -401,7 +401,6 @@ export default class OrbGrid extends Component {
       }
     }
     // }
-
     return renderedCells
   }
 
@@ -433,8 +432,10 @@ export default class OrbGrid extends Component {
       height: cellHeight,
       width: cellWidth,
       // The modulos allow discrete scrolling
-      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % cellWidth),
-      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % cellHeight)
+      // left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % cellWidth),
+      // top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % cellHeight)
+      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
+      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
     }
     let unEvenRowStyle = {
       backgroundColor: 'rgba(211, 211, 211, 0.4)'
@@ -503,7 +504,8 @@ export default class OrbGrid extends Component {
           overflow: 'hidden',
           position: 'fixed',
           // to have discrete scroll
-          left: left + (scrollLeft % cellWidth),
+          // left: left + (scrollLeft % cellWidth),
+          left,
           top: y * cellHeight + scrollTop,
           height: cellHeight * columnHeader.vspan(),
           width,
@@ -541,7 +543,8 @@ export default class OrbGrid extends Component {
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
           // to have discrete scroll
-          top: top + (scrollTop % cellHeight),
+          // top: top + (scrollTop % cellHeight),
+          top,
           height,
           width: cellWidth * rowHeader.hspan(),
           zIndex: 1,
