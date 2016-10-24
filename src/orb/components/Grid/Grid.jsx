@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
 import { Grid, AutoSizer } from 'react-virtualized'
-import { Scrollbars } from 'react-custom-scrollbars'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -265,12 +264,6 @@ export default class OrbGrid extends Component {
     return (
       <AutoSizer>
         {({width, height}) =>
-        <Scrollbars
-          style={{width, height}}
-          autoHide
-          autoHideTimeout={1000}
-          autoHideDuration={200}
-        >
           <Grid
             cellRangeRenderer={this.cellRangeRenderer}
             cellRenderer={this._mockCellRenderer}
@@ -287,7 +280,6 @@ export default class OrbGrid extends Component {
             style={{fontSize: `${this.props.store.zoom*100}%`}}
             width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
           />
-        </Scrollbars>
       }
       </AutoSizer>
     )
@@ -409,7 +401,6 @@ export default class OrbGrid extends Component {
       }
     }
     // }
-
     return renderedCells
   }
 
@@ -441,8 +432,10 @@ export default class OrbGrid extends Component {
       height: cellHeight,
       width: cellWidth,
       // The modulos allow discrete scrolling
-      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % cellWidth),
-      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % cellHeight)
+      // left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % cellWidth),
+      // top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % cellHeight)
+      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
+      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
     }
     let unEvenRowStyle = {
       backgroundColor: 'rgba(211, 211, 211, 0.4)'
@@ -511,7 +504,8 @@ export default class OrbGrid extends Component {
           overflow: 'hidden',
           position: 'fixed',
           // to have discrete scroll
-          left: left + (scrollLeft % cellWidth),
+          // left: left + (scrollLeft % cellWidth),
+          left,
           top: y * cellHeight + scrollTop,
           height: cellHeight * columnHeader.vspan(),
           width,
@@ -549,7 +543,8 @@ export default class OrbGrid extends Component {
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
           // to have discrete scroll
-          top: top + (scrollTop % cellHeight),
+          // top: top + (scrollTop % cellHeight),
+          top,
           height,
           width: cellWidth * rowHeader.hspan(),
           zIndex: 1,
