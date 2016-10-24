@@ -1,9 +1,10 @@
 {
   "name": "orb-private",
-  "version": "0.0.47",
+  "version": "0.0.46",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
+  "license": "private",
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
   "main": "lib/index.js",
