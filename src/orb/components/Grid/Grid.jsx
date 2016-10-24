@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
 import { Grid, AutoSizer } from 'react-virtualized'
-import { Scrollbars } from 'react-custom-scrollbars'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -265,12 +264,6 @@ export default class OrbGrid extends Component {
     return (
       <AutoSizer>
         {({width, height}) =>
-        <Scrollbars
-          style={{width, height}}
-          autoHide
-          autoHideTimeout={1000}
-          autoHideDuration={200}
-        >
           <Grid
             cellRangeRenderer={this.cellRangeRenderer}
             cellRenderer={this._mockCellRenderer}
@@ -287,7 +280,6 @@ export default class OrbGrid extends Component {
             style={{fontSize: `${this.props.store.zoom*100}%`}}
             width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
           />
-        </Scrollbars>
       }
       </AutoSizer>
     )

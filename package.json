@@ -19,7 +19,6 @@
     "chroma-js": "^1.2.1",
     "react": "^15.3.2",
     "react-addons-shallow-compare": "^15.3.2",
-    "react-custom-scrollbars": "^4.0.0",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.3.2",
