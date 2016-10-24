@@ -78,6 +78,10 @@ class App extends Component {
           </div>
           <div>
             <GridConfiguration store={store} />
+            <div className='Zoom-bar'>
+              <span className='Zoom-icon Zoom-icon-in' onClick={() => store.handleZoom(true)}>+</span>
+              <span className='Zoom-icon Zoom-icon-out' onClick={() => store.handleZoom()}>-</span>
+            </div>
             <ResizableBox height={600} width={800}>
               <Grid store={store} />
             </ResizableBox>

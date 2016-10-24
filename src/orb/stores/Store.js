@@ -22,6 +22,7 @@ export default class Store {
     this.config = new Config(config)
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
+    this.zoom = 1
     this.sizes = this.getsizes()
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
@@ -151,14 +152,29 @@ export default class Store {
 
   getsizes () {
     const cell = {
-      height: this.config.cellHeight || 30,
-      width: this.config.cellWidth || 100
+      height: this.zoom * (this.config.cellHeight || 30),
+      width: this.zoom * (this.config.cellWidth || 100)
     }
     const grid = {
       width: this.config.width,
       height: this.config.height
     }
     return {cell, grid}
+  }
+
+  handleZoom (zoomIn) {
+    const {zoom} = this
+    const zoomValues = [0.25, 0.33, 0.5, 0.67, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
+    const zoomIndex = zoomValues.indexOf(zoom)
+    let nextZoomIndex
+    if (zoomIn) {
+      nextZoomIndex = Math.min(zoomIndex + 1, zoomValues.length - 1)
+    } else {
+      nextZoomIndex = Math.max(zoomIndex - 1, 0)
+    }
+    this.zoom = zoomValues[nextZoomIndex]
+    this.sizes = this.getsizes()
+    this.forceUpdateCallback()
   }
 
   sort (axetype, field) {

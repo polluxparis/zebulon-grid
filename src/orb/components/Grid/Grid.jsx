@@ -6,7 +6,7 @@ import { Scrollbars } from 'react-custom-scrollbars'
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
-import {rightArrow, downArrow} from '../../assets/icons'
+import {RightArrow, DownArrow} from '../../assets/icons'
 import {isInRange} from '../../Utils'
 // import './Grid.css'
 
@@ -284,6 +284,7 @@ export default class OrbGrid extends Component {
             rowHeight={cellHeight}
             scrollLeft={this.scrollLeft}
             scrollTop={this.scrollTop}
+            style={{fontSize: `${this.props.store.zoom*100}%`}}
             width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
           />
         </Scrollbars>
@@ -598,7 +599,7 @@ export default class OrbGrid extends Component {
         backgroundColor: '#fafad2'
       }}>
       {dimensionHeader.value.caption}
-      {axe === 'column' ? rightArrow : downArrow}
+      {/* {axe === 'column' ? <RightArrow zoom={this.props.store.zoom} /> : <DownArrow zoom={this.props.store.zoom} />} */}
     </div>
   }
 
