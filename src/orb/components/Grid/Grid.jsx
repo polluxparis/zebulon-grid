@@ -5,9 +5,15 @@ import { Grid, AutoSizer } from 'react-virtualized'
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
-import {RightArrow, DownArrow} from '../../assets/icons'
 import {isInRange} from '../../Utils'
-// import './Grid.css'
+
+const replaceNullAndUndefined = function (val) {
+  if (val === null || val === undefined) {
+    return ''
+  } else {
+    return val
+  }
+}
 
 export default class OrbGrid extends Component {
 
@@ -210,24 +216,24 @@ export default class OrbGrid extends Component {
     for (let y = 0; y < depth; y++) {
       for (let x = 0; x < width; x++) {
         if (x === width - 1 && y < depth - 1) {
-          output += `${columnDimensions[y] || (columnDimensions[y] == 0 ? 0: '' )}\t`
+          output += `${replaceNullAndUndefined(columnDimensions[y])}\t`
         } else if (y === depth - 1 && x < width - 1) {
-          output += `${rowDimensions[x] || (rowDimensions[x] == 0 ? 0: '' )}\t`
+          output += `${replaceNullAndUndefined(rowDimensions[x])}\t`
         } else if (y === depth - 1 && x === width - 1) {
           // Handle corner case
           // Dimension header in bottom right cell can refer to a column header
           // or a row header depending on data headers location
           if (this.props.store.config.dataHeadersLocation === 'columns') {
-            output += `${rowDimensions[x] || (rowDimensions[x] == 0 ? 0: '' )}\t`
+            output += `${replaceNullAndUndefined(rowDimensions[x])}\t`
           } else {
-            output += `${columnDimensions[y] || (columnDimensions[y] == 0 ? 0: '' )}\t`
+            output += `${replaceNullAndUndefined(columnDimensions[y])}\t`
           }
         } else {
           output += '\t'
         }
       }
       for (let column of columns) {
-        output += `${column[y] || (column[y] == 0 ? 0 : '')}\t`
+        output += `${replaceNullAndUndefined(column[y])}\t`
       }
       output = output.slice(0, -1)
       output += '\n'
@@ -235,10 +241,10 @@ export default class OrbGrid extends Component {
     // Other rows with rows headers and data
     for (let y = 0; y < rows.length; y++) {
       for (let x = 0; x < width; x++) {
-        output += `${rows[y][x] || (rows[y][x] == 0 ? 0 : '')}\t`
+        output += `${replaceNullAndUndefined(rows[y][x])}\t`
       }
       for (let x = 0; x < columnHeaderLeafs.length; x++) {
-        output += `${cells[y][x] || (cells[y][x] == 0 ? 0 : '')}\t`
+        output += `${replaceNullAndUndefined(cells[y][x])}\t`
       }
       output = output.slice(0, -1)
       output += '\n'
