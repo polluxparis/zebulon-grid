@@ -1,6 +1,4 @@
 import React, {Component} from 'react'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 
 import DragManager from '../../DragManager'
 import FieldButton from '../FieldButton'
@@ -131,4 +129,4 @@ class GridConfiguration extends Component {
   }
 }
 
-export default DragDropContext(HTML5Backend)(GridConfiguration)
+export default GridConfiguration

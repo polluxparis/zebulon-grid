@@ -129,7 +129,7 @@ export default class HeaderCellComp extends Component {
       divcontent.push(<div key='cell-value' ref='cellContent' className={headerClassName}>{value}</div>)
     }
 
-    const style = {textAlign: 'left'}
+    const style = {textAlign: 'left', padding: '0.2em', paddingLeft: '0.5em'}
 
     return (
       <div

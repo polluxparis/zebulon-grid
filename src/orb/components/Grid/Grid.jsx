@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
-import { Grid, AutoSizer } from 'react-virtualized'
+import { Grid as ReactVirtualizedGrid, AutoSizer } from 'react-virtualized'
+import {DragSource, DropTarget} from 'react-dnd'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -15,7 +16,7 @@ const replaceNullAndUndefined = function (val) {
   }
 }
 
-export default class OrbGrid extends Component {
+class Grid extends Component {
 
   componentDidMount () {
     document.addEventListener('mouseup', this.handleMouseUp)
@@ -267,47 +268,34 @@ export default class OrbGrid extends Component {
       rowHorizontalCount,
       rowVerticalCount
     } = this.state
-    return (
-      <AutoSizer>
-        {({width, height}) =>
-          <Grid
-            cellRangeRenderer={this.cellRangeRenderer}
-            cellRenderer={this._mockCellRenderer}
-            columnCount={columnHorizontalCount + rowHorizontalCount}
-            columnWidth={cellWidth}
-            height={Math.min(height, columnHeadersHeight + rowHeadersHeight)}
-            overscanRowCount={0}
-            overscanColumnCount={0}
-            ref={ref => { this._grid = ref }}
-            rowCount={columnVerticalCount + rowVerticalCount}
-            rowHeight={cellHeight}
-            scrollLeft={this.scrollLeft}
-            scrollTop={this.scrollTop}
-            style={{fontSize: `${this.props.store.zoom*100}%`}}
-            width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
-          />
-      }
-      </AutoSizer>
+    const {connectDropTarget, isOver} = this.props
+    return connectDropTarget(
+      <div style={{height: 'inherit'}}>
+        <AutoSizer>
+          {({width, height}) =>
+            <ReactVirtualizedGrid
+              cellRangeRenderer={this.cellRangeRenderer}
+              cellRenderer={this._mockCellRenderer}
+              columnCount={columnHorizontalCount + rowHorizontalCount}
+              columnWidth={cellWidth}
+              height={Math.min(height, columnHeadersHeight + rowHeadersHeight)}
+              overscanRowCount={0}
+              overscanColumnCount={0}
+              ref={ref => { this._grid = ref }}
+              rowCount={columnVerticalCount + rowVerticalCount}
+              rowHeight={cellHeight}
+              scrollLeft={this.scrollLeft}
+              scrollTop={this.scrollTop}
+              style={{fontSize: `${this.props.store.zoom*100}%`}}
+              width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
+            />
+        }
+        </AutoSizer>
+      </div>
     )
   }
 
-  cellRangeRenderer ({
-    cellCache,
-    cellClassName,
-    cellRenderer,
-    cellStyle,
-    columnSizeAndPositionManager,
-    columnStartIndex,
-    columnStopIndex,
-    horizontalOffsetAdjustment,
-    isScrolling,
-    rowSizeAndPositionManager,
-    rowStartIndex,
-    rowStopIndex,
-    scrollLeft,
-    scrollTop,
-    verticalOffsetAdjustment
-  }) {
+  cellRangeRenderer ({ cellCache, cellClassName, cellRenderer, cellStyle, columnSizeAndPositionManager, columnStartIndex, columnStopIndex, horizontalOffsetAdjustment, isScrolling, rowSizeAndPositionManager, rowStartIndex, rowStopIndex, scrollLeft, scrollTop, verticalOffsetAdjustment }) {
     const {columnsUi, rowsUi} = this.props.store
     const columnHeaders = columnsUi.headers
     const rowHeaders = rowsUi.headers
@@ -432,7 +420,6 @@ export default class OrbGrid extends Component {
     let style = {
       border: 'solid lightgrey thin',
       boxSizing: 'border-box',
-      padding: '0.2em',
       overflow: 'hidden',
       position: 'fixed',
       height: cellHeight,
@@ -481,7 +468,7 @@ export default class OrbGrid extends Component {
     return (
       <div
         key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
-        className={valueHasChanged ? 'ReactVirtualized__Grid__cell OrbGrid-cell-highlighted' : 'ReactVirtualized__Grid__cell normal'}
+        className={valueHasChanged ? 'ReactVirtualized__Grid__cell Grid-cell-highlighted' : 'ReactVirtualized__Grid__cell normal'}
         style={style}
         onMouseDown={(e) => this.handleMouseDown(e, [rowIndex, columnIndex])}
         onMouseOver={() => this.handleMouseOver([rowIndex, columnIndex])}
@@ -496,6 +483,7 @@ export default class OrbGrid extends Component {
     const {x, y} = columnHeader
     const renderedCell = <HeaderCellComp key={`row-${x % visibleColumns}-${y}`} cell={columnHeader} onToggle={() => 33} />
     const left = x * cellWidth + rowHeadersWidth + horizontalOffsetAdjustment
+    const height = cellHeight * columnHeader.vspan()
     const width = cellWidth * columnHeader.hspan()
     const affix = width > cellWidth && x <= columnStartIndex
     return (
@@ -506,17 +494,18 @@ export default class OrbGrid extends Component {
         style={{
           border: 'solid lightgrey thin',
           boxSizing: 'border-box',
-          padding: '0.2em',
           overflow: 'hidden',
           position: 'fixed',
           // to have discrete scroll
           // left: left + (scrollLeft % cellWidth),
           left,
           top: y * cellHeight + scrollTop,
-          height: cellHeight * columnHeader.vspan(),
+          height,
           width,
           zIndex: 1,
-          backgroundColor: '#eef8fb'
+          backgroundColor: '#eef8fb',
+          display: 'flex',
+          justifyContent: 'space-between'
         }}>
         <div style={affix ? {
           position: 'relative',
@@ -526,6 +515,7 @@ export default class OrbGrid extends Component {
         } : {}}>
           {renderedCell}
         </div>
+        <ResizeHandle height={height} id={x}/>
       </div>
     )
   }
@@ -545,7 +535,6 @@ export default class OrbGrid extends Component {
         style={{
           border: 'solid lightgrey thin',
           boxSizing: 'border-box',
-          padding: '0.2em',
           overflow: 'hidden',
           position: 'fixed',
           left: y * cellWidth + scrollLeft,
@@ -555,7 +544,9 @@ export default class OrbGrid extends Component {
           height,
           width: cellWidth * rowHeader.hspan(),
           zIndex: 1,
-          backgroundColor: '#eef8fb'
+          backgroundColor: '#eef8fb',
+          display: 'flex',
+          justifyContent: 'space-between'
         }}>
         <div style={affix ? {
           position: 'relative',
@@ -565,6 +556,7 @@ export default class OrbGrid extends Component {
         } : {}}>
           {renderedCell}
         </div>
+        {/* <ResizeHandle height={height} id={y}/> */}
       </div>
     )
   }
@@ -598,10 +590,10 @@ export default class OrbGrid extends Component {
         textAlign: 'left',
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '0.2em',
-        backgroundColor: '#fafad2'
+        backgroundColor: '#fafad2',
       }}>
       {dimensionHeader.value.caption}
+      <ResizeHandle height={cellHeight}/>
       {/* {axe === 'column' ? <RightArrow zoom={this.props.store.zoom} /> : <DownArrow zoom={this.props.store.zoom} />} */}
     </div>
   }
@@ -610,3 +602,39 @@ export default class OrbGrid extends Component {
     return 33
   }
 }
+
+const gridSpec = {
+  hover (props, monitor, component) {
+    const column = monitor.getItem()
+    const initialOffset = monitor.getInitialClientOffset()
+    const offset = monitor.getClientOffset()
+    console.log('hover', column, initialOffset, offset);
+  }
+}
+
+const targetCollect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+})
+
+export default DropTarget('cell-resize-handle', gridSpec, targetCollect)(Grid)
+
+
+
+
+
+const resizeHandleSpec = {
+  beginDrag (props) {
+    return {
+      id: props.id
+    }
+  }
+}
+
+const sourceCollect = (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+})
+
+const RawResizeHandle = ({height, connectDragSource, isDragging}) => connectDragSource(<div style={{width: 2, height, cursor: 'col-resize', backgroundColor: `${isDragging ? 'green' : 'red'}`}} />)
+const ResizeHandle = DragSource('cell-resize-handle', resizeHandleSpec, sourceCollect)(RawResizeHandle)
