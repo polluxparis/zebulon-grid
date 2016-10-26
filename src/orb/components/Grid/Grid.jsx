@@ -515,7 +515,8 @@ export default class OrbGrid extends Component {
         <div style={affix ? {
           position: 'relative',
           // to keep the label visible upon scrolling
-          left: Math.floor((scrollLeft + rowHeadersWidth - left) / cellWidth) * cellWidth
+          // left: Math.floor((scrollLeft + rowHeadersWidth - left) / cellWidth) * cellWidth // for discrete scroll
+          left: Math.min(scrollLeft + rowHeadersWidth - left, width - cellWidth)
         } : {}}>
           {renderedCell}
         </div>
@@ -553,7 +554,8 @@ export default class OrbGrid extends Component {
         <div style={affix ? {
           position: 'relative',
           // to keep the label visible upon scrolling
-          top: Math.floor((scrollTop + columnHeadersHeight - top) / cellHeight) * cellHeight
+          // top: Math.floor((scrollTop + columnHeadersHeight - top) / cellHeight) * cellHeight // for discrete scroll
+          top: Math.min(scrollTop + columnHeadersHeight - top, height - cellHeight)
         } : {}}>
           {renderedCell}
         </div>
