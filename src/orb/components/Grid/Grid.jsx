@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
-import { Grid, AutoSizer } from 'react-virtualized'
+import { Grid as ReactVirtualizedGrid, AutoSizer } from 'react-virtualized'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -110,25 +110,34 @@ function getSelectedText ({selectedCellStart, selectedCellEnd, store}) {
   return output
 }
 
-
-export default class OrbGrid extends Component {
+export default class Grid extends Component {
   constructor (props) {
     super(props)
-
-    this.defaultCellWidth = this.props.store.sizes.cell.width
-    this.defaultCellHeight = this.props.store.sizes.cell.height
+    const {store} = props
+    const {sizes, layout} = store
+    this.defaultCellWidth = sizes.cell.width
+    this.defaultCellHeight = sizes.cell.height
+    this.rowVerticalCount = layout.rowHeaders.height
+    this.rowHorizontalCount = layout.rowHeaders.width
+    this.columnVerticalCount = layout.columnHeaders.height
+    this.columnHorizontalCount = layout.columnHeaders.width
 
     this.state = {
       cellsCache: new Map(),
       selectedCellStart: null,
       selectedCellEnd: null,
-      columnWidths: new Map(),
-      rowHeights: new Map()
+      leafHeaderSizes: {rows: new Map([['toto 0-/-0', 60]]), columns: new Map()},
+      dimensionSizes: {rows: new Map([['tutu', 150], ['toto', 200]]), columns: new Map([['titi', 45], ['tutu', 60]]), measures: {rows: this.defaultCellWidth, columns: this.defaultCellHeight}}
     }
 
     // State is set in two parts
-    this.state = {...this.state, ...this.getLayout(props.store)}
+    this.state = {...this.state, ...this.getLayout(store)}
 
+    this.dimensionPositions = {rows: new Map(), columns: new Map()}
+
+    // TEMPORARY TO TEST
+    this.dimensionPositions.rows = this.calculateDimensionPositions('rows', store.rows.fields, store.config.dataHeadersLocation === 'rows')
+    this.dimensionPositions.columns = this.calculateDimensionPositions('columns', store.columns.fields, store.config.dataHeadersLocation === 'columns')
 
     this.scrollLeft = 0
     this.scrollTop = 0
@@ -138,10 +147,10 @@ export default class OrbGrid extends Component {
     this.getLayout = this.getLayout.bind(this)
     this.getColumnWidth = this.getColumnWidth.bind(this)
     this.getRowHeight = this.getRowHeight.bind(this)
+    this.calculateDimensionPositions = this.calculateDimensionPositions.bind(this)
     this.cellRangeRenderer = this.cellRangeRenderer.bind(this)
     this.dataCellRenderer = this.dataCellRenderer.bind(this)
-    this.rowHeaderRenderer = this.rowHeaderRenderer.bind(this)
-    this.columnHeaderRenderer = this.columnHeaderRenderer.bind(this)
+    this.headerRenderer = this.headerRenderer.bind(this)
     this.dimensionHeaderRenderer = this.dimensionHeaderRenderer.bind(this)
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -165,19 +174,27 @@ export default class OrbGrid extends Component {
     document.removeEventListener('keydown', this.handleKeyDown)
   }
 
-  componentWillReceiveProps (nextProps, nextState) {
+  componentWillReceiveProps (nextProps) {
+    this.rowVerticalCount = nextProps.store.layout.rowHeaders.height
+    this.rowHorizontalCount = nextProps.store.layout.rowHeaders.width
+    this.columnVerticalCount = nextProps.store.layout.columnHeaders.height
+    this.columnHorizontalCount = nextProps.store.layout.columnHeaders.width
     const layout = this.getLayout(nextProps.store)
 
     this.setState({ ...layout, cellsCache: this._datacells || new Map() })
     // Change scroll values to stay at the same position when modifying the layout
-    this.scrollLeft = this._grid.state.scrollLeft * (layout.columnHorizontalCount / this.state.columnHorizontalCount)
-    this.scrollTop = this._grid.state.scrollTop * (layout.rowVerticalCount / this.state.rowVerticalCount)
+    this.scrollLeft = this._grid.state.scrollLeft * (this.columnHorizontalCount / this.props.store.layout.columnHeaders.width)
+    this.scrollTop = this._grid.state.scrollTop * (this.rowVerticalCount / this.props.store.layout.rowHeaders.height)
+
   }
 
   componentWillUpdate (nextProps, nextState) {
     this._isUpdating = true
-    // to handle case where all data fields are unactivated
-    // this._grid.forceUpdate()
+    const {dimensionSizes} = nextState
+    if (dimensionSizes) {
+      this.dimensionPositions.rows = this.calculateDimensionPositions('rows', nextProps.store.rows.fields, nextProps.store.config.dataHeadersLocation === 'rows')
+      this.dimensionPositions.columns = this.calculateDimensionPositions('columns', nextProps.store.columns.fields, nextProps.store.config.dataHeadersLocation === 'columns')
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -185,37 +202,45 @@ export default class OrbGrid extends Component {
   }
 
   getLayout (store) {
-    const {layout, sizes, columnsUi, rowsUi} = store
-    const rowVerticalCount = layout.rowHeaders.height
-    const rowHorizontalCount = layout.rowHeaders.width
-    const columnVerticalCount = layout.columnHeaders.height
-    const columnHorizontalCount = layout.columnHeaders.width
-
+    const {sizes, columns, rows, columnsUi, rowsUi, config} = store
+    const columnsMeasures = config.dataHeadersLocation === 'columns'
     let rowHeadersWidth = 0
-    for (let header of rowsUi.headers[0]) {
-      rowHeadersWidth += this.getColumnWidth({index: header.x})
+    // Measures are on the row axis
+    if (!columnsMeasures) {
+      rowHeadersWidth += this.state.dimensionSizes.measures.rows
+    }
+    // There are no fields on the row axis
+    if (!rows.fields.length) {
+      rowHeadersWidth += this.getDimensionSize('rows', null)
+    }
+    for (let dimension of rows.fields) {
+      rowHeadersWidth += this.getDimensionSize('rows', dimension.code)
+    }
+    let columnHeadersHeight = 0
+    // Measures are on the column axis
+    if (columnsMeasures) {
+      columnHeadersHeight += this.state.dimensionSizes.measures.columns
+    }
+    // There are no fields on the column axis
+    if (!columns.fields.length) {
+      columnHeadersHeight += this.getDimensionSize('columns', null)
+    }
+    for (let dimension of columns.fields) {
+      columnHeadersHeight += this.getDimensionSize('columns', dimension.code)
     }
     let rowHeadersHeight = 0
     for (let headers of rowsUi.headers) {
-      rowHeadersHeight += this.getRowHeight({index: headers[0].x})
+      rowHeadersHeight += this.getRowHeight({index: headers[0].x}, rowsUi)
     }
     let columnHeadersWidth = 0
     for (let headers of columnsUi.headers) {
-      columnHeadersWidth += this.getColumnWidth({index: headers[0].x})
-    }
-    let columnHeadersHeight = 0
-    for (let header of columnsUi.headers[0]) {
-      columnHeadersHeight += this.getRowHeight({index: header.x})
+      columnHeadersWidth += this.getColumnWidth({index: headers[0].x}, columnsUi)
     }
 
     const height = Math.min(sizes.grid.height, columnHeadersHeight + rowHeadersHeight)
     const width = Math.min(sizes.grid.width, rowHeadersWidth + columnHeadersWidth)
 
     return ({
-      rowVerticalCount,
-      rowHorizontalCount,
-      columnVerticalCount,
-      columnHorizontalCount,
       rowHeadersWidth,
       rowHeadersHeight,
       columnHeadersHeight,
@@ -225,17 +250,55 @@ export default class OrbGrid extends Component {
     })
   }
 
-  getColumnWidth ({index}) {
-    // if (index === 1) return 150
-    const {columnWidths} = this.state
-    return columnWidths.get(index) || this.defaultCellWidth
+  getLeafHeaderSize (axis, key) {
+    return this.state.leafHeaderSizes[axis].get(key) || (axis === 'columns' ? this.defaultCellWidth : this.defaultCellHeight)
   }
 
-  getRowHeight ({index}) {
-    // if (index === 1) return 60
-    const {rowHeights} = this.state
-    return rowHeights.get(index) || this.defaultCellHeight
+  getDimensionSize (axis, code) {
+    return this.state.dimensionSizes[axis].get(code) || (axis === 'columns' ? this.defaultCellHeight : this.defaultCellWidth)
   }
+
+  getColumnWidth ({index}, columnsUi = this.props.store.columnsUi) {
+    // Need to pass the axis when the grid receives new props
+    if (index >= columnsUi.headers.length) {
+      // Because of offset, it's necessary to make column and row counts greater than normal
+      // This ensures that the additional cells are correctly handled
+      return this.state.rowHeadersWidth / this.rowHorizontalCount
+    }
+    const headers = columnsUi.headers[index]
+    const key = headers[headers.length - 1].key
+    return this.getLeafHeaderSize('columns', key)
+  }
+
+  getRowHeight ({index}, rowsUi = this.props.store.rowsUi) {
+    // Need to pass the axis when the grid receives new props
+    if (index >= rowsUi.headers.length) {
+      // Because of offset, it's necessary to make column and row counts greater than normal
+      // This ensures that the additional cells are correctly handled
+      return this.state.columnHeadersHeight / this.columnVerticalCount
+    }
+    const headers = rowsUi.headers[index]
+    const key = headers[headers.length - 1].key
+    return this.getLeafHeaderSize('rows', key)
+  }
+
+  calculateDimensionPositions (axis, fields, hasMeasures) {
+    const res = new Map()
+    let position = 0
+    // Total header if no fields
+    if (!fields.length) {
+      position += this.getDimensionSize(axis, null)
+    }
+    for (let field of fields) {
+      res.set(field.code, position)
+      position += this.getDimensionSize(axis, field.code)
+    }
+    if (hasMeasures) {
+      res.set('__measures__', position)
+    }
+    return res
+  }
+
 
   handleMouseDown (e, [rowIndex, columnIndex]) {
     if (e.button === 0) {
@@ -282,7 +345,7 @@ export default class OrbGrid extends Component {
         clipboardTextArea.style.left = '-10000px'
         bodyElement.appendChild(clipboardTextArea)
         const {selectedCellStart, selectedCellEnd} = this.state
-        clipboardTextArea.innerHTML = getSelectedText({selectedCellStart, selectedCellEnd, props: this.props.store})
+        clipboardTextArea.innerHTML = getSelectedText({selectedCellStart, selectedCellEnd, store: this.props.store})
         clipboardTextArea.select()
         window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea) }, 0)
       }
@@ -295,31 +358,27 @@ export default class OrbGrid extends Component {
     const {
       columnHeadersHeight,
       columnHeadersWidth,
-      columnHorizontalCount,
-      columnVerticalCount,
       rowHeadersHeight,
       rowHeadersWidth,
-      rowHorizontalCount,
-      rowVerticalCount
     } = this.state
     return (
       <AutoSizer>
         {({width, height}) =>
-          <Grid
+          <ReactVirtualizedGrid
             cellRangeRenderer={this.cellRangeRenderer}
             cellRenderer={this._mockCellRenderer}
-            columnCount={columnHorizontalCount + rowHorizontalCount}
+            columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
             columnWidth={this.getColumnWidth}
-            height={Math.min(height, columnHeadersHeight + rowHeadersHeight)}
+            height={Math.min(height, rowHeadersHeight + columnHeadersHeight)}
             overscanRowCount={0}
             overscanColumnCount={0}
             ref={ref => { this._grid = ref }}
-            rowCount={columnVerticalCount + rowVerticalCount}
+            rowCount={this.rowVerticalCount + this.columnVerticalCount}
             rowHeight={this.getRowHeight}
             scrollLeft={this.scrollLeft}
             scrollTop={this.scrollTop}
             style={{fontSize: `${this.props.store.zoom*100}%`}}
-            width={Math.min(width, rowHeadersWidth + columnHeadersWidth)}
+            width={Math.min(width, columnHeadersWidth + rowHeadersWidth)}
           />
       }
       </AutoSizer>
@@ -351,22 +410,17 @@ export default class OrbGrid extends Component {
 
     const {
       columnHeadersHeight,
-      columnHorizontalCount,
-      columnVerticalCount,
-      rowHeadersWidth,
-      rowHorizontalCount,
-      rowVerticalCount
+      rowHeadersWidth
     } = this.state
     const renderedCells = []
 
-    // to avoid rendering empty cells
-    // there is a difference between columnCount (the prop of the Grid object) and the column count except the row headers
-    // the -1 is here because there are inferior or equal signs in the loops
-    const _columnStopIndex = Math.min(columnStopIndex - rowHorizontalCount, columnHorizontalCount - 1)
-    const _rowStopIndex = Math.min(rowStopIndex - columnVerticalCount, rowVerticalCount - 1)
+    // Because of the offset caused by the fixed headers, we have to make the cell count artificially higher.
+    // This ensures that we don't render inexistent headers.
+    columnStopIndex = Math.min(columnStopIndex, columnHeaders.length - 1)
+    rowStopIndex = Math.min(rowStopIndex, rowHeaders.length - 1)
 
-    const visibleRows = (_rowStopIndex - rowStartIndex) + 1
-    const visibleColumns = (_columnStopIndex - columnStartIndex) + 1
+    const visibleRows = (rowStopIndex - rowStartIndex) + 1
+    const visibleColumns = (columnStopIndex - columnStartIndex) + 1
 
     // Top-left corner piece
     renderedCells.push(
@@ -387,41 +441,87 @@ export default class OrbGrid extends Component {
 
     // Render dimension headers
 
+    // Get width for column dimension headers
+    let fieldWhoseWidthToGet
+    if (this.props.store.config.dataHeadersLocation === 'rows') {
+      // Dimension headers are on top of the measures column
+      fieldWhoseWidthToGet = '__measures__'
+    } else if (this.props.store.rows.fields.length) {
+      // Dimension headers are on top of the column of the last field of the row headers
+      fieldWhoseWidthToGet = this.props.store.rows.fields[this.props.store.rows.fields.length - 1].code
+    } else {
+      // Dimension headers are on top of the Total header --> get default width
+      fieldWhoseWidthToGet = null
+    }
+    const width = this.getDimensionSize('rows', fieldWhoseWidthToGet)
+    const left = scrollLeft + rowHeadersWidth - width
     for (let [index, dimensionHeader] of columnDimensionHeaders.entries()) {
-      renderedCells.push(this.dimensionHeaderRenderer({scrollLeft, scrollTop, dimensionHeader, index}))
+      const top = scrollTop + this.dimensionPositions.columns.get(dimensionHeader.value.code)
+      const height = this.getDimensionSize('columns', dimensionHeader.value.code)
+      renderedCells.push(this.dimensionHeaderRenderer({left, top, width, height, dimensionHeader, index}))
     }
 
+    // Get height for row dimension headers in different cases
+    let fieldWhoseHeightToGet
+    if (this.props.store.config.dataHeadersLocation === 'columns') {
+      // Dimension headers are to the left of the measures row
+      fieldWhoseHeightToGet = '__measures__'
+    } else if (this.store.columns.fields.length) {
+      // Dimension headers are to the left of the row of the last field of the column headers
+      fieldWhoseHeightToGet = this.props.store.columns.fields[this.props.store.columns.fields.length - 1].code
+    } else {
+      // Dimension headers are to the left of the Total header --> get default height
+      fieldWhoseHeightToGet = null
+    }
+    const height = this.getDimensionSize('columns', fieldWhoseHeightToGet)
+    const top = scrollTop + columnHeadersHeight - height
     for (let [index, dimensionHeader] of rowDimensionHeaders.entries()) {
-      renderedCells.push(this.dimensionHeaderRenderer({scrollLeft, scrollTop, dimensionHeader, index}))
+      const left = scrollLeft + this.dimensionPositions.rows.get(dimensionHeader.value.code)
+      const width = this.getDimensionSize('rows', dimensionHeader.value.code)
+      renderedCells.push(this.dimensionHeaderRenderer({left, top, height, width, dimensionHeader, index}))
     }
 
     // Render fixed header rows
 
     // Render big cells on top of current cells if necessary
     // The check on the presence of the header is necessary because it can be out of bounds when the headers array is modified
-    if (columnHeaders[columnStartIndex] && columnHeaders[columnStartIndex].length < columnVerticalCount) {
-      let columnHeader = columnHeaders[columnStartIndex][0]
-      while (columnHeader.parent) {
-        columnHeader = columnHeader.parent
-        const span = columnHeader.hspan()
-        let {size, offset} = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnHeader.x)
-        size = getHeaderSize(columnSizeAndPositionManager, columnHeader.x, span)
-        let lastChild = columnHeader
-        while (lastChild.subheaders && lastChild.subheaders.length){
-          lastChild = lastChild.subheaders[lastChild.subheaders.length - 1]
-        }
-        const lastChildSize = getHeaderSize(columnSizeAndPositionManager, lastChild.x, lastChild.hspan())
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, scrollTop, size, offset, columnStartIndex, visibleColumns, horizontalOffsetAdjustment, span, lastChildSize}))
+    if (columnHeaders[columnStartIndex] && columnHeaders[columnStartIndex].length < this.columnVerticalCount) {
+      let header = columnHeaders[columnStartIndex][0]
+      while (header.parent) {
+        header = header.parent
+        const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(header.x)
+        const left = main.offset + horizontalOffsetAdjustment + rowHeadersWidth
+        const span = header.hspan()
+        const width = getHeaderSize(columnSizeAndPositionManager, header.x, span)
+        const top = scrollTop + this.dimensionPositions.columns.get(header.dim.field.code)
+        const height = this.getDimensionSize('columns', header.dim.field.code)
+        renderedCells.push(this.headerRenderer({axis: 'columns',  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
-    for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
-      let {size, offset} = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-      for (let columnHeaderIndex = 0; columnHeaderIndex < columnHeaders[columnIndex].length; columnHeaderIndex++) {
-        let columnHeader = columnHeaders[columnIndex][columnHeaderIndex]
-        const span = columnHeader.hspan()
-        size = getHeaderSize(columnSizeAndPositionManager, columnIndex, span)
-        renderedCells.push(this.columnHeaderRenderer({columnHeader, scrollLeft, size, offset, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment, span}))
+    for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
+      const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
+      const left = main.offset + horizontalOffsetAdjustment + rowHeadersWidth
+      for (let index = 0; index < columnHeaders[columnIndex].length; index++) {
+        const header = columnHeaders[columnIndex][index]
+        const span = header.hspan()
+        const width = getHeaderSize(columnSizeAndPositionManager, columnIndex, span)
+        // 3 cases: normal dimension header, measure header or total header
+        let top = scrollTop
+        let height
+        if (!header.dim) {
+          // Measure header
+          height = this.state.dimensionSizes.measures.columns
+          top += this.dimensionPositions.columns.get('__measures__')
+        } else if (header.dim.field) {
+          // Normal dimension header
+          height = this.getDimensionSize('columns', header.dim.field.code)
+          top += this.dimensionPositions.columns.get(header.dim.field.code)
+        } else {
+          // Total header
+          height = this.getDimensionSize('columns', null)
+        }
+        renderedCells.push(this.headerRenderer({axis: 'columns', header, left, top, width, height, span, startIndex: columnStartIndex, scrollLeft, scrollTop}))
       }
     }
 
@@ -429,41 +529,55 @@ export default class OrbGrid extends Component {
 
     // Render big cells on the left of current cells if necessary
     // The check on the presence of the header is necessary because it can be out of bounds when the headers array is modified
-    if (rowHeaders[rowStartIndex] && rowHeaders[rowStartIndex].length < rowHorizontalCount) {
-      let rowHeader = rowHeaders[rowStartIndex][0]
-      while (rowHeader.parent) {
-        rowHeader = rowHeader.parent
-        const span = rowHeader.vspan()
-        let {size, offset} = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowHeader.x)
-        size = getHeaderSize(rowSizeAndPositionManager, rowHeader.x, span)
-        let lastChild = rowHeader
-        while (lastChild.subheaders && lastChild.subheaders.length){
-          lastChild = lastChild.subheaders[lastChild.subheaders.length - 1]
-        }
-
-        const lastChildSize = getHeaderSize(rowSizeAndPositionManager, lastChild.x, lastChild.vspan())
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, scrollLeft, scrollTop, size, offset, rowStartIndex, visibleRows, verticalOffsetAdjustment, span, lastChildSize}))
+    if (rowHeaders[rowStartIndex] && rowHeaders[rowStartIndex].length < this.rowHorizontalCount) {
+      let header = rowHeaders[rowStartIndex][0]
+      while (header.parent) {
+        header = header.parent
+        const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(header.x)
+        const span = header.vspan()
+        const top = main.offset + verticalOffsetAdjustment + columnHeadersHeight
+        const height = getHeaderSize(rowSizeAndPositionManager, header.x, span)
+        const width = this.getDimensionSize('rows', header.dim.field.code)
+        const left = scrollLeft + this.dimensionPositions.rows.get(header.dim.field.code)
+        renderedCells.push(this.headerRenderer({axis: 'rows',  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
-    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
-      let {size, offset} = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
-      for (let rowHeaderIndex = 0; rowHeaderIndex < rowHeaders[rowIndex].length; rowHeaderIndex++) {
-        let rowHeader = rowHeaders[rowIndex][rowHeaderIndex]
-        const span = rowHeader.vspan()
-        size = getHeaderSize(rowSizeAndPositionManager, rowIndex, span)
-        renderedCells.push(this.rowHeaderRenderer({rowHeader, size, offset, scrollLeft, scrollTop, rowStartIndex, visibleRows, verticalOffsetAdjustment, span}))
+    for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
+      const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
+      const top = main.offset + verticalOffsetAdjustment + columnHeadersHeight
+      for (let index = 0; index < rowHeaders[rowIndex].length; index++) {
+        const header = rowHeaders[rowIndex][index]
+        const span = header.vspan()
+        const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span)
+        // 3 cases: normal dimension header, measure header or total header
+        let width
+        let left = scrollLeft
+        if (!header.dim) {
+          // Measure header
+          width = this.state.dimensionSizes.measures.rows
+          left += this.dimensionPositions.rows.get('__measures__')
+        } else if (header.dim.field) {
+          // Normal dimension header
+          width = this.getDimensionSize('rows', header.dim.field.code)
+          left += this.dimensionPositions.rows.get(header.dim.field.code)
+        } else {
+          // Total header
+          width = this.getDimensionSize('rows', null)
+        }
+        renderedCells.push(this.headerRenderer({axis: 'rows',  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
     // Render data cells
     this._datacells = new Map()
     // if (!isScrolling) {
-    for (let rowIndex = rowStartIndex; rowIndex <= _rowStopIndex; rowIndex++) {
+    for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
       let rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex)
-      for (let columnIndex = columnStartIndex; columnIndex <= _columnStopIndex; columnIndex++) {
+      for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
         let columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex)
-        renderedCells.push(this.dataCellRenderer({columnIndex,
+        renderedCells.push(this.dataCellRenderer({
+          columnIndex,
           rowIndex,
           columnDatum,
           rowDatum,
@@ -480,7 +594,7 @@ export default class OrbGrid extends Component {
   }
 
   dataCellRenderer ({columnIndex, rowIndex, columnDatum, rowDatum, horizontalOffsetAdjustment, visibleRows, visibleColumns, verticalOffsetAdjustment, scrollTop, scrollLeft}) {
-    const {rowHeadersWidth, columnHeadersHeight, selectedCellStart, selectedCellEnd} = this.state
+    const {selectedCellStart, selectedCellEnd, rowHeadersWidth, columnHeadersHeight} = this.state
     const {store, drilldown} = this.props
     const {rowsUi, columnsUi} = store
     const rowHeaderRow = rowsUi.headers[rowIndex]
@@ -509,8 +623,8 @@ export default class OrbGrid extends Component {
       // The modulos allow discrete scrolling
       // left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment + (scrollLeft % this.defaultCellWidth),
       // top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment + (scrollTop % this.defaultCellHeight)
-      left: columnDatum.offset + rowHeadersWidth + horizontalOffsetAdjustment,
-      top: rowDatum.offset + columnHeadersHeight + verticalOffsetAdjustment
+      left: columnDatum.offset + horizontalOffsetAdjustment + rowHeadersWidth,
+      top: rowDatum.offset + verticalOffsetAdjustment + columnHeadersHeight
     }
     let unEvenRowStyle = {
       backgroundColor: 'rgba(211, 211, 211, 0.4)'
@@ -560,18 +674,41 @@ export default class OrbGrid extends Component {
     )
   }
 
-  columnHeaderRenderer ({columnHeader, scrollLeft, scrollTop, columnStartIndex, visibleColumns, horizontalOffsetAdjustment, size, offset, span, lastChildSize}) {
-    const {rowHeadersWidth, columnHorizontalCount} = this.state
-    const {x, y} = columnHeader
-    const renderedCell = <HeaderCellComp key={`row-${x % visibleColumns}-${y}`} cell={columnHeader} onToggle={() => 33} />
-    const left = offset + rowHeadersWidth + horizontalOffsetAdjustment
-    const top = y * this.defaultCellHeight + scrollTop
-    const width = size
-    const height = this.defaultCellHeight * columnHeader.vspan()
-    const affix = span > 1 && x <= columnStartIndex
+  headerRenderer ({axis, header, left, top, width, height, span, startIndex, scrollLeft, scrollTop}) {
+    const {x, y} = header
+    const {rowHeadersWidth, columnHeadersHeight} = this.state
+    const renderedCell = <HeaderCellComp key={`${axis}-${x}-${y}`} cell={header} onToggle={() => 33} />
+    let innerHeader = renderedCell
+    // Handle affix
+    if (span > 1) {
+      const getLastChildSize = (axis, header) => {
+        let lastChild = header
+          while (lastChild.subheaders && lastChild.subheaders.length){
+            lastChild = lastChild.subheaders[lastChild.subheaders.length - 1]
+          }
+          return this.getLeafHeaderSize(axis, header.key)
+      }
+      let lastChildSize
+      let style
+      let offset
+      if (axis === 'columns') {
+        if (x <= startIndex) {
+          lastChildSize = getLastChildSize(axis, header)
+          offset = Math.min(scrollLeft + rowHeadersWidth - left, width - (lastChildSize || 0))
+          style = {position: 'relative', left: offset}
+        }
+      } else {
+        if (x <= startIndex) {
+          lastChildSize = getLastChildSize(axis, header)
+          offset = Math.min(scrollTop + columnHeadersHeight - top, height - (lastChildSize || 0))
+          style = {position: 'relative', top: offset}
+        }
+      }
+      innerHeader = <div style={style}>{renderedCell}</div>
+    }
     return (
       <div
-        key={`fixedrow-${x % (visibleColumns + columnHorizontalCount)}-${y}`}
+        key={`fixed-${axis}-${x}-${y}`}
         className={'ReactVirtualized__Grid__cell'}
         style={{
           border: 'solid lightgrey thin',
@@ -580,84 +717,19 @@ export default class OrbGrid extends Component {
           overflow: 'hidden',
           backgroundColor: '#eef8fb',
           position: 'fixed',
-          // left: left + (scrollLeft % this.defaultCellWidth), // for discrete scroll
           left,
           top,
           height,
           width,
           zIndex: 1
         }}>
-        <div style={affix ? {
-          // To keep the label visible upon scrolling
-          position: 'relative',
-          color: 'red',
-          // left: Math.floor((scrollLeft + rowHeadersWidth - left) / this.defaultCellWidth) * this.defaultCellWidth // for discrete scroll
-          left: Math.min(scrollLeft + rowHeadersWidth - left, width - (lastChildSize || 0)) // for continuous scroll
-        } : {}}>
-          {renderedCell}
-        </div>
+          {innerHeader}
       </div>
     )
   }
 
-  rowHeaderRenderer ({rowHeader, scrollLeft, scrollTop, rowStartIndex, visibleRows, visibleColumns, verticalOffsetAdjustment, size, offset, span, lastChildSize}) {
-    const {columnHeadersHeight, rowVerticalCount} = this.state
-    const {x, y} = rowHeader
-    const renderedCell = <HeaderCellComp key={`col-${x % visibleRows}-${y}`} cell={rowHeader} onToggle={() => 33} />
-    // const top = x * this.defaultCellHeight + columnHeadersHeight + verticalOffsetAdjustment
-    const top = offset + columnHeadersHeight + verticalOffsetAdjustment
-    const left = y * this.defaultCellWidth + scrollLeft
-    // const height = this.defaultCellHeight * rowHeader.vspan()
-    const height = size
-    const width = this.defaultCellWidth * rowHeader.hspan()
-    const affix = span > 1 && x <= rowStartIndex
-    return (
-      <div
-        // add 1 to key modulo to avoid collision when rendering parent cells
-        key={`fixedcol-${x % (visibleRows + rowVerticalCount)}-${y}`}
-        className={'ReactVirtualized__Grid__cell'}
-        style={{
-          border: 'solid lightgrey thin',
-          boxSizing: 'border-box',
-          padding: '0.2em',
-          overflow: 'hidden',
-          backgroundColor: '#eef8fb',
-          position: 'fixed',
-          // to have discrete scroll
-          // top: top + (scrollTop % this.defaultCellHeight),
-          top,
-          left,
-          height,
-          width,
-          zIndex: 1,
-        }}>
-        <div style={affix ? {
-          position: 'relative',
-          color: 'red',
-          // to keep the label visible upon scrolling
-          // top: Math.floor((scrollTop + columnHeadersHeight - top) / this.defaultCellHeight) * this.defaultCellHeight // for discrete scroll
-          top: Math.min(scrollTop + columnHeadersHeight - top, height - (lastChildSize || 0))
-        } : {}}>
-          {renderedCell}
-        </div>
-      </div>
-    )
-  }
-
-  dimensionHeaderRenderer ({dimensionHeader, index, scrollLeft, scrollTop}) {
-    const {rowHeadersWidth, columnHeadersHeight} = this.state
-
+  dimensionHeaderRenderer ({dimensionHeader, index, left, top, height, width}) {
     const axe = dimensionHeader.axetype === 1 ? 'column' : 'row'
-
-    let left
-    let top
-    if (axe === 'column') {
-      left = scrollLeft + rowHeadersWidth - this.defaultCellWidth
-      top = scrollTop + this.defaultCellHeight * index
-    } else {
-      left = scrollLeft + this.defaultCellWidth * index
-      top = scrollTop + columnHeadersHeight - this.defaultCellHeight
-    }
     return <div
       key={`fixed-dim-${axe}-${index}`}
       className={'ReactVirtualized__Grid__cell'}
@@ -665,8 +737,8 @@ export default class OrbGrid extends Component {
         position: 'fixed',
         left,
         top,
-        width: this.defaultCellWidth,
-        height: this.defaultCellHeight,
+        width,
+        height,
         zIndex: 3,
         border: 'lightgrey 0.1em solid',
         boxSizing: 'border-box',
