@@ -2,13 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Observable} from 'rx-lite'
 
-import 'react-virtualized/styles.css'
-import 'react-resizable/css/styles.css'
-
 import App from './App'
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 100
+  const nTiti = 10
   const nTutu = 2
   let obj = []
   let res = []
@@ -21,8 +18,8 @@ function getMockDataSource (dataRepetition, nToto) {
           obj['toto_lb'] = 'toto ' + String(o)
           obj['titi'] = 'titi ' + String(i)
           obj['tutu'] = String(u)
-          obj['qty'] = k + 10 * u + 100 * i * 1000 * o + 1 // +9999999999.1234567890123456
-          obj['amt'] = k + 20 * u + 200 * i * 2000 * o + 2 // +9999999999.1234567890123456
+          obj['qty'] = u + 10 * i + 100 * o // +9999999999.1234567890123456
+          obj['amt'] = u + 10 * i + 100 * o // +9999999999.1234567890123456
           res.push(obj)
         }
       }
@@ -31,7 +28,7 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const dataArray = getMockDataSource(1, 100)
+const dataArray = getMockDataSource(1, 15)
 const datasourceArray = [
   dataArray.slice(0, 5000),
   {toto: '0', toto_lb: 'TOTO 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1'}
@@ -144,9 +141,9 @@ let config = {
       formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
     }
   ],
-  columns: ['Titi'], // , 'Category' ],
+  columns: ['Titi'],
   rows: ['Toto', 'Tutu'],
-  data: ['Quantity', 'Amount'],
+  data: ['Quantity'],
   drilldown: (cell) => console.log('drilldown (config) on cell', cell),
   preFilters: {
     // 'Titi': ['titi0']

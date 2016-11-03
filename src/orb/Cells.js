@@ -284,6 +284,10 @@ export class DataHeader extends CellBase {
 
     this.parent = parent
 
+    if (parent != null) {
+      this.parent.subheaders.push(this)
+    }
+
     this.key = parent ? `${parent.key}-/-${datafield.name}` : datafield.name
 
     this.caption = this.value.caption

@@ -5,6 +5,9 @@ import {ChartConfiguration, Chart, GridConfiguration, Grid, Store} from './orb'
 
 import './App.css'
 import logo from './logo.svg'
+import 'react-virtualized/styles.css'
+import 'react-resizable/css/styles.css'
+
 
 class App extends Component {
   constructor (props) {
@@ -16,11 +19,12 @@ class App extends Component {
   }
 
   componentDidMount () {
+    // Store is subscribed here because it triggers a forceUpdate
+    // forceUpdate can only be called on a mounted Component
     this.state.store.subscribe(this.props.datasource)
   }
 
   componentWillReceiveProps (newProps) {
-    console.log('main received props', newProps)
     const store = new Store(newProps.config, this.forceUpdate.bind(this))
     store.subscribe(newProps.datasource)
     this.setState({store})
