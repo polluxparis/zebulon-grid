@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
 import { Grid as ReactVirtualizedGrid, AutoSizer } from 'react-virtualized'
 import {DragSource, DropTarget} from 'react-dnd'
+import {Map, Record} from 'immutable'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
@@ -111,7 +112,16 @@ function getSelectedText ({selectedCellStart, selectedCellEnd, store}) {
   return output
 }
 
-export default class Grid extends Component {
+function getLeafSubheaders (header, result) {
+  if (header.subheaders && header.subheaders.length) {
+    header.subheaders.forEach(subheader => getLeafSubheaders(subheader, result))
+    return result
+  } else {
+    result.push(header)
+    return result
+  }
+}
+export class Grid extends Component {
   constructor (props) {
     super(props)
     const {store} = props
@@ -123,12 +133,14 @@ export default class Grid extends Component {
     this.columnVerticalCount = layout.columnHeaders.height
     this.columnHorizontalCount = layout.columnHeaders.width
 
+    const MeasureSizes = Record({rows: this.defaultCellWidth, columns: this.defaultCellHeight})
+    const Sizes = Record({rows: new Map(), columns: new Map(), measures: {}})
     this.state = {
       cellsCache: new Map(),
       selectedCellStart: null,
       selectedCellEnd: null,
-      leafHeaderSizes: {rows: new Map([['toto 0-/-0', 60]]), columns: new Map()},
-      dimensionSizes: {rows: new Map([['tutu', 150], ['toto', 200]]), columns: new Map([['titi', 45], ['tutu', 60]]), measures: {rows: this.defaultCellWidth, columns: this.defaultCellHeight}}
+      leafHeaderSizes: new Sizes(),
+      dimensionSizes: new Sizes({measures: new MeasureSizes()})
     }
 
     // State is set in two parts
@@ -196,6 +208,8 @@ export default class Grid extends Component {
       this.dimensionPositions.rows = this.calculateDimensionPositions('rows', nextProps.store.rows.fields, nextProps.store.config.dataHeadersLocation === 'rows')
       this.dimensionPositions.columns = this.calculateDimensionPositions('columns', nextProps.store.columns.fields, nextProps.store.config.dataHeadersLocation === 'columns')
     }
+    // Recompute cell sizes after drag
+    this._grid.recomputeGridSize()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -255,7 +269,10 @@ export default class Grid extends Component {
     return this.state.leafHeaderSizes[axis].get(key) || (axis === 'columns' ? this.defaultCellWidth : this.defaultCellHeight)
   }
 
-  getDimensionSize (axis, code) {
+  getDimensionSize (axis, code, getMeasureSize) {
+    if (getMeasureSize) {
+      return this.state.dimensionSizes.measures.get(axis)
+    }
     return this.state.dimensionSizes[axis].get(code) || (axis === 'columns' ? this.defaultCellHeight : this.defaultCellWidth)
   }
 
@@ -284,18 +301,18 @@ export default class Grid extends Component {
   }
 
   calculateDimensionPositions (axis, fields, hasMeasures) {
-    const res = new Map()
+    let res = new Map()
     let position = 0
     // Total header if no fields
     if (!fields.length) {
       position += this.getDimensionSize(axis, null)
     }
     for (let field of fields) {
-      res.set(field.code, position)
+      res = res.set(field.code, position)
       position += this.getDimensionSize(axis, field.code)
     }
     if (hasMeasures) {
-      res.set('__measures__', position)
+      res = res.set('__measures__', position)
     }
     return res
   }
@@ -362,7 +379,7 @@ export default class Grid extends Component {
       rowHeadersHeight,
       rowHeadersWidth,
     } = this.state
-    const {connectDropTarget, isOver} = this.props
+    const {connectDropTarget} = this.props
     return connectDropTarget(
       <div style={{height: 'inherit'}}>
         <AutoSizer>
@@ -370,18 +387,18 @@ export default class Grid extends Component {
             <ReactVirtualizedGrid
               cellRangeRenderer={this.cellRangeRenderer}
               cellRenderer={this._mockCellRenderer}
-            columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
-            columnWidth={this.getColumnWidth}
-            height={Math.min(height, rowHeadersHeight + columnHeadersHeight)}
+              columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
+              columnWidth={this.getColumnWidth}
+              height={Math.min(height, rowHeadersHeight + columnHeadersHeight)}
               overscanRowCount={0}
               overscanColumnCount={0}
               ref={ref => { this._grid = ref }}
-            rowCount={this.rowVerticalCount + this.columnVerticalCount}
-            rowHeight={this.getRowHeight}
+              rowCount={this.rowVerticalCount + this.columnVerticalCount}
+              rowHeight={this.getRowHeight}
               scrollLeft={this.scrollLeft}
               scrollTop={this.scrollTop}
               style={{fontSize: `${this.props.store.zoom*100}%`}}
-            width={Math.min(width, columnHeadersWidth + rowHeadersWidth)}
+              width={Math.min(width, columnHeadersWidth + rowHeadersWidth)}
             />
         }
         </AutoSizer>
@@ -431,9 +448,10 @@ export default class Grid extends Component {
 
     // Get width for column dimension headers
     let fieldWhoseWidthToGet
+    let getMeasureWidth
     if (this.props.store.config.dataHeadersLocation === 'rows') {
       // Dimension headers are on top of the measures column
-      fieldWhoseWidthToGet = '__measures__'
+      getMeasureWidth = true
     } else if (this.props.store.rows.fields.length) {
       // Dimension headers are on top of the column of the last field of the row headers
       fieldWhoseWidthToGet = this.props.store.rows.fields[this.props.store.rows.fields.length - 1].code
@@ -441,19 +459,21 @@ export default class Grid extends Component {
       // Dimension headers are on top of the Total header --> get default width
       fieldWhoseWidthToGet = null
     }
-    const width = this.getDimensionSize('rows', fieldWhoseWidthToGet)
+    const width = this.getDimensionSize('rows', fieldWhoseWidthToGet, getMeasureWidth)
     const left = scrollLeft + rowHeadersWidth - width
-    for (let [index, dimensionHeader] of columnDimensionHeaders.entries()) {
-      const top = scrollTop + this.dimensionPositions.columns.get(dimensionHeader.value.code)
-      const height = this.getDimensionSize('columns', dimensionHeader.value.code)
-      renderedCells.push(this.dimensionHeaderRenderer({left, top, width, height, dimensionHeader, index}))
+    for (let [, dimensionHeader] of columnDimensionHeaders.entries()) {
+      const field = dimensionHeader.value
+      const top = scrollTop + this.dimensionPositions.columns.get(field.code)
+      const height = this.getDimensionSize('columns', field.code)
+      renderedCells.push(this.dimensionHeaderRenderer({left, top, width, height, field, mainDirection: 'right', crossFieldCode: fieldWhoseWidthToGet}))
     }
 
     // Get height for row dimension headers in different cases
     let fieldWhoseHeightToGet
+    let getMeasureHeight
     if (this.props.store.config.dataHeadersLocation === 'columns') {
       // Dimension headers are to the left of the measures row
-      fieldWhoseHeightToGet = '__measures__'
+      getMeasureHeight = true
     } else if (this.store.columns.fields.length) {
       // Dimension headers are to the left of the row of the last field of the column headers
       fieldWhoseHeightToGet = this.props.store.columns.fields[this.props.store.columns.fields.length - 1].code
@@ -461,12 +481,13 @@ export default class Grid extends Component {
       // Dimension headers are to the left of the Total header --> get default height
       fieldWhoseHeightToGet = null
     }
-    const height = this.getDimensionSize('columns', fieldWhoseHeightToGet)
+    const height = this.getDimensionSize('columns', fieldWhoseHeightToGet, getMeasureHeight)
     const top = scrollTop + columnHeadersHeight - height
-    for (let [index, dimensionHeader] of rowDimensionHeaders.entries()) {
-      const left = scrollLeft + this.dimensionPositions.rows.get(dimensionHeader.value.code)
-      const width = this.getDimensionSize('rows', dimensionHeader.value.code)
-      renderedCells.push(this.dimensionHeaderRenderer({left, top, height, width, dimensionHeader, index}))
+    for (let [, dimensionHeader] of rowDimensionHeaders.entries()) {
+      const field = dimensionHeader.value
+      const left = scrollLeft + this.dimensionPositions.rows.get(field.code)
+      const width = this.getDimensionSize('rows', field.code)
+      renderedCells.push(this.dimensionHeaderRenderer({left, top, height, width, field, mainDirection: 'down', crossFieldCode: fieldWhoseHeightToGet}))
     }
 
     // Render fixed header rows
@@ -635,7 +656,7 @@ export default class Grid extends Component {
     }
 
     const key = `${rowHeader.key}-//-${columnHeader.key}`
-    this._datacells.set(key, cell)
+    this._datacells = this._datacells.set(key, cell)
     const renderedCell = <DataCellComp
       key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
       cell={cell}
@@ -692,8 +713,10 @@ export default class Grid extends Component {
         }
       }
       innerHeader = <div style={style}>{renderedCell}</div>
-        <ResizeHandle height={height} id={x}/>
     }
+    const leafHeaderId = header.key
+    const dimId = header.dim && header.dim.field.code
+    const leafSubheaders = header.subheaders ? getLeafSubheaders(header, []) : []
     return (
       <div
         key={`fixed-${axis}-${x}-${y}`}
@@ -708,20 +731,27 @@ export default class Grid extends Component {
           top,
           height,
           width,
-          zIndex: 1
+          zIndex: 1,
           display: 'flex',
-          justifyContent: 'space-between'
         }}>
-          {innerHeader}
-        {/* <ResizeHandle height={height} id={y}/> */}
+        {innerHeader}
+        <ResizeHandle position='right' size={height} id={axis === 'columns' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis}/>
+        <ResizeHandle position='bottom' size={width} id={axis === 'rows' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis}/>
       </div>
     )
   }
 
-  dimensionHeaderRenderer ({dimensionHeader, index, left, top, height, width}) {
-    const axe = dimensionHeader.axetype === 1 ? 'column' : 'row'
+  dimensionHeaderRenderer ({field, left, top, height, width, crossFieldCode, mainDirection}) {
+    const ids = {}
+    if (mainDirection === 'down') {
+      ids.right = field.code
+      ids.bottom = crossFieldCode
+    } else {
+      ids.bottom = field.code
+      ids.right = crossFieldCode
+    }
     return <div
-      key={`fixed-dim-${axe}-${index}`}
+      key={`fixed-dim-${field.code}`}
       className={'ReactVirtualized__Grid__cell'}
       style={{
         position: 'fixed',
@@ -734,12 +764,12 @@ export default class Grid extends Component {
         boxSizing: 'border-box',
         textAlign: 'left',
         display: 'flex',
-        justifyContent: 'space-between',
         backgroundColor: '#fafad2',
       }}>
-      {dimensionHeader.value.caption}
-      <ResizeHandle height={cellHeight}/>
-      {/* {axe === 'column' ? <RightArrow zoom={this.props.store.zoom} /> : <DownArrow zoom={this.props.store.zoom} />} */}
+      <span>{field.caption}</span>
+      <ResizeHandle position='right' size={height} id={ids.right} dimensionIsMeasure={!ids.right} isOnDimensionHeader axis='rows'/>
+      <ResizeHandle position='bottom' size={width} id={ids.bottom} dimensionIsMeasure={!ids.bottom} isOnDimensionHeader axis='columns'/>
+      {/* {axis === 'column' ? <RightArrow zoom={this.props.store.zoom} /> : <DownArrow zoom={this.props.store.zoom} />} */}
     </div>
   }
 
@@ -749,11 +779,60 @@ export default class Grid extends Component {
 }
 
 const gridSpec = {
-  hover (props, monitor, component) {
-    const column = monitor.getItem()
+  drop (props, monitor, component) {
+    const handle = monitor.getItem()
     const initialOffset = monitor.getInitialClientOffset()
     const offset = monitor.getClientOffset()
-    console.log('hover', column, initialOffset, offset);
+    let leafHeaderSizes = component.state.leafHeaderSizes
+    let dimensionSizes = component.state.dimensionSizes
+    if (handle.isOnDimensionHeader) {
+      let sizeOffset
+      if (handle.axis === 'columns') {
+        sizeOffset = offset.y - initialOffset.y
+      } else {
+        sizeOffset = offset.x - initialOffset.x
+      }
+      if (handle.dimensionIsMeasure) {
+        dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], size => size + sizeOffset)
+      } else {
+        dimensionSizes = dimensionSizes.updateIn([handle.axis, handle.id], (size = handle.axis === 'columns' ? component.defaultCellHeight : component.defaultCellWidth) => size + sizeOffset)
+      }
+    } else {
+      if (handle.axis === 'columns' && handle.position === 'right'){
+        if (handle.leafSubheaders.length) {
+          let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
+          for (let subheader of handle.leafSubheaders){
+            leafHeaderSizes = leafHeaderSizes.updateIn(['columns', subheader.key], (size = component.defaultCellWidth) => size + fractionalOffset)
+          }
+        } else {
+          // Header is a leaf header
+          leafHeaderSizes = leafHeaderSizes.updateIn(['columns', handle.id], (size = component.defaultCellWidth) => size + offset.x - initialOffset.x)
+        }
+      } else if (handle.axis === 'rows' && handle.position === 'bottom'){
+        if (handle.leafSubheaders.length) {
+          let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
+          for (let subheader of handle.leafSubheaders){
+            leafHeaderSizes = leafHeaderSizes.updateIn(['rows', subheader.key], (size = component.defaultCellHeight) => size + fractionalOffset)
+          }
+        } else {
+          // Header is a leaf header
+          leafHeaderSizes = leafHeaderSizes.updateIn(['rows', handle.id], (size = component.defaultCellHeight) => size + offset.y - initialOffset.y)
+        }
+      } else if (handle.axis === 'columns' && handle.position === 'bottom') {
+        if (handle.dimensionIsMeasure) {
+          dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => size + offset.y - initialOffset.y)
+        } else {
+          dimensionSizes = dimensionSizes.updateIn(['columns', handle.id], (size = component.defaultCellHeight) => size + offset.y - initialOffset.y)
+        }
+      } else if (handle.axis === 'rows' && handle.position === 'right') {
+        if (handle.dimensionIsMeasure) {
+          dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => size + offset.x - initialOffset.x)
+        } else {
+          dimensionSizes = dimensionSizes.updateIn(['rows', handle.id], (size = component.defaultCellWidth) => size + offset.x - initialOffset.x)
+        }
+      }
+    }
+    component.setState({ leafHeaderSizes, dimensionSizes })
   }
 }
 
@@ -771,7 +850,12 @@ export default DropTarget('cell-resize-handle', gridSpec, targetCollect)(Grid)
 const resizeHandleSpec = {
   beginDrag (props) {
     return {
-      id: props.id
+      id: props.id,
+      axis: props.axis,
+      position: props.position,
+      dimensionIsMeasure: props.dimensionIsMeasure,
+      isOnDimensionHeader: props.isOnDimensionHeader,
+      leafSubheaders: props.leafSubheaders
     }
   }
 }
@@ -781,5 +865,15 @@ const sourceCollect = (connect, monitor) => ({
     isDragging: monitor.isDragging()
 })
 
-const RawResizeHandle = ({height, connectDragSource, isDragging}) => connectDragSource(<div style={{width: 2, height, cursor: 'col-resize', backgroundColor: `${isDragging ? 'green' : 'red'}`}} />)
+const RawResizeHandle = ({position, size, connectDragSource, isDragging}) => {
+  let handle
+  if (position === 'right') {
+    handle = <div style={{position: 'absolute', right: 0, width: 2, height: size, cursor: 'col-resize'}} />
+    } else if (position === 'bottom') {
+      handle = <div style={{position: 'absolute', bottom: 0, height: 2, width: size, cursor: 'row-resize'}} />
+  } else {
+    handle=null
+  }
+  return connectDragSource(handle)
+}
 const ResizeHandle = DragSource('cell-resize-handle', resizeHandleSpec, sourceCollect)(RawResizeHandle)

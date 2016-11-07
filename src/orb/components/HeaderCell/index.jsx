@@ -126,18 +126,18 @@ export default class HeaderCellComp extends Component {
       //   const transfo = `translate(0px,${this.props.scrollTop}px`
       //   style={transform: transfo}
       // }
-      divcontent.push(<div key='cell-value' ref='cellContent' className={headerClassName}>{value}</div>)
+      divcontent.push(value)
     }
 
-    const style = {textAlign: 'left', padding: '0.2em', paddingLeft: '0.5em'}
+    const style = {textAlign: 'left', padding: '0.2em', paddingLeft: '0.5em', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}
 
     return (
-      <div
+      <span
         style={style}
         onDoubleClick={cellClick}
       >
           {divcontent}
-      </div>
+      </span>
     )
   }
 }
