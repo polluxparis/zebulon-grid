@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import {findDOMNode} from 'react-dom'
 import { Grid as ReactVirtualizedGrid, AutoSizer } from 'react-virtualized'
-import {DragSource, DropTarget} from 'react-dnd'
+import {DropTarget} from 'react-dnd'
 import {Map, Record} from 'immutable'
 
 import HeaderCellComp from '../HeaderCell'
 import DataCellComp from '../DataCell'
 import { DataCell } from '../../Cells'
 import {isInRange} from '../../Utils'
+import DragLayer from './DragLayer'
+import ResizeHandle from './ResizeHandle'
 
 function replaceNullAndUndefined (val) {
   if (val === null || val === undefined) {
@@ -381,29 +383,32 @@ export class Grid extends Component {
     } = this.state
     const {connectDropTarget} = this.props
     return connectDropTarget(
-      <div style={{height: 'inherit'}}>
-        <AutoSizer>
-          {({width, height}) =>
-            <ReactVirtualizedGrid
-              cellRangeRenderer={this.cellRangeRenderer}
-              cellRenderer={this._mockCellRenderer}
-              columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
-              columnWidth={this.getColumnWidth}
-              height={Math.min(height, rowHeadersHeight + columnHeadersHeight)}
-              overscanRowCount={0}
-              overscanColumnCount={0}
-              ref={ref => { this._grid = ref }}
-              rowCount={this.rowVerticalCount + this.columnVerticalCount}
-              rowHeight={this.getRowHeight}
-              scrollLeft={this.scrollLeft}
-              scrollTop={this.scrollTop}
-              style={{fontSize: `${this.props.store.zoom*100}%`}}
-              width={Math.min(width, columnHeadersWidth + rowHeadersWidth)}
-            />
-        }
-        </AutoSizer>
-      </div>
-    )
+        <div style={{height: 'inherit'}}>
+          <DragLayer />
+          <AutoSizer>
+            {({width, height}) =>
+              <div>
+                <ReactVirtualizedGrid
+                  cellRangeRenderer={this.cellRangeRenderer}
+                  cellRenderer={this._mockCellRenderer}
+                  columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
+                  columnWidth={this.getColumnWidth}
+                  height={Math.min(height, rowHeadersHeight + columnHeadersHeight)}
+                  overscanRowCount={0}
+                  overscanColumnCount={0}
+                  ref={ref => { this._grid = ref }}
+                  rowCount={this.rowVerticalCount + this.columnVerticalCount}
+                  rowHeight={this.getRowHeight}
+                  scrollLeft={this.scrollLeft}
+                  scrollTop={this.scrollTop}
+                  style={{fontSize: `${this.props.store.zoom*100}%`}}
+                  width={Math.min(width, columnHeadersWidth + rowHeadersWidth)}
+                />
+              </div>
+            }
+          </AutoSizer>
+        </div>
+        )
   }
 
   cellRangeRenderer ({ cellCache, cellClassName, cellRenderer, cellStyle, columnSizeAndPositionManager, columnStartIndex, columnStopIndex, horizontalOffsetAdjustment, isScrolling, rowSizeAndPositionManager, rowStartIndex, rowStopIndex, scrollLeft, scrollTop, verticalOffsetAdjustment }) {
@@ -778,102 +783,70 @@ export class Grid extends Component {
   }
 }
 
+function updateCellSizes (grid, handle, offset, initialOffset) {
+  let leafHeaderSizes = grid.state.leafHeaderSizes
+  let dimensionSizes = grid.state.dimensionSizes
+  if (handle.isOnDimensionHeader) {
+    let sizeOffset
+    if (handle.axis === 'columns') {
+      sizeOffset = offset.y - initialOffset.y
+    } else {
+      sizeOffset = offset.x - initialOffset.x
+    }
+    if (handle.dimensionIsMeasure) {
+      dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], size => Math.max(size + sizeOffset, 10))
+    } else {
+      dimensionSizes = dimensionSizes.updateIn([handle.axis, handle.id], (size = handle.axis === 'columns' ? grid.defaultCellHeight : grid.defaultCellWidth) => Math.max(size + sizeOffset, 10))
+    }
+  } else {
+    if (handle.axis === 'columns' && handle.position === 'right'){
+      if (handle.leafSubheaders.length) {
+        let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
+        for (let subheader of handle.leafSubheaders){
+          leafHeaderSizes = leafHeaderSizes.updateIn(['columns', subheader.key], (size = grid.defaultCellWidth) => Math.max(size + fractionalOffset, 10))
+        }
+      } else {
+        // Header is a leaf header
+        leafHeaderSizes = leafHeaderSizes.updateIn(['columns', handle.id], (size = grid.defaultCellWidth) => Math.max(size + offset.x - initialOffset.x, 10))
+      }
+    } else if (handle.axis === 'rows' && handle.position === 'bottom'){
+      if (handle.leafSubheaders.length) {
+        let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
+        for (let subheader of handle.leafSubheaders){
+          leafHeaderSizes = leafHeaderSizes.updateIn(['rows', subheader.key], (size = grid.defaultCellHeight) => Math.max(size + fractionalOffset, 10))
+        }
+      } else {
+        // Header is a leaf header
+        leafHeaderSizes = leafHeaderSizes.updateIn(['rows', handle.id], (size = grid.defaultCellHeight) => Math.max(size + offset.y - initialOffset.y, 10))
+      }
+    } else if (handle.axis === 'columns' && handle.position === 'bottom') {
+      if (handle.dimensionIsMeasure) {
+        dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => Math.max(size + offset.y - initialOffset.y, 10))
+      } else {
+        dimensionSizes = dimensionSizes.updateIn(['columns', handle.id], (size = grid.defaultCellHeight) => Math.max(size + offset.y - initialOffset.y, 10))
+      }
+    } else if (handle.axis === 'rows' && handle.position === 'right') {
+      if (handle.dimensionIsMeasure) {
+        dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => Math.max(size + offset.x - initialOffset.x, 10))
+      } else {
+        dimensionSizes = dimensionSizes.updateIn(['rows', handle.id], (size = grid.defaultCellWidth) => Math.max(size + offset.x - initialOffset.x, 10))
+      }
+    }
+  }
+  grid.setState({ leafHeaderSizes, dimensionSizes })
+}
+
 const gridSpec = {
   drop (props, monitor, component) {
     const handle = monitor.getItem()
     const initialOffset = monitor.getInitialClientOffset()
     const offset = monitor.getClientOffset()
-    let leafHeaderSizes = component.state.leafHeaderSizes
-    let dimensionSizes = component.state.dimensionSizes
-    if (handle.isOnDimensionHeader) {
-      let sizeOffset
-      if (handle.axis === 'columns') {
-        sizeOffset = offset.y - initialOffset.y
-      } else {
-        sizeOffset = offset.x - initialOffset.x
-      }
-      if (handle.dimensionIsMeasure) {
-        dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], size => size + sizeOffset)
-      } else {
-        dimensionSizes = dimensionSizes.updateIn([handle.axis, handle.id], (size = handle.axis === 'columns' ? component.defaultCellHeight : component.defaultCellWidth) => size + sizeOffset)
-      }
-    } else {
-      if (handle.axis === 'columns' && handle.position === 'right'){
-        if (handle.leafSubheaders.length) {
-          let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
-          for (let subheader of handle.leafSubheaders){
-            leafHeaderSizes = leafHeaderSizes.updateIn(['columns', subheader.key], (size = component.defaultCellWidth) => size + fractionalOffset)
-          }
-        } else {
-          // Header is a leaf header
-          leafHeaderSizes = leafHeaderSizes.updateIn(['columns', handle.id], (size = component.defaultCellWidth) => size + offset.x - initialOffset.x)
-        }
-      } else if (handle.axis === 'rows' && handle.position === 'bottom'){
-        if (handle.leafSubheaders.length) {
-          let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
-          for (let subheader of handle.leafSubheaders){
-            leafHeaderSizes = leafHeaderSizes.updateIn(['rows', subheader.key], (size = component.defaultCellHeight) => size + fractionalOffset)
-          }
-        } else {
-          // Header is a leaf header
-          leafHeaderSizes = leafHeaderSizes.updateIn(['rows', handle.id], (size = component.defaultCellHeight) => size + offset.y - initialOffset.y)
-        }
-      } else if (handle.axis === 'columns' && handle.position === 'bottom') {
-        if (handle.dimensionIsMeasure) {
-          dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => size + offset.y - initialOffset.y)
-        } else {
-          dimensionSizes = dimensionSizes.updateIn(['columns', handle.id], (size = component.defaultCellHeight) => size + offset.y - initialOffset.y)
-        }
-      } else if (handle.axis === 'rows' && handle.position === 'right') {
-        if (handle.dimensionIsMeasure) {
-          dimensionSizes = dimensionSizes.updateIn(['measures', handle.axis], (size) => size + offset.x - initialOffset.x)
-        } else {
-          dimensionSizes = dimensionSizes.updateIn(['rows', handle.id], (size = component.defaultCellWidth) => size + offset.x - initialOffset.x)
-        }
-      }
-    }
-    component.setState({ leafHeaderSizes, dimensionSizes })
+    updateCellSizes(component, handle, offset, initialOffset)
   }
 }
 
-const targetCollect = (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget()
 })
 
-export default DropTarget('cell-resize-handle', gridSpec, targetCollect)(Grid)
-
-
-
-
-
-const resizeHandleSpec = {
-  beginDrag (props) {
-    return {
-      id: props.id,
-      axis: props.axis,
-      position: props.position,
-      dimensionIsMeasure: props.dimensionIsMeasure,
-      isOnDimensionHeader: props.isOnDimensionHeader,
-      leafSubheaders: props.leafSubheaders
-    }
-  }
-}
-
-const sourceCollect = (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-})
-
-const RawResizeHandle = ({position, size, connectDragSource, isDragging}) => {
-  let handle
-  if (position === 'right') {
-    handle = <div style={{position: 'absolute', right: 0, width: 2, height: size, cursor: 'col-resize'}} />
-    } else if (position === 'bottom') {
-      handle = <div style={{position: 'absolute', bottom: 0, height: 2, width: size, cursor: 'row-resize'}} />
-  } else {
-    handle=null
-  }
-  return connectDragSource(handle)
-}
-const ResizeHandle = DragSource('cell-resize-handle', resizeHandleSpec, sourceCollect)(RawResizeHandle)
+export default DropTarget('cell-resize-handle', gridSpec, collect)(Grid)
