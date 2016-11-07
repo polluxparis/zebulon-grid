@@ -38,5 +38,8 @@
     "compile:js": "NODE_ENV=production babel src/orb -d lib --presets react-app",
     "compile:css": "postcss --use autoprefixer --use cssnano -o lib/index.css src/orb/index.css"
   },
-  "peerDependencies": {}
+  "peerDependencies": {},
+  "eslintConfig": {
+    "extends": "react-app"
+  }
 }
