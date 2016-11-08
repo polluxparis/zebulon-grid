@@ -124,46 +124,6 @@ function getLeafSubheaders (header, result) {
   }
 }
 
-function updateCellSizes (grid, handle, offset, initialOffset) {
-  const updateCellSize = (size, offset) => Math.max(size + offset, 10)
-  let rowHeaderSizes = grid.state.rowHeaderSizes
-  let columnHeaderSizes = grid.state.columnHeaderSizes
-  if (handle.isOnDimensionHeader) {
-    if (handle.axis === AxisType.COLUMNS) {
-      columnHeaderSizes.dimensions[handle.id] = updateCellSize(columnHeaderSizes.dimensions[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
-    } else {
-      rowHeaderSizes.dimensions[handle.id] = updateCellSize(rowHeaderSizes.dimensions[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
-    }
-  } else {
-    if (handle.axis === AxisType.COLUMNS && handle.position === 'right'){
-      if (handle.leafSubheaders.length) {
-        let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
-        for (let subheader of handle.leafSubheaders){
-          columnHeaderSizes.leafs[subheader.key] = updateCellSize(columnHeaderSizes.leafs[subheader.key] || grid.defaultCellWidth, fractionalOffset)
-        }
-      } else {
-        // Header is a leaf header
-        columnHeaderSizes.leafs[handle.id] = updateCellSize(columnHeaderSizes.leafs[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
-      }
-    } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom'){
-      if (handle.leafSubheaders.length) {
-        let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
-        for (let subheader of handle.leafSubheaders){
-          rowHeaderSizes.leafs[subheader.key] = updateCellSize(rowHeaderSizes.leafs[subheader.key] || grid.defaultCellHeight, fractionalOffset)
-        }
-      } else {
-        // Header is a leaf header
-        rowHeaderSizes.leafs[handle.id] = updateCellSize(rowHeaderSizes.leafs[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
-      }
-    } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
-      columnHeaderSizes.dimensions[handle.id] = updateCellSize(columnHeaderSizes.dimensions[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
-    } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
-      rowHeaderSizes.dimensions[handle.id] = updateCellSize(rowHeaderSizes.dimensions[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
-    }
-  }
-  grid.setState({rowHeaderSizes, columnHeaderSizes})
-}
-
 export class Grid extends Component {
   constructor (props) {
     super(props)
@@ -179,9 +139,7 @@ export class Grid extends Component {
     this.state = {
       cellsCache: new Map(),
       selectedCellStart: null,
-      selectedCellEnd: null,
-      rowHeaderSizes: {leafs: {}, dimensions: {}},
-      columnHeaderSizes: {leafs: {}, dimensions: {}}
+      selectedCellEnd: null
     }
 
     this.dimensionPositions = {rows: {}, columns: {}}
@@ -247,12 +205,12 @@ export class Grid extends Component {
 
 
   computeGridSizes (store) {
-    const {columns, rows, columnsUi, rowsUi, config} = store
+    const {columns, rows, columnsUi, rowsUi, config, rowHeaderSizes, columnHeaderSizes} = store
     const columnsMeasures = config.dataHeadersLocation === 'columns'
     let rowHeadersWidth = 0
     // Measures are on the row axis
     if (!columnsMeasures) {
-      rowHeadersWidth += this.state.rowHeaderSizes.dimensions['__measures__'] || this.defaultCellWidth
+      rowHeadersWidth += rowHeaderSizes.dimensions['__measures__'] || this.defaultCellWidth
     }
     // There are no fields on the row axis
     if (!rows.fields.length) {
@@ -264,7 +222,7 @@ export class Grid extends Component {
     let columnHeadersHeight = 0
     // Measures are on the column axis
     if (columnsMeasures) {
-      columnHeadersHeight += this.state.columnHeaderSizes.dimensions['__measures__'] || this.defaultCellHeight
+      columnHeadersHeight += columnHeaderSizes.dimensions['__measures__'] || this.defaultCellHeight
     }
     // There are no fields on the column axis
     if (!columns.fields.length) {
@@ -292,17 +250,17 @@ export class Grid extends Component {
 
   getLeafHeaderSize (axis, key) {
     if (axis === AxisType.COLUMNS) {
-      return this.state.columnHeaderSizes.leafs[key] || this.defaultCellWidth
+      return this.props.store.columnHeaderSizes.leafs[key] || this.defaultCellWidth
     } else {
-      return this.state.rowHeaderSizes.leafs[key] || this.defaultCellHeight
+      return this.props.store.rowHeaderSizes.leafs[key] || this.defaultCellHeight
     }
   }
 
   getDimensionSize (axis, code) {
     if (axis === AxisType.COLUMNS) {
-      return this.state.columnHeaderSizes.dimensions[code] || this.defaultCellHeight
+      return this.props.store.columnHeaderSizes.dimensions[code] || this.defaultCellHeight
     } else {
-      return this.state.rowHeaderSizes.dimensions[code] || this.defaultCellWidth
+      return this.props.store.rowHeaderSizes.dimensions[code] || this.defaultCellWidth
     }
   }
 
@@ -828,7 +786,7 @@ const gridSpec = {
     const handle = monitor.getItem()
     const initialOffset = monitor.getInitialClientOffset()
     const offset = monitor.getClientOffset()
-    updateCellSizes(component, handle, offset, initialOffset)
+    component.props.store.updateCellSizes(handle, offset, initialOffset)
   }
 }
 

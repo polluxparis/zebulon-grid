@@ -26,6 +26,9 @@ export default class Store {
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
+    this.rowHeaderSizes = {leafs: {}, dimensions: {}}
+    this.columnHeaderSizes = {leafs: {}, dimensions: {}}
+
     this.init = true
   }
 
@@ -272,6 +275,45 @@ export default class Store {
   refreshData (data) {
     this.filteredData = data
   }
+
+  updateCellSizes (handle, offset, initialOffset) {
+    function updateCellSize (size, offset) { return Math.max(size + offset, 10)}
+    if (handle.isOnDimensionHeader) {
+      if (handle.axis === AxisType.COLUMNS) {
+        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+      } else {
+        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+      }
+    } else {
+      if (handle.axis === AxisType.COLUMNS && handle.position === 'right'){
+        if (handle.leafSubheaders.length) {
+          let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
+          for (let subheader of handle.leafSubheaders){
+            this.columnHeaderSizes.leafs[subheader.key] = updateCellSize(this.columnHeaderSizes.leafs[subheader.key] || this.sizes.cell.width, fractionalOffset)
+          }
+        } else {
+          // Header is a leaf header
+          this.columnHeaderSizes.leafs[handle.id] = updateCellSize(this.columnHeaderSizes.leafs[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+        }
+      } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom'){
+        if (handle.leafSubheaders.length) {
+          let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
+          for (let subheader of handle.leafSubheaders){
+            this.rowHeaderSizes.leafs[subheader.key] = updateCellSize(this.rowHeaderSizes.leafs[subheader.key] || this.sizes.cell.height, fractionalOffset)
+          }
+        } else {
+          // Header is a leaf header
+          this.rowHeaderSizes.leafs[handle.id] = updateCellSize(this.rowHeaderSizes.leafs[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+        }
+      } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
+        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+      } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
+        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+      }
+    }
+    this.forceUpdateCallback()
+  }
+
 
   toggleSubtotals (axetype) {
     if (this.config.toggleSubtotals(axetype)) {
