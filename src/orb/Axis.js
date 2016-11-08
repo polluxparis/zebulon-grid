@@ -2,11 +2,11 @@ import * as utils from './Utils'
 import Dimension from './Dimension'
 
 /**
- * Axe types
+ * Axis types
  * @readonly
  * @enum {Number}
  */
-export const AxeType = {
+export const AxisType = {
   COLUMNS: 1,
   ROWS: 2,
   DATA: 3,
@@ -19,9 +19,9 @@ export const AxeType = {
  * @class
  * @memberOf orb
  * @param  {array} store - Parent pivot grid
- * @param  {orb.axe.Type} type - Axe type (rows, columns, data)
+ * @param  {orb.axe.Type} type - Axis type (rows, columns, data)
  */
-export class Axe {
+export class Axis {
 
 /**
  * Dimensions dictionary indexed by depth
@@ -32,7 +32,7 @@ export class Axe {
   constructor (type, fields, data) {
 
     /**
-     * Axe type (rows, columns, data)
+     * Axis type (rows, columns, data)
      * @type {orb.axe.Type}
      */
     this.type = type

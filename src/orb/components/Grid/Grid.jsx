@@ -9,7 +9,7 @@ import { DataCell } from '../../Cells'
 import {isInRange} from '../../Utils'
 import DragLayer from './DragLayer'
 import ResizeHandle from './ResizeHandle'
-import {AxeType} from '../../Axe'
+import {AxisType} from '../../Axis'
 
 function replaceNullAndUndefined (val) {
   if (val === null || val === undefined) {
@@ -129,13 +129,13 @@ function updateCellSizes (grid, handle, offset, initialOffset) {
   let rowHeaderSizes = grid.state.rowHeaderSizes
   let columnHeaderSizes = grid.state.columnHeaderSizes
   if (handle.isOnDimensionHeader) {
-    if (handle.axis === AxeType.COLUMNS) {
+    if (handle.axis === AxisType.COLUMNS) {
       columnHeaderSizes.dimensions[handle.id] = updateCellSize(columnHeaderSizes.dimensions[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
     } else {
       rowHeaderSizes.dimensions[handle.id] = updateCellSize(rowHeaderSizes.dimensions[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
     }
   } else {
-    if (handle.axis === AxeType.COLUMNS && handle.position === 'right'){
+    if (handle.axis === AxisType.COLUMNS && handle.position === 'right'){
       if (handle.leafSubheaders.length) {
         let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
         for (let subheader of handle.leafSubheaders){
@@ -145,7 +145,7 @@ function updateCellSizes (grid, handle, offset, initialOffset) {
         // Header is a leaf header
         columnHeaderSizes.leafs[handle.id] = updateCellSize(columnHeaderSizes.leafs[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
       }
-    } else if (handle.axis === AxeType.ROWS && handle.position === 'bottom'){
+    } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom'){
       if (handle.leafSubheaders.length) {
         let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
         for (let subheader of handle.leafSubheaders){
@@ -155,9 +155,9 @@ function updateCellSizes (grid, handle, offset, initialOffset) {
         // Header is a leaf header
         rowHeaderSizes.leafs[handle.id] = updateCellSize(rowHeaderSizes.leafs[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
       }
-    } else if (handle.axis === AxeType.COLUMNS && handle.position === 'bottom') {
+    } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
       columnHeaderSizes.dimensions[handle.id] = updateCellSize(columnHeaderSizes.dimensions[handle.id] || grid.defaultCellHeight, offset.y - initialOffset.y)
-    } else if (handle.axis === AxeType.ROWS && handle.position === 'right') {
+    } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
       rowHeaderSizes.dimensions[handle.id] = updateCellSize(rowHeaderSizes.dimensions[handle.id] || grid.defaultCellWidth, offset.x - initialOffset.x)
     }
   }
@@ -256,10 +256,10 @@ export class Grid extends Component {
     }
     // There are no fields on the row axis
     if (!rows.fields.length) {
-      rowHeadersWidth += this.getDimensionSize(AxeType.ROWS, '__total__')
+      rowHeadersWidth += this.getDimensionSize(AxisType.ROWS, '__total__')
     }
     for (let dimension of rows.fields) {
-      rowHeadersWidth += this.getDimensionSize(AxeType.ROWS, dimension.code)
+      rowHeadersWidth += this.getDimensionSize(AxisType.ROWS, dimension.code)
     }
     let columnHeadersHeight = 0
     // Measures are on the column axis
@@ -268,10 +268,10 @@ export class Grid extends Component {
     }
     // There are no fields on the column axis
     if (!columns.fields.length) {
-      columnHeadersHeight += this.getDimensionSize(AxeType.COLUMNS, '__total__')
+      columnHeadersHeight += this.getDimensionSize(AxisType.COLUMNS, '__total__')
     }
     for (let dimension of columns.fields) {
-      columnHeadersHeight += this.getDimensionSize(AxeType.COLUMNS, dimension.code)
+      columnHeadersHeight += this.getDimensionSize(AxisType.COLUMNS, dimension.code)
     }
     let rowHeadersHeight = 0
     for (let headers of rowsUi.headers) {
@@ -286,12 +286,12 @@ export class Grid extends Component {
     this.columnHeadersHeight = columnHeadersHeight
     this.columnHeadersWidth = columnHeadersWidth
 
-    this.dimensionPositions.rows = this.calculateDimensionPositions(AxeType.ROWS, store.rows.fields, store.config.dataHeadersLocation === 'rows')
-    this.dimensionPositions.columns = this.calculateDimensionPositions(AxeType.COLUMNS, store.columns.fields, store.config.dataHeadersLocation === 'columns')
+    this.dimensionPositions.rows = this.calculateDimensionPositions(AxisType.ROWS, store.rows.fields, store.config.dataHeadersLocation === 'rows')
+    this.dimensionPositions.columns = this.calculateDimensionPositions(AxisType.COLUMNS, store.columns.fields, store.config.dataHeadersLocation === 'columns')
   }
 
   getLeafHeaderSize (axis, key) {
-    if (axis === AxeType.COLUMNS) {
+    if (axis === AxisType.COLUMNS) {
       return this.state.columnHeaderSizes.leafs[key] || this.defaultCellWidth
     } else {
       return this.state.rowHeaderSizes.leafs[key] || this.defaultCellHeight
@@ -299,7 +299,7 @@ export class Grid extends Component {
   }
 
   getDimensionSize (axis, code) {
-    if (axis === AxeType.COLUMNS) {
+    if (axis === AxisType.COLUMNS) {
       return this.state.columnHeaderSizes.dimensions[code] || this.defaultCellHeight
     } else {
       return this.state.rowHeaderSizes.dimensions[code] || this.defaultCellWidth
@@ -315,7 +315,7 @@ export class Grid extends Component {
     }
     const headers = columnsUi.headers[index]
     const key = headers[headers.length - 1].key
-    return this.getLeafHeaderSize(AxeType.COLUMNS, key)
+    return this.getLeafHeaderSize(AxisType.COLUMNS, key)
   }
 
   getRowHeight ({index}, rowsUi = this.props.store.rowsUi) {
@@ -327,7 +327,7 @@ export class Grid extends Component {
     }
     const headers = rowsUi.headers[index]
     const key = headers[headers.length - 1].key
-    return this.getLeafHeaderSize(AxeType.ROWS, key)
+    return this.getLeafHeaderSize(AxisType.ROWS, key)
   }
 
   calculateDimensionPositions (axis, fields, hasMeasures) {
@@ -488,12 +488,12 @@ export class Grid extends Component {
       // Dimension headers are on top of the Total header --> get default width
       fieldWhoseWidthToGet = null
     }
-    const width = this.getDimensionSize(AxeType.ROWS, fieldWhoseWidthToGet)
+    const width = this.getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet)
     const left = scrollLeft + this.rowHeadersWidth - width
     for (let [, dimensionHeader] of columnDimensionHeaders.entries()) {
       const field = dimensionHeader.value
       const top = scrollTop + this.dimensionPositions.columns.get(field.code)
-      const height = this.getDimensionSize(AxeType.COLUMNS, field.code)
+      const height = this.getDimensionSize(AxisType.COLUMNS, field.code)
       renderedCells.push(this.dimensionHeaderRenderer({left, top, width, height, field, mainDirection: 'right', crossFieldCode: fieldWhoseWidthToGet, scrollLeft, scrollTop}))
     }
 
@@ -509,12 +509,12 @@ export class Grid extends Component {
       // Dimension headers are to the left of the Total header --> get default height
       fieldWhoseHeightToGet = null
     }
-    const height = this.getDimensionSize(AxeType.COLUMNS, fieldWhoseHeightToGet)
+    const height = this.getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet)
     const top = scrollTop + this.columnHeadersHeight - height
     for (let [, dimensionHeader] of rowDimensionHeaders.entries()) {
       const field = dimensionHeader.value
       const left = scrollLeft + this.dimensionPositions.rows.get(field.code)
-      const width = this.getDimensionSize(AxeType.ROWS, field.code)
+      const width = this.getDimensionSize(AxisType.ROWS, field.code)
       renderedCells.push(this.dimensionHeaderRenderer({left, top, height, width, field, mainDirection: 'down', crossFieldCode: fieldWhoseHeightToGet, scrollLeft, scrollTop}))
     }
 
@@ -531,8 +531,8 @@ export class Grid extends Component {
         const span = header.hspan()
         const width = getHeaderSize(columnSizeAndPositionManager, header.x, span)
         const top = scrollTop + this.dimensionPositions.columns.get(header.dim.field.code)
-        const height = this.getDimensionSize(AxeType.COLUMNS, header.dim.field.code)
-        renderedCells.push(this.headerRenderer({axis: AxeType.COLUMNS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
+        const height = this.getDimensionSize(AxisType.COLUMNS, header.dim.field.code)
+        renderedCells.push(this.headerRenderer({axis: AxisType.COLUMNS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
@@ -548,17 +548,17 @@ export class Grid extends Component {
         let height
         if (!header.dim) {
           // Measure header
-          height = this.getDimensionSize(AxeType.COLUMNS, '__measures__')
+          height = this.getDimensionSize(AxisType.COLUMNS, '__measures__')
           top += this.dimensionPositions.columns.get('__measures__')
         } else if (header.dim.field) {
           // Normal dimension header
-          height = this.getDimensionSize(AxeType.COLUMNS, header.dim.field.code)
+          height = this.getDimensionSize(AxisType.COLUMNS, header.dim.field.code)
           top += this.dimensionPositions.columns.get(header.dim.field.code)
         } else {
           // Total header
-          height = this.getDimensionSize(AxeType.COLUMNS, '__total__')
+          height = this.getDimensionSize(AxisType.COLUMNS, '__total__')
         }
-        renderedCells.push(this.headerRenderer({axis: AxeType.COLUMNS, header, left, top, width, height, span, startIndex: columnStartIndex, scrollLeft, scrollTop}))
+        renderedCells.push(this.headerRenderer({axis: AxisType.COLUMNS, header, left, top, width, height, span, startIndex: columnStartIndex, scrollLeft, scrollTop}))
       }
     }
 
@@ -574,9 +574,9 @@ export class Grid extends Component {
         const span = header.vspan()
         const top = main.offset + verticalOffsetAdjustment + this.columnHeadersHeight
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span)
-        const width = this.getDimensionSize(AxeType.ROWS, header.dim.field.code)
+        const width = this.getDimensionSize(AxisType.ROWS, header.dim.field.code)
         const left = scrollLeft + this.dimensionPositions.rows.get(header.dim.field.code)
-        renderedCells.push(this.headerRenderer({axis: AxeType.ROWS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
+        renderedCells.push(this.headerRenderer({axis: AxisType.ROWS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
@@ -592,17 +592,17 @@ export class Grid extends Component {
         let left = scrollLeft
         if (!header.dim) {
           // Measure header
-          width = this.getDimensionSize(AxeType.ROWS, '__measures__')
+          width = this.getDimensionSize(AxisType.ROWS, '__measures__')
           left += this.dimensionPositions.rows.get('__measures__')
         } else if (header.dim.field) {
           // Normal dimension header
-          width = this.getDimensionSize(AxeType.ROWS, header.dim.field.code)
+          width = this.getDimensionSize(AxisType.ROWS, header.dim.field.code)
           left += this.dimensionPositions.rows.get(header.dim.field.code)
         } else {
           // Total header
-          width = this.getDimensionSize(AxeType.ROWS, '__total__')
+          width = this.getDimensionSize(AxisType.ROWS, '__total__')
         }
-        renderedCells.push(this.headerRenderer({axis: AxeType.ROWS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
+        renderedCells.push(this.headerRenderer({axis: AxisType.ROWS,  header, left, top, width, height, span, startIndex: rowStartIndex, scrollLeft, scrollTop}))
       }
     }
 
@@ -715,7 +715,7 @@ export class Grid extends Component {
     const renderedCell = <HeaderCellComp key={`${axis}-${x}-${y}`} cell={header} onToggle={() => 33} />
     let innerHeader = renderedCell
     let previewSize = {}
-    if (axis === AxeType.COLUMNS) {
+    if (axis === AxisType.COLUMNS) {
       previewSize.right = this.columnHeadersHeight
       previewSize.bottom = this.width
     } else {
@@ -734,7 +734,7 @@ export class Grid extends Component {
       let lastChildSize
       let style
       let offset
-      if (axis === AxeType.COLUMNS) {
+      if (axis === AxisType.COLUMNS) {
         if (x <= startIndex) {
           lastChildSize = getLastChildSize(axis, header)
           offset = Math.min(scrollLeft + this.rowHeadersWidth - left, width - (lastChildSize || 0))
@@ -780,8 +780,8 @@ export class Grid extends Component {
           display: 'flex',
         }}>
         {innerHeader}
-        <ResizeHandle position='right' size={height} id={axis === AxeType.COLUMNS ? leafHeaderId : dimensionId} leafSubheaders={leafSubheaders} axis={axis} previewSize={previewSize.right} previewOffset={top - scrollTop}/>
-        <ResizeHandle position='bottom' size={width} id={axis === AxeType.ROWS ? leafHeaderId : dimensionId} leafSubheaders={leafSubheaders} axis={axis} previewSize={previewSize.bottom} previewOffset={left - scrollLeft}/>
+        <ResizeHandle position='right' size={height} id={axis === AxisType.COLUMNS ? leafHeaderId : dimensionId} leafSubheaders={leafSubheaders} axis={axis} previewSize={previewSize.right} previewOffset={top - scrollTop}/>
+        <ResizeHandle position='bottom' size={width} id={axis === AxisType.ROWS ? leafHeaderId : dimensionId} leafSubheaders={leafSubheaders} axis={axis} previewSize={previewSize.bottom} previewOffset={left - scrollLeft}/>
       </div>
     )
   }
@@ -812,8 +812,8 @@ export class Grid extends Component {
         backgroundColor: '#fafad2',
       }}>
       <span>{field.caption}</span>
-      <ResizeHandle position='right' size={height} id={ids.right} isOnDimensionHeader axis={AxeType.ROWS} previewSize={this.height} previewOffset={top - scrollTop}/>
-      <ResizeHandle position='bottom' size={width} id={ids.bottom} isOnDimensionHeader axis={AxeType.COLUMNS} previewSize={this.width} previewOffset={left - scrollLeft}/>
+      <ResizeHandle position='right' size={height} id={ids.right} isOnDimensionHeader axis={AxisType.ROWS} previewSize={this.height} previewOffset={top - scrollTop}/>
+      <ResizeHandle position='bottom' size={width} id={ids.bottom} isOnDimensionHeader axis={AxisType.COLUMNS} previewSize={this.width} previewOffset={left - scrollLeft}/>
       {/* {axis === 'column' ? <RightArrow zoom={store.zoom} /> : <DownArrow zoom={store.zoom} />} */}
     </div>
   }

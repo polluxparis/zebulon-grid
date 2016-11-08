@@ -14,7 +14,7 @@ export default class Chart extends Component {
   render () {
     let {store, type} = this.props
     type = type || 'bar'
-    const dimension = store.getChartAxe().root
+    const dimension = store.getChartAxis().root
     const measures = store.config.dataFields
     const colors = chroma.scale('Spectral').colors(store.config.dataFields.length)
     let data = []

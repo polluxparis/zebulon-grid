@@ -1,4 +1,4 @@
-import { AxeType } from './Axe'
+import { AxisType } from './Axis'
 import { Store } from './orb.store'
 
 export const HeaderType = {
@@ -12,7 +12,7 @@ export const HeaderType = {
   GRAND_TOTAL: 8,
   DIMENSION_HEADER: 9,
   getHeaderClass: function (headerType, axetype) {
-    var cssclass = axetype === AxeType.ROWS ? 'header-row' : (axetype === AxeType.COLUMNS ? 'header-col' : '')
+    var cssclass = axetype === AxisType.ROWS ? 'header-row' : (axetype === AxisType.COLUMNS ? 'header-col' : '')
     switch (headerType) {
       case HeaderType.EMPTY:
       case HeaderType.FIELD_BUTTON:
@@ -72,7 +72,7 @@ class CellBase {
 
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
-     * @type {orb.AxeType}
+     * @type {orb.AxisType}
      */
     this.axetype = options.axetype
     /**
@@ -137,7 +137,7 @@ class CellBase {
 export class Header extends CellBase {
 
   constructor (axetype, headerTypeP, dim, parent, datafieldscount, x, y, subtotalHeader, crossAxisFieldsCode = []) {
-    const isOnRowAxis = axetype === AxeType.ROWS
+    const isOnRowAxis = axetype === AxisType.ROWS
     const headerType = headerTypeP || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER)
     let value
     let hspan

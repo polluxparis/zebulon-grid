@@ -1,7 +1,7 @@
 import { Observable } from 'rx-lite'
 
-import { Axe, AxeType } from '../Axe'
-import AxeUi from '../AxeUi'
+import { Axis, AxisType } from '../Axis'
+import AxisUi from '../AxisUi'
 import { Config } from '../Config'
 import { ExpressionFilter } from '../Filtering'
 import * as utils from '../Utils'
@@ -102,7 +102,7 @@ export default class Store {
   }
 
   getrows () {
-    const axe = new Axe(AxeType.ROWS, this.config.rowFields, this.filteredData)
+    const axe = new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData)
     for (let field of this.config.rowFields) {
       axe.sort(field, true)
     }
@@ -110,25 +110,25 @@ export default class Store {
   }
 
   getcolumns () {
-    const axe = new Axe(AxeType.COLUMNS, this.config.columnFields, this.filteredData)
+    const axe = new Axis(AxisType.COLUMNS, this.config.columnFields, this.filteredData)
     for (let field of this.config.columnFields) {
       axe.sort(field, true)
     }
     return axe
   }
 
-  getChartAxe () {
-    return new Axe(AxeType.CHART, [this.config.selectedField], this)
+  getChartAxis () {
+    return new Axis(AxisType.CHART, [this.config.selectedField], this)
   }
 
-  getrowsUi (noNewAxe) {
-    if (!noNewAxe) { this.rows = this.getrows() }
-    return new AxeUi(this.rows, this.config)
+  getrowsUi (noNewAxis) {
+    if (!noNewAxis) { this.rows = this.getrows() }
+    return new AxisUi(this.rows, this.config)
   }
 
-  getcolumnsUi (noNewAxe) {
-    if (!noNewAxe) { this.columns = this.getcolumns() }
-    return new AxeUi(this.columns, this.config)
+  getcolumnsUi (noNewAxis) {
+    if (!noNewAxis) { this.columns = this.getcolumns() }
+    return new AxisUi(this.columns, this.config)
   }
 
   getlayout () {
@@ -178,19 +178,19 @@ export default class Store {
 
   sort (axetype, field) {
     let sorted = false
-    if (axetype === AxeType.ROWS) {
+    if (axetype === AxisType.ROWS) {
       this.rows.sort(field)
       sorted = true
-    } else if (axetype === AxeType.COLUMNS) {
+    } else if (axetype === AxisType.COLUMNS) {
       this.columns.sort(field)
       sorted = true
     }
     if (sorted && this.init) {
       switch (axetype) {
-        case AxeType.ROWS:
+        case AxisType.ROWS:
           this.rowsUi = this.getrowsUi(true)
           break
-        case AxeType.COLUMNS:
+        case AxisType.COLUMNS:
           this.columnsUi = this.getcolumnsUi(true)
           break
         default:
@@ -203,7 +203,7 @@ export default class Store {
   moveField (fieldname, oldaxistype, newaxistype, position) {
     const axisType = this.config.moveField(fieldname, oldaxistype, newaxistype, position)
     switch (axisType) {
-      case AxeType.COLUMNS:
+      case AxisType.COLUMNS:
         this.columnsUi = this.getcolumnsUi()
         if (!this.config.rowFields.length) {
           // If the other axis has no field, it must be recreated to update the key of the Total header
@@ -211,7 +211,7 @@ export default class Store {
           this.rowsUi = this.getrowsUi()
         }
         break
-      case AxeType.ROWS:
+      case AxisType.ROWS:
         this.rowsUi = this.getrowsUi()
         if (!this.config.columnFields.length) {
           // If the other axis has no field, it must be recreated to update the key of the Total header

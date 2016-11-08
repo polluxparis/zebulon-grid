@@ -1,4 +1,4 @@
-import { AxeType } from './Axe'
+import { AxisType } from './Axis'
 import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells'
 
 /**
@@ -7,7 +7,7 @@ import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells'
  * @memberOf orb.ui
  * @param  {orb.axe} axe - axe containing all dimensions.
  */
-export default class AxeUi {
+export default class AxisUi {
 
   constructor (axis, config) {
 
@@ -128,7 +128,7 @@ export default class AxeUi {
       var lastInfosArray = infos[infos.length - 1]
       for (let [index, dataField] of activatedDataFields.entries()) {
         lastInfosArray.push(new DataHeader(
-          dataHeadersLocation === 'columns' ? AxeType.COLUMNS : AxeType.ROWS,
+          dataHeadersLocation === 'columns' ? AxisType.COLUMNS : AxisType.ROWS,
           dataField,
           parent,
           this._x++,
@@ -144,7 +144,7 @@ export default class AxeUi {
   }
 
   getDataFieldsCount ({axisType, dataHeadersLocation, activatedDataFieldsCount}) {
-    if ((dataHeadersLocation === 'columns' && axisType === AxeType.COLUMNS) || (dataHeadersLocation === 'rows' && axisType === AxeType.ROWS)) {
+    if ((dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS) || (dataHeadersLocation === 'rows' && axisType === AxisType.ROWS)) {
       return activatedDataFieldsCount
     } else {
       return 0

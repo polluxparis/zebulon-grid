@@ -4,7 +4,7 @@ import DragManager from '../../DragManager'
 import FieldButton from '../FieldButton'
 import DataButton from '../DataButton'
 import FieldList from '../FieldList'
-import { AxeType } from '../../Axe'
+import { AxisType } from '../../Axis'
 
 class GridConfiguration extends Component {
   constructor (props) {
@@ -13,9 +13,9 @@ class GridConfiguration extends Component {
     DragManager.init(this.moveButton.bind(this))
   }
 
-  moveButton (buttonId, oldAxeType, newAxeType, position) {
+  moveButton (buttonId, oldAxisType, newAxisType, position) {
     const {store} = this.props
-    store.moveField(buttonId, oldAxeType, newAxeType, position)
+    store.moveField(buttonId, oldAxisType, newAxisType, position)
   }
 
   render () {
@@ -29,7 +29,7 @@ class GridConfiguration extends Component {
         <FieldButton
           key={field.name}
           field={field}
-          axetype={AxeType.FIELDS}
+          axetype={AxisType.FIELDS}
           position={index}
           store={store} />
 
@@ -40,7 +40,7 @@ class GridConfiguration extends Component {
             Fields
           </div>
           <div style={{padding: '7px 4px'}} className='av-flds'>
-            <FieldList buttons={fieldsButtons} axetype={AxeType.FIELDS} moveButton={this.moveButton} />
+            <FieldList buttons={fieldsButtons} axetype={AxisType.FIELDS} moveButton={this.moveButton} />
           </div>
         </div>
     } else {
@@ -78,7 +78,7 @@ class GridConfiguration extends Component {
       <FieldButton
         key={field.name}
         field={field}
-        axetype={AxeType.COLUMNS}
+        axetype={AxisType.COLUMNS}
         position={index}
         store={store} />
     )
@@ -89,7 +89,7 @@ class GridConfiguration extends Component {
           Columns
         </div>
         <div style={{padding: '7px 4px'}}>
-          <FieldList buttons={columnButtons} axetype={AxeType.COLUMNS} moveButton={this.moveButton} />
+          <FieldList buttons={columnButtons} axetype={AxisType.COLUMNS} moveButton={this.moveButton} />
         </div>
       </div>
 
@@ -97,7 +97,7 @@ class GridConfiguration extends Component {
       <FieldButton
         key={field.name}
         field={field}
-        axetype={AxeType.ROWS}
+        axetype={AxisType.ROWS}
         position={index}
         store={store} />
     )
@@ -108,7 +108,7 @@ class GridConfiguration extends Component {
           Rows
         </div>
         <div style={{padding: '7px 4px'}}>
-          <FieldList buttons={rowButtons} axetype={AxeType.ROWS} moveButton={this.moveButton} />
+          <FieldList buttons={rowButtons} axetype={AxisType.ROWS} moveButton={this.moveButton} />
         </div>
       </div>
 

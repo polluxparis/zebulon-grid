@@ -1,5 +1,5 @@
 import * as utils from './Utils'
-import { AxeType } from './Axe'
+import { AxisType } from './Axis'
 import * as aggregation from './Aggregation'
 import { ExpressionFilter } from './Filtering'
 
@@ -127,33 +127,33 @@ const mergefieldconfigs = (...args) => {
 
 const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
   var axeconfig
-  var fieldAxeconfig
+  var fieldAxisconfig
 
   if (defaultfieldconfig) {
     switch (axetype) {
-      case AxeType.ROWS:
+      case AxisType.ROWS:
         axeconfig = rootconfig.rowSettings
-        fieldAxeconfig = defaultfieldconfig.rowSettings
+        fieldAxisconfig = defaultfieldconfig.rowSettings
         break
-      case AxeType.COLUMNS:
+      case AxisType.COLUMNS:
         axeconfig = rootconfig.columnSettings
-        fieldAxeconfig = defaultfieldconfig.columnSettings
+        fieldAxisconfig = defaultfieldconfig.columnSettings
         break
-      case AxeType.DATA:
+      case AxisType.DATA:
         axeconfig = rootconfig.dataSettings
-        fieldAxeconfig = defaultfieldconfig.dataSettings
+        fieldAxisconfig = defaultfieldconfig.dataSettings
         break
       default:
         axeconfig = null
-        fieldAxeconfig = null
+        fieldAxisconfig = null
         break
     }
   } else {
     axeconfig = null
-    fieldAxeconfig = null
+    fieldAxisconfig = null
   }
 
-  var merged = mergefieldconfigs(fieldconfig, fieldAxeconfig, axeconfig, defaultfieldconfig, rootconfig)
+  var merged = mergefieldconfigs(fieldconfig, fieldAxisconfig, axeconfig, defaultfieldconfig, rootconfig)
 
   return new Field({
     name: getpropertyvalue('name', merged.configs, ''),
@@ -211,12 +211,12 @@ export class Config {
 
     this.rowFields = (config.rows || []).map(fieldconfig => {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
-      return createfield(this, AxeType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
+      return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
 
     this.columnFields = (config.columns || []).map(fieldconfig => {
       fieldconfig = this.ensureFieldConfig(fieldconfig)
-      return createfield(this, AxeType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
+      return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
     })
 
     this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0]
@@ -330,13 +330,13 @@ export class Config {
 
     if (defaultFieldConfig) {
       switch (oldaxetype) {
-        case AxeType.ROWS:
+        case AxisType.ROWS:
           oldaxe = this.rowFields
           break
-        case AxeType.COLUMNS:
+        case AxisType.COLUMNS:
           oldaxe = this.columnFields
           break
-        case AxeType.FIELDS:
+        case AxisType.FIELDS:
           oldaxe = this.availableFields
           break
         default:
@@ -344,15 +344,15 @@ export class Config {
       }
 
       switch (newaxetype) {
-        case AxeType.ROWS:
+        case AxisType.ROWS:
           newaxe = this.rowFields
           fieldConfig = this.getRowField(fieldname)
           break
-        case AxeType.COLUMNS:
+        case AxisType.COLUMNS:
           newaxe = this.columnFields
           fieldConfig = this.getColumnField(fieldname)
           break
-        case AxeType.FIELDS:
+        case AxisType.FIELDS:
           newaxe = this.availableFields
           fieldConfig = this.getField(fieldname)
           break
@@ -361,7 +361,7 @@ export class Config {
       }
 
       if (oldaxe || newaxe) {
-        var newAxeSubtotalsState = this.areSubtotalsVisible(newaxetype)
+        var newAxisSubtotalsState = this.areSubtotalsVisible(newaxetype)
 
         if (oldaxe) {
           oldposition = this.getfieldindex(oldaxe, fieldname)
@@ -380,7 +380,7 @@ export class Config {
           fieldConfig,
           defaultFieldConfig)
 
-        if (!newAxeSubtotalsState && field.subTotal.visible !== false) {
+        if (!newAxisSubtotalsState && field.subTotal.visible !== false) {
           field.subTotal.visible = null
         }
 
@@ -391,9 +391,9 @@ export class Config {
             newaxe.push(field)
           }
         }
-        if (newaxetype === AxeType.FIELDS) {
+        if (newaxetype === AxisType.FIELDS) {
           return oldaxetype
-        } else if (oldaxetype === AxeType.FIELDS) {
+        } else if (oldaxetype === AxisType.FIELDS) {
           return newaxetype
         } else {
           return -1
@@ -423,10 +423,10 @@ export class Config {
     var axeFields
     var newState = !this.areSubtotalsVisible(axetype)
 
-    if (axetype === AxeType.ROWS) {
+    if (axetype === AxisType.ROWS) {
       this.runtimeVisibility['subtotals']['rows'] = newState
       axeFields = this.rowFields
-    } else if (axetype === AxeType.COLUMNS) {
+    } else if (axetype === AxisType.COLUMNS) {
       this.runtimeVisibility['subtotals']['columns'] = newState
       axeFields = this.columnFields
     } else {
@@ -443,9 +443,9 @@ export class Config {
   }
 
   areSubtotalsVisible (axetype) {
-    if (axetype === AxeType.ROWS) {
+    if (axetype === AxisType.ROWS) {
       return this.runtimeVisibility['subtotals']['rows']
-    } else if (axetype === AxeType.COLUMNS) {
+    } else if (axetype === AxisType.COLUMNS) {
       return this.runtimeVisibility['subtotals']['columns']
     } else {
       return null
@@ -455,9 +455,9 @@ export class Config {
   toggleGrandtotal (axetype) {
     var newState = !this.isGrandtotalVisible(axetype)
 
-    if (axetype === AxeType.ROWS) {
+    if (axetype === AxisType.ROWS) {
       this.grandTotal.rowsvisible = newState
-    } else if (axetype === AxeType.COLUMNS) {
+    } else if (axetype === AxisType.COLUMNS) {
       this.grandTotal.columnsvisible = newState
     } else {
       return false
@@ -466,9 +466,9 @@ export class Config {
   }
 
   isGrandtotalVisible (axetype) {
-    if (axetype === AxeType.ROWS) {
+    if (axetype === AxisType.ROWS) {
       return this.grandTotal.rowsvisible
-    } else if (axetype === AxeType.COLUMNS) {
+    } else if (axetype === AxisType.COLUMNS) {
       return this.grandTotal.columnsvisible
     } else {
       return false
