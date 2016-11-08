@@ -9,13 +9,12 @@ import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells'
  */
 export default class AxeUi {
 
-  constructor (axeModel) {
-    /**
-     * Dimensions axe
-     * @type {orb.axe}
-     */
-    this.axe = axeModel
+  constructor (axis, config) {
 
+    const {dataHeadersLocation, activatedDataFieldsCount} = config
+    this.dataFieldsCount = this.getDataFieldsCount({axisType: axis.type, dataHeadersLocation, activatedDataFieldsCount})
+
+    this.hasDataFields = this.dataFieldsCount >= 1
     /**
      * Headers render properties
      * @type {Array}
@@ -30,23 +29,30 @@ export default class AxeUi {
 
     this._x = 0
 
-    this.build()
+    this.build({axis, config})
   }
 
-  build () {
+  build ({axis, config}) {
+    const {dataHeadersLocation, activatedDataFieldsCount, activatedDataFields} = config
+    let crossAxisFieldsCode
+    if ((axis.type) === 1) {
+      crossAxisFieldsCode = config.rowFields.map(field => field.code)
+    } else {
+      crossAxisFieldsCode = config.columnFields.map(field => field.code)
+    }
     const headers = []
     let grandtotalHeader
     let y
 
-    if (this.axe != null) {
-      if (this.axe.root.values.length > 0 || this.axe.store.config.grandTotal.rowsvisible) {
+    if (axis != null) {
+      if (axis.root.values.length > 0 || config.grandTotal.rowsvisible) {
         headers.push([])
         // Fill Rows layout infos
-        y = this.getUiInfo(headers, this.axe.root, this.axe.type)
+        y = this.getUiInfo({infos: headers, dimension: axis.root, axisType: axis.type, dataHeadersLocation, activatedDataFields, activatedDataFieldsCount})
 
-        if (this.axe.store.config.grandTotal.rowsvisible) {
+        if (config.grandTotal.rowsvisible) {
           var lastrow = headers[headers.length - 1]
-          grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount(), this._x, y)
+          grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.dataFieldsCount, this._x, y, null, crossAxisFieldsCode)
           if (lastrow.length === 0) {
             lastrow.push(grandtotalHeader)
           } else {
@@ -56,45 +62,25 @@ export default class AxeUi {
       }
 
       if (headers.length === 0) {
-        headers.push([grandtotalHeader = new Header(this.axe.type, HeaderType.GRAND_TOTAL, this.axe.root, null, this.dataFieldsCount(), this._x, y = 0)])
+        headers.push([grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.dataFieldsCount, this._x, y = 0, null, crossAxisFieldsCode)])
       }
 
       if (grandtotalHeader) {
         // add grand-total data headers if more than 1 data field and they will be the leaf headers
-        this.addDataHeaders(headers, grandtotalHeader, y + 1)
+        this.addDataHeaders({axisType: axis.type, infos: headers, parent: grandtotalHeader, y: y + 1, dataHeadersLocation, activatedDataFields, activatedDataFieldsCount})
       }
     }
     this.headers = headers
-    this.dimensionHeaders = this.axe.fields.map((field, index) => new DimensionHeader(this.axe.type, field))
-  }
-
-  addDataHeaders (infos, parent, y) {
-    if (this.hasDataFields()) {
-      var lastInfosArray = infos[infos.length - 1]
-      for (let datafieldindex = 0; datafieldindex < this.dataFieldsCount(); datafieldindex++) {
-        lastInfosArray.push(new DataHeader(
-          this.axe.store.config.dataHeadersLocation === 'columns' ? AxeType.COLUMNS : AxeType.ROWS,
-          this.axe.store.config.activatedDataFields[datafieldindex],
-          parent,
-          this._x++,
-          y
-        ))
-        if (datafieldindex < this.dataFieldsCount() - 1) {
-          infos.push((lastInfosArray = []))
-        }
-      }
-    } else {
-      this._x++
-    }
+    this.dimensionHeaders = axis.fields.map((field, index) => new DimensionHeader(axis.type, field))
   }
 
   /**
-   * Fills the infos array given in argument with the dimension layout infos as row.
-   * @param  {orb.dimension}  dimension - the dimension to get ui info for
-   * @param  {object}  infos - array to fill with ui dimension info
-   * @param  {number}  axetype - type of the axe (rows or columns)
-   */
-  getUiInfo (infos, dimension, axetype, y = 0) {
+  * Fills the infos array given in argument with the dimension layout infos as row.
+  * @param  {orb.dimension}  dimension - the dimension to get ui info for
+  * @param  {object}  infos - array to fill with ui dimension info
+  * @param  {number}  axisType - type of the axe (rows or columns)
+  */
+  getUiInfo ({infos, dimension, axisType, dataHeadersLocation, activatedDataFields, activatedDataFieldsCount, y = 0}) {
     if (dimension.values.length > 0) {
       var infosMaxIndex = infos.length - 1
       var lastInfosArray = infos[infosMaxIndex]
@@ -107,12 +93,12 @@ export default class AxeUi {
         var subTotalHeader
         if (!subdim.isLeaf && subdim.field.subTotal.visible) {
           // x here will probably create bugs. To change when necessary
-          subTotalHeader = new Header(axetype, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount(), this._x, y)
+          subTotalHeader = new Header(axisType, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount, this._x, y)
         } else {
           subTotalHeader = null
         }
 
-        var newHeader = new Header(axetype, null, subdim, parent, this.dataFieldsCount(), this._x, y, subTotalHeader)
+        var newHeader = new Header(axisType, null, subdim, parent, this.dataFieldsCount, this._x, y, subTotalHeader)
 
         if (valIndex > 0) {
           infos.push((lastInfosArray = []))
@@ -121,30 +107,48 @@ export default class AxeUi {
         lastInfosArray.push(newHeader)
 
         if (!subdim.isLeaf) {
-          this.getUiInfo(infos, subdim, axetype, y + 1)
+          this.getUiInfo({infos, dimension: subdim, axisType, y: y + 1, dataHeadersLocation, activatedDataFields, activatedDataFieldsCount})
           if (subdim.field.subTotal.visible) {
             infos.push([subTotalHeader])
 
             // add sub-total data headers if more than 1 data field and they will be the leaf headers
-            this.addDataHeaders(infos, subTotalHeader, y + 1)
+            this.addDataHeaders({axisType, infos, activatedDataFields, activatedDataFieldsCount, dataHeadersLocation, parent: subTotalHeader, y: y + 1})
           }
         } else {
           // add data headers if more than 1 data field and they will be the leaf headers
-          this.addDataHeaders(infos, newHeader, y + 1)
+          this.addDataHeaders({axisType, infos, activatedDataFields, activatedDataFieldsCount, dataHeadersLocation, parent: newHeader, y: y + 1})
         }
       }
     }
     return y
   }
 
-  dataFieldsCount () {
-    return (this.axe.store.config.dataHeadersLocation === 'columns' && this.axe.type === AxeType.COLUMNS) ||
-    (this.axe.store.config.dataHeadersLocation === 'rows' && this.axe.type === AxeType.ROWS)
-      ? this.axe.store.config.activatedDataFieldsCount : 0
+  addDataHeaders ({axisType, infos, parent, dataHeadersLocation, activatedDataFieldsCount, activatedDataFields, y}) {
+    if (this.hasDataFields) {
+      var lastInfosArray = infos[infos.length - 1]
+      for (let [index, dataField] of activatedDataFields.entries()) {
+        lastInfosArray.push(new DataHeader(
+          dataHeadersLocation === 'columns' ? AxeType.COLUMNS : AxeType.ROWS,
+          dataField,
+          parent,
+          this._x++,
+          y
+        ))
+        if (index < this.dataFieldsCount - 1) {
+          infos.push((lastInfosArray = []))
+        }
+      }
+    } else {
+      this._x++
+    }
   }
 
-  hasDataFields () {
-    return this.dataFieldsCount() >= 1
+  getDataFieldsCount ({axisType, dataHeadersLocation, activatedDataFieldsCount}) {
+    if ((dataHeadersLocation === 'columns' && axisType === AxeType.COLUMNS) || (dataHeadersLocation === 'rows' && axisType === AxeType.ROWS)) {
+      return activatedDataFieldsCount
+    } else {
+      return 0
+    }
   }
 
   toggleFieldExpansion (field, newState) {

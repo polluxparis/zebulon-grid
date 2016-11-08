@@ -136,42 +136,46 @@ class CellBase {
  */
 export class Header extends CellBase {
 
-  constructor (axetype, headerTypeP, dim, parent, datafieldscount, x, y, subtotalHeader) {
-    const isRowsAxe = axetype === AxeType.ROWS
+  constructor (axetype, headerTypeP, dim, parent, datafieldscount, x, y, subtotalHeader, crossAxisFieldsCode = []) {
+    const isOnRowAxis = axetype === AxeType.ROWS
     const headerType = headerTypeP || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER)
-    var value
-    var hspan
-    var vspan
+    let value
+    let hspan
+    let vspan
+    let key
 
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
         value = 'Total'
-        hspan = isRowsAxe ? dim.depth - 1 || 1 : datafieldscount || 1
-        vspan = isRowsAxe ? datafieldscount || 1 : dim.depth - 1 || 1
+        hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1
+        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1
+        key = '__total__-//-' + crossAxisFieldsCode.join('-/-')
         break
       case HeaderType.SUB_TOTAL:
         value = dim.caption
-        hspan = isRowsAxe ? dim.depth : datafieldscount || 1
-        vspan = isRowsAxe ? datafieldscount || 1 : dim.depth
+        hspan = isOnRowAxis ? dim.depth : datafieldscount || 1
+        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth
+        key = parent ? `${parent.key}-/-${value}` : value
         break
       default:
         value = dim.caption
-        hspan = isRowsAxe ? 1 : null
-        vspan = isRowsAxe ? null : 1
+        hspan = isOnRowAxis ? 1 : null
+        vspan = isOnRowAxis ? null : 1
+        key = parent ? `${parent.key}-/-${value}` : value
         break
     }
 
     const options = {
       axetype,
       type: headerType,
-      template: isRowsAxe ? 'cell-template-row-header' : 'cell-template-column-header',
+      template: isOnRowAxis ? 'cell-template-row-header' : 'cell-template-column-header',
       value,
       cssclass: HeaderType.getHeaderClass(headerType, axetype)
     }
 
     super(options)
 
-    this.isRowsAxe = isRowsAxe
+    this.isOnRowAxis = isOnRowAxis
     this.hspan = hspan != null ? () => hspan : this.calcSpan
     this.vspan = vspan != null ? () => vspan : this.calcSpan
     this.isvisible = this.isParentExpanded
@@ -188,7 +192,7 @@ export class Header extends CellBase {
 
     this.datafieldscount = datafieldscount
 
-    this.key = parent ? `${parent.key}-/-${this.value}` : this.value
+    this.key = key
 
     this.caption = this.value
 
@@ -241,7 +245,7 @@ export class Header extends CellBase {
     var subSpan
     var addone = false
 
-    if (this.isRowsAxe || ignoreVisibility || this.visible()) {
+    if (this.isOnRowAxis || ignoreVisibility || this.visible()) {
       if (!this.dim.isLeaf) {
         // subdimvals 'own' properties are the set of values for this dimension
         if (this.subheaders.length > 0) {
@@ -249,7 +253,7 @@ export class Header extends CellBase {
             var subheader = this.subheaders[i]
             // if it's not an array
             if (!subheader.dim.isLeaf) {
-              subSpan = this.isRowsAxe ? subheader.vspan() : subheader.hspan()
+              subSpan = this.isOnRowAxis ? subheader.vspan() : subheader.hspan()
               span += subSpan
               if (i === 0 && (subSpan === 0)) {
                 addone = true

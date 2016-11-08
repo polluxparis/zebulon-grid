@@ -27,9 +27,9 @@ class ResizeHandle extends Component {
     const {position, size, connectDragSource} = this.props
     let handle
     if (position === 'right') {
-      handle = <div style={{position: 'absolute', right: 0, width: 2, height: size, cursor: 'col-resize', opacity: 0}} />
+      handle = <div style={{position: 'absolute', right: 0, width: 4, height: size, cursor: 'col-resize', opacity: 0}} />
         } else if (position === 'bottom') {
-      handle = <div style={{position: 'absolute', bottom: 0, height: 2, width: size, cursor: 'row-resize', opacity: 0}} />
+      handle = <div style={{position: 'absolute', bottom: 0, height: 4, width: size, cursor: 'row-resize', opacity: 0}} />
     } else {
       handle=null
     }

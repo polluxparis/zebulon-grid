@@ -16,7 +16,6 @@ export default class Store {
 
   constructor (config, forceUpdateCallback) {
     this.init = false
-    this.dataMatrix = {}
     this.defaultfield = { name: '#undefined#' }
     this.forceUpdateCallback = forceUpdateCallback
     this.config = new Config(config)
@@ -103,7 +102,7 @@ export default class Store {
   }
 
   getrows () {
-    const axe = new Axe(AxeType.ROWS, this.config.rowFields, this)
+    const axe = new Axe(AxeType.ROWS, this.config.rowFields, this.filteredData)
     for (let field of this.config.rowFields) {
       axe.sort(field, true)
     }
@@ -111,7 +110,7 @@ export default class Store {
   }
 
   getcolumns () {
-    const axe = new Axe(AxeType.COLUMNS, this.config.columnFields, this)
+    const axe = new Axe(AxeType.COLUMNS, this.config.columnFields, this.filteredData)
     for (let field of this.config.columnFields) {
       axe.sort(field, true)
     }
@@ -124,12 +123,12 @@ export default class Store {
 
   getrowsUi (noNewAxe) {
     if (!noNewAxe) { this.rows = this.getrows() }
-    return new AxeUi(this.rows)
+    return new AxeUi(this.rows, this.config)
   }
 
   getcolumnsUi (noNewAxe) {
     if (!noNewAxe) { this.columns = this.getcolumns() }
-    return new AxeUi(this.columns)
+    return new AxeUi(this.columns, this.config)
   }
 
   getlayout () {
@@ -201,14 +200,24 @@ export default class Store {
     }
   }
 
-  moveField (fieldname, oldaxetype, newaxetype, position) {
-    const axeType = this.config.moveField(fieldname, oldaxetype, newaxetype, position)
-    switch (axeType) {
+  moveField (fieldname, oldaxistype, newaxistype, position) {
+    const axisType = this.config.moveField(fieldname, oldaxistype, newaxistype, position)
+    switch (axisType) {
       case AxeType.COLUMNS:
         this.columnsUi = this.getcolumnsUi()
+        if (!this.config.rowFields.length) {
+          // If the other axis has no field, it must be recreated to update the key of the Total header
+          // Since there are no field, it is very cheap anyway
+          this.rowsUi = this.getrowsUi()
+        }
         break
       case AxeType.ROWS:
         this.rowsUi = this.getrowsUi()
+        if (!this.config.columnFields.length) {
+          // If the other axis has no field, it must be recreated to update the key of the Total header
+          // Since there are no field, it is very cheap anyway
+          this.columnsUi = this.getcolumnsUi()
+        }
         break
       default:
         this.columnsUi = this.getcolumnsUi()

@@ -29,12 +29,7 @@ export class Axe {
  */
 // this.dimensionsByDepth = null
 
-  constructor (type, fields, store) {
-    /**
-     * Parent pivot grid
-     * @type {orb.store}
-     */
-    this.store = store
+  constructor (type, fields, data) {
 
     /**
      * Axe type (rows, columns, data)
@@ -59,7 +54,7 @@ export class Axe {
      * @type {orb.dimension}
      */
     this.root = new Dimension(-1, null, null, null, this.dimensionsCount + 1, true, false)
-    this.fill(this.store.filteredData)
+    this.fill(data)
     // initial sort
     this.fields.forEach(field => field.sort.order === 'asc' || field.sort.order === 'desc' ? this.sort(field, true) : null)
   }
@@ -133,24 +128,4 @@ export class Axe {
       }
     }
   }
-
-  // flattenValues() {
-  //     return this.dimensionsByDepth[1].map(function(dim) {
-  //         var name = ''
-  //         var currDim = dim
-  //         while(!currDim.isRoot) {
-  //             name = currDim.value + (name !== '' ? '-' + name : '')
-  //             currDim = currDim.parent
-  //         }
-  //         return {
-  //             name: name,
-  //             dim: dim
-  //         }
-  //     }).sort(function(a, b) {
-  //         if(a.name < b.name) return -1
-  //         if(a.name > b.name) return 1
-  //         return 0
-  //     })
-  // }
-
 }
