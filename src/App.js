@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import {ResizableBox} from 'react-resizable'
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 import {ChartConfiguration, Chart, GridConfiguration, Grid, Store} from './orb'
 
@@ -56,7 +58,7 @@ class App extends Component {
           <h2>Zebulon visualization components</h2>
         </div>
         <div className='App-body'>
-          <div>
+          {/* <div>
             <ChartConfiguration store={store} />
             <ResizableBox height={600} width={800}>
               <Chart type='bar' store={store} />
@@ -79,7 +81,7 @@ class App extends Component {
           <ResizableBox height={600} width={800}>
           <Chart type='pie' store={store} />
           </ResizableBox>
-          </div>
+          </div> */}
           <div>
             <GridConfiguration store={store} />
             <div className='Zoom-bar'>
@@ -97,4 +99,4 @@ class App extends Component {
 
 }
 
-export default App
+export default DragDropContext(HTML5Backend)(App)

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "chroma-js": "^1.2.1",
+    "immutable": "^3.8.1",
     "react": "^15.3.2",
     "react-addons-shallow-compare": "^15.3.2",
     "react-dnd": "^2.1.4",
