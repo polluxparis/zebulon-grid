@@ -422,14 +422,19 @@ export class Grid extends Component {
         <div style={{height: 'inherit'}}>
           <DragLayer />
           <AutoSizer>
-            {({width, height}) =>
-              <div>
+            {({width, height}) => {
+              // Add 15 pixels to avoid that the grid go under a scrollbar
+              // We should use the scrollbar size instead on Windows and Linux and nothing on macOs
+              // TO SEE
+              this.height = Math.min(height, this.rowHeadersHeight + this.columnHeadersHeight + 15)
+              this.width = Math.min(width, this.columnHeadersWidth + this.rowHeadersWidth + 15)
+              return (
                 <ReactVirtualizedGrid
                   cellRangeRenderer={this.cellRangeRenderer}
                   cellRenderer={this._mockCellRenderer}
                   columnCount={this.columnHorizontalCount + this.rowHorizontalCount}
                   columnWidth={this.getColumnWidth}
-                  height={Math.min(height, this.rowHeadersHeight + this.columnHeadersHeight)}
+                  height={this.height}
                   overscanRowCount={0}
                   overscanColumnCount={0}
                   ref={ref => { this._grid = ref }}
@@ -438,9 +443,9 @@ export class Grid extends Component {
                   scrollLeft={this.scrollLeft}
                   scrollTop={this.scrollTop}
                   style={{fontSize: `${this.props.store.zoom*100}%`}}
-                  width={Math.min(width, this.columnHeadersWidth + this.rowHeadersWidth)}
-                />
-              </div>
+                  width={this.width}
+                />)
+            }
             }
           </AutoSizer>
         </div>
@@ -699,7 +704,7 @@ export class Grid extends Component {
       key={`data-${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
       cell={cell}
       onDoubleClick={() => drilldown(cell)}
-      />
+                         />
     let valueHasChanged = false
     if (this._isUpdating) {
       const oldcell = this.state.cellsCache.get(key)
@@ -714,7 +719,7 @@ export class Grid extends Component {
         style={style}
         onMouseDown={(e) => this.handleMouseDown(e, [rowIndex, columnIndex])}
         onMouseOver={() => this.handleMouseOver([rowIndex, columnIndex])}
-        >
+      >
         {renderedCell}
       </div>
     )
@@ -724,6 +729,14 @@ export class Grid extends Component {
     const {x, y} = header
     const renderedCell = <HeaderCellComp key={`${axis}-${x}-${y}`} cell={header} onToggle={() => 33} />
     let innerHeader = renderedCell
+    let previewSize = {}
+    if (axis === 'columns') {
+      previewSize.right = this.columnHeadersHeight
+      previewSize.bottom = this.width
+    } else {
+      previewSize.right = this.height
+      previewSize.bottom = this.rowHeadersWidth
+    }
     // Handle affix
     if (span > 1) {
       const getLastChildSize = (axis, header) => {
@@ -737,6 +750,7 @@ export class Grid extends Component {
       let style
       let offset
       if (axis === 'columns') {
+
         if (x <= startIndex) {
           lastChildSize = getLastChildSize(axis, header)
           offset = Math.min(scrollLeft + this.rowHeadersWidth - left, width - (lastChildSize || 0))
@@ -752,7 +766,7 @@ export class Grid extends Component {
       innerHeader = <div style={style}>{renderedCell}</div>
     }
     const leafHeaderId = header.key
-    const dimId = header.dim && header.dim.field.code
+    const dimId = header.dim && header.dim.field && header.dim.field.code
     const leafSubheaders = header.subheaders ? getLeafSubheaders(header, []) : []
     return (
       <div
@@ -772,8 +786,8 @@ export class Grid extends Component {
           display: 'flex',
         }}>
         {innerHeader}
-        <ResizeHandle position='right' size={height} id={axis === 'columns' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis}/>
-        <ResizeHandle position='bottom' size={width} id={axis === 'rows' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis}/>
+        <ResizeHandle position='right' size={height} id={axis === 'columns' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis} previewSize={previewSize.right} previewOffset={top}/>
+        <ResizeHandle position='bottom' size={width} id={axis === 'rows' ? leafHeaderId : dimId} leafSubheaders={leafSubheaders} dimensionIsMeasure={!dimId} axis={axis} previewSize={previewSize.bottom} previewOffset={left}/>
       </div>
     )
   }
@@ -804,8 +818,8 @@ export class Grid extends Component {
         backgroundColor: '#fafad2',
       }}>
       <span>{field.caption}</span>
-      <ResizeHandle position='right' size={height} id={ids.right} dimensionIsMeasure={!ids.right} isOnDimensionHeader axis='rows'/>
-      <ResizeHandle position='bottom' size={width} id={ids.bottom} dimensionIsMeasure={!ids.bottom} isOnDimensionHeader axis='columns'/>
+      <ResizeHandle position='right' size={height} id={ids.right} dimensionIsMeasure={!ids.right} isOnDimensionHeader axis='rows' previewSize={this.height} previewOffset={top}/>
+      <ResizeHandle position='bottom' size={width} id={ids.bottom} dimensionIsMeasure={!ids.bottom} isOnDimensionHeader axis='columns' previewSize={this.width} previewOffset={left}/>
       {/* {axis === 'column' ? <RightArrow zoom={this.props.store.zoom} /> : <DownArrow zoom={this.props.store.zoom} />} */}
     </div>
   }

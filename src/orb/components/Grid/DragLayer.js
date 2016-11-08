@@ -17,11 +17,10 @@ const getItemPosition = ({initialOffset, currentOffset, item}) => {
     }
 
     let { x, y } = currentOffset
-    if (item.position)
     if (item.position === 'right') {
-      y = initialOffset.y
+      y = initialOffset.y - item.previewOffset
     } else {
-      x = initialOffset.x
+      x = initialOffset.x - item.previewOffset
     }
 
     const transform = `translate(${x}px, ${y}px)`
@@ -35,12 +34,12 @@ class CustomDragLayer extends Component {
   render () {
     let height, width
     if (!this.props.item || this.props.itemType !== 'cell-resize-handle' ) { return null }
-    const {position, size} = this.props.item
+    const {position, previewSize} = this.props.item
     if (position === 'right') {
       width = 2
-      height = size
+      height = previewSize
     } else {
-      width = size
+      width = previewSize
       height = 2
     }
     return <div style={{

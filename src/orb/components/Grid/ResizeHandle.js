@@ -10,7 +10,8 @@ const resizeHandleSpec = {
       dimensionIsMeasure: props.dimensionIsMeasure,
       isOnDimensionHeader: props.isOnDimensionHeader,
       leafSubheaders: props.leafSubheaders,
-      size: props.size
+      previewSize: props.previewSize,
+      previewOffset: props.previewOffset
     }
   }
 }
