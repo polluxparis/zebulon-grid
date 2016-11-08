@@ -237,7 +237,6 @@ export class Grid extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps');
     this.rowVerticalCount = nextProps.store.layout.rowHeaders.height
     this.rowHorizontalCount = nextProps.store.layout.rowHeaders.width
     this.columnVerticalCount = nextProps.store.layout.columnHeaders.height
@@ -251,7 +250,6 @@ export class Grid extends Component {
   }
 
   componentWillUpdate (nextProps, nextState) {
-    console.log('componentWillUpdate');
     this._isUpdating = true
     // Clean cache for cell sizes
     // Call forceUpdate on the grid, so cannot be done in render
@@ -415,7 +413,6 @@ export class Grid extends Component {
   }
 
   render () {
-    console.log('render');
     const {connectDropTarget, store} = this.props
     this.computeGridSizes(store)
     return connectDropTarget(
@@ -453,7 +450,6 @@ export class Grid extends Component {
   }
 
   cellRangeRenderer ({ cellCache, cellClassName, cellRenderer, cellStyle, columnSizeAndPositionManager, columnStartIndex, columnStopIndex, horizontalOffsetAdjustment, isScrolling, rowSizeAndPositionManager, rowStartIndex, rowStopIndex, scrollLeft, scrollTop, verticalOffsetAdjustment }) {
-    console.log('cellRangeRenderer');
     const {columnsUi, rowsUi} = this.props.store
     const columnHeaders = columnsUi.headers
     const rowHeaders = rowsUi.headers
