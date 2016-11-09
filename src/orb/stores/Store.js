@@ -22,12 +22,12 @@ export default class Store {
     this.filters = new Map()
     Object.keys(this.config.preFilters).forEach(key => this.filters.set(key, this.config.preFilters[key]))
     this.zoom = 1
-    this.sizes = this.getsizes()
     this.rowsUi = this.getrowsUi()
     this.columnsUi = this.getcolumnsUi()
     this.layout = this.getlayout()
     this.rowHeaderSizes = {leafs: {}, dimensions: {}}
     this.columnHeaderSizes = {leafs: {}, dimensions: {}}
+    this.getsizes(true)
 
     this.init = true
   }
@@ -50,6 +50,11 @@ export default class Store {
     if (this.dataSubscription) this.dataSubscription.dispose()
   }
 
+
+///////////////////////////////////////////////////////////
+///////////////////////// ACTIONS //////////////////////////
+///////////////////////////////////////////////////////////
+
   push (payload) {
     let pushed
     let _data = this.data
@@ -71,97 +76,11 @@ export default class Store {
         this.columnsUi = this.getcolumnsUi()
         this.rowsUi = this.getrowsUi()
         this.layout = this.getlayout()
+        this.getsizes()
         if (this.init) { this.forceUpdateCallback() }
       }
     }
     this.data = _data
-  }
-
-  filter (data) {
-    let filterFields = [...this.filters.keys()]
-    if (filterFields.length > 0) {
-      const res = []
-
-      for (let i = 0; i < data.length; i++) {
-        let row = data[i]
-        let exclude = false
-        for (let fi = 0; fi < filterFields.length; fi++) {
-          let fieldname = filterFields[fi]
-          let fieldFilter = this.filters.get(fieldname)
-
-          if (fieldFilter && !fieldFilter.test(row[fieldname])) {
-            exclude = true
-            break
-          }
-        }
-        if (!exclude) {
-          res.push(row)
-        }
-      }
-      return res
-    } else {
-      return data
-    }
-  }
-
-  getrows () {
-    const axe = new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData)
-    for (let field of this.config.rowFields) {
-      axe.sort(field, true)
-    }
-    return axe
-  }
-
-  getcolumns () {
-    const axe = new Axis(AxisType.COLUMNS, this.config.columnFields, this.filteredData)
-    for (let field of this.config.columnFields) {
-      axe.sort(field, true)
-    }
-    return axe
-  }
-
-  getChartAxis () {
-    return new Axis(AxisType.CHART, [this.config.selectedField], this)
-  }
-
-  getrowsUi (noNewAxis) {
-    if (!noNewAxis) { this.rows = this.getrows() }
-    return new AxisUi(this.rows, this.config)
-  }
-
-  getcolumnsUi (noNewAxis) {
-    if (!noNewAxis) { this.columns = this.getcolumns() }
-    return new AxisUi(this.columns, this.config)
-  }
-
-  getlayout () {
-    const rowHeaders = {
-      width: (this.rows.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'rows' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0),
-      height: this.rowsUi.headers.length
-    }
-    const columnHeaders = {
-      width: this.columnsUi.headers.length,
-      height: (this.columns.fields.length || 1) +
-        (this.config.dataHeadersLocation === 'columns' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0)
-    }
-    const pivotTable = {
-      width: rowHeaders.width + columnHeaders.width,
-      height: rowHeaders.height + columnHeaders.height
-    }
-    return {columnHeaders, rowHeaders, pivotTable}
-  }
-
-  getsizes () {
-    const cell = {
-      height: this.zoom * (this.config.cellHeight || 30),
-      width: this.zoom * (this.config.cellWidth || 100)
-    }
-    const grid = {
-      width: this.config.width,
-      height: this.config.height
-    }
-    return {cell, grid}
   }
 
   handleZoom (zoomIn) {
@@ -175,7 +94,7 @@ export default class Store {
       nextZoomIndex = Math.max(zoomIndex - 1, 0)
     }
     this.zoom = zoomValues[nextZoomIndex]
-    this.sizes = this.getsizes()
+    this.getsizes(true)
     this.forceUpdateCallback()
   }
 
@@ -227,6 +146,7 @@ export default class Store {
         this.rowsUi = this.getrowsUi()
     }
     this.layout = this.getlayout()
+    this.getsizes()
     this.forceUpdateCallback()
   }
 
@@ -251,6 +171,7 @@ export default class Store {
           break
       }
       this.layout = this.getlayout()
+      this.getsizes()
     }
     this.forceUpdateCallback()
   }
@@ -265,11 +186,35 @@ export default class Store {
     this.columnsUi = this.getcolumnsUi()
     this.rowsUi = this.getrowsUi()
     this.layout = this.getlayout()
+    this.getsizes()
     this.forceUpdateCallback()
   }
 
-  drilldown (cell) {
-    return this.config.drilldown(cell)
+  filter (data) {
+    let filterFields = [...this.filters.keys()]
+    if (filterFields.length > 0) {
+      const res = []
+
+      for (let i = 0; i < data.length; i++) {
+        let row = data[i]
+        let exclude = false
+        for (let fi = 0; fi < filterFields.length; fi++) {
+          let fieldname = filterFields[fi]
+          let fieldFilter = this.filters.get(fieldname)
+
+          if (fieldFilter && !fieldFilter.test(row[fieldname])) {
+            exclude = true
+            break
+          }
+        }
+        if (!exclude) {
+          res.push(row)
+        }
+      }
+      return res
+    } else {
+      return data
+    }
   }
 
   refreshData (data) {
@@ -280,37 +225,38 @@ export default class Store {
     function updateCellSize (size, offset) { return Math.max(size + offset, 10)}
     if (handle.isOnDimensionHeader) {
       if (handle.axis === AxisType.COLUMNS) {
-        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cellHeight, offset.y - initialOffset.y)
       } else {
-        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cellWidth, offset.x - initialOffset.x)
       }
     } else {
       if (handle.axis === AxisType.COLUMNS && handle.position === 'right'){
         if (handle.leafSubheaders.length) {
           let fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length
           for (let subheader of handle.leafSubheaders){
-            this.columnHeaderSizes.leafs[subheader.key] = updateCellSize(this.columnHeaderSizes.leafs[subheader.key] || this.sizes.cell.width, fractionalOffset)
+            this.columnHeaderSizes.leafs[subheader.key] = updateCellSize(this.columnHeaderSizes.leafs[subheader.key] || this.sizes.cellWidth, fractionalOffset)
           }
         } else {
           // Header is a leaf header
-          this.columnHeaderSizes.leafs[handle.id] = updateCellSize(this.columnHeaderSizes.leafs[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+          this.columnHeaderSizes.leafs[handle.id] = updateCellSize(this.columnHeaderSizes.leafs[handle.id] || this.sizes.cellWidth, offset.x - initialOffset.x)
         }
       } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom'){
         if (handle.leafSubheaders.length) {
           let fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length
           for (let subheader of handle.leafSubheaders){
-            this.rowHeaderSizes.leafs[subheader.key] = updateCellSize(this.rowHeaderSizes.leafs[subheader.key] || this.sizes.cell.height, fractionalOffset)
+            this.rowHeaderSizes.leafs[subheader.key] = updateCellSize(this.rowHeaderSizes.leafs[subheader.key] || this.sizes.cellHeight, fractionalOffset)
           }
         } else {
           // Header is a leaf header
-          this.rowHeaderSizes.leafs[handle.id] = updateCellSize(this.rowHeaderSizes.leafs[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+          this.rowHeaderSizes.leafs[handle.id] = updateCellSize(this.rowHeaderSizes.leafs[handle.id] || this.sizes.cellHeight, offset.y - initialOffset.y)
         }
       } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
-        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cell.height, offset.y - initialOffset.y)
+        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cellHeight, offset.y - initialOffset.y)
       } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
-        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cell.width, offset.x - initialOffset.x)
+        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cellWidth, offset.x - initialOffset.x)
       }
     }
+    this.getsizes()
     this.forceUpdateCallback()
   }
 
@@ -323,6 +269,177 @@ export default class Store {
   toggleGrandtotal (axetype) {
     if (this.config.toggleGrandtotal(axetype)) {
     }
+  }
+
+///////////////////////////////////////////////////////////
+///////////////////////// VALUES //////////////////////////
+///////////////////////////////////////////////////////////
+
+  getrows () {
+    const axe = new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData)
+    for (let field of this.config.rowFields) {
+      axe.sort(field, true)
+    }
+    return axe
+  }
+
+  getcolumns () {
+    const axe = new Axis(AxisType.COLUMNS, this.config.columnFields, this.filteredData)
+    for (let field of this.config.columnFields) {
+      axe.sort(field, true)
+    }
+    return axe
+  }
+
+  getChartAxis () {
+    return new Axis(AxisType.CHART, [this.config.selectedField], this)
+  }
+
+  getrowsUi (noNewAxis) {
+    if (!noNewAxis) { this.rows = this.getrows() }
+    return new AxisUi(this.rows, this.config)
+  }
+
+  getcolumnsUi (noNewAxis) {
+    if (!noNewAxis) { this.columns = this.getcolumns() }
+    return new AxisUi(this.columns, this.config)
+  }
+
+  getlayout () {
+    const rowHorizontalCount = (this.rows.fields.length || 1) +
+        (this.config.dataHeadersLocation === 'rows' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0)
+    const rowVerticalCount = this.rowsUi.headers.length
+    const columnHorizontalCount = this.columnsUi.headers.length
+    const columnVerticalCount = (this.columns.fields.length || 1) +
+        (this.config.dataHeadersLocation === 'columns' && this.config.activatedDataFieldsCount >= 1 ? 1 : 0)
+    return {rowHorizontalCount, rowVerticalCount, columnHorizontalCount, columnVerticalCount}
+  }
+
+  getsizes(cellSizeChange) {
+    if (cellSizeChange) {
+      this.sizes = {}
+      this.getCellSizes()
+    }
+    this.getHeaderSizes()
+    this.getDimensionPositions()
+  }
+
+  getCellSizes () {
+    this.sizes.cellHeight = this.zoom * (this.config.cellHeight || 30)
+    this.sizes.cellWidth = this.zoom * (this.config.cellWidth || 100)
+  }
+
+  getHeaderSizes () {
+    const columnsMeasures = this.config.dataHeadersLocation === 'columns'
+    let rowHeadersWidth = 0
+    // Measures are on the row axis
+    if (!columnsMeasures) {
+      rowHeadersWidth += this.rowHeaderSizes.dimensions['__measures__'] || this.sizes.cellWidth
+    }
+    // There are no fields on the row axis
+    if (!this.rows.fields.length) {
+      rowHeadersWidth += this.getDimensionSize(AxisType.ROWS, '__total__')
+    }
+    for (let dimension of this.rows.fields) {
+      rowHeadersWidth += this.getDimensionSize(AxisType.ROWS, dimension.code)
+    }
+    let columnHeadersHeight = 0
+    // Measures are on the column axis
+    if (columnsMeasures) {
+      columnHeadersHeight += this.columnHeaderSizes.dimensions['__measures__'] || this.sizes.cellHeight
+    }
+    // There are no fields on the column axis
+    if (!this.columns.fields.length) {
+      columnHeadersHeight += this.getDimensionSize(AxisType.COLUMNS, '__total__')
+    }
+    for (let dimension of this.columns.fields) {
+      columnHeadersHeight += this.getDimensionSize(AxisType.COLUMNS, dimension.code)
+    }
+    let rowHeadersHeight = 0
+    for (let headers of this.rowsUi.headers) {
+      rowHeadersHeight += this.getRowHeight({index: headers[0].x})
+    }
+    let columnHeadersWidth = 0
+    for (let headers of this.columnsUi.headers) {
+      columnHeadersWidth += this.getColumnWidth({index: headers[0].x})
+    }
+    this.sizes.rowHeadersWidth = rowHeadersWidth
+    this.sizes.rowHeadersHeight = rowHeadersHeight
+    this.sizes.columnHeadersHeight = columnHeadersHeight
+    this.sizes.columnHeadersWidth = columnHeadersWidth
+  }
+
+  getDimensionPositions () {
+    this.dimensionPositions = {}
+    this.dimensionPositions.columns = this.calculateDimensionPositions('columns', this.config.columnFields, this.config.dataHeadersLocation === 'columns')
+    this.dimensionPositions.rows = this.calculateDimensionPositions('rows', this.config.rowFields, this.config.dataHeadersLocation === 'rows')
+  }
+
+  calculateDimensionPositions (axis, fields, hasMeasures) {
+    let axisType
+    if (axis === 'columns') {
+      axisType = 1
+    } else {
+      axisType = 2
+    }
+    let res = {}
+    let position = 0
+    // Total header if no fields
+    if (!fields.length) {
+      position += this.getDimensionSize(axisType, '__total__')
+    }
+    for (let field of fields) {
+      res[field.code] = position
+      position += this.getDimensionSize(axisType, field.code)
+    }
+    if (hasMeasures) {
+      res['__measures__'] = position
+    }
+    return res
+  }
+
+  getLeafHeaderSize (axis, key) {
+    if (axis === AxisType.COLUMNS) {
+      return this.columnHeaderSizes.leafs[key] || this.sizes.cellWidth
+    } else {
+      return this.rowHeaderSizes.leafs[key] || this.sizes.cellHeight
+    }
+  }
+
+  getDimensionSize (axis, code) {
+    if (axis === AxisType.COLUMNS) {
+      return this.columnHeaderSizes.dimensions[code] || this.sizes.cellHeight
+    } else {
+      return this.rowHeaderSizes.dimensions[code] || this.sizes.cellWidth
+    }
+  }
+
+  getColumnWidth ({index}) {
+    // Need to pass the axis when the grid receives new props
+    if (index >= this.columnsUi.headers.length) {
+      // Because of offset, it's necessary to make column and row counts greater than normal
+      // This ensures that the additional cells are correctly handled
+      return this.sizes.rowHeadersWidth / this.layout.rowHorizontalCount
+    }
+    const headers = this.columnsUi.headers[index]
+    const key = headers[headers.length - 1].key
+    return this.getLeafHeaderSize(AxisType.COLUMNS, key)
+  }
+
+  getRowHeight ({index}) {
+    // Need to pass the axis when the grid receives new props
+    if (index >= this.rowsUi.headers.length) {
+      // Because of offset, it's necessary to make column and row counts greater than normal
+      // This ensures that the additional cells are correctly handled
+      return this.sizes.columnHeadersHeight / this.layout.columnVerticalCount
+    }
+    const headers = this.rowsUi.headers[index]
+    const key = headers[headers.length - 1].key
+    return this.getLeafHeaderSize(AxisType.ROWS, key)
+  }
+
+  drilldown (cell) {
+    return this.config.drilldown(cell)
   }
 
   areSubtotalsVisible (axetype) {
