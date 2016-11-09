@@ -40,8 +40,8 @@ const datasourceArray = [
 const datasource = datasourceArray[0]
 
 // const datasource = Observable.interval(2000).take(3)
-//   .map(i => datasourceArray[i])
-//   .do(data => console.log('data received', data))
+//  .map(i => datasourceArray[i])
+//  .do(data => console.log('data received', data))
 
 let config = {
   canMoveFields: true,
