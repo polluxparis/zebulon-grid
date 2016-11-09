@@ -61,26 +61,26 @@ class App extends Component {
           {/* <div>
             <ChartConfiguration store={store} />
             <ResizableBox height={600} width={800}>
-              <Chart type='bar' store={store} />
+            <Chart type='bar' store={store} />
             </ResizableBox>
-          </div>
-          <div>
+            </div>
+            <div>
             <ChartConfiguration store={store} />
             <ResizableBox height={600} width={800}>
-              <Chart type='line' store={store} />
+            <Chart type='line' store={store} />
             </ResizableBox>
-          </div>
-          <div>
+            </div>
+            <div>
             <ChartConfiguration store={store} />
             <ResizableBox height={600} width={800}>
-              <Chart type='area' store={store} />
+            <Chart type='area' store={store} />
             </ResizableBox>
-          </div>
-          <div>
-          <ChartConfiguration store={store} />
-          <ResizableBox height={600} width={800}>
-          <Chart type='pie' store={store} />
-          </ResizableBox>
+            </div>
+            <div>
+            <ChartConfiguration store={store} />
+            <ResizableBox height={600} width={800}>
+            <Chart type='pie' store={store} />
+            </ResizableBox>
           </div> */}
           <div>
             <GridConfiguration store={store} />
@@ -89,7 +89,7 @@ class App extends Component {
               <span className='Zoom-icon Zoom-icon-out' onClick={() => store.handleZoom()}>-</span>
             </div>
             <ResizableBox height={600} width={800}>
-              <Grid store={store} />
+              <Grid store={store} columnCount={store.layout.columnHorizontalCount}/>
             </ResizableBox>
           </div>
         </div>
