@@ -381,13 +381,17 @@ export class Grid extends Component {
         const top = scrollTop
         + this.props.store.dimensionPositions.columns[header.dim.field.code];
         const height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
+        const positionStyle = {
+          position: 'fixed',
+          left,
+          top,
+          height,
+          width,
+        };
         renderedCells.push(this.headerRenderer({
           axis: AxisType.COLUMNS,
           header,
-          left,
-          top,
-          width,
-          height,
+          positionStyle,
           span,
           startIndex: rowStartIndex,
           scrollLeft,
@@ -423,13 +427,17 @@ export class Grid extends Component {
             // Total header
             height = this.props.store.getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
           }
+          const positionStyle = {
+            position: 'fixed',
+            left,
+            top,
+            height,
+            width,
+          };
           return this.headerRenderer({
             axis: AxisType.COLUMNS,
             header,
-            left,
-            top,
-            width,
-            height,
+            positionStyle,
             span,
             startIndex: columnStartIndex,
             scrollLeft,
@@ -454,13 +462,17 @@ export class Grid extends Component {
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
         const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
         const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
+        const positionStyle = {
+          position: 'fixed',
+          left,
+          top,
+          height,
+          width,
+        };
         renderedCells.push(this.headerRenderer({
           axis: AxisType.ROWS,
           header,
-          left,
-          top,
-          width,
-          height,
+          positionStyle,
           span,
           startIndex: rowStartIndex,
           scrollLeft,
@@ -492,13 +504,17 @@ export class Grid extends Component {
             // Total header
             width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
           }
+          const positionStyle = {
+            position: 'fixed',
+            left,
+            top,
+            height,
+            width,
+          };
           return (this.headerRenderer({
             axis: AxisType.ROWS,
             header,
-            left,
-            top,
-            width,
-            height,
+            positionStyle,
             span,
             startIndex: rowStartIndex,
             scrollLeft,
@@ -632,15 +648,13 @@ export class Grid extends Component {
   headerRenderer({
     axis,
     header,
-    left,
-    top,
-    width,
-    height,
+    positionStyle,
     span,
     startIndex,
     scrollLeft,
     scrollTop,
    }) {
+    const { left, top, width, height } = positionStyle;
     const { x, y } = header;
     const renderedCell = <HeaderCellComponent key={`${axis}-${x}-${y}`} cell={header} />;
     let innerHeader = renderedCell;
@@ -690,14 +704,9 @@ export class Grid extends Component {
           overflow: 'hidden',
           border: 'solid lightgrey thin',
           backgroundColor: '#eef8fb',
-          position: 'fixed',
-          left,
-          top,
-          height,
-          width,
           zIndex: 1,
           display: 'flex',
-
+          ...positionStyle,
         }}
       >
         {innerHeader}
