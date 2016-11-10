@@ -1,1 +1,1 @@
-export {default} from './ChartConfiguration'
+export { default } from './ChartConfiguration'

@@ -96,8 +96,8 @@ export const Operators = {
 
 export class ExpressionFilter {
 
-  constructor (fieldname, data, operator, term, staticValue, excludeStatic) {
-    this.fieldname = fieldname
+  constructor (fieldName, data, operator, term, staticValue, excludeStatic) {
+    this.fieldName = fieldName
     this.regexpMode = false
     this.operator = Operators.get(operator)
     this.term = term || null
@@ -120,7 +120,7 @@ export class ExpressionFilter {
     var res = []
     for (var i = 0; i < this.data.length; i++) {
       var row = this.data[i]
-      if (this.test(row[this.fieldname])) {
+      if (this.test(row[this.fieldName])) {
         res.push(i)
       }
     }

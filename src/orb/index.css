@@ -3,7 +3,7 @@
     animation-duration: 4s;
 }
 
-.ReactVirtualized__Grid__cell {
+.OrbGrid-cell {
   user-select: none;
   cursor: default;
 }

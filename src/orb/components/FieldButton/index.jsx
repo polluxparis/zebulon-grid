@@ -1,62 +1,53 @@
-import React, { Component } from 'react'
-import {DragSource} from 'react-dnd'
+import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
+import { DragSource } from 'react-dnd';
+import { Overlay } from 'react-overlays';
 
-import * as utils from '../../Utils'
-import FilterPanel from '../FilterPanel'
+import FilterPanel from '../FilterPanel';
 
-const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px'
+const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px';
 
 class FieldButton extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {filtering: false}
+  constructor(props) {
+    super(props);
+    this.state = { filtering: false };
 
-    this.addFilterPanel = this.addFilterPanel.bind(this)
-    this.removeFilterPanel = this.removeFilterPanel.bind(this)
-    this.onMouseDown = this.onMouseDown.bind(this)
-    this.onFilter = this.onFilter.bind(this)
-    this.handleClick = this.handleClick.bind(this)
+    this.addFilterPanel = this.addFilterPanel.bind(this);
+    this.removeFilterPanel = this.removeFilterPanel.bind(this);
+    this.onFilter = this.onFilter.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  addFilterPanel () {
-    const {filtering} = this.state
+  componentDidMount() {
+    this.DOMNode = findDOMNode(this.buttonRef);
+  }
+
+  onFilter(all, operator, term, staticValue, excludeStatic) {
+    const { store, field, axetype } = this.props;
+    store.applyFilter(field.name, axetype, all, operator, term, staticValue, excludeStatic);
+    this.removeFilterPanel();
+  }
+
+  removeFilterPanel() {
+    this.setState({ filtering: false });
+  }
+
+  addFilterPanel(e) {
+    const { filtering } = this.state;
     if (!filtering) {
-      utils.addEventListener(document, 'mousedown', this.onMouseDown)
-      this.setState({filtering: true})
+      this.setState({ filtering: true });
     }
+    e.preventDefault();
   }
 
-  removeFilterPanel () {
-    utils.removeEventListener(document, 'mousedown', this.onMouseDown)
-    this.setState({filtering: false})
+  handleClick() {
+    const { store, axetype, field } = this.props;
+    store.sort(axetype, field);
   }
 
-  onMouseDown (e) {
-    const filterPanelNode = document.getElementById('filter-panel')
-    let target = e.target || e.srcElement
-    while (target !== null) {
-      if (target === filterPanelNode) {
-        return true
-      }
-      target = target.parentNode
-    }
-    this.removeFilterPanel()
-  }
-
-  onFilter (all, operator, term, staticValue, excludeStatic) {
-    const {store, field, axetype} = this.props
-    store.applyFilter(field.name, axetype, all, operator, term, staticValue, excludeStatic)
-    this.removeFilterPanel()
-  }
-
-  handleClick () {
-    const {store, axetype, field} = this.props
-    store.sort(axetype, field)
-  }
-
-  render () {
-    const {field, store, axetype, connectDragSource, isDragging} = this.props
-    const {filtering} = this.state
+  render() {
+    const { field, store, axetype, connectDragSource, isDragging } = this.props;
+    const { filtering } = this.state;
     const styles = {
       div: {
         width: isDragging ? 0 : '',
@@ -67,60 +58,67 @@ class FieldButton extends Component {
         padding: '0.2em',
         marginTop: '0.2em',
         marginBottom: '0.2em',
-        display: 'flex'
-      },
-      filterPlaceholder: {
-        width: 11,
-        height: 11,
-        margin: '0.2em',
-        marginLeft: '0.5em'
+        display: 'flex',
+        justifyContent: 'space-between',
+        border: 'none',
+        outline: 'none',
       },
       filterButton: {
-        width: '100%',
-        height: '100%',
-        background: filterImage
-      }
-    }
+        background: filterImage,
+        border: 'none',
+        outline: 'none',
+        width: 11,
+        height: 11,
+        marginLeft: '0.5em',
+      },
+    };
     return connectDragSource(
-      <div key={field.name} style={styles.div}>
-        <div onClick={this.handleClick}>
-          {field.caption}
+      <div>
+        <div style={styles.div} onClick={this.handleClick}>
+          <div>
+            {field.caption}
+          </div>
+          <button
+            ref={(input) => { this.buttonRef = input; }}
+            onClick={this.addFilterPanel}
+            style={styles.filterButton}
+          />
+          {/* </div> */}
         </div>
-        <div style={styles.filterPlaceholder}>
-            {filtering
-              ? <FilterPanel
-                field={field}
-                axetype={axetype}
-                store={store}
-                onFilter={this.onFilter}
-                onCancel={() => this.removeFilterPanel()}
-              />
-              : <div
-                onClick={this.addFilterPanel}
-                style={styles.filterButton}
-                >
-              </div>
-            }
-        </div>
-      </div>
-    )
+        <Overlay
+          container={this.DOMNode}
+          placement="bottom"
+          show={filtering}
+          target={this.DOMNode}
+          rootClose
+          onHide={this.removeFilterPanel}
+        >
+          <FilterPanel
+            field={field}
+            axetype={axetype}
+            store={store}
+            onFilter={this.onFilter}
+            onCancel={() => this.removeFilterPanel()}
+          />
+        </Overlay>
+      </div>);
   }
 }
 
 const fieldSource = {
-  beginDrag (props) {
+  beginDrag(props) {
     return {
       id: props.field.name,
-      axetype: props.axetype
-    }
-  }
-}
+      axetype: props.axetype,
+    };
+  },
+};
 
-function collect (connect, monitor) {
+function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }
+    isDragging: monitor.isDragging(),
+  };
 }
 
-export default DragSource('button', fieldSource, collect)(FieldButton)
+export default DragSource('button', fieldSource, collect)(FieldButton);
