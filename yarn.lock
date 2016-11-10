@@ -2502,6 +2502,12 @@ forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
 
+fps-measurer:
+  version "0.0.2"
+  resolved "http://localhost:4873/fps-measurer/-/fps-measurer-0.0.2.tgz#78289b506850823f4aa97fc2e141a38ee669ef47"
+  dependencies:
+    raf "^3.2.0"
+
 fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"

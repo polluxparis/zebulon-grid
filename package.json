@@ -17,6 +17,7 @@
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
+    "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
     "react-scripts": "0.7.0"
   },
@@ -40,6 +41,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prepublish": "rm -r lib && npm run compile",
+    "build:test": "REACT_APP_ORB_ENV=fps-test npm run build",
     "compile": "npm run compile:js && npm run compile:css",
     "compile:js": "NODE_ENV=production babel src/orb -d lib --presets react-app",
     "compile:css": "postcss --use autoprefixer --use cssnano -o lib/index.css src/orb/index.css"
