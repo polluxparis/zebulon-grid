@@ -257,10 +257,12 @@ export class Grid extends Component {
   }
 
   cellRangeRenderer({
+    cellCache,
     columnSizeAndPositionManager,
     columnStartIndex,
     columnStopIndex,
     horizontalOffsetAdjustment,
+    isScrolling,
     rowSizeAndPositionManager,
     rowStartIndex,
     rowStopIndex,
@@ -270,7 +272,7 @@ export class Grid extends Component {
    }) {
     const { columnVerticalCount, rowHorizontalCount } = this.state;
     const { store } = this.props;
-    const { columnsUi, rowsUi } = store;
+    const { columnsUi, rowsUi, layout } = store;
     const columnHeaders = columnsUi.headers;
     const rowHeaders = rowsUi.headers;
     const columnDimensionHeaders = columnsUi.dimensionHeaders;
@@ -282,11 +284,12 @@ export class Grid extends Component {
     // Because of the offset caused by the fixed headers,
     // we have to make the cell count artificially higher.
     // This ensures that we don't render inexistent headers.
-    const correctColumnStopIndex = Math.min(columnStopIndex, columnHeaders.length - 1);
-    const correctRowStopIndex = Math.min(rowStopIndex, rowHeaders.length - 1);
-
-    const visibleRows = (correctRowStopIndex - rowStartIndex) + 1;
-    const visibleColumns = (correctColumnStopIndex - columnStartIndex) + 1;
+    const correctColumnStopIndex = Math.min(
+      columnStopIndex - layout.rowHorizontalCount,
+      columnHeaders.length - 1);
+    const correctRowStopIndex = Math.min(
+      rowStopIndex - layout.columnVerticalCount,
+      rowHeaders.length - 1);
 
     // Top-left corner piece
     renderedCells.push(
@@ -506,6 +509,7 @@ export class Grid extends Component {
 
     // Render data cells
     this.datacellsCache = { };
+
     // if (!isScrolling) {
     for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
       const rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
@@ -515,33 +519,55 @@ export class Grid extends Component {
         columnIndex += 1
       ) {
         const columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex);
-        renderedCells.push(this.dataCellRenderer({
+        const key = `${rowIndex}-${columnIndex}`;
+        const positionStyle = {
+          height: rowDatum.size,
+          // The modulos allow discrete scrolling
+          // left: columnDatum.offset + this.props.store.sizes.rowHeadersWidth
+          // + horizontalOffsetAdjustment + (scrollLeft % this.defaultCellWidth),
+          // top: rowDatum.offset + this.props.store.sizes.columnHeadersHeight
+          // + verticalOffsetAdjustment + (scrollTop % this.defaultCellHeight)
+          left: columnDatum.offset + horizontalOffsetAdjustment
+          + this.props.store.sizes.rowHeadersWidth,
+          top: rowDatum.offset + verticalOffsetAdjustment
+          + this.props.store.sizes.columnHeadersHeight,
+          position: 'absolute',
+          width: columnDatum.size,
+        };
+        const dataCellRendererParams = {
+          key,
           columnIndex,
           rowIndex,
-          columnDatum,
-          rowDatum,
-          scrollLeft,
-          scrollTop,
-          horizontalOffsetAdjustment,
-          visibleRows,
-          visibleColumns,
-          verticalOffsetAdjustment,
-        }));
+          positionStyle,
+        };
+
+        // let renderedCell;
+        // if (
+        //   isScrolling &&
+        //   !horizontalOffsetAdjustment &&
+        //   !verticalOffsetAdjustment
+        // ) {
+        //   if (!cellCache[key]) {
+        //     cellCache[key] = this.dataCellRenderer(dataCellRendererParams);
+        //   }
+        //   renderedCell = cellCache[key];
+        // } else {
+        //   renderedCell = this.dataCellRenderer(dataCellRendererParams);
+        // }
+
+        const renderedCell = this.dataCellRenderer(dataCellRendererParams);
+
+        renderedCells.push(renderedCell);
       }
     }
-    // }
     return renderedCells;
   }
 
   dataCellRenderer({
     columnIndex,
+    key,
     rowIndex,
-    columnDatum,
-    rowDatum,
-    horizontalOffsetAdjustment,
-    visibleRows,
-    visibleColumns,
-    verticalOffsetAdjustment,
+    positionStyle,
    }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const { store, drilldown } = this.props;
@@ -564,18 +590,6 @@ export class Grid extends Component {
       border: 'solid lightgrey thin',
       boxSizing: 'border-box',
       overflow: 'hidden',
-      position: 'fixed',
-      height: rowDatum.size,
-      width: columnDatum.size,
-      // The modulos allow discrete scrolling
-      // left: columnDatum.offset + this.props.store.sizes.rowHeadersWidth
-      // + horizontalOffsetAdjustment + (scrollLeft % this.defaultCellWidth),
-      // top: rowDatum.offset + this.props.store.sizes.columnHeadersHeight
-      // + verticalOffsetAdjustment + (scrollTop % this.defaultCellHeight)
-      left: columnDatum.offset + horizontalOffsetAdjustment
-      + this.props.store.sizes.rowHeadersWidth,
-      top: rowDatum.offset + verticalOffsetAdjustment
-      + this.props.store.sizes.columnHeadersHeight,
     };
     const unEvenRowStyle = { backgroundColor: 'rgba(211, 211, 211, 0.4)' };
     const evenRowStyle = { backgroundColor: 'white' };
@@ -592,20 +606,20 @@ export class Grid extends Component {
       style = { ...style, ...selectedStyle };
     }
 
-    const key = `${rowHeader.key}-//-${columnHeader.key}`;
-    this.datacellsCache[key] = cell.value;
+    const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
+    this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
     if (this.isUpdating) {
-      const oldcell = this.state.cellsCache[key];
+      const oldcell = this.state.cellsCache[cellKey];
       if (oldcell !== undefined && cell.value !== oldcell) {
         valueHasChanged = true;
       }
     }
     return (
       <DataCellComponent
-        key={`${rowIndex % visibleRows}-${columnIndex % visibleColumns}`}
+        key={key}
         valueHasChanged={valueHasChanged}
-        style={style}
+        style={{ ...style, ...positionStyle }}
         index={[columnIndex, rowIndex]}
         cell={cell}
         drilldown={drilldown}
@@ -670,7 +684,7 @@ export class Grid extends Component {
     return (
       <div
         key={`fixed-${axis}-${x}-${y}`}
-        className={'OrbGrid-cell'}
+        className={'OrbGrid-cell OrbGrid-cell-header'}
         style={{
           boxSizing: 'border-box',
           overflow: 'hidden',
@@ -683,6 +697,7 @@ export class Grid extends Component {
           width,
           zIndex: 1,
           display: 'flex',
+
         }}
       >
         {innerHeader}
