@@ -547,7 +547,7 @@ export class Grid extends Component {
           + this.props.store.sizes.rowHeadersWidth,
           top: rowDatum.offset + verticalOffsetAdjustment
           + this.props.store.sizes.columnHeadersHeight,
-          position: 'absolute',
+          position: 'fixed',
           width: columnDatum.size,
         };
         const dataCellRendererParams = {
@@ -575,6 +575,7 @@ export class Grid extends Component {
 
         renderedCells.push(renderedCell);
       }
+      // }
     }
     return renderedCells;
   }

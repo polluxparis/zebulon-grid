@@ -35,7 +35,8 @@ function getMockDataSource (dataRepetition, nToto) {
 
 const dataArray = getMockDataSource(1, 100)
 const datasourceArray = [
-  dataArray.slice(0, 5000),
+  dataArray,
+  // dataArray.slice(0, 5000),
   {toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1'},
   {toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1'},
   // [{toto: '1', toto_lb: 'toto 1', qty: 100, amt: 1000, titi: 'titi 0', tutu: '0'}, {toto: '12', toto_lb: 'toto 12', qty: 44, amt: 777, titi: 'titi 0',
