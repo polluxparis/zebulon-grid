@@ -1,1 +1,1 @@
-export {default} from './FixedFieldButton'
+export { default } from './FixedFieldButton'

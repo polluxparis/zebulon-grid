@@ -1,25 +1,30 @@
-import React from 'react'
-import { ResizableBox } from 'react-resizable'
-import VirtualizedCheckbox from 'react-virtualized-checkbox'
+import React from 'react';
+import { ResizableBox } from 'react-resizable';
+import VirtualizedCheckbox from 'react-virtualized-checkbox';
 
-import * as utils from '../../Utils'
+import * as utils from '../../Utils';
 
-const startingHeight = 223
-const startingWidth = 301
+const startingHeight = 223;
+const startingWidth = 301;
 
-const FilterPanel = ({store, field, onFilter, onCancel}) => {
-  const filter = store.filters.get(field.name)
-  const values = store.getFieldValues(field.name)
-  const checkedValues = filter && filter.staticValue.length < values.length ? utils.twoArraysIntersect(values, filter.staticValue) : values
-  const options = values.map(val => ({checked: checkedValues.indexOf(val) > -1, label: val}))
+const FilterPanel = ({ store, field, onFilter, onCancel, style }) => {
+  const filter = store.filters.get(field.name);
+  const values = store.getFieldValues(field.name);
+  const checkedValues = filter && filter.staticValue.length < values.length
+  ? utils.twoArraysIntersect(values, filter.staticValue)
+  : values;
+  const options = values.map(val => ({
+    checked: checkedValues.indexOf(val) > -1,
+    label: val,
+  }));
 
-  const checkboxes =
+  const checkboxes = (
     <VirtualizedCheckbox
       items={options}
       onOk={(all, result) => onFilter(all, '', '', result.map(box => box.label), false)}
       onCancel={onCancel}
       maxHeight={startingHeight}
-    />
+    />);
 
   const divStyle = {
     backgroundColor: 'white',
@@ -32,16 +37,22 @@ const FilterPanel = ({store, field, onFilter, onCancel}) => {
     justifyContent: 'space-between',
     padding: '3px',
     width: '100%',
-    zIndex: 100
-  }
+    zIndex: 100,
+  };
 
   return (
-    <ResizableBox width={startingWidth} height={startingHeight} minConstraints={[startingWidth, startingHeight]}>
-      <div style={divStyle} id='filter-panel'>
-        {checkboxes}
-      </div>
-    </ResizableBox>
-  )
-}
+    <div style={style}>
+      <ResizableBox
+        width={startingWidth}
+        height={startingHeight}
+        minConstraints={[startingWidth, startingHeight]}
+      >
+        <div style={divStyle}>
+          {checkboxes}
+        </div>
+      </ResizableBox>
+    </div>
+  );
+};
 
-export default FilterPanel
+export default FilterPanel;

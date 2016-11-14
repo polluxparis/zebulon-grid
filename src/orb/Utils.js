@@ -314,18 +314,18 @@ export function arraysIntersect () {
   return ret
 }
 
-export function isInRange ([rowIndex, columnIndex], [rowIndexStart, columnIndexStart], [rowIndexEnd, columnIndexEnd]) {
+export function isInRange ([columnIndex, rowIndex], [columnIndexStart, rowIndexStart], [columnIndexEnd, rowIndexEnd]) {
   let inRows = false
-  if (rowIndexStart <= rowIndexEnd) {
-    inRows = rowIndexStart <= rowIndex && rowIndex <= rowIndexEnd
+  if (columnIndexStart <= columnIndexEnd) {
+    inRows = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd
   } else {
-    inRows = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart
+    inRows = columnIndexEnd <= columnIndex && columnIndex <= columnIndexStart
   }
   let inColumns = false
-  if (columnIndexStart <= columnIndexEnd) {
-    inColumns = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd
+  if (rowIndexStart <= rowIndexEnd) {
+    inColumns = rowIndexStart <= rowIndex && rowIndex <= rowIndexEnd
   } else {
-    inColumns = columnIndexEnd <= columnIndex && columnIndex <= columnIndexStart
+    inColumns = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart
   }
   return inRows && inColumns
 }

@@ -21,7 +21,7 @@ acorn-globals@^1.0.4:
   dependencies:
     acorn "^2.1.0"
 
-acorn-jsx@^3.0.0:
+acorn-jsx@^3.0.0, acorn-jsx@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-3.0.1.tgz#afdf9488fb1ecefc8348f6fb22f464e32a58b36b"
   dependencies:
@@ -1824,6 +1824,13 @@ doctrine@1.3.x:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
+doctrine@1.5.0:
+  version "1.5.0"
+  resolved "http://localhost:4873/doctrine/-/doctrine-1.5.0.tgz#379dce730f6166f76cefa4e6707a159b02c5a6fa"
+  dependencies:
+    esutils "^2.0.2"
+    isarray "^1.0.0"
+
 dom-converter@~0.1:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/dom-converter/-/dom-converter-0.1.4.tgz#a45ef5727b890c9bffe6d7c876e7b19cb0e17f3b"
@@ -2020,6 +2027,16 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+eslint-config-airbnb-base@^10.0.0:
+  version "10.0.1"
+  resolved "http://localhost:4873/eslint-config-airbnb-base/-/eslint-config-airbnb-base-10.0.1.tgz#f17d4e52992c1d45d1b7713efbcd5ecd0e7e0506"
+
+eslint-config-airbnb@latest:
+  version "13.0.0"
+  resolved "http://localhost:4873/eslint-config-airbnb/-/eslint-config-airbnb-13.0.0.tgz#688d15d3c276c0c753ae538c92a44397d76ae46e"
+  dependencies:
+    eslint-config-airbnb-base "^10.0.0"
+
 eslint-config-react-app@^0.3.0:
   version "0.3.0"
   resolved "http://localhost:4873/eslint-config-react-app/-/eslint-config-react-app-0.3.0.tgz#29a768eda157eb0bc22f8136d36136b8a4374e3d"
@@ -2047,11 +2064,33 @@ eslint-module-utils@^1.0.0:
     debug "2.2.0"
     pkg-dir "^1.0.0"
 
+eslint-module-utils@^2.0.0:
+  version "2.0.0"
+  resolved "http://localhost:4873/eslint-module-utils/-/eslint-module-utils-2.0.0.tgz#a6f8c21d901358759cdc35dbac1982ae1ee58bce"
+  dependencies:
+    debug "2.2.0"
+    pkg-dir "^1.0.0"
+
 eslint-plugin-flowtype@2.21.0:
   version "2.21.0"
   resolved "http://localhost:4873/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.21.0.tgz#a47e85abcdd181d37a336054bd552149ae387d9c"
   dependencies:
     lodash "^4.15.0"
+
+eslint-plugin-import@^2.1.0:
+  version "2.2.0"
+  resolved "http://localhost:4873/eslint-plugin-import/-/eslint-plugin-import-2.2.0.tgz#72ba306fad305d67c4816348a4699a4229ac8b4e"
+  dependencies:
+    builtin-modules "^1.1.1"
+    contains-path "^0.1.0"
+    debug "^2.2.0"
+    doctrine "1.5.0"
+    eslint-import-resolver-node "^0.2.0"
+    eslint-module-utils "^2.0.0"
+    has "^1.0.1"
+    lodash.cond "^4.3.0"
+    minimatch "^3.0.3"
+    pkg-up "^1.0.0"
 
 eslint-plugin-import@2.0.1:
   version "2.0.1"
@@ -2068,7 +2107,7 @@ eslint-plugin-import@2.0.1:
     minimatch "^3.0.3"
     pkg-up "^1.0.0"
 
-eslint-plugin-jsx-a11y@2.2.3:
+eslint-plugin-jsx-a11y@^2.2.3, eslint-plugin-jsx-a11y@2.2.3:
   version "2.2.3"
   resolved "http://localhost:4873/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-2.2.3.tgz#4e35cb71b8a7db702ac415c806eb8e8d9ea6c65d"
   dependencies:
@@ -2076,12 +2115,58 @@ eslint-plugin-jsx-a11y@2.2.3:
     jsx-ast-utils "^1.0.0"
     object-assign "^4.0.1"
 
+eslint-plugin-react@^6.6.0:
+  version "6.6.0"
+  resolved "http://localhost:4873/eslint-plugin-react/-/eslint-plugin-react-6.6.0.tgz#91ceecefa8a22d8f5d23ef9a839516a7d9fa63a1"
+  dependencies:
+    doctrine "^1.2.2"
+    jsx-ast-utils "^1.3.3"
+
 eslint-plugin-react@6.4.1:
   version "6.4.1"
   resolved "http://localhost:4873/eslint-plugin-react/-/eslint-plugin-react-6.4.1.tgz#7d1aade747db15892f71eee1fea4addf97bcfa2b"
   dependencies:
     doctrine "^1.2.2"
     jsx-ast-utils "^1.3.1"
+
+eslint@^3.9.1:
+  version "3.9.1"
+  resolved "http://localhost:4873/eslint/-/eslint-3.9.1.tgz#5a8597706fc6048bc6061ac754d4a211d28f4f5b"
+  dependencies:
+    babel-code-frame "^6.16.0"
+    chalk "^1.1.3"
+    concat-stream "^1.4.6"
+    debug "^2.1.1"
+    doctrine "^1.2.2"
+    escope "^3.6.0"
+    espree "^3.3.1"
+    estraverse "^4.2.0"
+    esutils "^2.0.2"
+    file-entry-cache "^2.0.0"
+    glob "^7.0.3"
+    globals "^9.2.0"
+    ignore "^3.1.5"
+    imurmurhash "^0.1.4"
+    inquirer "^0.12.0"
+    is-my-json-valid "^2.10.0"
+    is-resolvable "^1.0.0"
+    js-yaml "^3.5.1"
+    json-stable-stringify "^1.0.0"
+    levn "^0.3.0"
+    lodash "^4.0.0"
+    mkdirp "^0.5.0"
+    natural-compare "^1.4.0"
+    optionator "^0.8.2"
+    path-is-inside "^1.0.1"
+    pluralize "^1.2.1"
+    progress "^1.1.8"
+    require-uncached "^1.0.2"
+    shelljs "^0.7.5"
+    strip-bom "^3.0.0"
+    strip-json-comments "~1.0.1"
+    table "^3.7.8"
+    text-table "~0.2.0"
+    user-home "^2.0.0"
 
 eslint@3.8.1:
   version "3.8.1"
@@ -2417,6 +2502,12 @@ forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
 
+fps-measurer:
+  version "0.0.2"
+  resolved "http://localhost:4873/fps-measurer/-/fps-measurer-0.0.2.tgz#78289b506850823f4aa97fc2e141a38ee669ef47"
+  dependencies:
+    raf "^3.2.0"
+
 fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"
@@ -2542,7 +2633,7 @@ glob@^6.0.1:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.3, glob@^7.0.5:
+glob@^7.0.0, glob@^7.0.3, glob@^7.0.5:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.1.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
   dependencies:
@@ -2846,6 +2937,10 @@ inquirer@^0.12.0:
 interpret@^0.6.4:
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-0.6.6.tgz#fecd7a18e7ce5ca6abfb953e1f86213a49f1625b"
+
+interpret@^1.0.0:
+  version "1.0.1"
+  resolved "http://localhost:4873/interpret/-/interpret-1.0.1.tgz#d579fb7f693b858004947af39fa0db49f795602c"
 
 invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.0, invariant@^2.2.1:
   version "2.2.1"
@@ -3437,6 +3532,13 @@ jsx-ast-utils@^1.0.0, jsx-ast-utils@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-1.3.1.tgz#14313c5c50da5b0c47020af5d1560c17e781a05a"
   dependencies:
+    object-assign "^4.1.0"
+
+jsx-ast-utils@^1.3.3:
+  version "1.3.3"
+  resolved "http://localhost:4873/jsx-ast-utils/-/jsx-ast-utils-1.3.3.tgz#ccfdbe0320ba03f7a1fc4e67ceaf7e2cc0169721"
+  dependencies:
+    acorn-jsx "^3.0.1"
     object-assign "^4.1.0"
 
 kind-of@^3.0.2:
@@ -4671,6 +4773,21 @@ react-draggable@^2.1.0:
   dependencies:
     classnames "^2.2.5"
 
+react-overlays:
+  version "0.6.10"
+  resolved "http://localhost:4873/react-overlays/-/react-overlays-0.6.10.tgz#e7e52dad47f00a0fc784eb044428c3a9e874bfa3"
+  dependencies:
+    classnames "^2.2.5"
+    dom-helpers "^2.4.0"
+    react-prop-types "^0.4.0"
+    warning "^3.0.0"
+
+react-prop-types@^0.4.0:
+  version "0.4.0"
+  resolved "http://localhost:4873/react-prop-types/-/react-prop-types-0.4.0.tgz#f99b0bfb4006929c9af2051e7c1414a5c75b93d0"
+  dependencies:
+    warning "^3.0.0"
+
 react-resizable@^1.4.5:
   version "1.4.5"
   resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
@@ -4846,6 +4963,12 @@ recharts@^0.15.1:
     react-smooth "0.1.11"
     recharts-scale "0.2.1"
     reduce-css-calc "^1.3.0"
+
+rechoir@^0.6.2:
+  version "0.6.2"
+  resolved "http://localhost:4873/rechoir/-/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
+  dependencies:
+    resolve "^1.1.6"
 
 recursive-readdir@2.1.0:
   version "2.1.0"
@@ -5160,6 +5283,14 @@ shebang-regex@^1.0.0:
 shelljs@^0.6.0:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.6.1.tgz#ec6211bed1920442088fe0f70b2837232ed2c8a8"
+
+shelljs@^0.7.5:
+  version "0.7.5"
+  resolved "http://localhost:4873/shelljs/-/shelljs-0.7.5.tgz#2eef7a50a21e1ccf37da00df767ec69e30ad0675"
+  dependencies:
+    glob "^7.0.0"
+    interpret "^1.0.0"
+    rechoir "^0.6.2"
 
 shellwords@^0.1.0:
   version "0.1.0"
@@ -5692,6 +5823,12 @@ walker@~1.0.5:
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
+
+warning@^3.0.0:
+  version "3.0.0"
+  resolved "http://localhost:4873/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
+  dependencies:
+    loose-envify "^1.0.0"
 
 watch@~0.10.0:
   version "0.10.0"

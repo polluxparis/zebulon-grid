@@ -1,11 +1,17 @@
+.OrbGrid-cell {
+  user-select: none;
+  cursor: default;
+  /*Do nothing but is used to fix bug with fixed position in Chrome
+  See http://stackoverflow.com/questions/15152470/chrome-rendering-issue-fixed-position-anchor-with-ul-in-body/15203880*/
+  transform: scale3d(1,1,1);
+}
+
 .OrbGrid-cell-highlighted {
     animation-name: anim-info-updated;
     animation-duration: 4s;
 }
 
-.ReactVirtualized__Grid__cell {
-  user-select: none;
-  cursor: default;
+.OrbGrid-cell-header {
 }
 
 @keyframes anim-info-updated {
