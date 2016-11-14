@@ -1,39 +1,35 @@
-var _scrollBarSize
+let calculatedScrollBarSize;
 
-const inDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement)
-export function scrollbarSize (recalc) {
-  console.log(`in scrollbarSize ${_scrollBarSize}`)
-  if (!_scrollBarSize || recalc) {
-    console.log(`in scrollbarSize ${inDOM}`)
+const inDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+export function scrollbarSize(recalc) {
+  if (!calculatedScrollBarSize || recalc) {
     if (inDOM) {
-      console.log(`in scrollbarSize ${inDOM}`)
-      var inner = document.createElement('p')
-      inner.style.width = '100% !important'
-      inner.style.height = '200px !important'
+      const inner = document.createElement('p');
+      inner.style.width = '100% !important';
+      inner.style.height = '200px !important';
 
-      var outer = document.createElement('div')
-      outer.style.position = 'absolute !important'
-      outer.style.top = '0px !important'
-      outer.style.left = '0px !important'
-      outer.style.visibility = 'hidden !important'
-      outer.style.width = '200px !important'
-      outer.style.height = '150px !important'
-      outer.style.overflow = 'hidden !important'
-      outer.appendChild(inner)
+      const outer = document.createElement('div');
+      outer.style.position = 'absolute !important';
+      outer.style.top = '0px !important';
+      outer.style.left = '0px !important';
+      outer.style.visibility = 'hidden !important';
+      outer.style.width = '200px !important';
+      outer.style.height = '150px !important';
+      outer.style.overflow = 'hidden !important';
+      outer.appendChild(inner);
 
-      document.body.appendChild(outer)
-      var w1 = inner.offsetWidth
-      outer.style.overflow = 'scroll'
-      var w2 = inner.offsetWidth
-      if (w1 === w2) w2 = outer.clientWidth
+      document.body.appendChild(outer);
+      const w1 = inner.offsetWidth;
+      outer.style.overflow = 'scroll';
+      let w2 = inner.offsetWidth;
+      if (w1 === w2) w2 = outer.clientWidth;
 
-      document.body.removeChild(outer)
+      document.body.removeChild(outer);
 
-      _scrollBarSize = (w1 - w2)
+      calculatedScrollBarSize = (w1 - w2);
     }
-    console.log(`return scrollbarSize: ${_scrollBarSize}`)
-    return _scrollBarSize
   }
+  return calculatedScrollBarSize || 0;
 }
 
 export function removeClass (element, classname) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Grid as ReactVirtualizedGrid, AutoSizer } from 'react-virtualized';
+import { Grid as ReactVirtualizedGrid, AutoSizer, ScrollSync } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
 import HeaderCellComponent from '../HeaderCell';
@@ -11,6 +11,7 @@ import DragLayer from './DragLayer';
 import ResizeHandle from './ResizeHandle';
 import { AxisType } from '../../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
+import { scrollbarSize } from '../../Utils.dom';
 
 function replaceNullAndUndefined(val) {
   if (val === null || val === undefined) {
@@ -141,7 +142,8 @@ export class Grid extends Component {
 
     this.isMouseDown = false;
 
-    this.cellRangeRenderer = this.cellRangeRenderer.bind(this);
+    this.columnHeadersRenderer = this.columnHeadersRenderer.bind(this);
+    this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);
     this.dataCellRenderer = this.dataCellRenderer.bind(this);
     this.headerRenderer = this.headerRenderer.bind(this);
     this.dimensionHeaderRenderer = this.dimensionHeaderRenderer.bind(this);
@@ -162,11 +164,11 @@ export class Grid extends Component {
 
 
   componentWillReceiveProps(nextProps) {
-    // Change scroll values to stay at the same position when modifying the layout
-    this.scrollLeft = this.gridRef.state.scrollLeft
-      * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
-    this.scrollTop = this.gridRef.state.scrollTop
-      * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
+    // // Change scroll values to stay at the same position when modifying the layout
+    // this.scrollLeft = this.gridRef.state.scrollLeft
+    //   * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
+    // this.scrollTop = this.gridRef.state.scrollTop
+    //   * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
 
     this.setState({
       rowVerticalCount: nextProps.store.layout.rowVerticalCount,
@@ -181,7 +183,9 @@ export class Grid extends Component {
     this.isUpdating = true;
     // Clean cache for cell sizes
     // Call forceUpdate on the grid, so cannot be done in render
-    this.gridRef.recomputeGridSize();
+    this.columnHeadersRef.recomputeGridSize();
+    this.rowHeadersRef.recomputeGridSize();
+    this.dataCellsRef.recomputeGridSize();
   }
 
   componentDidUpdate() {
@@ -256,335 +260,11 @@ export class Grid extends Component {
     }
   }
 
-  cellRangeRenderer({
-    cellCache,
-    columnSizeAndPositionManager,
-    columnStartIndex,
-    columnStopIndex,
-    horizontalOffsetAdjustment,
-    isScrolling,
-    rowSizeAndPositionManager,
-    rowStartIndex,
-    rowStopIndex,
-    scrollLeft,
-    scrollTop,
-    verticalOffsetAdjustment,
-   }) {
-    const { columnVerticalCount, rowHorizontalCount } = this.state;
-    const { store } = this.props;
-    const { columnsUi, rowsUi, layout } = store;
-    const columnHeaders = columnsUi.headers;
-    const rowHeaders = rowsUi.headers;
-    const columnDimensionHeaders = columnsUi.dimensionHeaders;
-    const rowDimensionHeaders = rowsUi.dimensionHeaders;
-
-
-    const renderedCells = [];
-
-    // Because of the offset caused by the fixed headers,
-    // we have to make the cell count artificially higher.
-    // This ensures that we don't render inexistent headers.
-    const correctColumnStopIndex = Math.min(
-      columnStopIndex - layout.rowHorizontalCount,
-      columnHeaders.length - 1);
-    const correctRowStopIndex = Math.min(
-      rowStopIndex - layout.columnVerticalCount,
-      rowHeaders.length - 1);
-
-    // Top-left corner piece
-    renderedCells.push(
-      <div
-        key="fixed-fixed"
-        className={'OrbGrid-cell'}
-        style={{
-          position: 'fixed',
-          left: scrollLeft,
-          top: scrollTop,
-          width: this.props.store.sizes.rowHeadersWidth,
-          height: this.props.store.sizes.columnHeadersHeight,
-          zIndex: 2,
-          backgroundColor: '#fff',
-        }}
-      />);
-
-    // Render dimension headers
-
-    // Get width for column dimension headers
-    let fieldWhoseWidthToGet;
-    if (store.config.dataHeadersLocation === 'rows') {
-      // Dimension headers are on top of the measures column
-      fieldWhoseWidthToGet = MEASURE_ID;
-    } else if (store.rows.fields.length) {
-      // Dimension headers are on top of the column of the last field of the row headers
-      fieldWhoseWidthToGet = store.rows.fields[store.rows.fields.length - 1].code;
-    } else {
-      // Dimension headers are on top of the Total header --> get default width
-      fieldWhoseWidthToGet = null;
-    }
-    const width = this.props.store.getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
-    const left = scrollLeft + (this.props.store.sizes.rowHeadersWidth - width);
-    renderedCells.push(
-      ...columnDimensionHeaders.map((dimensionHeader) => {
-        const field = dimensionHeader.value;
-        const top = scrollTop + this.props.store.dimensionPositions.columns[field.code];
-        const height = this.props.store.getDimensionSize(AxisType.COLUMNS, field.code);
-        return this.dimensionHeaderRenderer({ left, top, width, height, field, mainDirection: 'right', crossFieldCode: fieldWhoseWidthToGet, scrollLeft, scrollTop });
-      }));
-
-    // Get height for row dimension headers in different cases
-    let fieldWhoseHeightToGet;
-    if (store.config.dataHeadersLocation === 'columns') {
-      // Dimension headers are to the left of the measures row
-      fieldWhoseHeightToGet = MEASURE_ID;
-    } else if (store.columns.fields.length) {
-      // Dimension headers are to the left of the row of the last field of the column headers
-      fieldWhoseHeightToGet = store.columns.fields[store.columns.fields.length - 1].code;
-    } else {
-      // Dimension headers are to the left of the Total header --> get default height
-      fieldWhoseHeightToGet = null;
-    }
-    const height = this.props.store.getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet);
-    const top = scrollTop + (this.props.store.sizes.columnHeadersHeight - height);
-    renderedCells.push(
-      ...rowDimensionHeaders.map((dimensionHeader) => {
-        const field = dimensionHeader.value;
-        const left = scrollLeft + this.props.store.dimensionPositions.rows[field.code];
-        const width = this.props.store.getDimensionSize(AxisType.ROWS, field.code);
-        return this.dimensionHeaderRenderer({
-          left,
-          top,
-          height,
-          width,
-          field,
-          mainDirection: 'down',
-          crossFieldCode: fieldWhoseHeightToGet,
-          scrollLeft,
-          scrollTop,
-        });
-      }));
-
-    // Render fixed header rows
-
-    // Render big cells on top of current cells if necessary
-    // The check on the presence of the header is necessary
-    // because it can be out of bounds when the headers array is modified
-    if (columnHeaders[columnStartIndex]
-      && columnHeaders[columnStartIndex].length < columnVerticalCount) {
-      let header = columnHeaders[columnStartIndex][0];
-      while (header.parent) {
-        header = header.parent;
-        const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
-        const left = main.offset
-        + horizontalOffsetAdjustment + this.props.store.sizes.rowHeadersWidth;
-        const span = header.hspan();
-        const width = getHeaderSize(columnSizeAndPositionManager, header.x, span);
-        const top = scrollTop
-        + this.props.store.dimensionPositions.columns[header.dim.field.code];
-        const height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
-        const positionStyle = {
-          position: 'fixed',
-          left,
-          top,
-          height,
-          width,
-        };
-        renderedCells.push(this.headerRenderer({
-          axis: AxisType.COLUMNS,
-          header,
-          positionStyle,
-          span,
-          startIndex: rowStartIndex,
-          scrollLeft,
-          scrollTop,
-        }));
-      }
-    }
-
-    for (
-      let columnIndex = columnStartIndex;
-      columnIndex <= correctColumnStopIndex;
-      columnIndex += 1
-    ) {
-      const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex);
-      const left = main.offset + horizontalOffsetAdjustment
-      + this.props.store.sizes.rowHeadersWidth;
-      renderedCells.push(
-        ...columnHeaders[columnIndex].map((header) => {
-          const span = header.hspan();
-          const width = getHeaderSize(columnSizeAndPositionManager, columnIndex, span);
-          // 3 cases: normal dimension header, measure header or total header
-          let top = scrollTop;
-          let height;
-          if (!header.dim) {
-            // Measure header
-            height = this.props.store.getDimensionSize(AxisType.COLUMNS, MEASURE_ID);
-            top += this.props.store.dimensionPositions.columns[MEASURE_ID];
-          } else if (header.dim.field) {
-            // Normal dimension header
-            height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
-            top += this.props.store.dimensionPositions.columns[header.dim.field.code];
-          } else {
-            // Total header
-            height = this.props.store.getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
-          }
-          const positionStyle = {
-            position: 'fixed',
-            left,
-            top,
-            height,
-            width,
-          };
-          return this.headerRenderer({
-            axis: AxisType.COLUMNS,
-            header,
-            positionStyle,
-            span,
-            startIndex: columnStartIndex,
-            scrollLeft,
-            scrollTop,
-          });
-        }));
-    }
-
-    // Render fixed left columns
-
-    // Render big cells on the left of current cells if necessary
-    // The check on the presence of the header is necessary
-    // because it can be out of bounds when the headers array is modified
-    if (rowHeaders[rowStartIndex] && rowHeaders[rowStartIndex].length < rowHorizontalCount) {
-      let header = rowHeaders[rowStartIndex][0];
-      while (header.parent) {
-        header = header.parent;
-        const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
-        const span = header.vspan();
-        const top = main.offset + verticalOffsetAdjustment
-        + this.props.store.sizes.columnHeadersHeight;
-        const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
-        const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-        const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
-        const positionStyle = {
-          position: 'fixed',
-          left,
-          top,
-          height,
-          width,
-        };
-        renderedCells.push(this.headerRenderer({
-          axis: AxisType.ROWS,
-          header,
-          positionStyle,
-          span,
-          startIndex: rowStartIndex,
-          scrollLeft,
-          scrollTop,
-        }));
-      }
-    }
-
-    for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
-      const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
-      const top = main.offset + verticalOffsetAdjustment
-      + this.props.store.sizes.columnHeadersHeight;
-      renderedCells.push(
-        ...rowHeaders[rowIndex].map((header) => {
-          const span = header.vspan();
-          const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span);
-          // 3 cases: normal dimension header, measure header or total header
-          let width;
-          let left = scrollLeft;
-          if (!header.dim) {
-            // Measure header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, MEASURE_ID);
-            left += this.props.store.dimensionPositions.rows[MEASURE_ID];
-          } else if (header.dim.field) {
-            // Normal dimension header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-            left += this.props.store.dimensionPositions.rows[header.dim.field.code];
-          } else {
-            // Total header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
-          }
-          const positionStyle = {
-            position: 'fixed',
-            left,
-            top,
-            height,
-            width,
-          };
-          return (this.headerRenderer({
-            axis: AxisType.ROWS,
-            header,
-            positionStyle,
-            span,
-            startIndex: rowStartIndex,
-            scrollLeft,
-            scrollTop,
-          }));
-        }));
-    }
-
-    // Render data cells
-    this.datacellsCache = { };
-
-    // if (!isScrolling) {
-    for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
-      const rowDatum = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
-      for (
-        let columnIndex = columnStartIndex;
-        columnIndex <= correctColumnStopIndex;
-        columnIndex += 1
-      ) {
-        const columnDatum = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex);
-        const key = `${rowIndex}-${columnIndex}`;
-        const positionStyle = {
-          height: rowDatum.size,
-          // The modulos allow discrete scrolling
-          // left: columnDatum.offset + this.props.store.sizes.rowHeadersWidth
-          // + horizontalOffsetAdjustment + (scrollLeft % this.defaultCellWidth),
-          // top: rowDatum.offset + this.props.store.sizes.columnHeadersHeight
-          // + verticalOffsetAdjustment + (scrollTop % this.defaultCellHeight)
-          left: columnDatum.offset + horizontalOffsetAdjustment
-          + this.props.store.sizes.rowHeadersWidth,
-          top: rowDatum.offset + verticalOffsetAdjustment
-          + this.props.store.sizes.columnHeadersHeight,
-          position: 'fixed',
-          width: columnDatum.size,
-        };
-        const dataCellRendererParams = {
-          key,
-          columnIndex,
-          rowIndex,
-          positionStyle,
-        };
-
-        // let renderedCell;
-        // if (
-        //   isScrolling &&
-        //   !horizontalOffsetAdjustment &&
-        //   !verticalOffsetAdjustment
-        // ) {
-        //   if (!cellCache[key]) {
-        //     cellCache[key] = this.dataCellRenderer(dataCellRendererParams);
-        //   }
-        //   renderedCell = cellCache[key];
-        // } else {
-        //   renderedCell = this.dataCellRenderer(dataCellRendererParams);
-        // }
-
-        const renderedCell = this.dataCellRenderer(dataCellRendererParams);
-
-        renderedCells.push(renderedCell);
-      }
-      // }
-    }
-    return renderedCells;
-  }
-
   dataCellRenderer({
     columnIndex,
     key,
     rowIndex,
-    positionStyle,
+    style: positionStyle,
    }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const { store, drilldown } = this.props;
@@ -624,7 +304,7 @@ export class Grid extends Component {
     }
 
     const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
-    this.datacellsCache[cellKey] = cell.value;
+    // this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
     if (this.isUpdating) {
       const oldcell = this.state.cellsCache[cellKey];
@@ -793,14 +473,239 @@ export class Grid extends Component {
     );
   }
 
+  columnHeadersRenderer({
+    columnSizeAndPositionManager,
+    columnStartIndex,
+    columnStopIndex,
+    horizontalOffsetAdjustment,
+    rowStartIndex,
+    scrollLeft,
+    scrollTop,
+   }) {
+    const { columnVerticalCount } = this.state;
+    const { store } = this.props;
+    const { columnsUi, layout } = store;
+    const columnHeaders = columnsUi.headers;
+
+
+    const renderedCells = [];
+
+    // Because of the offset caused by the fixed headers,
+    // we have to make the cell count artificially higher.
+    // This ensures that we don't render inexistent headers.
+    const correctColumnStopIndex = Math.min(
+      columnStopIndex,
+      columnHeaders.length - 1);
+
+    // Render fixed header rows
+
+    // Render big cells on top of current cells if necessary
+    // The check on the presence of the header is necessary
+    // because it can be out of bounds when the headers array is modified
+    if (columnHeaders[columnStartIndex]
+      && columnHeaders[columnStartIndex].length < columnVerticalCount) {
+      let header = columnHeaders[columnStartIndex][0];
+      while (header.parent) {
+        header = header.parent;
+        const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
+        const left = main.offset
+        + horizontalOffsetAdjustment + this.props.store.sizes.rowHeadersWidth;
+        const span = header.hspan();
+        const width = getHeaderSize(columnSizeAndPositionManager, header.x, span);
+        const top = scrollTop
+        + this.props.store.dimensionPositions.columns[header.dim.field.code];
+        const height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
+        const positionStyle = {
+          position: 'fixed',
+          left,
+          top,
+          height,
+          width,
+        };
+        renderedCells.push(this.headerRenderer({
+          axis: AxisType.COLUMNS,
+          header,
+          positionStyle,
+          span,
+          startIndex: rowStartIndex,
+          scrollLeft,
+          scrollTop,
+        }));
+      }
+    }
+
+    for (
+      let columnIndex = columnStartIndex;
+      columnIndex <= correctColumnStopIndex;
+      columnIndex += 1
+    ) {
+      const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(columnIndex);
+      const left = main.offset + horizontalOffsetAdjustment;
+      // + this.props.store.sizes.rowHeadersWidth;
+      renderedCells.push(
+        ...columnHeaders[columnIndex].map((header) => {
+          const span = header.hspan();
+          const width = getHeaderSize(columnSizeAndPositionManager, columnIndex, span);
+          // 3 cases: normal dimension header, measure header or total header
+          let top = scrollTop;
+          let height;
+          if (!header.dim) {
+            // Measure header
+            height = this.props.store.getDimensionSize(AxisType.COLUMNS, MEASURE_ID);
+            top += this.props.store.dimensionPositions.columns[MEASURE_ID];
+          } else if (header.dim.field) {
+            // Normal dimension header
+            height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
+            top += this.props.store.dimensionPositions.columns[header.dim.field.code];
+          } else {
+            // Total header
+            height = this.props.store.getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
+          }
+          const positionStyle = {
+            position: 'absolute',
+            left,
+            top,
+            height,
+            width,
+          };
+          return this.headerRenderer({
+            axis: AxisType.COLUMNS,
+            header,
+            positionStyle,
+            span,
+            startIndex: columnStartIndex,
+            scrollLeft,
+            scrollTop,
+          });
+        }));
+    }
+    return renderedCells;
+  }
+
+  rowHeadersRenderer({
+    // cellCache,
+    // columnSizeAndPositionManager,
+    // columnStartIndex,
+    // columnStopIndex,
+    // horizontalOffsetAdjustment,
+    // isScrolling,
+    rowSizeAndPositionManager,
+    rowStartIndex,
+    rowStopIndex,
+    scrollLeft,
+    scrollTop,
+    verticalOffsetAdjustment,
+   }) {
+    const { rowHorizontalCount } = this.state;
+    const { store } = this.props;
+    const { rowsUi } = store;
+    const rowHeaders = rowsUi.headers;
+
+
+    const renderedCells = [];
+
+    // Because of the offset caused by the fixed headers,
+    // we have to make the cell count artificially higher.
+    // This ensures that we don't render inexistent headers.
+    const correctRowStopIndex = Math.min(
+      rowStopIndex,
+      rowHeaders.length - 1);
+
+
+    // Render fixed left columns
+
+    // Render big cells on the left of current cells if necessary
+    // The check on the presence of the header is necessary
+    // because it can be out of bounds when the headers array is modified
+    if (rowHeaders[rowStartIndex] && rowHeaders[rowStartIndex].length < rowHorizontalCount) {
+      let header = rowHeaders[rowStartIndex][0];
+      while (header.parent) {
+        header = header.parent;
+        const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
+        const span = header.vspan();
+        const top = main.offset + verticalOffsetAdjustment
+        + this.props.store.sizes.columnHeadersHeight;
+        const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
+        const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
+        const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
+        const positionStyle = {
+          position: 'absolute',
+          left,
+          top,
+          height,
+          width,
+        };
+        renderedCells.push(this.headerRenderer({
+          axis: AxisType.ROWS,
+          header,
+          positionStyle,
+          span,
+          startIndex: rowStartIndex,
+          scrollLeft,
+          scrollTop,
+        }));
+      }
+    }
+
+    for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
+      const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
+      const top = main.offset + verticalOffsetAdjustment;
+      // + this.props.store.sizes.columnHeadersHeight;
+      renderedCells.push(
+        ...rowHeaders[rowIndex].map((header) => {
+          const span = header.vspan();
+          const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span);
+          // 3 cases: normal dimension header, measure header or total header
+          let width;
+          let left = scrollLeft;
+          if (!header.dim) {
+            // Measure header
+            width = this.props.store.getDimensionSize(AxisType.ROWS, MEASURE_ID);
+            left += this.props.store.dimensionPositions.rows[MEASURE_ID];
+          } else if (header.dim.field) {
+            // Normal dimension header
+            width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
+            left += this.props.store.dimensionPositions.rows[header.dim.field.code];
+          } else {
+            // Total header
+            width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
+          }
+          const positionStyle = {
+            position: 'fixed',
+            left,
+            top,
+            height,
+            width,
+          };
+          return (this.headerRenderer({
+            axis: AxisType.ROWS,
+            header,
+            positionStyle,
+            span,
+            startIndex: rowStartIndex,
+            scrollLeft,
+            scrollTop,
+          }));
+        }));
+    }
+    return renderedCells;
+  }
+
   render() {
     const { connectDropTarget, store } = this.props;
+    const {
+      columnHeadersHeight,
+      columnHeadersWidth,
+      rowHeadersHeight,
+      rowHeadersWidth,
+     } = store.sizes;
     const {
       columnHorizontalCount,
       columnVerticalCount,
       rowHorizontalCount,
       rowVerticalCount,
     } = this.state;
+    scrollbarSize();
     return connectDropTarget(
       <div style={{ height: 'inherit' }}>
         <DragLayer />
@@ -810,34 +715,76 @@ export class Grid extends Component {
             // We should use the scrollbar size instead on Windows and Linux and nothing on macOs
             // TO SEE
             this.height = Math.min(height,
-            store.sizes.rowHeadersHeight + store.sizes.columnHeadersHeight + 15);
+              rowHeadersHeight + columnHeadersHeight + scrollbarSize());
             this.width = Math.min(width,
-            store.sizes.columnHeadersWidth + store.sizes.rowHeadersWidth + 15);
+              columnHeadersWidth + rowHeadersWidth + scrollbarSize());
             return (
-              <ReactVirtualizedGrid
-                cellRangeRenderer={this.cellRangeRenderer}
-                cellRenderer={() => 33}
-                columnCount={columnHorizontalCount + rowHorizontalCount}
-                columnWidth={store.getColumnWidth.bind(store)}
-                height={this.height}
-                overscanRowCount={0}
-                overscanColumnCount={0}
-                ref={(ref) => { this.gridRef = ref; }}
-                rowCount={rowVerticalCount + columnVerticalCount}
-                rowHeight={store.getRowHeight.bind(store)}
-                scrollLeft={this.scrollLeft}
-                scrollTop={this.scrollTop}
-                style={{ fontSize: `${this.props.store.zoom * 100}%` }}
-                width={this.width}
-              />);
+              <ScrollSync>
+                {({
+                 onScroll,
+                 scrollLeft,
+                 scrollTop,
+                }) => (
+                  <div>
+                      {/* Column headers */}
+                      <div style={{ position: 'relative', left: rowHeadersWidth }}>
+                        <ReactVirtualizedGrid
+                          cellRangeRenderer={this.columnHeadersRenderer}
+                          columnCount={columnHorizontalCount}
+                          columnWidth={store.getColumnWidth.bind(store)}
+                          height={columnHeadersHeight}
+                          overscanColumnCount={0}
+                          ref={(ref) => { this.columnHeadersRef = ref; }}
+                          rowCount={columnVerticalCount}
+                          rowHeight={store.getRowHeight.bind(store)}
+                          scrollLeft={scrollLeft}
+                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
+                          width={Math.min(width - rowHeadersWidth - scrollbarSize(), columnHeadersWidth)}
+                        />
+                      </div>
+                    <div style={{ display: 'flex' }}>
+                      {/* Row headers */}
+                      <div>
+                        <ReactVirtualizedGrid
+                          cellRangeRenderer={this.rowHeadersRenderer}
+                          columnCount={rowHorizontalCount}
+                          columnWidth={store.getColumnWidth.bind(store)}
+                          height={Math.min(height - columnHeadersHeight - scrollbarSize(), rowHeadersHeight)}
+                          overscanRowCount={0}
+                          ref={(ref) => { this.rowHeadersRef = ref; }}
+                          rowCount={rowVerticalCount}
+                          rowHeight={store.getRowHeight.bind(store)}
+                          scrollTop={scrollTop}
+                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
+                          width={rowHeadersWidth}
+                        />
+                      </div>
+                      <div>
+                        <ReactVirtualizedGrid
+                          cellRenderer={this.dataCellRenderer}
+                          columnCount={columnHorizontalCount}
+                          columnWidth={store.getColumnWidth.bind(store)}
+                          height={Math.min(height - columnHeadersHeight, rowHeadersHeight + scrollbarSize())}
+                          onScroll={onScroll}
+                          ref={(ref) => { this.dataCellsRef = ref; }}
+                          rowCount={rowVerticalCount}
+                          rowHeight={store.getRowHeight.bind(store)}
+                          scrollLeft={scrollLeft}
+                          scrollTop={scrollTop}
+                          style={{ fontSize: `${this.props.store.zoom * 100}%`}}
+                          width={Math.min(width - rowHeadersWidth, columnHeadersWidth + scrollbarSize())}
+                        />
+                      </div>
+                    </div>
+                  </div>
+               )}
+              </ScrollSync>);
           }
-          }
+       }
         </AutoSizer>
       </div>);
   }
-
  }
-
 
 const gridSpec = {
   drop(props, monitor, component) {
