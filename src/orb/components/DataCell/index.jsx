@@ -1,31 +1,31 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
 
 export default class DataCell extends Component {
 
-  constructor () {
-    super()
-    this.handleDoubleClick = this.handleDoubleClick.bind(this)
-    this.handleMouseDown = this.handleMouseDown.bind(this)
-    this.handleMouseOver = this.handleMouseOver.bind(this)
+  constructor() {
+    super();
+    this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseOver = this.handleMouseOver.bind(this);
   }
 
-  handleMouseDown (e) {
-    this.props.handleMouseDown(e, [this.props.index[0], this.props.index[1]])
+  handleMouseDown(e) {
+    this.props.handleMouseDown(e, [this.props.index[0], this.props.index[1]]);
   }
 
-  handleMouseOver () {
-    this.props.handleMouseOver([this.props.index[0], this.props.index[1]])
+  handleMouseOver() {
+    this.props.handleMouseOver([this.props.index[0], this.props.index[1]]);
   }
 
-  handleDoubleClick () {
-    this.props.drilldown(this.props.cell)
+  handleDoubleClick() {
+    this.props.drilldown(this.props.cell);
   }
 
-  render () {
-    const {cell, style, valueHasChanged} = this.props
-    let className = 'OrbGrid-cell OrbGrid-data-cell'
+  render() {
+    const { cell, style, valueHasChanged } = this.props;
+    let className = 'OrbGrid-cell OrbGrid-data-cell';
     if (valueHasChanged) {
-      className += ' OrbGrid-cell-highlighted'
+      className += ' OrbGrid-cell-highlighted';
     }
     return (
       <div
@@ -37,7 +37,7 @@ export default class DataCell extends Component {
       >
         {cell.caption}
       </div>
-         )
+    );
   }
 
 }
