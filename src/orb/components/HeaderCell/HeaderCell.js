@@ -135,10 +135,11 @@ export default class HeaderCell extends Component {
 
     const style = {
       textAlign: 'left',
-      padding: '0.2em',
-      paddingLeft: '0.5em',
+      margin: '0.2em',
+      marginLeft: '0.5em',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
+      ...this.props.style,
     };
 
     return (

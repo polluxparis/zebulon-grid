@@ -337,8 +337,6 @@ export class Grid extends Component {
    }) {
     const { left, top, width, height } = positionStyle;
     const { x, y } = header;
-    const renderedCell = <HeaderCellComponent key={`${axis}-${x}-${y}`} cell={header} />;
-    let innerHeader = renderedCell;
     const previewSize = { };
     if (axis === AxisType.COLUMNS) {
       previewSize.right = this.props.store.sizes.columnHeadersHeight;
@@ -348,21 +346,19 @@ export class Grid extends Component {
       previewSize.bottom = this.props.store.sizes.rowHeadersWidth;
     }
     // Handle affix
+    let style;
     if (span > 1 && x <= startIndex) {
-      let style;
       let offset;
       const lastChildSize = this.props.store.getLastChildSize(axis, header);
       if (axis === AxisType.COLUMNS) {
-        offset = Math.min(scrollLeft + (this.props.store.sizes.rowHeadersWidth - left),
-          width - (lastChildSize || 0));
+        offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
         style = { position: 'relative', left: offset };
       } else {
-        offset = Math.min(scrollTop + (this.props.store.sizes.columnHeadersHeight - top),
-          height - (lastChildSize || 0));
+        offset = Math.min(scrollTop - top, height - (lastChildSize || 0));
         style = { position: 'relative', top: offset };
       }
-      innerHeader = <div style={style}>{renderedCell}</div>;
     }
+    const innerHeader = <HeaderCellComponent key={`${axis}-${x}-${y}`} cell={header} style={style} />;
     const leafHeaderId = header.key;
     let dimensionId;
     if (!header.dim) {
@@ -437,7 +433,7 @@ export class Grid extends Component {
         key={`fixed-dim-${field.code}`}
         className={'OrbGrid-cell'}
         style={{
-          position: 'fixed',
+          position: 'absolute',
           left,
           top,
           width,
@@ -484,7 +480,7 @@ export class Grid extends Component {
    }) {
     const { columnVerticalCount } = this.state;
     const { store } = this.props;
-    const { columnsUi, layout } = store;
+    const { columnsUi } = store;
     const columnHeaders = columnsUi.headers;
 
 
@@ -508,15 +504,14 @@ export class Grid extends Component {
       while (header.parent) {
         header = header.parent;
         const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
-        const left = main.offset
-        + horizontalOffsetAdjustment + this.props.store.sizes.rowHeadersWidth;
+        const left = main.offset + horizontalOffsetAdjustment;
         const span = header.hspan();
         const width = getHeaderSize(columnSizeAndPositionManager, header.x, span);
         const top = scrollTop
         + this.props.store.dimensionPositions.columns[header.dim.field.code];
         const height = this.props.store.getDimensionSize(AxisType.COLUMNS, header.dim.field.code);
         const positionStyle = {
-          position: 'fixed',
+          position: 'absolute',
           left,
           top,
           height,
@@ -527,7 +522,7 @@ export class Grid extends Component {
           header,
           positionStyle,
           span,
-          startIndex: rowStartIndex,
+          startIndex: columnStartIndex,
           scrollLeft,
           scrollTop,
         }));
@@ -623,8 +618,7 @@ export class Grid extends Component {
         header = header.parent;
         const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
         const span = header.vspan();
-        const top = main.offset + verticalOffsetAdjustment
-        + this.props.store.sizes.columnHeadersHeight;
+        const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
         const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
         const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
@@ -671,7 +665,7 @@ export class Grid extends Component {
             width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
           }
           const positionStyle = {
-            position: 'fixed',
+            position: 'absolute',
             left,
             top,
             height,
@@ -715,7 +709,6 @@ export class Grid extends Component {
             < columnHeadersWidth + rowHeadersWidth + scrollbarSize();
             const hasScrollbarAtRight = height
             < columnHeadersHeight + rowHeadersHeight + scrollbarSize();
-            console.log('hasScrollbarAtBottom', hasScrollbarAtBottom, 'hasScrollbarAtRight', hasScrollbarAtRight);
             const rowHeadersVisibleHeight = Math.min(
               height - columnHeadersHeight - (hasScrollbarAtBottom ? scrollbarSize() : 0),
               rowHeadersHeight);
@@ -734,22 +727,22 @@ export class Grid extends Component {
                  scrollTop,
                 }) => (
                   <div>
-                      {/* Column headers */}
-                      <div style={{ position: 'relative', left: rowHeadersWidth }}>
-                        <ReactVirtualizedGrid
-                          cellRangeRenderer={this.columnHeadersRenderer}
-                          columnCount={columnHorizontalCount}
-                          columnWidth={store.getColumnWidth.bind(store)}
-                          height={columnHeadersHeight}
-                          overscanColumnCount={0}
-                          ref={(ref) => { this.columnHeadersRef = ref; }}
-                          rowCount={columnVerticalCount}
-                          rowHeight={store.getRowHeight.bind(store)}
-                          scrollLeft={scrollLeft}
-                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
-                          width={columnHeadersVisibleWidth}
-                        />
-                      </div>
+                    {/* Column headers */}
+                    <div style={{ position: 'relative', left: rowHeadersWidth }}>
+                      <ReactVirtualizedGrid
+                        cellRangeRenderer={this.columnHeadersRenderer}
+                        columnCount={columnHorizontalCount}
+                        columnWidth={store.getColumnWidth.bind(store)}
+                        height={columnHeadersHeight}
+                        overscanColumnCount={0}
+                        ref={(ref) => { this.columnHeadersRef = ref; }}
+                        rowCount={columnVerticalCount}
+                        rowHeight={store.getRowHeight.bind(store)}
+                        scrollLeft={scrollLeft}
+                        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
+                        width={columnHeadersVisibleWidth}
+                      />
+                    </div>
                     <div style={{ display: 'flex' }}>
                       {/* Row headers */}
                       <div>
@@ -772,20 +765,22 @@ export class Grid extends Component {
                           cellRenderer={this.dataCellRenderer}
                           columnCount={columnHorizontalCount}
                           columnWidth={store.getColumnWidth.bind(store)}
-                          height={Math.min(height - columnHeadersHeight, rowHeadersHeight + scrollbarSize())}
+                          height={Math.min(height - columnHeadersHeight,
+                            rowHeadersHeight + scrollbarSize())}
                           onScroll={onScroll}
                           ref={(ref) => { this.dataCellsRef = ref; }}
                           rowCount={rowVerticalCount}
                           rowHeight={store.getRowHeight.bind(store)}
                           scrollLeft={scrollLeft}
                           scrollTop={scrollTop}
-                          style={{ fontSize: `${this.props.store.zoom * 100}%`}}
-                          width={Math.min(width - rowHeadersWidth, columnHeadersWidth + scrollbarSize())}
+                          style={{ fontSize: `${this.props.store.zoom * 100}%` }}
+                          width={Math.min(width - rowHeadersWidth,
+                            columnHeadersWidth + scrollbarSize())}
                         />
                       </div>
                     </div>
                   </div>
-               )}
+             )}
               </ScrollSync>);
           }
        }
