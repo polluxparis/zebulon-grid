@@ -33,8 +33,8 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
 
   // Build rows headers array
   const rowsRange = [
-    Math.min(selectedCellStart[0], selectedCellEnd[0]),
-    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1];
+    Math.min(selectedCellStart[1], selectedCellEnd[1]),
+    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1];
   const rowHeaderLeafs = rowsUi.headers.slice(...rowsRange)
     .map(headers => headers[headers.length - 1]);
   const rows = rowHeaderLeafs.map((header) => {
@@ -49,8 +49,8 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
 
   // Build columns headers array
   const columnsRange = [
-    Math.min(selectedCellStart[1], selectedCellEnd[1]),
-    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1];
+    Math.min(selectedCellStart[0], selectedCellEnd[0]),
+    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1];
   const columnHeaderLeafs = columnsUi.headers.slice(...columnsRange)
     .map(headers => headers[headers.length - 1]);
   const columns = columnHeaderLeafs.map((header) => {
@@ -240,7 +240,7 @@ export class Grid extends Component {
 
   handleCopy() {
     try {
-      if (findDOMNode(this.gridRef) === document.activeElement) {
+      if (findDOMNode(this.dataCellsRef) === document.activeElement) {
         const bodyElement = document.getElementsByTagName('body')[0];
         const clipboardTextArea = document.createElement('textarea');
         clipboardTextArea.style.position = 'absolute';
@@ -474,7 +474,6 @@ export class Grid extends Component {
     columnStartIndex,
     columnStopIndex,
     horizontalOffsetAdjustment,
-    rowStartIndex,
     scrollLeft,
     scrollTop,
    }) {
@@ -685,6 +684,68 @@ export class Grid extends Component {
     return renderedCells;
   }
 
+  // Render dimension headers
+  dimensionHeaders({ scrollLeft, scrollTop }) {
+    const { store } = this.props;
+    const rowDimensionHeaders = store.rowsUi.dimensionHeaders;
+    const columnDimensionHeaders = store.columnsUi.dimensionHeaders;
+    const renderedCells = [];
+
+    // Get width for column dimension headers
+    let fieldWhoseWidthToGet;
+    if (store.config.dataHeadersLocation === 'rows') {
+      // Dimension headers are on top of the measures column
+      fieldWhoseWidthToGet = MEASURE_ID;
+    } else if (store.rows.fields.length) {
+      // Dimension headers are on top of the column of the last field of the row headers
+      fieldWhoseWidthToGet = store.rows.fields[store.rows.fields.length - 1].code;
+    } else {
+      // Dimension headers are on top of the Total header --> get default width
+      fieldWhoseWidthToGet = null;
+    }
+    const width = store.getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
+    const left = scrollLeft + (store.sizes.rowHeadersWidth - width);
+    renderedCells.push(
+      ...columnDimensionHeaders.map((dimensionHeader) => {
+        const field = dimensionHeader.value;
+        const top = scrollTop + store.dimensionPositions.columns[field.code];
+        const height = store.getDimensionSize(AxisType.COLUMNS, field.code);
+        return this.dimensionHeaderRenderer({ left, top, width, height, field, mainDirection: 'right', crossFieldCode: fieldWhoseWidthToGet, scrollLeft, scrollTop });
+      }));
+    // Get height for row dimension headers in different cases
+    let fieldWhoseHeightToGet;
+    if (store.config.dataHeadersLocation === 'columns') {
+      // Dimension headers are to the left of the measures row
+      fieldWhoseHeightToGet = MEASURE_ID;
+    } else if (store.columns.fields.length) {
+      // Dimension headers are to the left of the row of the last field of the column headers
+      fieldWhoseHeightToGet = store.columns.fields[store.columns.fields.length - 1].code;
+    } else {
+      // Dimension headers are to the left of the Total header --> get default height
+      fieldWhoseHeightToGet = null;
+    }
+    const height = store.getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet);
+    const top = scrollTop + (store.sizes.columnHeadersHeight - height);
+    renderedCells.push(
+      ...rowDimensionHeaders.map((dimensionHeader) => {
+        const field = dimensionHeader.value;
+        const left = scrollLeft + store.dimensionPositions.rows[field.code];
+        const width = store.getDimensionSize(AxisType.ROWS, field.code);
+        return this.dimensionHeaderRenderer({
+          left,
+          top,
+          height,
+          width,
+          field,
+          mainDirection: 'down',
+          crossFieldCode: fieldWhoseHeightToGet,
+          scrollLeft,
+          scrollTop,
+        });
+      }));
+    return renderedCells;
+  }
+
   render() {
     const { connectDropTarget, store } = this.props;
     const {
@@ -699,7 +760,6 @@ export class Grid extends Component {
       rowHorizontalCount,
       rowVerticalCount,
     } = this.state;
-    scrollbarSize();
     return connectDropTarget(
       <div style={{ height: 'inherit' }}>
         <DragLayer />
@@ -727,6 +787,7 @@ export class Grid extends Component {
                  scrollTop,
                 }) => (
                   <div>
+                    {this.dimensionHeaders({ scrollLeft, scrollTop })}
                     {/* Column headers */}
                     <div style={{ position: 'relative', left: rowHeadersWidth }}>
                       <ReactVirtualizedGrid
