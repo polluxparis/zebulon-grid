@@ -711,9 +711,17 @@ export class Grid extends Component {
         <DragLayer />
         <AutoSizer>
           {({ width, height }) => {
-            // Add 15 pixels to avoid that the grid go under a scrollbar
-            // We should use the scrollbar size instead on Windows and Linux and nothing on macOs
-            // TO SEE
+            const hasScrollbarAtBottom = width
+            < columnHeadersWidth + rowHeadersWidth + scrollbarSize();
+            const hasScrollbarAtRight = height
+            < columnHeadersHeight + rowHeadersHeight + scrollbarSize();
+            console.log('hasScrollbarAtBottom', hasScrollbarAtBottom, 'hasScrollbarAtRight', hasScrollbarAtRight);
+            const rowHeadersVisibleHeight = Math.min(
+              height - columnHeadersHeight - (hasScrollbarAtBottom ? scrollbarSize() : 0),
+              rowHeadersHeight);
+            const columnHeadersVisibleWidth = Math.min(
+              width - rowHeadersWidth - (hasScrollbarAtRight ? scrollbarSize() : 0),
+              columnHeadersWidth);
             this.height = Math.min(height,
               rowHeadersHeight + columnHeadersHeight + scrollbarSize());
             this.width = Math.min(width,
@@ -739,7 +747,7 @@ export class Grid extends Component {
                           rowHeight={store.getRowHeight.bind(store)}
                           scrollLeft={scrollLeft}
                           style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
-                          width={Math.min(width - rowHeadersWidth - scrollbarSize(), columnHeadersWidth)}
+                          width={columnHeadersVisibleWidth}
                         />
                       </div>
                     <div style={{ display: 'flex' }}>
@@ -749,7 +757,7 @@ export class Grid extends Component {
                           cellRangeRenderer={this.rowHeadersRenderer}
                           columnCount={rowHorizontalCount}
                           columnWidth={store.getColumnWidth.bind(store)}
-                          height={Math.min(height - columnHeadersHeight - scrollbarSize(), rowHeadersHeight)}
+                          height={rowHeadersVisibleHeight}
                           overscanRowCount={0}
                           ref={(ref) => { this.rowHeadersRef = ref; }}
                           rowCount={rowVerticalCount}
