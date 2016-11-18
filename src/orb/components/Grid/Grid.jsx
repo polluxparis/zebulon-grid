@@ -153,6 +153,8 @@ export class Grid extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
+    store.getColumnWidth = store.getColumnWidth.bind(store);
+    store.getRowHeight = store.getRowHeight.bind(store);
   }
 
   componentDidMount() {
@@ -256,7 +258,7 @@ export class Grid extends Component {
         window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea); }, 0);
       }
     } catch (error) {
-      console.error('error in handleCopy', error);
+      // console.error('error in handleCopy', error);
     }
   }
 
@@ -790,14 +792,15 @@ export class Grid extends Component {
                     <div style={{ position: 'relative', left: rowHeadersWidth }}>
                       <ReactVirtualizedGrid
                         cellRangeRenderer={this.columnHeadersRenderer}
+                        cellRenderer={function mock() {}}
                         className="OrbGrid-column-headers"
                         columnCount={columnHorizontalCount}
-                        columnWidth={store.getColumnWidth.bind(store)}
+                        columnWidth={store.getColumnWidth}
                         height={columnHeadersHeight}
                         overscanColumnCount={0}
                         ref={(ref) => { this.columnHeadersRef = ref; }}
                         rowCount={columnVerticalCount}
-                        rowHeight={store.getRowHeight.bind(store)}
+                        rowHeight={store.getRowHeight}
                         scrollLeft={scrollLeft}
                         // We set overflowX and overflowY and not overflow
                         // because react-virtualized sets them during render
@@ -810,14 +813,15 @@ export class Grid extends Component {
                       <div>
                         <ReactVirtualizedGrid
                           cellRangeRenderer={this.rowHeadersRenderer}
+                          cellRenderer={function mock() {}}
                           className="OrbGrid-row-headers"
                           columnCount={rowHorizontalCount}
-                          columnWidth={store.getColumnWidth.bind(store)}
+                          columnWidth={store.getColumnWidth}
                           height={rowHeadersVisibleHeight}
                           overscanRowCount={0}
                           ref={(ref) => { this.rowHeadersRef = ref; }}
                           rowCount={rowVerticalCount}
-                          rowHeight={store.getRowHeight.bind(store)}
+                          rowHeight={store.getRowHeight}
                           scrollTop={scrollTop}
                           // We set overflowX and overflowY and not overflow
                           // because react-virtualized sets them during render
@@ -830,13 +834,13 @@ export class Grid extends Component {
                           cellRenderer={this.dataCellRenderer}
                           className="OrbGrid-data-cells"
                           columnCount={columnHorizontalCount}
-                          columnWidth={store.getColumnWidth.bind(store)}
+                          columnWidth={store.getColumnWidth}
                           height={Math.min(height - columnHeadersHeight,
                             rowHeadersHeight + scrollbarSize())}
                           onScroll={onScroll}
                           ref={(ref) => { this.dataCellsRef = ref; }}
                           rowCount={rowVerticalCount}
-                          rowHeight={store.getRowHeight.bind(store)}
+                          rowHeight={store.getRowHeight}
                           scrollLeft={scrollLeft}
                           scrollTop={scrollTop}
                           style={{ fontSize: `${this.props.store.zoom * 100}%` }}
