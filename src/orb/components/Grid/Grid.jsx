@@ -393,7 +393,7 @@ export class Grid extends Component {
           id={axis === AxisType.COLUMNS ? leafHeaderId : dimensionId}
           leafSubheaders={leafSubheaders}
           axis={axis}
-          previewSize={previewSize.right}
+          previewSize={this.height}
           previewOffset={top - scrollTop}
         />
         <ResizeHandle
@@ -402,7 +402,7 @@ export class Grid extends Component {
           id={axis === AxisType.ROWS ? leafHeaderId : dimensionId}
           leafSubheaders={leafSubheaders}
           axis={axis}
-          previewSize={previewSize.bottom}
+          previewSize={this.width}
           previewOffset={left - scrollLeft}
         />
       </div>
@@ -454,7 +454,7 @@ export class Grid extends Component {
           isOnDimensionHeader
           axis={AxisType.ROWS}
           previewSize={this.height}
-          previewOffset={top - scrollTop}
+          previewOffset={top}
         />
         <ResizeHandle
           position="bottom"
@@ -463,7 +463,7 @@ export class Grid extends Component {
           isOnDimensionHeader
           axis={AxisType.COLUMNS}
           previewSize={this.width}
-          previewOffset={left - scrollLeft}
+          previewOffset={left}
         />
       </div>
     );
@@ -704,11 +704,11 @@ export class Grid extends Component {
       fieldWhoseWidthToGet = null;
     }
     const width = store.getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
-    const left = scrollLeft + (store.sizes.rowHeadersWidth - width);
+    const left = store.sizes.rowHeadersWidth - width;
     renderedCells.push(
       ...columnDimensionHeaders.map((dimensionHeader) => {
         const field = dimensionHeader.value;
-        const top = scrollTop + store.dimensionPositions.columns[field.code];
+        const top = store.dimensionPositions.columns[field.code];
         const height = store.getDimensionSize(AxisType.COLUMNS, field.code);
         return this.dimensionHeaderRenderer({ left, top, width, height, field, mainDirection: 'right', crossFieldCode: fieldWhoseWidthToGet, scrollLeft, scrollTop });
       }));
@@ -725,11 +725,11 @@ export class Grid extends Component {
       fieldWhoseHeightToGet = null;
     }
     const height = store.getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet);
-    const top = scrollTop + (store.sizes.columnHeadersHeight - height);
+    const top = store.sizes.columnHeadersHeight - height;
     renderedCells.push(
       ...rowDimensionHeaders.map((dimensionHeader) => {
         const field = dimensionHeader.value;
-        const left = scrollLeft + store.dimensionPositions.rows[field.code];
+        const left = store.dimensionPositions.rows[field.code];
         const width = store.getDimensionSize(AxisType.ROWS, field.code);
         return this.dimensionHeaderRenderer({
           left,
@@ -775,10 +775,10 @@ export class Grid extends Component {
             const columnHeadersVisibleWidth = Math.min(
               width - rowHeadersWidth - (hasScrollbarAtRight ? scrollbarSize() : 0),
               columnHeadersWidth);
-            this.height = Math.min(height,
-              rowHeadersHeight + columnHeadersHeight + scrollbarSize());
-            this.width = Math.min(width,
-              columnHeadersWidth + rowHeadersWidth + scrollbarSize());
+            this.height = Math.min(height - (hasScrollbarAtBottom ? scrollbarSize() : 0),
+              rowHeadersHeight + columnHeadersHeight);
+            this.width = Math.min(width - (hasScrollbarAtRight ? scrollbarSize() : 0),
+              columnHeadersWidth + rowHeadersWidth);
             return (
               <ScrollSync>
                 {({
@@ -800,7 +800,9 @@ export class Grid extends Component {
                         rowCount={columnVerticalCount}
                         rowHeight={store.getRowHeight.bind(store)}
                         scrollLeft={scrollLeft}
-                        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
+                        // We set overflowX and not overflow
+                        // because react-virtualized sets overflowX and overflowY during render
+                        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden' }}
                         width={columnHeadersVisibleWidth}
                       />
                     </div>
@@ -817,7 +819,9 @@ export class Grid extends Component {
                           rowCount={rowVerticalCount}
                           rowHeight={store.getRowHeight.bind(store)}
                           scrollTop={scrollTop}
-                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflow: 'hidden' }}
+                          // We set overflowY and not overflow
+                          // because react-virtualized sets overflowX and overflowY during render
+                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowY: 'hidden' }}
                           width={rowHeadersWidth}
                         />
                       </div>

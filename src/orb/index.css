@@ -14,10 +14,6 @@
 .OrbGrid-cell-header {
 }
 
-.ReactVirtualized__Grid__innerScrollContainer {
-  overflow: hidden;
-}
-
 @keyframes anim-info-updated {
     0% {
       background-color: red;
