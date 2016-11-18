@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import {DragSource} from 'react-dnd'
+import React, { Component } from 'react';
+import { DragSource } from 'react-dnd';
 
 const resizeHandleSpec = {
-  beginDrag (props) {
+  beginDrag(props) {
     return {
       id: props.id,
       axis: props.axis,
@@ -11,29 +11,29 @@ const resizeHandleSpec = {
       isOnDimensionHeader: props.isOnDimensionHeader,
       leafSubheaders: props.leafSubheaders,
       previewSize: props.previewSize,
-      previewOffset: props.previewOffset
-    }
-  }
-}
+      previewOffset: props.previewOffset,
+    };
+  },
+};
 
 const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging()
-})
+  isDragging: monitor.isDragging(),
+});
 
 class ResizeHandle extends Component {
-  render  () {
-    const {position, size, connectDragSource} = this.props
-    let handle
+  render() {
+    const { position, size, connectDragSource } = this.props;
+    let handle;
     if (position === 'right') {
-      handle = <div style={{position: 'absolute', right: 0, width: 4, height: size, cursor: 'col-resize', opacity: 0}} />
-        } else if (position === 'bottom') {
-      handle = <div style={{position: 'absolute', bottom: 0, height: 4, width: size, cursor: 'row-resize', opacity: 0}} />
+      handle = <div style={{ position: 'absolute', right: 0, width: 4, height: size, cursor: 'col-resize', opacity: 0 }} />;
+    } else if (position === 'bottom') {
+      handle = <div style={{ position: 'absolute', bottom: 0, height: 4, width: size, cursor: 'row-resize', opacity: 0 }} />;
     } else {
-      handle=null
+      handle = null;
     }
-    return connectDragSource(handle)
+    return connectDragSource(handle);
   }
 }
-export default DragSource('cell-resize-handle', resizeHandleSpec, sourceCollect)(ResizeHandle)
+export default DragSource('cell-resize-handle', resizeHandleSpec, sourceCollect)(ResizeHandle);
