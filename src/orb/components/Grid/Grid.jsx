@@ -790,6 +790,7 @@ export class Grid extends Component {
                     <div style={{ position: 'relative', left: rowHeadersWidth }}>
                       <ReactVirtualizedGrid
                         cellRangeRenderer={this.columnHeadersRenderer}
+                        className="OrbGrid-column-headers"
                         columnCount={columnHorizontalCount}
                         columnWidth={store.getColumnWidth.bind(store)}
                         height={columnHeadersHeight}
@@ -809,6 +810,7 @@ export class Grid extends Component {
                       <div>
                         <ReactVirtualizedGrid
                           cellRangeRenderer={this.rowHeadersRenderer}
+                          className="OrbGrid-row-headers"
                           columnCount={rowHorizontalCount}
                           columnWidth={store.getColumnWidth.bind(store)}
                           height={rowHeadersVisibleHeight}
@@ -826,6 +828,7 @@ export class Grid extends Component {
                       <div>
                         <ReactVirtualizedGrid
                           cellRenderer={this.dataCellRenderer}
+                          className="OrbGrid-data-cells"
                           columnCount={columnHorizontalCount}
                           columnWidth={store.getColumnWidth.bind(store)}
                           height={Math.min(height - columnHeadersHeight,
