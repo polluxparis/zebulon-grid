@@ -1,93 +1,93 @@
-import * as utils from './Utils'
-import { AxisType } from './Axis'
-import * as aggregation from './Aggregation'
-import { ExpressionFilter } from './Filtering'
+import * as utils from './Utils';
+import { AxisType } from './Axis';
+import * as aggregation from './Aggregation';
+import { ExpressionFilter } from './Filtering';
 
 export class GrandTotalConfig {
 
-  constructor (options) {
-    options = options || {}
+  constructor(options) {
+    options = options || {};
 
-    this.rowsvisible = options.rowsvisible !== undefined ? options.rowsvisible : true
-    this.columnsvisible = options.columnsvisible !== undefined ? options.columnsvisible : true
+    this.rowsvisible = options.rowsvisible !== undefined ? options.rowsvisible : true;
+    this.columnsvisible = options.columnsvisible !== undefined ? options.columnsvisible : true;
   }
 }
 
 export class SubTotalConfig {
 
-  constructor (options, setdefaults) {
+  constructor(options, setdefaults) {
     const defaults = {
       visible: setdefaults === true ? true : undefined,
       collapsible: setdefaults === true ? true : undefined,
-      collapsed: setdefaults === true ? false : undefined
-    }
-    options = options || {}
+      collapsed: setdefaults === true ? false : undefined,
+    };
+    options = options || {};
 
-    this.visible = options.visible !== undefined ? options.visible : defaults.visible
-    this.collapsible = options.collapsible !== undefined ? options.collapsible : defaults.collapsible
-    this.collapsed = options.collapsed !== undefined ? options.collapsed : defaults.collapsed
+    this.visible = options.visible !== undefined ? options.visible : defaults.visible;
+    this.collapsible = options.collapsible !== undefined ? options.collapsible : defaults.collapsible;
+    this.collapsed = options.collapsed !== undefined ? options.collapsed : defaults.collapsed;
   }
 }
 
 export class SortConfig {
 
-  constructor (options) {
-    options = options || {}
+  constructor(options) {
+    options = options || {};
 
-    this.order = options.order || (options.customfunc ? 'asc' : null)
-    this.customfunc = options.customfunc
+    this.order = options.order || (options.customfunc ? 'asc' : null);
+    this.customfunc = options.customfunc;
   }
 }
 
 export class Field {
 
-  constructor (options, createSubOptions) {
-    options = options || {}
+  constructor(options, createSubOptions) {
+    options = options || {};
 
     // field name
-    this.name = options.name
-    this.code = options.code || this.name
+    this.name = options.name;
+    this.code = options.code || this.name;
 
     // shared settings
-    this.caption = options.caption || this.name
+    this.caption = options.caption || this.name;
 
     // rows & columns settings
-    this.sort = new SortConfig(options.sort)
-    this.subTotal = new SubTotalConfig(options.subTotal)
+    this.sort = new SortConfig(options.sort);
+    this.subTotal = new SubTotalConfig(options.subTotal);
 
     this.aggregateFuncName = options.aggregateFuncName ||
     (options.aggregateFunc
       ? (utils.isString(options.aggregateFunc)
         ? options.aggregateFunc : 'custom')
-        : null)
+        : null);
 
-    this.aggregateFunc(options.aggregateFunc)
-    this.formatFunc(options.formatFunc || this.defaultFormatFunc)
+    this.aggregateFunc(options.aggregateFunc);
+    this.formatFunc(options.formatFunc || this.defaultFormatFunc);
 
     if (createSubOptions !== false) {
       (this.rowSettings = new Field(options.rowSettings, false)).name = this.name
       ;(this.columnSettings = new Field(options.columnSettings, false)).name = this.name
-      ;(this.dataSettings = new Field(options.dataSettings, false)).name = this.name
+      ;(this.dataSettings = new Field(options.dataSettings, false)).name = this.name;
     }
   }
 
-  defaultFormatFunc (val) {
-    return val != null ? val.toString() : ''
+  defaultFormatFunc(val) {
+    return val != null ? val.toString() : '';
   }
 
-  aggregateFunc (func) {
+  aggregateFunc(func) {
     if (func) {
-      this._aggregatefunc = aggregation.toAggregateFunc(func)
+      this._aggregatefunc = aggregation.toAggregateFunc(func);
     } else {
-      return this._aggregatefunc
+      return this._aggregatefunc;
     }
   }
 
-  formatFunc (func) {
+  formatFunc(func) {
     if (func) {
-      this._formatfunc = func
+      this._formatfunc = func;
     } else {
-      return this._formatfunc
+      return this._formatfunc;
     }
   }
 
@@ -96,64 +96,64 @@ export class Field {
 const getpropertyvalue = (property, configs, defaultvalue) => {
   for (let i = 0; i < configs.length; i++) {
     if (configs[i][property] != null) {
-      return configs[i][property]
+      return configs[i][property];
     }
   }
-  return defaultvalue
-}
+  return defaultvalue;
+};
 
 const mergefieldconfigs = (...args) => {
-  var merged = {
+  const merged = {
     configs: [],
     sorts: [],
     subtotals: [],
-    functions: []
-  }
+    functions: [],
+  };
 
   for (let i = 0; i < args.length; i++) {
-    var nnconfig = args[i] || {}
-    merged.configs.push(nnconfig)
-    merged.sorts.push(nnconfig.sort || {})
-    merged.subtotals.push(nnconfig.subTotal || {})
+    const nnconfig = args[i] || {};
+    merged.configs.push(nnconfig);
+    merged.sorts.push(nnconfig.sort || {});
+    merged.subtotals.push(nnconfig.subTotal || {});
     merged.functions.push({
       aggregateFuncName: nnconfig.aggregateFuncName,
       aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
-      formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null)
-    })
+      formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
+    });
   }
 
-  return merged
-}
+  return merged;
+};
 
 const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
-  var axeconfig
-  var fieldAxisconfig
+  let axeconfig;
+  let fieldAxisconfig;
 
   if (defaultfieldconfig) {
     switch (axetype) {
       case AxisType.ROWS:
-        axeconfig = rootconfig.rowSettings
-        fieldAxisconfig = defaultfieldconfig.rowSettings
-        break
+        axeconfig = rootconfig.rowSettings;
+        fieldAxisconfig = defaultfieldconfig.rowSettings;
+        break;
       case AxisType.COLUMNS:
-        axeconfig = rootconfig.columnSettings
-        fieldAxisconfig = defaultfieldconfig.columnSettings
-        break
+        axeconfig = rootconfig.columnSettings;
+        fieldAxisconfig = defaultfieldconfig.columnSettings;
+        break;
       case AxisType.DATA:
-        axeconfig = rootconfig.dataSettings
-        fieldAxisconfig = defaultfieldconfig.dataSettings
-        break
+        axeconfig = rootconfig.dataSettings;
+        fieldAxisconfig = defaultfieldconfig.dataSettings;
+        break;
       default:
-        axeconfig = null
-        fieldAxisconfig = null
-        break
+        axeconfig = null;
+        fieldAxisconfig = null;
+        break;
     }
   } else {
-    axeconfig = null
-    fieldAxisconfig = null
+    axeconfig = null;
+    fieldAxisconfig = null;
   }
 
-  var merged = mergefieldconfigs(fieldconfig, fieldAxisconfig, axeconfig, defaultfieldconfig, rootconfig)
+  const merged = mergefieldconfigs(fieldconfig, fieldAxisconfig, axeconfig, defaultfieldconfig, rootconfig);
 
   return new Field({
     name: getpropertyvalue('name', merged.configs, ''),
@@ -164,19 +164,19 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 
     sort: {
       order: getpropertyvalue('order', merged.sorts, null),
-      customfunc: getpropertyvalue('customfunc', merged.sorts, null)
+      customfunc: getpropertyvalue('customfunc', merged.sorts, null),
     },
     subTotal: {
       visible: getpropertyvalue('visible', merged.subtotals, true),
       collapsible: getpropertyvalue('collapsible', merged.subtotals, true),
-      collapsed: getpropertyvalue('collapsed', merged.subtotals, false) && getpropertyvalue('collapsible', merged.subtotals, true)
+      collapsed: getpropertyvalue('collapsed', merged.subtotals, false) && getpropertyvalue('collapsible', merged.subtotals, true),
     },
 
     aggregateFuncName: getpropertyvalue('aggregateFuncName', merged.functions, 'sum'),
     aggregateFunc: getpropertyvalue('aggregateFunc', merged.functions, aggregation.sum),
-    formatFunc: getpropertyvalue('formatFunc', merged.functions, null)
-  }, false)
-}
+    formatFunc: getpropertyvalue('formatFunc', merged.functions, null),
+  }, false);
+};
 
 /**
  * Creates a new instance of pgrid config
@@ -187,291 +187,292 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 // module.config(config) {
 export class Config {
 
-  constructor (config) {
-    this.config = config
-    this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true
-    this.dataHeadersLocation = config.dataHeadersLocation === 'columns' ? 'columns' : 'rows'
-    this.grandTotal = new GrandTotalConfig(config.grandTotal)
-    this.subTotal = new SubTotalConfig(config.subTotal, true)
-    this.width = config.width
-    this.height = config.height
-    this.cellWidth = config.cellWidth
-    this.cellHeight = config.cellHeight
+  constructor(config) {
+    this.config = config;
+    this.canMoveFields = config.canMoveFields !== undefined ? !!config.canMoveFields : true;
+    this.dataHeadersLocation = config.dataHeadersLocation === 'columns' ? 'columns' : 'rows';
+    this.grandTotal = new GrandTotalConfig(config.grandTotal);
+    this.subTotal = new SubTotalConfig(config.subTotal, true);
+    this.width = config.width;
+    this.height = config.height;
+    this.cellWidth = config.cellWidth;
+    this.cellHeight = config.cellHeight;
 
-    this.rowSettings = new Field(config.rowSettings, false)
-    this.columnSettings = new Field(config.columnSettings, false)
-    this.dataSettings = new Field(config.dataSettings, false)
+    this.rowSettings = new Field(config.rowSettings, false);
+    this.columnSettings = new Field(config.columnSettings, false);
+    this.dataSettings = new Field(config.dataSettings, false);
 
-    this.allFields = (config.fields || []).map(fieldConfig => new Field(fieldConfig))
-    this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig))
+    this.allFields = (config.fields || []).map(fieldConfig => new Field(fieldConfig));
+    this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig));
 
     // map fields names to captions
-    this.dataFieldNames = this.allFields.map(f => f.name)
-    this.dataFieldCaptions = this.allFields.map(f => f.caption)
+    this.dataFieldNames = this.allFields.map(f => f.name);
+    this.dataFieldCaptions = this.allFields.map(f => f.caption);
 
-    this.rowFields = (config.rows || []).map(fieldconfig => {
-      fieldconfig = this.ensureFieldConfig(fieldconfig)
-      return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
-    })
+    this.rowFields = (config.rows || []).map((fieldconfig) => {
+      fieldconfig = this.ensureFieldConfig(fieldconfig);
+      return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    });
 
-    this.columnFields = (config.columns || []).map(fieldconfig => {
-      fieldconfig = this.ensureFieldConfig(fieldconfig)
-      return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name))
-    })
+    this.columnFields = (config.columns || []).map((fieldconfig) => {
+      fieldconfig = this.ensureFieldConfig(fieldconfig);
+      return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    });
 
-    this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0]
+    this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
 
-    this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1)
+    this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1);
 
-    this.drilldown = config.drilldown || ((cell) => console.log('drilldown on cell (default)', cell))
+    this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
 
     this.runtimeVisibility = {
       subtotals: {
         rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
-        columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true
-      }
-    }
-    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount()
-    this.availableFields = this.getavailableFields()
-    this.preFilters = this.getpreFilters()
+        columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true,
+      },
+    };
+    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
+    this.availableFields = this.getavailableFields();
+    this.preFilters = this.getpreFilters();
   }
 
-  getactivatedDataFieldsCount () {
-    return this.activatedDataFields ? this.activatedDataFields.length : 0
+  getactivatedDataFieldsCount() {
+    return this.activatedDataFields ? this.activatedDataFields.length : 0;
   }
 
-  getavailableFields () {
-    const usedFields = [].concat(this.rowFields, this.columnFields)
+  getavailableFields() {
+    const usedFields = [].concat(this.rowFields, this.columnFields);
     return this.allFields
-      .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1)
+      .filter(field => usedFields.map(field => field.name).indexOf(field.name) === -1);
   }
 
-  getpreFilters () {
-    var prefilters = {}
+  getpreFilters() {
+    const prefilters = {};
     if (this.config.preFilters) {
       utils.forEach(
         utils.ownProperties(this.config.preFilters),
         (filteredField) => {
-          const filterName = this.captionToName(filteredField)
-          var prefilterConfig = this.config.preFilters[filteredField]
+          const filterName = this.captionToName(filteredField);
+          const prefilterConfig = this.config.preFilters[filteredField];
           if (utils.isArray(prefilterConfig)) {
-            prefilters[filterName] = new ExpressionFilter(filterName, this.data, null, null, prefilterConfig, false)
+            prefilters[filterName] = new ExpressionFilter(filterName, this.data, null, null, prefilterConfig, false);
           } else {
-            var opname = utils.ownProperties(prefilterConfig)[0]
+            const opname = utils.ownProperties(prefilterConfig)[0];
             if (opname) {
-              prefilters[filterName] = new ExpressionFilter(filterName, this.data, opname, prefilterConfig[opname])
+              prefilters[filterName] = new ExpressionFilter(filterName, this.data, opname, prefilterConfig[opname]);
             }
           }
-        })
+        });
     }
-    return prefilters
+    return prefilters;
   }
 
-  captionToName (caption) {
-    var fcaptionIndex = this.dataFieldCaptions.indexOf(caption)
-    return fcaptionIndex >= 0 ? this.dataFieldNames[fcaptionIndex] : caption
+  captionToName(caption) {
+    const fcaptionIndex = this.dataFieldCaptions.indexOf(caption);
+    return fcaptionIndex >= 0 ? this.dataFieldNames[fcaptionIndex] : caption;
   }
 
-  nameToCaption (name) {
-    var fnameIndex = this.dataFieldNames.indexOf(name)
-    return fnameIndex >= 0 ? this.dataFieldCaptions[fnameIndex] : name
+  nameToCaption(name) {
+    const fnameIndex = this.dataFieldNames.indexOf(name);
+    return fnameIndex >= 0 ? this.dataFieldCaptions[fnameIndex] : name;
   }
   // setTheme (newTheme) {
   //   return this.theme.current() !== this.theme.current(newTheme)
   // }
 
-  ensureFieldConfig (obj) {
+  ensureFieldConfig(obj) {
     if (typeof obj === 'string') {
       return {
-        name: this.captionToName(obj)
-      }
+        name: this.captionToName(obj),
+      };
     }
-    return obj
+    return obj;
   }
 
-  getfield (axefields, fieldname) {
-    var fieldindex = this.getfieldindex(axefields, fieldname)
+  getfield(axefields, fieldname) {
+    const fieldindex = this.getfieldindex(axefields, fieldname);
     if (fieldindex > -1) {
-      return axefields[fieldindex]
+      return axefields[fieldindex];
     }
-    return null
+    return null;
   }
 
-  getfieldindex (axefields, fieldname) {
+  getfieldindex(axefields, fieldname) {
     for (let fi = 0; fi < axefields.length; fi++) {
       if (axefields[fi].name === fieldname) {
-        return fi
+        return fi;
       }
     }
-    return -1
+    return -1;
   }
 
-  getField (fieldname) {
-    return this.getfield(this.allFields, fieldname)
+  getField(fieldname) {
+    return this.getfield(this.allFields, fieldname);
   }
 
-  getRowField (fieldname) {
-    return this.getfield(this.rowFields, fieldname)
+  getRowField(fieldname) {
+    return this.getfield(this.rowFields, fieldname);
   }
 
-  getColumnField (fieldname) {
-    return this.getfield(this.columnFields, fieldname)
+  getColumnField(fieldname) {
+    return this.getfield(this.columnFields, fieldname);
   }
 
-  getDataField (fieldname) {
-    return this.getfield(this.dataFields, fieldname)
+  getDataField(fieldname) {
+    return this.getfield(this.dataFields, fieldname);
   }
 
-  moveField (fieldname, oldaxetype, newaxetype, position) {
-    var oldaxe, oldposition
-    var newaxe
-    var fieldConfig
-    var defaultFieldConfig = this.getfield(this.allFields, fieldname)
+  moveField(fieldname, oldaxetype, newaxetype, position) {
+    let oldaxe,
+      oldposition;
+    let newaxe;
+    let fieldConfig;
+    const defaultFieldConfig = this.getfield(this.allFields, fieldname);
 
     if (defaultFieldConfig) {
       switch (oldaxetype) {
         case AxisType.ROWS:
-          oldaxe = this.rowFields
-          break
+          oldaxe = this.rowFields;
+          break;
         case AxisType.COLUMNS:
-          oldaxe = this.columnFields
-          break
+          oldaxe = this.columnFields;
+          break;
         case AxisType.FIELDS:
-          oldaxe = this.availableFields
-          break
+          oldaxe = this.availableFields;
+          break;
         default:
-          break
+          break;
       }
 
       switch (newaxetype) {
         case AxisType.ROWS:
-          newaxe = this.rowFields
-          fieldConfig = this.getRowField(fieldname)
-          break
+          newaxe = this.rowFields;
+          fieldConfig = this.getRowField(fieldname);
+          break;
         case AxisType.COLUMNS:
-          newaxe = this.columnFields
-          fieldConfig = this.getColumnField(fieldname)
-          break
+          newaxe = this.columnFields;
+          fieldConfig = this.getColumnField(fieldname);
+          break;
         case AxisType.FIELDS:
-          newaxe = this.availableFields
-          fieldConfig = this.getField(fieldname)
-          break
+          newaxe = this.availableFields;
+          fieldConfig = this.getField(fieldname);
+          break;
         default:
-          break
+          break;
       }
 
       if (oldaxe || newaxe) {
-        var newAxisSubtotalsState = this.areSubtotalsVisible(newaxetype)
+        const newAxisSubtotalsState = this.areSubtotalsVisible(newaxetype);
 
         if (oldaxe) {
-          oldposition = this.getfieldindex(oldaxe, fieldname)
+          oldposition = this.getfieldindex(oldaxe, fieldname);
           if (oldaxetype === newaxetype) {
             if (oldposition === (oldaxe.length - 1 && position == null) ||
               oldposition === position - 1) {
-              return false
+              return false;
             }
           }
-          oldaxe.splice(oldposition, 1)
+          oldaxe.splice(oldposition, 1);
         }
 
-        var field = createfield(
+        const field = createfield(
           this,
           newaxetype,
           fieldConfig,
-          defaultFieldConfig)
+          defaultFieldConfig);
 
         if (!newAxisSubtotalsState && field.subTotal.visible !== false) {
-          field.subTotal.visible = null
+          field.subTotal.visible = null;
         }
 
         if (newaxe) {
           if (position != null) {
-            newaxe.splice(position, 0, field)
+            newaxe.splice(position, 0, field);
           } else {
-            newaxe.push(field)
+            newaxe.push(field);
           }
         }
         if (newaxetype === AxisType.FIELDS) {
-          return oldaxetype
+          return oldaxetype;
         } else if (oldaxetype === AxisType.FIELDS) {
-          return newaxetype
+          return newaxetype;
         } else {
-          return -1
+          return -1;
         }
       }
     }
   }
 
-  selectField (fieldname) {
-    this.selectedField = this.getfield(this.allFields, fieldname)
+  selectField(fieldname) {
+    this.selectedField = this.getfield(this.allFields, fieldname);
   }
 
-  toggleDataField (fieldname) {
-    const defaultFieldConfig = this.getDataField(fieldname)
-    const newDataFields = this.activatedDataFields.filter(fld => fld.name !== fieldname)
+  toggleDataField(fieldname) {
+    const defaultFieldConfig = this.getDataField(fieldname);
+    const newDataFields = this.activatedDataFields.filter(fld => fld.name !== fieldname);
     if (this.activatedDataFields.length === newDataFields.length) {
-      this.activatedDataFields.push(defaultFieldConfig)
+      this.activatedDataFields.push(defaultFieldConfig);
     } else {
-      this.activatedDataFields = newDataFields
+      this.activatedDataFields = newDataFields;
     }
-    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount()
-    return this.activatedDataFieldsCount
+    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
+    return this.activatedDataFieldsCount;
   }
 
-  toggleSubtotals (axetype) {
-    var i
-    var axeFields
-    var newState = !this.areSubtotalsVisible(axetype)
+  toggleSubtotals(axetype) {
+    let i;
+    let axeFields;
+    let newState = !this.areSubtotalsVisible(axetype);
 
     if (axetype === AxisType.ROWS) {
-      this.runtimeVisibility['subtotals']['rows'] = newState
-      axeFields = this.rowFields
+      this.runtimeVisibility.subtotals.rows = newState;
+      axeFields = this.rowFields;
     } else if (axetype === AxisType.COLUMNS) {
-      this.runtimeVisibility['subtotals']['columns'] = newState
-      axeFields = this.columnFields
+      this.runtimeVisibility.subtotals.columns = newState;
+      axeFields = this.columnFields;
     } else {
-      return false
+      return false;
     }
 
-    newState = newState === false ? null : true
+    newState = newState === false ? null : true;
     for (i = 0; i < axeFields.length; i++) {
       if (axeFields[i].subTotal.visible !== false) {
-        axeFields[i].subTotal.visible = newState
+        axeFields[i].subTotal.visible = newState;
       }
     }
-    return true
+    return true;
   }
 
-  areSubtotalsVisible (axetype) {
+  areSubtotalsVisible(axetype) {
     if (axetype === AxisType.ROWS) {
-      return this.runtimeVisibility['subtotals']['rows']
+      return this.runtimeVisibility.subtotals.rows;
     } else if (axetype === AxisType.COLUMNS) {
-      return this.runtimeVisibility['subtotals']['columns']
+      return this.runtimeVisibility.subtotals.columns;
     } else {
-      return null
+      return null;
     }
   }
 
-  toggleGrandtotal (axetype) {
-    var newState = !this.isGrandtotalVisible(axetype)
+  toggleGrandtotal(axetype) {
+    const newState = !this.isGrandtotalVisible(axetype);
 
     if (axetype === AxisType.ROWS) {
-      this.grandTotal.rowsvisible = newState
+      this.grandTotal.rowsvisible = newState;
     } else if (axetype === AxisType.COLUMNS) {
-      this.grandTotal.columnsvisible = newState
+      this.grandTotal.columnsvisible = newState;
     } else {
-      return false
+      return false;
     }
-    return true
+    return true;
   }
 
-  isGrandtotalVisible (axetype) {
+  isGrandtotalVisible(axetype) {
     if (axetype === AxisType.ROWS) {
-      return this.grandTotal.rowsvisible
+      return this.grandTotal.rowsvisible;
     } else if (axetype === AxisType.COLUMNS) {
-      return this.grandTotal.columnsvisible
+      return this.grandTotal.columnsvisible;
     } else {
-      return false
+      return false;
     }
   }
 }

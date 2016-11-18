@@ -144,7 +144,12 @@ let config = {
       caption: 'Amount',
       aggregateFunc: 'sum',
       aggregateFuncName: 'whatever',
-      formatFunc: (value) => value ? Number(value).toFixed(0) + ' $' : ''
+      formatFunc: (value) => {
+        if (value || value === 0) {
+          return `${Number(value).toFixed(0)} $`;
+        }
+        return '';
+      },
     }
   ],
   columns: ['Titi'],

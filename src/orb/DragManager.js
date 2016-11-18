@@ -1,61 +1,61 @@
-import ReactDOM from 'react-dom'
-import * as utils from './Utils'
+import ReactDOM from 'react-dom';
+import * as utils from './Utils';
 
 export default (() => {
-  let _moveButton = null
+  let _moveButton = null;
 
-  let _currDragElement = null
-  let _currDropTarget = null
-  let _currDropIndicator = null
+  let _currDragElement = null;
+  let _currDropTarget = null;
+  let _currDropIndicator = null;
 
-  let _dragNode = null
-  const _dropTargets = []
-  const _dropIndicators = []
+  let _dragNode = null;
+  const _dropTargets = [];
+  const _dropIndicators = [];
 
-  function doElementsOverlap (elem1Rect, elem2Rect) {
+  function doElementsOverlap(elem1Rect, elem2Rect) {
     return !(elem1Rect.right < elem2Rect.left ||
     elem1Rect.left > elem2Rect.right ||
     elem1Rect.bottom < elem2Rect.top ||
-    elem1Rect.top > elem2Rect.bottom)
+    elem1Rect.top > elem2Rect.bottom);
   }
 
-  function setCurrDropTarget (dropTarget, callback) {
+  function setCurrDropTarget(dropTarget, callback) {
     if (_currDropTarget) {
       signalDragEnd(_currDropTarget, () => {
-        _currDropTarget = dropTarget
-        signalDragOver(dropTarget, callback)
-      })
+        _currDropTarget = dropTarget;
+        signalDragOver(dropTarget, callback);
+      });
     } else {
-      _currDropTarget = dropTarget
-      signalDragOver(dropTarget, callback)
+      _currDropTarget = dropTarget;
+      signalDragOver(dropTarget, callback);
     }
   }
 
-  function setCurrDropIndicator (dropIndicator) {
+  function setCurrDropIndicator(dropIndicator) {
     if (_currDropIndicator) {
       signalDragEnd(_currDropIndicator, () => {
-        _currDropIndicator = dropIndicator
-        signalDragOver(dropIndicator)
-      })
+        _currDropIndicator = dropIndicator;
+        signalDragOver(dropIndicator);
+      });
     } else {
-      _currDropIndicator = dropIndicator
-      signalDragOver(dropIndicator)
+      _currDropIndicator = dropIndicator;
+      signalDragOver(dropIndicator);
     }
   }
 
-  function signalDragOver (target, callback) {
+  function signalDragOver(target, callback) {
     if (target && target.onDragOver) {
-      target.onDragOver(callback)
+      target.onDragOver(callback);
     } else if (callback) {
-      callback()
+      callback();
     }
   }
 
-  function signalDragEnd (target, callback) {
+  function signalDragEnd(target, callback) {
     if (target && target.onDragEnd) {
-      target.onDragEnd(callback)
+      target.onDragEnd(callback);
     } else if (callback) {
-      callback()
+      callback();
     }
   }
 
@@ -78,119 +78,118 @@ export default (() => {
   // var _initialized = false
 
   return {
-    init (moveButton) {
+    init(moveButton) {
       // _initialized = true
-      _moveButton = moveButton
+      _moveButton = moveButton;
     },
-    setDragElement (elem) {
-      console.log('_currDropTarget', _currDropTarget)
-      console.log(elem)
-      const prevDragElement = _currDragElement
-      _currDragElement = elem
+    setDragElement(elem) {
+      console.log('_currDropTarget', _currDropTarget);
+      console.log(elem);
+      const prevDragElement = _currDragElement;
+      _currDragElement = elem;
       if (_currDragElement !== prevDragElement) {
         if (elem == null) {
           if (_currDropTarget) {
-            const position = _currDropIndicator != null ? _currDropIndicator.position : null
-            _moveButton(prevDragElement, _currDropTarget.component.props.axetype, position)
+            const position = _currDropIndicator != null ? _currDropIndicator.position : null;
+            _moveButton(prevDragElement, _currDropTarget.component.props.axetype, position);
           }
 
-          _dragNode = null
-          setCurrDropTarget(null)
-          setCurrDropIndicator(null)
+          _dragNode = null;
+          setCurrDropTarget(null);
+          setCurrDropIndicator(null);
         } else {
-          _dragNode = ReactDOM.findDOMNode(_currDragElement)
+          _dragNode = ReactDOM.findDOMNode(_currDragElement);
         }
       }
     },
-    registerTarget (target, axetype, dragOverHandler, dargEndHandler) {
+    registerTarget(target, axetype, dragOverHandler, dargEndHandler) {
       _dropTargets.push({
         component: target,
         axetype,
         onDragOver: dragOverHandler,
-        onDragEnd: dargEndHandler
-      })
+        onDragEnd: dargEndHandler,
+      });
     },
-    unregisterTarget (target) {
-      let tindex
+    unregisterTarget(target) {
+      let tindex;
       for (let i = 0; i < _dropTargets.length; i++) {
         if (_dropTargets[i].component === target) {
-          tindex = i
-          break
+          tindex = i;
+          break;
         }
       }
       if (tindex != null) {
-        _dropTargets.splice(tindex, 1)
+        _dropTargets.splice(tindex, 1);
       }
     },
-    registerIndicator (indicator, axetype, position, dragOverHandler, dargEndHandler) {
+    registerIndicator(indicator, axetype, position, dragOverHandler, dargEndHandler) {
       _dropIndicators.push({
         component: indicator,
         axetype,
         position,
         onDragOver: dragOverHandler,
-        onDragEnd: dargEndHandler
-      })
+        onDragEnd: dargEndHandler,
+      });
     },
-    unregisterIndicator (indicator) {
-      let iindex
+    unregisterIndicator(indicator) {
+      let iindex;
       for (let i = 0; i < _dropIndicators.length; i++) {
         if (_dropIndicators[i].component === indicator) {
-          iindex = i
-          break
+          iindex = i;
+          break;
         }
       }
       if (iindex != null) {
-        _dropIndicators.splice(iindex, 1)
+        _dropIndicators.splice(iindex, 1);
       }
     },
-    elementMoved () {
+    elementMoved() {
       // console.log(`elementMoved`)
       if (_currDragElement != null) {
-        const dragNodeRect = _dragNode.getBoundingClientRect()
-        let foundTarget
+        const dragNodeRect = _dragNode.getBoundingClientRect();
+        let foundTarget;
 
-        utils.forEach(_dropTargets, target => {
+        utils.forEach(_dropTargets, (target) => {
           if (!foundTarget) {
-            const tnodeRect = ReactDOM.findDOMNode(target.component).getBoundingClientRect()
-            const isOverlap = doElementsOverlap(dragNodeRect, tnodeRect)
+            const tnodeRect = ReactDOM.findDOMNode(target.component).getBoundingClientRect();
+            const isOverlap = doElementsOverlap(dragNodeRect, tnodeRect);
             if (isOverlap) {
-              foundTarget = target
-              return
+              foundTarget = target;
             }
           }
-        })
+        });
 
         if (foundTarget) {
           setCurrDropTarget(foundTarget, () => {
-            let foundIndicator = null
+            let foundIndicator = null;
 
             utils.forEach(_dropIndicators, (indicator, index) => {
               if (!foundIndicator) {
                 const elementOwnIndicator = indicator.component.props.axetype === _currDragElement.props.axetype &&
-                  indicator.component.props.position === _currDragElement.props.position
+                  indicator.component.props.position === _currDragElement.props.position;
 
-                const targetIndicator = indicator.component.props.axetype === foundTarget.component.props.axetype
+                const targetIndicator = indicator.component.props.axetype === foundTarget.component.props.axetype;
                 if (targetIndicator && !elementOwnIndicator) {
-                  const tnodeRect = ReactDOM.findDOMNode(indicator.component).getBoundingClientRect()
-                  const isOverlap = doElementsOverlap(dragNodeRect, tnodeRect)
+                  const tnodeRect = ReactDOM.findDOMNode(indicator.component).getBoundingClientRect();
+                  const isOverlap = doElementsOverlap(dragNodeRect, tnodeRect);
                   if (isOverlap) {
-                    foundIndicator = indicator
-                    return true
+                    foundIndicator = indicator;
+                    return true;
                   }
                 }
               }
-            })
+            });
 
             if (!foundIndicator) {
-              const axeIndicators = _dropIndicators.filter(indicator => indicator.component.props.axetype === foundTarget.component.props.axetype)
+              const axeIndicators = _dropIndicators.filter(indicator => indicator.component.props.axetype === foundTarget.component.props.axetype);
               if (axeIndicators.length > 0) {
-                foundIndicator = axeIndicators[axeIndicators.length - 1]
+                foundIndicator = axeIndicators[axeIndicators.length - 1];
               }
             }
-            setCurrDropIndicator(foundIndicator)
-          })
+            setCurrDropIndicator(foundIndicator);
+          });
         }
       }
-    }
-  }
-})()
+    },
+  };
+})();

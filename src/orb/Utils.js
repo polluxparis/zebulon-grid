@@ -3,30 +3,30 @@
  * @param  {string} identifier - namespace identifier
  * @return {object}
  */
-export function ns (identifier, parent) {
-  var parts = identifier.split('.')
-  var i = 0
-  parent = parent || window
+export function ns(identifier, parent) {
+  const parts = identifier.split('.');
+  let i = 0;
+  parent = parent || window;
   while (i < parts.length) {
-    parent[parts[i]] = parent[parts[i]] || {}
-    parent = parent[parts[i]]
-    i++
+    parent[parts[i]] = parent[parts[i]] || {};
+    parent = parent[parts[i]];
+    i++;
   }
-  return parent
+  return parent;
 }
 /**
  * Returns an array of object own properties
  * @param  {Object} obj
  * @return {Array}
  */
-export function ownProperties (obj) {
-  var arr = []
-  for (let prop in obj) {
+export function ownProperties(obj) {
+  const arr = [];
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
-      arr.push(prop)
+      arr.push(prop);
     }
   }
-  return arr
+  return arr;
 }
 /**
  * Iterates over the list object and executes the callback on each item
@@ -38,71 +38,71 @@ export function ownProperties (obj) {
  * @param {Boolean} forceContinue - Do not stop if the callback return value is true.
  * @return {Array}
  */
-export function forEach (list, callback, forceContinue) {
-  var ret
+export function forEach(list, callback, forceContinue) {
+  let ret;
   if (list) {
-    for (var i = 0, l = list.length; i < l; i++) {
-      ret = callback(list[i], i)
+    for (let i = 0, l = list.length; i < l; i++) {
+      ret = callback(list[i], i);
       if (ret && forceContinue !== true) {
-        break
+        break;
       }
     }
   }
-  return ret
+  return ret;
 }
 /**
  * Returns whether or not obj is a javascript array.
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isArray (obj) {
-  return Object.prototype.toString.apply(obj) === '[object Array]'
+export function isArray(obj) {
+  return Object.prototype.toString.apply(obj) === '[object Array]';
 }
 /**
  * Returns whether or not obj is a number
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isNumber (obj) {
-  return Object.prototype.toString.apply(obj) === '[object Number]'
+export function isNumber(obj) {
+  return Object.prototype.toString.apply(obj) === '[object Number]';
 }
 /**
  * Returns whether or not obj is a Date object.
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isDate (obj) {
-  return Object.prototype.toString.apply(obj) === '[object Date]'
+export function isDate(obj) {
+  return Object.prototype.toString.apply(obj) === '[object Date]';
 }
 /**
  * Returns whether or not obj is a string
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isString (obj) {
-  return Object.prototype.toString.apply(obj) === '[object String]'
+export function isString(obj) {
+  return Object.prototype.toString.apply(obj) === '[object String]';
 }
 /**
  * Returns whether or not obj is a regular expression object
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isRegExp (obj) {
-  return Object.prototype.toString.apply(obj) === '[object RegExp]'
+export function isRegExp(obj) {
+  return Object.prototype.toString.apply(obj) === '[object RegExp]';
 }
 /**
  * Returns whether or not obj is a function object
  * @param  {object}  obj
  * @return {Boolean}
  */
-export function isFunction (obj) {
-  return Object.prototype.toString.apply(obj) === '[object Function]'
+export function isFunction(obj) {
+  return Object.prototype.toString.apply(obj) === '[object Function]';
 }
 /**
  * Escapes all RegExp special characters.
  */
-export function escapeRegex (re) {
-  return re.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+export function escapeRegex(re) {
+  return re.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 /**
  * Returns the first element in the array that satisfies the given predicate
@@ -110,87 +110,87 @@ export function escapeRegex (re) {
  * @param  {function} predicate Function to apply to each element until it returns true
  * @return {Object}           The first object in the array that satisfies the predicate or undefined.
  */
-export function findInArray (array, predicate) {
+export function findInArray(array, predicate) {
   if (this.isArray(array) && predicate) {
     for (let i = 0; i < array.length; i++) {
-      var item = array[i]
+      const item = array[i];
       if (predicate(item)) {
-        return item
+        return item;
       }
     }
   }
-  return undefined
+  return undefined;
 }
 /**
  * Returns a JSON string represenation of an object
  * @param {object} obj
  * @return {string}
  */
-export function jsonStringify (obj, censorKeywords) {
-  function censor (key, value) {
-    return censorKeywords && censorKeywords.indexOf(key) > -1 ? undefined : value
+export function jsonStringify(obj, censorKeywords) {
+  function censor(key, value) {
+    return censorKeywords && censorKeywords.indexOf(key) > -1 ? undefined : value;
   }
-  return JSON.stringify(obj, censor, 2)
+  return JSON.stringify(obj, censor, 2);
 }
-export function addEventListener (element, eventName, handler) {
+export function addEventListener(element, eventName, handler) {
   if (element.addEventListener) {
-    element.addEventListener(eventName, handler, false)
+    element.addEventListener(eventName, handler, false);
   } else if (element.attachEvent) {
-    element.attachEvent('on' + eventName, handler)
+    element.attachEvent(`on${eventName}`, handler);
   } else {
-    element['on' + eventName] = handler
+    element[`on${eventName}`] = handler;
   }
 }
-export function removeEventListener (element, eventName, handler) {
+export function removeEventListener(element, eventName, handler) {
   if (element.removeEventListener) {
-    element.removeEventListener(eventName, handler, false)
+    element.removeEventListener(eventName, handler, false);
   } else if (element.detachEvent) {
-    element.detachEvent('on' + eventName, handler)
+    element.detachEvent(`on${eventName}`, handler);
   } else {
-    element['on' + eventName] = null
+    element[`on${eventName}`] = null;
   }
 }
-export function preventDefault (e) {
-  e = e || window.event
+export function preventDefault(e) {
+  e = e || window.event;
 
   if (e.preventDefault) {
-    e.preventDefault()
+    e.preventDefault();
   } else {
-    e.returnValue = false
+    e.returnValue = false;
   }
 }
-export function stopPropagation (e) {
-  e = e || window.event
+export function stopPropagation(e) {
+  e = e || window.event;
 
   if (e.stopPropagation) {
-    e.stopPropagation()
+    e.stopPropagation();
   } else {
-    e.cancelBubble = true
+    e.cancelBubble = true;
   }
 }
-export function getEventButton (e) {
-  var button = e.button
+export function getEventButton(e) {
+  const button = e.button;
   if ('which' in e) {
-    return button
+    return button;
   }
   // IE 8
   return button === 1 ? 0 // left
     : button === 4 ? 1 // middle
-      : 2 // right
+      : 2; // right
 }
-export function getMousePageXY (e) {
-  e = e || window.event
+export function getMousePageXY(e) {
+  e = e || window.event;
 
-  var pageX = e.pageX
-  var pageY = e.pageY
+  let pageX = e.pageX;
+  let pageY = e.pageY;
   if (pageX === undefined) {
-    pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft
-    pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop
+    pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+    pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
   }
   return {
-    pageX: pageX,
-    pageY: pageY
-  }
+    pageX,
+    pageY,
+  };
 }
 
 // // from: https://github.com/davidchambers/Base64.js
@@ -260,72 +260,73 @@ export function getMousePageXY (e) {
 //   }
 //
 
-export function twoArraysIntersect (arg0, arg1) {
-  const n = arg0.length
-  const m = arg1.length
-  var i = 0
-  var j = 0
-  var res = []
+export function twoArraysIntersect(arg0, arg1) {
+  const n = arg0.length;
+  const m = arg1.length;
+  let i = 0;
+  let j = 0;
+  const res = [];
   while (i < n && j < m) {
     if (arg0[i] > arg1[j]) {
-      j++
+      j++;
     } else if (arg0[i] < arg1[j]) {
-      i++
+      i++;
     } else {
-      res.push(arg0[i])
-      i++
-      j++
+      res.push(arg0[i]);
+      i++;
+      j++;
     }
   }
-  return res
+  return res;
 }
 
-export function arraysIntersect () {
-  var n, len
-  var ret = []
-  var obj = {}
-  var nOthers = arguments.length - 1
-  var nShortest = arguments[0].length
-  var shortest = 0
+export function arraysIntersect() {
+  let n,
+    len;
+  const ret = [];
+  const obj = {};
+  const nOthers = arguments.length - 1;
+  let nShortest = arguments[0].length;
+  let shortest = 0;
   for (let i = 0; i <= nOthers; i++) {
-    n = arguments[i].length
+    n = arguments[i].length;
     if (n < nShortest) {
-      shortest = i
-      nShortest = n
+      shortest = i;
+      nShortest = n;
     }
   }
   for (let i = 0; i <= nOthers; i++) {
-    n = (i === shortest) ? 0 : (i || shortest) // Read the shortest array first. Read the first array instead of the shortest
-    len = arguments[n].length
+    n = (i === shortest) ? 0 : (i || shortest); // Read the shortest array first. Read the first array instead of the shortest
+    len = arguments[n].length;
     for (let j = 0; j < len; j++) {
-      var elem = arguments[n][j]
+      const elem = arguments[n][j];
       if (obj[elem] === i - 1) {
         if (i === nOthers) {
-          ret.push(elem)
-          obj[elem] = 0
+          ret.push(elem);
+          obj[elem] = 0;
         } else {
-          obj[elem] = i
+          obj[elem] = i;
         }
       } else if (i === 0) {
-        obj[elem] = 0
+        obj[elem] = 0;
       }
     }
   }
-  return ret
+  return ret;
 }
 
-export function isInRange ([columnIndex, rowIndex], [columnIndexStart, rowIndexStart], [columnIndexEnd, rowIndexEnd]) {
-  let inRows = false
+export function isInRange([columnIndex, rowIndex], [columnIndexStart, rowIndexStart], [columnIndexEnd, rowIndexEnd]) {
+  let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {
-    inRows = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd
+    inRows = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd;
   } else {
-    inRows = columnIndexEnd <= columnIndex && columnIndex <= columnIndexStart
+    inRows = columnIndexEnd <= columnIndex && columnIndex <= columnIndexStart;
   }
-  let inColumns = false
+  let inColumns = false;
   if (rowIndexStart <= rowIndexEnd) {
-    inColumns = rowIndexStart <= rowIndex && rowIndex <= rowIndexEnd
+    inColumns = rowIndexStart <= rowIndex && rowIndex <= rowIndexEnd;
   } else {
-    inColumns = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart
+    inColumns = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart;
   }
-  return inRows && inColumns
+  return inRows && inColumns;
 }
