@@ -164,7 +164,7 @@ let config = {
 ReactDOM.render(<App config={config} datasource={datasource} />, document.getElementById('root'))
 
 if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
-const testCase = createScrollingTestCase(document.querySelector('.ReactVirtualized__Grid'))
+const testCase = createScrollingTestCase(document.getElementsByClassName('.OrbGrid-data-cells')[0])
 const testRunner = new TestRunner(testCase, 5)
 
 let btn = document.createElement('button')

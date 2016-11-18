@@ -59,9 +59,9 @@ export default class Store {
   }
 
 
-///////////////////////////////////////////////////////////
-///////////////////////// ACTIONS //////////////////////////
-///////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////
+// /////////////////////// ACTIONS //////////////////////////
+// /////////////////////////////////////////////////////////
 
   push(payload) {
     let pushed;
@@ -233,44 +233,42 @@ export default class Store {
           this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cellWidth,
           offset.x - initialOffset.x);
       }
-    } else {
-      if (handle.axis === AxisType.COLUMNS && handle.position === 'right') {
-        if (handle.leafSubheaders.length) {
-          const fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length;
-          handle.leafSubheaders.forEach((subheader) => {
-            this.columnHeaderSizes.leafs[subheader.key] = updateCellSize(
+    } else if (handle.axis === AxisType.COLUMNS && handle.position === 'right') {
+      if (handle.leafSubheaders.length) {
+        const fractionalOffset = (offset.x - initialOffset.x) / handle.leafSubheaders.length;
+        handle.leafSubheaders.forEach((subheader) => {
+          this.columnHeaderSizes.leafs[subheader.key] = updateCellSize(
               this.columnHeaderSizes.leafs[subheader.key] || this.sizes.cellWidth,
               fractionalOffset);
-          });
-        } else {
+        });
+      } else {
           // Header is a leaf header
-          this.columnHeaderSizes.leafs[handle.id] = updateCellSize(
+        this.columnHeaderSizes.leafs[handle.id] = updateCellSize(
             this.columnHeaderSizes.leafs[handle.id] || this.sizes.cellWidth,
             offset.x - initialOffset.x);
-        }
-      } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
-        if (handle.leafSubheaders.length) {
-          const fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length;
-          handle.leafSubheaders.forEach((subheader) => {
-            this.rowHeaderSizes.leafs[subheader.key] = updateCellSize(
+      }
+    } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
+      if (handle.leafSubheaders.length) {
+        const fractionalOffset = (offset.y - initialOffset.y) / handle.leafSubheaders.length;
+        handle.leafSubheaders.forEach((subheader) => {
+          this.rowHeaderSizes.leafs[subheader.key] = updateCellSize(
               this.rowHeaderSizes.leafs[subheader.key] || this.sizes.cellHeight,
               fractionalOffset);
-          });
-        } else {
+        });
+      } else {
           // Header is a leaf header
-          this.rowHeaderSizes.leafs[handle.id] = updateCellSize(
+        this.rowHeaderSizes.leafs[handle.id] = updateCellSize(
             this.rowHeaderSizes.leafs[handle.id] || this.sizes.cellHeight,
             offset.y - initialOffset.y);
-        }
-      } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
-        this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(
+      }
+    } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
+      this.columnHeaderSizes.dimensions[handle.id] = updateCellSize(
           this.columnHeaderSizes.dimensions[handle.id] || this.sizes.cellHeight,
           offset.y - initialOffset.y);
-      } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
-        this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(
+    } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
+      this.rowHeaderSizes.dimensions[handle.id] = updateCellSize(
           this.rowHeaderSizes.dimensions[handle.id] || this.sizes.cellWidth,
           offset.x - initialOffset.x);
-      }
     }
     this.getsizes();
     this.forceUpdateCallback();
@@ -287,9 +285,9 @@ export default class Store {
   //   }
   // }
 
-///////////////////////////////////////////////////////////
-///////////////////////// VALUES //////////////////////////
-///////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////
+// /////////////////////// VALUES //////////////////////////
+// /////////////////////////////////////////////////////////
 
   getrows() {
     const axe = new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData);
@@ -474,7 +472,7 @@ export default class Store {
   }
 
   getFieldValues(field, filterFunc) {
-    let values1 = [];
+    const values1 = [];
     let values = [];
     let containsBlank = false;
     // We use data here instead of filteredData
@@ -486,33 +484,42 @@ export default class Store {
         if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
           values1.push(val);
         }
+      } else if (val != null) {
+        values1.push(val);
       } else {
-        if (val != null) {
-          values1.push(val);
-        } else {
-          containsBlank = true;
-        }
+        containsBlank = true;
       }
     }
     if (values1.length > 1) {
       if (utils.isNumber(values1[0]) || utils.isDate(values1[0])) {
-        values1.sort(function(a, b) { return a ?(b ? a - b : 1) :(b ? -1 : 0) })
+        values1.sort((a, b) => {
+          if (a) {
+            if (b) {
+              return a - b;
+            }
+            return 1;
+          }
+          if (b) {
+            return -1;
+          }
+          return 0;
+        });
       } else {
-        values1.sort()
+        values1.sort();
       }
 
       for (let vi = 0; vi < values1.length; vi += 1) {
         if (vi === 0 || values1[vi] !== values[values.length - 1]) {
-          values.push(values1[vi])
+          values.push(values1[vi]);
         }
       }
     } else {
-      values = values1
+      values = values1;
     }
     if (containsBlank) {
-      values.unshift(null)
+      values.unshift(null);
     }
-    return values
+    return values;
   }
 
   // isFieldFiltered(field) {

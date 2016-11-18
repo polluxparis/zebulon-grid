@@ -86,14 +86,3 @@ export default function createScrollingTestCase(component) {
 
   }
 }
-
-// export default function createGridScrollingTestCase(grid) {
-//   const maxVerticalScroll = grid.scrollHeight;
-//   const maxHorizontalScroll = grid.scrollWidth;
-//
-//   return function testCase(callback) {
-//     // requestAnimationFrame(() => { grid.scrollTop = maxVerticalScroll / 10; });
-//     requestAnimationFrame(() => { grid.scrollLeft = maxHorizontalScroll / 10; });
-//     callback();
-//   };
-// }
