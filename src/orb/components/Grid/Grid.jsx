@@ -800,9 +800,9 @@ export class Grid extends Component {
                         rowCount={columnVerticalCount}
                         rowHeight={store.getRowHeight.bind(store)}
                         scrollLeft={scrollLeft}
-                        // We set overflowX and not overflow
-                        // because react-virtualized sets overflowX and overflowY during render
-                        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden' }}
+                        // We set overflowX and overflowY and not overflow
+                        // because react-virtualized sets them during render
+                        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
                         width={columnHeadersVisibleWidth}
                       />
                     </div>
@@ -819,9 +819,9 @@ export class Grid extends Component {
                           rowCount={rowVerticalCount}
                           rowHeight={store.getRowHeight.bind(store)}
                           scrollTop={scrollTop}
-                          // We set overflowY and not overflow
-                          // because react-virtualized sets overflowX and overflowY during render
-                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowY: 'hidden' }}
+                          // We set overflowX and overflowY and not overflow
+                          // because react-virtualized sets them during render
+                          style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
                           width={rowHeadersWidth}
                         />
                       </div>
