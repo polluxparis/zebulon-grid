@@ -337,13 +337,13 @@ export class Grid extends Component {
    }) {
     const { left, top, width, height } = positionStyle;
     const { x, y } = header;
-    const previewSize = { };
+    const previewOffset = { };
     if (axis === AxisType.COLUMNS) {
-      previewSize.right = this.props.store.sizes.columnHeadersHeight;
-      previewSize.bottom = this.width;
+      previewOffset.right = top - scrollTop;
+      previewOffset.bottom = (left - scrollLeft) + this.props.store.sizes.rowHeadersWidth;
     } else {
-      previewSize.right = this.height;
-      previewSize.bottom = this.props.store.sizes.rowHeadersWidth;
+      previewOffset.right = (top - scrollTop) + this.props.store.sizes.columnHeadersHeight;
+      previewOffset.bottom = left - scrollLeft;
     }
     // Handle affix
     let style;
@@ -394,7 +394,7 @@ export class Grid extends Component {
           leafSubheaders={leafSubheaders}
           axis={axis}
           previewSize={this.height}
-          previewOffset={top - scrollTop}
+          previewOffset={previewOffset.right}
         />
         <ResizeHandle
           position="bottom"
@@ -403,7 +403,7 @@ export class Grid extends Component {
           leafSubheaders={leafSubheaders}
           axis={axis}
           previewSize={this.width}
-          previewOffset={left - scrollLeft}
+          previewOffset={previewOffset.bottom}
         />
       </div>
     );
@@ -417,8 +417,6 @@ export class Grid extends Component {
     width,
     crossFieldCode,
     mainDirection,
-    scrollLeft,
-    scrollTop,
    }) {
     const ids = {};
     if (mainDirection === 'down') {
