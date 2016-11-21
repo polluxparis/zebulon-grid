@@ -10,7 +10,7 @@ import createScrollingTestCase from './fpsTests/tests'
 import App from './App'
 
 function getMockDataSource (dataRepetition, nToto) {
-  const nTiti = 100
+  const nTiti = 10
   const nTutu = 2
   let obj = []
   let res = []
@@ -33,11 +33,14 @@ function getMockDataSource (dataRepetition, nToto) {
   return res
 }
 
-const dataArray = getMockDataSource(1, 100)
+const dataArray = getMockDataSource(1, 10)
 const datasourceArray = [
   dataArray,
   // dataArray.slice(0, 5000),
-  {toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1'},
+  [
+    {toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1'},
+    {toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0'},
+  ],
   {toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1'},
   // [{toto: '1', toto_lb: 'toto 1', qty: 100, amt: 1000, titi: 'titi 0', tutu: '0'}, {toto: '12', toto_lb: 'toto 12', qty: 44, amt: 777, titi: 'titi 0',
   // tutu: '0'}]
@@ -45,7 +48,7 @@ const datasourceArray = [
 
 const datasource = datasourceArray[0]
 
-// const datasource = Observable.interval(2000).take(3)
+// const datasource = Observable.interval(2000).take(2)
 //  .map(i => datasourceArray[i])
 //  .do(data => console.log('data received', data))
 

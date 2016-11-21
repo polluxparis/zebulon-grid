@@ -19,7 +19,9 @@
     "eslint-plugin-react": "^6.6.0",
     "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
-    "react-scripts": "0.7.0"
+    "react-addons-test-utils": "15.3.2",
+    "react-scripts": "0.7.0",
+    "react-test-renderer": "^15.4.0"
   },
   "dependencies": {
     "chroma-js": "^1.2.1",

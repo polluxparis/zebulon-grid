@@ -17,10 +17,12 @@ export const TOTAL_ID = '__total__';
  */
 export default class Store {
 
-  constructor(config, forceUpdateCallback) {
+  constructor(config, forceUpdateCallback, datasource) {
     this.init = false;
     this.defaultfield = { name: '#undefined#' };
-    this.forceUpdateCallback = forceUpdateCallback;
+    // If no forceUpdate function is passed, use a mock
+    // Useful for tests
+    this.forceUpdateCallback = forceUpdateCallback || function mockForceUpdate() {};
     this.config = new Config(config);
     this.filters = new Map();
     Object.keys(this.config.preFilters)
@@ -34,6 +36,7 @@ export default class Store {
     this.getsizes(true);
 
     this.init = true;
+    if (datasource) this.subscribe(datasource);
   }
 
   subscribe(datasource) {
@@ -106,13 +109,13 @@ export default class Store {
     this.forceUpdateCallback();
   }
 
-  sort(axetype, field) {
+  sort(axetype, fieldName) {
     let sorted = false;
     if (axetype === AxisType.ROWS) {
-      this.rows.sort(field);
+      this.rows.sort(fieldName);
       sorted = true;
     } else if (axetype === AxisType.COLUMNS) {
-      this.columns.sort(field);
+      this.columns.sort(fieldName);
       sorted = true;
     }
     if (sorted && this.init) {
@@ -130,8 +133,8 @@ export default class Store {
     }
   }
 
-  moveField(fieldname, oldaxistype, newaxistype, position) {
-    const axisType = this.config.moveField(fieldname, oldaxistype, newaxistype, position);
+  moveField(fieldName, oldAxisType, newAxisType, position) {
+    const axisType = this.config.moveField(fieldName, oldAxisType, newAxisType, position);
     switch (axisType) {
       case AxisType.COLUMNS:
         this.columnsUi = this.getcolumnsUi();
@@ -160,8 +163,8 @@ export default class Store {
     this.forceUpdateCallback();
   }
 
-  selectField(fieldname) {
-    this.config.selectField(fieldname);
+  selectField(fieldName) {
+    this.config.selectField(fieldName);
     this.rows = this.getrows();
     this.forceUpdateCallback();
   }
@@ -290,19 +293,11 @@ export default class Store {
 // /////////////////////////////////////////////////////////
 
   getrows() {
-    const axe = new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData);
-    this.config.rowFields.forEach((field) => {
-      axe.sort(field, true);
-    });
-    return axe;
+    return new Axis(AxisType.ROWS, this.config.rowFields, this.filteredData);
   }
 
   getcolumns() {
-    const axe = new Axis(AxisType.COLUMNS, this.config.columnFields, this.filteredData);
-    this.config.columnFields.forEach((field) => {
-      axe.sort(field, true);
-    });
-    return axe;
+    return new Axis(AxisType.COLUMNS, this.config.columnFields, this.filteredData);
   }
 
   getChartAxis() {
@@ -546,7 +541,10 @@ export default class Store {
     if (this.config.activatedDataFieldsCount > 0) {
       let intersection;
 
-      if (rowIndexes === null) {
+      if (rowIndexes === null && colIndexes === null) {
+        // At initialization, both rowIndexes and colIndexes are null
+        intersection = null;
+      } else if (rowIndexes === null) {
         intersection = colIndexes;
       } else if (colIndexes === null) {
         intersection = rowIndexes;
@@ -554,7 +552,7 @@ export default class Store {
         intersection = utils.twoArraysIntersect(colIndexes, rowIndexes);
       }
 
-      const emptyIntersection = intersection && intersection.length === 0;
+      const emptyIntersection = !intersection || intersection.length === 0;
       const data = this.filteredData;
       let datafield;
       const datafields = [];

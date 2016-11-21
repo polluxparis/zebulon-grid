@@ -1,56 +1,41 @@
 import React, { Component } from 'react';
-import { ResizableBox } from 'react-resizable';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import 'react-virtualized/styles.css';
+import 'react-resizable/css/styles.css';
+// import { ResizableBox } from 'react-resizable';
+// import { AutoSizer } from 'react-virtualized';
 
-import { ChartConfiguration, Chart, GridConfiguration, Grid, Store } from './orb';
+import {
+  // ChartConfiguration,
+  // Chart,
+  GridConfiguration,
+  Grid,
+  Store,
+ } from './orb';
 
 import './App.css';
 import logo from './logo.svg';
-import 'react-virtualized/styles.css';
-import 'react-resizable/css/styles.css';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    const store = new Store(props.config, this.forceUpdate.bind(this));
-    this.state = { store };
-
-    this.onDrilldown = this.onDrilldown.bind(this);
+    this.store = new Store(props.config, this.forceUpdate.bind(this));
   }
 
   componentDidMount() {
     // Store is subscribed here because it triggers a forceUpdate
-    // forceUpdate can only be called on a mounted Component
-    this.state.store.subscribe(this.props.datasource);
+    // And forceUpdate can only be called on a mounted Component
+    this.store.subscribe(this.props.datasource);
   }
 
   componentWillReceiveProps(newProps) {
-    const store = new Store(newProps.config, this.forceUpdate.bind(this));
-    store.subscribe(newProps.datasource);
-    this.setState({ store });
-  }
-
-  sort(axetype, field) {
-    this.state.store.sort(axetype, field);
-  }
-
-  toggleSubtotals(axetype) {
-    this.state.store.toggleSubtotals(axetype);
-  }
-
-  toggleGrandtotal(axetype) {
-    this.state.store.toggleGrandtotal(axetype);
-  }
-
-  onDrilldown(cell) {
-    console.log('drilldown (prop)', cell);
+    this.store.subscribe(newProps.datasource);
   }
 
   render() {
-    const { store } = this.state;
-    console.log(store);
+    console.log(this.store);
     return (
       <div className="App">
         <div className="App-header">
@@ -83,14 +68,25 @@ class App extends Component {
             </ResizableBox>
           </div> */}
           <div>
-            <GridConfiguration store={store} />
+            <GridConfiguration store={this.store} />
             <div className="Zoom-bar">
-              <span className="Zoom-icon Zoom-icon-in" onClick={() => store.handleZoom(true)}>+</span>
-              <span className="Zoom-icon Zoom-icon-out" onClick={() => store.handleZoom()}>-</span>
+              <button
+                className="Zoom-icon Zoom-icon-in"
+                onClick={() => this.store.handleZoom(true)}
+              >+</button>
+              <button
+                className="Zoom-icon Zoom-icon-out"
+                onClick={() => this.store.handleZoom()}
+              >-</button>
             </div>
-            <ResizableBox height={600} width={800}>
-              <Grid store={store} columnCount={store.layout.columnHorizontalCount} />
-            </ResizableBox>
+            {/* <ResizableBox height={600} width={800}>
+              <AutoSizer>
+                {({ width, height }) =>
+                  <Grid height={height} width={width} store={store} />
+                }
+              </AutoSizer>
+            </ResizableBox> */}
+            <Grid store={this.store} height={600} width={800} />
           </div>
         </div>
       </div>

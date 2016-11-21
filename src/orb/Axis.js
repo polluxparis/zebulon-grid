@@ -55,59 +55,72 @@ export class Axis {
     this.root = new Dimension(-1, null, null, null, this.dimensionsCount + 1, true, false);
     this.fill(data);
     // initial sort
-    this.fields.forEach(field => field.sort.order === 'asc' || field.sort.order === 'desc' ? this.sort(field, true) : null);
+    this.fields.forEach((field) => {
+      this.sort(field.name, true);
+    });
   }
 
-  sort(field, donottoggle) {
-    if (field != null) {
-      if (donottoggle !== true) {
-        if (field.sort.order !== 'asc') {
-          field.sort.order = 'asc';
-        } else {
-          field.sort.order = 'desc';
-        }
+  sort(fieldName, doNotToggle) {
+    const field = this.fields[this.getFieldIndex(fieldName)];
+    if (doNotToggle !== true) {
+      if (field.sort.order !== 'asc') {
+        field.sort.order = 'asc';
+      } else {
+        field.sort.order = 'desc';
       }
-
-      const depth = this.dimensionsCount - this.getfieldindex(field);
-      const parents = depth === this.dimensionsCount ? [this.root] : this.getDimensionsByDepth(depth + 1);
-      for (let i = 0; i < parents.length; i++) {
-        if (field.sort.customfunc != null) {
-          parents[i].values.sort(field.sort.customfunc);
-        } else {
-          parents[i].values.sort();
-        }
-        if (field.sort.order === 'desc') {
-          parents[i].values.reverse();
-        }
-      }
+    } else if (field.sort.order === null) {
+      // If doNotToggle is true, fields without sort configuration are going to
+      // be sorted in ascending order. This ensures that it is correctly recorded.
+      field.sort.order = 'asc';
     }
+
+    const depth = this.dimensionsCount - this.getFieldIndex(field.name);
+    let dimensions;
+    if (depth === this.dimensionsCount) {
+      dimensions = [this.root];
+    } else {
+      dimensions = this.getDimensionsByDepth(depth + 1);
+    }
+    dimensions.forEach((dimension) => {
+      if (field.sort.customfunc !== null) {
+        dimension.values.sort(field.sort.customfunc);
+      } else {
+        dimension.values.sort();
+      }
+      if (field.sort.order === 'desc') {
+        dimension.values.reverse();
+      }
+    });
   }
 
   // perhaps introduce a result parameter to obtain tail call optimisation
-  getDimensionsByDepth(depth, dim) {
-    if (!dim) { dim = this.root; }
+  getDimensionsByDepth(depth, dim = this.root) {
+    // if (!dim) { dim = this.root; }
     if (depth === this.dimensionsCount + 1) { return [dim]; }
-    return [].concat(...Object.keys(dim.subdimvals).map(dimValue => this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])));
+    return [].concat(...Object.keys(dim.subdimvals)
+      .map(dimValue => this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])));
   }
 
-  getfieldindex(field) {
-    return this.fields.map(fld => fld.name).indexOf(field.name);
+  getFieldIndex(fieldName) {
+    return this.fields.map(fld => fld.name).indexOf(fieldName);
   }
 
   /**
    * Creates all subdimensions using the supplied data
    * fill does two things:
-   *   - filling the dimensionsByDepth array of the axe (used for sorting and flattenValues - note sure if useful)
+   *   - filling the dimensionsByDepth array of the axe
+        (used for sorting and flattenValues - note sure if useful)
    *   - filling the subdimvals array of each dimension of the axe
-   *   - filling the rowIndexes array of each dimension of the axe (used for calculating aggregations)
+   *   - filling the rowIndexes array of each dimension of the axe
+        (used for calculating aggregations)
    */
   fill(data) {
     if (data != null && this.dimensionsCount > 0) {
       if (data != null && utils.isArray(data) && data.length > 0) {
-        for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex++) {
+        for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex += 1) {
           const row = data[rowIndex];
           let dim = this.root;
-          for (let findex = 0; findex < this.dimensionsCount; findex++) {
+          for (let findex = 0; findex < this.dimensionsCount; findex += 1) {
             const depth = this.dimensionsCount - findex;
             const field = this.fields[findex];
             const name = row[field.name];
@@ -117,7 +130,15 @@ export class Axis {
               dim = subdimvals[id];
             } else {
               dim.values.push(id);
-              dim = new Dimension(id, dim, name, field, depth, false, findex === this.dimensionsCount - 1);
+              dim = new Dimension(
+                id,
+                dim,
+                name,
+                field,
+                depth,
+                false,
+                findex === this.dimensionsCount - 1,
+              );
               subdimvals[id] = dim;
               dim.rowIndexes = [];
             }

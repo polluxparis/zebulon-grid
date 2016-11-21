@@ -42,7 +42,7 @@ class FieldButton extends Component {
 
   handleClick() {
     const { store, axetype, field } = this.props;
-    store.sort(axetype, field);
+    store.sort(axetype, field.name);
   }
 
   render() {
