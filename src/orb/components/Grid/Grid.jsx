@@ -166,11 +166,14 @@ export class Grid extends Component {
 
 
   componentWillReceiveProps(nextProps) {
-    // // Change scroll values to stay at the same position when modifying the layout
-    // this.scrollLeft = this.gridRef.state.scrollLeft
-    //   * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
-    // this.scrollTop = this.gridRef.state.scrollTop
-    //   * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
+    // Change scroll values to stay at the same position when modifying the layout
+    // The current implementation only works when all cells have the same size
+    // A better implementation would be to find which cells are at the beginning
+    // upon receiving props and jumping there after
+    this.scrollLeft = this.dataCellsRef.state.scrollLeft
+      * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
+    this.scrollTop = this.dataCellsRef.state.scrollTop
+      * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
 
     this.setState({
       rowVerticalCount: nextProps.store.layout.rowVerticalCount,
@@ -852,8 +855,8 @@ export class Grid extends Component {
                     ref={(ref) => { this.dataCellsRef = ref; }}
                     rowCount={rowVerticalCount}
                     rowHeight={store.getRowHeight}
-                    scrollLeft={scrollLeft}
-                    scrollTop={scrollTop}
+                    scrollLeft={this.scrollLeft}
+                    scrollTop={this.scrollTop}
                     style={{ fontSize: `${this.props.store.zoom * 100}%` }}
                     width={Math.min(width - rowHeadersWidth,
                       columnHeadersWidth + scrollbarSize())}
