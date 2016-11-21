@@ -1,63 +1,63 @@
-/**
- * Creates a namespcae hierarchy if not exists
- * @param  {string} identifier - namespace identifier
- * @return {object}
- */
-export function ns(identifier, parent) {
-  const parts = identifier.split('.');
-  let i = 0;
-  parent = parent || window;
-  while (i < parts.length) {
-    parent[parts[i]] = parent[parts[i]] || {};
-    parent = parent[parts[i]];
-    i++;
-  }
-  return parent;
-}
-/**
- * Returns an array of object own properties
- * @param  {Object} obj
- * @return {Array}
- */
-export function ownProperties(obj) {
-  const arr = [];
-  for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      arr.push(prop);
-    }
-  }
-  return arr;
-}
-/**
- * Iterates over the list object and executes the callback on each item
- * if the callback returns a value that can be evaluated ti true,
- * the iteration will stop.
- * @param  {Array} list - the list to iterate over
- * @param  {Function} callback - function to be called on each iteration.
- * It will receive as arguments: current item and current item index.
- * @param {Boolean} forceContinue - Do not stop if the callback return value is true.
- * @return {Array}
- */
-export function forEach(list, callback, forceContinue) {
-  let ret;
-  if (list) {
-    for (let i = 0, l = list.length; i < l; i++) {
-      ret = callback(list[i], i);
-      if (ret && forceContinue !== true) {
-        break;
-      }
-    }
-  }
-  return ret;
-}
-/**
- * Returns whether or not obj is a javascript array.
- * @param  {object}  obj
- * @return {Boolean}
- */
-export function isArray(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Array]';
-}
+// /**
+//  * Creates a namespcae hierarchy if not exists
+//  * @param  {string} identifier - namespace identifier
+//  * @return {object}
+//  */
+// export function ns(identifier, parent) {
+//   const parts = identifier.split('.');
+//   let i = 0;
+//   parent = parent || window;
+//   while (i < parts.length) {
+//     parent[parts[i]] = parent[parts[i]] || {};
+//     parent = parent[parts[i]];
+//     i++;
+//   }
+//   return parent;
+// }
+// /**
+//  * Returns an array of object own properties
+//  * @param  {Object} obj
+//  * @return {Array}
+//  */
+// export function ownProperties(obj) {
+//   const arr = [];
+//   for (const prop in obj) {
+//     if (obj.hasOwnProperty(prop)) {
+//       arr.push(prop);
+//     }
+//   }
+//   return arr;
+// }
+// /**
+//  * Iterates over the list object and executes the callback on each item
+//  * if the callback returns a value that can be evaluated ti true,
+//  * the iteration will stop.
+//  * @param  {Array} list - the list to iterate over
+//  * @param  {Function} callback - function to be called on each iteration.
+//  * It will receive as arguments: current item and current item index.
+//  * @param {Boolean} forceContinue - Do not stop if the callback return value is true.
+//  * @return {Array}
+//  */
+// export function forEach(list, callback, forceContinue) {
+//   let ret;
+//   if (list) {
+//     for (let i = 0, l = list.length; i < l; i++) {
+//       ret = callback(list[i], i);
+//       if (ret && forceContinue !== true) {
+//         break;
+//       }
+//     }
+//   }
+//   return ret;
+// }
+// /**
+//  * Returns whether or not obj is a javascript array.
+//  * @param  {object}  obj
+//  * @return {Boolean}
+//  */
+// export function isArray(obj) {
+//   return Object.prototype.toString.apply(obj) === '[object Array]';
+// }
 /**
  * Returns whether or not obj is a number
  * @param  {object}  obj
@@ -122,76 +122,76 @@ export function findInArray(array, predicate) {
   return undefined;
 }
 /**
- * Returns a JSON string represenation of an object
- * @param {object} obj
- * @return {string}
- */
-export function jsonStringify(obj, censorKeywords) {
-  function censor(key, value) {
-    return censorKeywords && censorKeywords.indexOf(key) > -1 ? undefined : value;
-  }
-  return JSON.stringify(obj, censor, 2);
-}
-export function addEventListener(element, eventName, handler) {
-  if (element.addEventListener) {
-    element.addEventListener(eventName, handler, false);
-  } else if (element.attachEvent) {
-    element.attachEvent(`on${eventName}`, handler);
-  } else {
-    element[`on${eventName}`] = handler;
-  }
-}
-export function removeEventListener(element, eventName, handler) {
-  if (element.removeEventListener) {
-    element.removeEventListener(eventName, handler, false);
-  } else if (element.detachEvent) {
-    element.detachEvent(`on${eventName}`, handler);
-  } else {
-    element[`on${eventName}`] = null;
-  }
-}
-export function preventDefault(e) {
-  e = e || window.event;
-
-  if (e.preventDefault) {
-    e.preventDefault();
-  } else {
-    e.returnValue = false;
-  }
-}
-export function stopPropagation(e) {
-  e = e || window.event;
-
-  if (e.stopPropagation) {
-    e.stopPropagation();
-  } else {
-    e.cancelBubble = true;
-  }
-}
-export function getEventButton(e) {
-  const button = e.button;
-  if ('which' in e) {
-    return button;
-  }
-  // IE 8
-  return button === 1 ? 0 // left
-    : button === 4 ? 1 // middle
-      : 2; // right
-}
-export function getMousePageXY(e) {
-  e = e || window.event;
-
-  let pageX = e.pageX;
-  let pageY = e.pageY;
-  if (pageX === undefined) {
-    pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-    pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-  }
-  return {
-    pageX,
-    pageY,
-  };
-}
+//  * Returns a JSON string represenation of an object
+//  * @param {object} obj
+//  * @return {string}
+//  */
+// export function jsonStringify(obj, censorKeywords) {
+//   function censor(key, value) {
+//     return censorKeywords && censorKeywords.indexOf(key) > -1 ? undefined : value;
+//   }
+//   return JSON.stringify(obj, censor, 2);
+// }
+// export function addEventListener(element, eventName, handler) {
+//   if (element.addEventListener) {
+//     element.addEventListener(eventName, handler, false);
+//   } else if (element.attachEvent) {
+//     element.attachEvent(`on${eventName}`, handler);
+//   } else {
+//     element[`on${eventName}`] = handler;
+//   }
+// }
+// export function removeEventListener(element, eventName, handler) {
+//   if (element.removeEventListener) {
+//     element.removeEventListener(eventName, handler, false);
+//   } else if (element.detachEvent) {
+//     element.detachEvent(`on${eventName}`, handler);
+//   } else {
+//     element[`on${eventName}`] = null;
+//   }
+// }
+// export function preventDefault(e) {
+//   e = e || window.event;
+//
+//   if (e.preventDefault) {
+//     e.preventDefault();
+//   } else {
+//     e.returnValue = false;
+//   }
+// }
+// export function stopPropagation(e) {
+//   e = e || window.event;
+//
+//   if (e.stopPropagation) {
+//     e.stopPropagation();
+//   } else {
+//     e.cancelBubble = true;
+//   }
+// }
+// export function getEventButton(e) {
+//   const button = e.button;
+//   if ('which' in e) {
+//     return button;
+//   }
+//   // IE 8
+//   return button === 1 ? 0 // left
+//     : button === 4 ? 1 // middle
+//       : 2; // right
+// }
+// export function getMousePageXY(e) {
+//   e = e || window.event;
+//
+//   let pageX = e.pageX;
+//   let pageY = e.pageY;
+//   if (pageX === undefined) {
+//     pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+//     pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+//   }
+//   return {
+//     pageX,
+//     pageY,
+//   };
+// }
 
 // // from: https://github.com/davidchambers/Base64.js
 //
@@ -280,40 +280,40 @@ export function twoArraysIntersect(arg0, arg1) {
   return res;
 }
 
-export function arraysIntersect() {
-  let n,
-    len;
-  const ret = [];
-  const obj = {};
-  const nOthers = arguments.length - 1;
-  let nShortest = arguments[0].length;
-  let shortest = 0;
-  for (let i = 0; i <= nOthers; i++) {
-    n = arguments[i].length;
-    if (n < nShortest) {
-      shortest = i;
-      nShortest = n;
-    }
-  }
-  for (let i = 0; i <= nOthers; i++) {
-    n = (i === shortest) ? 0 : (i || shortest); // Read the shortest array first. Read the first array instead of the shortest
-    len = arguments[n].length;
-    for (let j = 0; j < len; j++) {
-      const elem = arguments[n][j];
-      if (obj[elem] === i - 1) {
-        if (i === nOthers) {
-          ret.push(elem);
-          obj[elem] = 0;
-        } else {
-          obj[elem] = i;
-        }
-      } else if (i === 0) {
-        obj[elem] = 0;
-      }
-    }
-  }
-  return ret;
-}
+// export function arraysIntersect() {
+//   let n,
+//     len;
+//   const ret = [];
+//   const obj = {};
+//   const nOthers = arguments.length - 1;
+//   let nShortest = arguments[0].length;
+//   let shortest = 0;
+//   for (let i = 0; i <= nOthers; i++) {
+//     n = arguments[i].length;
+//     if (n < nShortest) {
+//       shortest = i;
+//       nShortest = n;
+//     }
+//   }
+//   for (let i = 0; i <= nOthers; i++) {
+//     n = (i === shortest) ? 0 : (i || shortest); // Read the shortest array first. Read the first array instead of the shortest
+//     len = arguments[n].length;
+//     for (let j = 0; j < len; j++) {
+//       const elem = arguments[n][j];
+//       if (obj[elem] === i - 1) {
+//         if (i === nOthers) {
+//           ret.push(elem);
+//           obj[elem] = 0;
+//         } else {
+//           obj[elem] = i;
+//         }
+//       } else if (i === 0) {
+//         obj[elem] = 0;
+//       }
+//     }
+//   }
+//   return ret;
+// }
 
 export function isInRange([columnIndex, rowIndex], [columnIndexStart, rowIndexStart], [columnIndexEnd, rowIndexEnd]) {
   let inRows = false;

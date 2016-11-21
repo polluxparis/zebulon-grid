@@ -19,7 +19,8 @@ class FieldButton extends Component {
   }
 
   componentDidMount() {
-    this.DOMNode = findDOMNode(this.buttonRef);
+    this.DOMNode = findDOMNode(this.ref);
+    this.buttonDOMNode = findDOMNode(this.buttonRef);
   }
 
   onFilter(all, operator, term, staticValue, excludeStatic) {
@@ -73,9 +74,9 @@ class FieldButton extends Component {
       },
     };
     return connectDragSource(
-      <div>
-        <div style={styles.div} onClick={this.handleClick}>
-          <div>
+      <div id={field.caption} ref={(input) => { this.ref = input; }}>
+        <div style={styles.div}>
+          <div onClick={this.handleClick}>
             {field.caption}
           </div>
           <button
@@ -83,13 +84,12 @@ class FieldButton extends Component {
             onClick={this.addFilterPanel}
             style={styles.filterButton}
           />
-          {/* </div> */}
         </div>
         <Overlay
-          container={this.DOMNode}
-          placement="bottom"
+          container={document.body}
+          placement="right"
           show={filtering}
-          target={this.DOMNode}
+          target={this.buttonDOMNode}
           rootClose
           onHide={this.removeFilterPanel}
         >

@@ -33,9 +33,8 @@ export const Operators = {
     func(value, term) {
       if (value) {
         return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
-      } else {
-        return !(term);
       }
+      return !(term);
     },
     regexpSupported: true,
   },
@@ -44,9 +43,8 @@ export const Operators = {
     func(value, term) {
       if (value) {
         return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
-      } else {
-        return !!term;
       }
+      return !!term;
     },
     regexpSupported: true,
   },
@@ -113,22 +111,10 @@ export class ExpressionFilter {
     this.staticValue = staticValue;
     this.excludeStatic = excludeStatic;
     this.data = data;
-    this.filteredIds = this.getfilteredIds();
   }
 
-  getfilteredIds() {
-    const res = [];
-    for (let i = 0; i < this.data.length; i++) {
-      const row = this.data[i];
-      if (this.test(row[this.fieldName])) {
-        res.push(i);
-      }
-    }
-    return res;
-  }
-
-  test(value) {
-    if (utils.isArray(this.staticValue)) {
+  pass(value) {
+    if (Array.isArray(this.staticValue)) {
       const found = this.staticValue.indexOf(value) >= 0;
       return (this.excludeStatic && !found) || (!this.excludeStatic && found);
     } else if (this.term) {
@@ -137,12 +123,16 @@ export class ExpressionFilter {
       return true;
     } else if (this.staticValue === false || this.staticValue === NONE) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   isAlwaysTrue() {
-    return !(this.term || utils.isArray(this.staticValue) || this.staticValue === NONE || this.staticValue === false);
+    return !(
+      this.term
+      || Array.isArray(this.staticValue)
+      || this.staticValue === NONE
+      || this.staticValue === false
+    );
   }
 }

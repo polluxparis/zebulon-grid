@@ -116,7 +116,7 @@ export class Axis {
    */
   fill(data) {
     if (data != null && this.dimensionsCount > 0) {
-      if (data != null && utils.isArray(data) && data.length > 0) {
+      if (data != null && Array.isArray(data) && data.length > 0) {
         for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex += 1) {
           const row = data[rowIndex];
           let dim = this.root;

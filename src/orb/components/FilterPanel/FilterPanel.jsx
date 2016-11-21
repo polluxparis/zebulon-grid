@@ -41,7 +41,7 @@ const FilterPanel = ({ store, field, onFilter, onCancel, style }) => {
   };
 
   return (
-    <div style={style}>
+    <div style={{ position: 'absolute', ...style }}>
       <ResizableBox
         width={startingWidth}
         height={startingHeight}

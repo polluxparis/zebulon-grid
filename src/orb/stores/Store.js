@@ -191,6 +191,16 @@ export default class Store {
   }
 
   applyFilter(fieldname, axetype, all, operator, term, staticValue, excludeStatic) {
+    this.addFilter(fieldname, axetype, all, operator, term, staticValue, excludeStatic);
+    this.filteredData = this.filter(this.data);
+    this.columnsUi = this.getcolumnsUi();
+    this.rowsUi = this.getrowsUi();
+    this.layout = this.getlayout();
+    this.getsizes();
+    this.forceUpdateCallback();
+  }
+
+  addFilter(fieldname, axetype, all, operator, term, staticValue, excludeStatic) {
     if (all && this.filters.has(fieldname)) {
       this.filters.delete(fieldname);
     } else if (!all) {
@@ -201,14 +211,9 @@ export default class Store {
           operator,
           term,
           staticValue,
-          excludeStatic));
+          excludeStatic,
+        ));
     }
-    this.filteredData = this.filter(this.data);
-    this.columnsUi = this.getcolumnsUi();
-    this.rowsUi = this.getrowsUi();
-    this.layout = this.getlayout();
-    this.getsizes();
-    this.forceUpdateCallback();
   }
 
   filter(data) {
@@ -217,7 +222,7 @@ export default class Store {
       return data;
     }
     return data.filter(row =>
-      filters.every(filter => !filter.test(row[filter.fieldName])));
+      filters.every(filter => filter.pass(row[filter.fieldName])));
   }
 
   refreshData(data) {

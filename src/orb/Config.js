@@ -249,20 +249,30 @@ export class Config {
   getpreFilters() {
     const prefilters = {};
     if (this.config.preFilters) {
-      utils.forEach(
-        utils.ownProperties(this.config.preFilters),
-        (filteredField) => {
-          const filterName = this.captionToName(filteredField);
-          const prefilterConfig = this.config.preFilters[filteredField];
-          if (utils.isArray(prefilterConfig)) {
-            prefilters[filterName] = new ExpressionFilter(filterName, this.data, null, null, prefilterConfig, false);
-          } else {
-            const opname = utils.ownProperties(prefilterConfig)[0];
-            if (opname) {
-              prefilters[filterName] = new ExpressionFilter(filterName, this.data, opname, prefilterConfig[opname]);
-            }
+      Object.keys(this.config.preFilters).forEach((filteredField) => {
+        const filterName = this.captionToName(filteredField);
+        const prefilterConfig = this.config.preFilters[filteredField];
+        if (Array.isArray(prefilterConfig)) {
+          prefilters[filterName] = new ExpressionFilter(
+            filterName,
+            this.data,
+            null,
+            null,
+            prefilterConfig,
+            false,
+          );
+        } else {
+          const opname = Object.keys(prefilterConfig)[0];
+          if (opname) {
+            prefilters[filterName] = new ExpressionFilter(
+              filterName,
+              this.data,
+              opname,
+              prefilterConfig[opname],
+            );
           }
-        });
+        }
+      });
     }
     return prefilters;
   }
