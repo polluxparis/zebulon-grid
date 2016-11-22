@@ -1,8 +1,8 @@
 import Store from './Store';
 import { AxisType } from '../Axis';
-import { getMockDataSource, basicConfig } from '../../utils/mock';
+import { getMockDatasource, basicConfig } from '../../utils/mock';
 
-const store = new Store(basicConfig, null, getMockDataSource());
+const store = new Store(basicConfig, null, getMockDatasource());
 
 it('filter correctly', () => {
   store.addFilter('toto_lb', AxisType.ROWS, false, '', '', ['toto 1'], false);

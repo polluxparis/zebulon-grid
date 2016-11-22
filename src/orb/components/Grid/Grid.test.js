@@ -6,11 +6,11 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import RawGrid from './Grid';
 import { Store } from '../../index';
 import { AxisType } from '../../Axis';
-import { getMockDataSource, basicConfig } from '../../../utils/mock';
+import { getMockDatasource, getObservableMockDatasource, basicConfig } from '../../../utils/mock';
 
 const Grid = DragDropContext(HTML5Backend)(RawGrid);
 
-const datasource = getMockDataSource();
+const datasource = getMockDatasource();
 
 describe('works when config', () => {
   it('is empty', () => {
@@ -141,4 +141,15 @@ describe('actions', () => {
     const tree = renderer.create(<Grid store={store} height={600} width={800} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  // Not sure how to make this work, too complicated for too little value
+
+  // describe('data updates', () => {
+  //   it('highlight cells', () => {
+  //     const observableDatasource = getObservableMockDatasource();
+  //     const store = new Store(basicConfig, null, observableDatasource);
+  //     const tree = renderer.create(<Grid store={store} height={600} width={800} />).toJSON();
+  //     expect(tree).toMatchSnapshot();
+  //   });
+  // });
 });

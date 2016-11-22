@@ -6,9 +6,9 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import { GridConfiguration, Grid, Store } from './orb';
 // import { AxisType } from './orb/Axis';
-import { getMockDataSource, basicConfig } from './utils/mock';
+import { getMockDatasource, basicConfig } from './utils/mock';
 
-const datasource = getMockDataSource();
+const datasource = getMockDatasource();
 
 class RawApp extends React.Component {
   componentDidMount() {

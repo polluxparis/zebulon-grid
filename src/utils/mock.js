@@ -1,4 +1,6 @@
-export function getMockDataSource(dataRepetition = 1, nToto = 10) {
+import { Observable } from 'rx-lite';
+
+export function getMockDatasource(dataRepetition = 1, nToto = 10) {
   const nTiti = 10;
   const nTutu = 2;
   let obj = [];
@@ -20,6 +22,18 @@ export function getMockDataSource(dataRepetition = 1, nToto = 10) {
     }
   }
   return res;
+}
+
+export function getObservableMockDatasource() {
+  const data = [
+    getMockDatasource(),
+    [
+      { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1' },
+      { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0' },
+    ],
+    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' },
+  ];
+  return Observable.interval(100).take(3).map(i => data[i]);
 }
 
 export const basicConfig = {

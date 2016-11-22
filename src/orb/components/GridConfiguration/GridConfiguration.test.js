@@ -6,11 +6,11 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import RawGridConfiguration from './GridConfiguration';
 import { Store } from '../../index';
 import { AxisType } from '../../Axis';
-import { getMockDataSource, basicConfig } from '../../../utils/mock';
+import { getMockDatasource, basicConfig } from '../../../utils/mock';
 
 const GridConfiguration = DragDropContext(HTML5Backend)(RawGridConfiguration);
 
-const datasource = getMockDataSource();
+const datasource = getMockDatasource();
 
 describe('works when config', () => {
   it('is empty', () => {
