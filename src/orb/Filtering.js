@@ -1,4 +1,4 @@
-import * as utils from './Utils';
+import * as utils from './utils/generic';
 
 export const ALL = '#All#';
 export const NONE = '#None#';

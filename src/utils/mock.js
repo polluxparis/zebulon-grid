@@ -24,7 +24,7 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10) {
   return res;
 }
 
-export function getObservableMockDatasource() {
+export function getObservableMockDatasource(interval) {
   const data = [
     getMockDatasource(),
     [
@@ -33,7 +33,7 @@ export function getObservableMockDatasource() {
     ],
     { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' },
   ];
-  return Observable.interval(100).take(3).map(i => data[i]);
+  return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
 
 export const basicConfig = {

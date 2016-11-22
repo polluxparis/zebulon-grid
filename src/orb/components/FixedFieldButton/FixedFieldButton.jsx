@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import * as utils from '../../Utils'
+import * as utils from '../../utils/generic'
 import FilterPanel from '../FilterPanel'
 
 const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px'

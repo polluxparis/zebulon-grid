@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
-import { isInRange } from '../../Utils';
+import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';
 import DataCellComponent from '../DataCell';
 
@@ -10,7 +10,19 @@ class DataCells extends Component {
     super(props);
     this.cellRenderer = this.cellRenderer.bind(this);
 
-    this.state = {};
+    this.state = { cellsCache: {} };
+  }
+
+  componentWillReceiveProps() {
+    this.setState({ cellsCache: this.datacellsCache });
+  }
+
+  componentWillUpdate() {
+    this.isUpdating = true;
+  }
+
+  componentDidUpdate() {
+    this.isUpdating = false;
   }
 
   cellRenderer({

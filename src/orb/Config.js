@@ -1,4 +1,4 @@
-import * as utils from './Utils';
+import * as utils from './utils/generic';
 import { AxisType } from './Axis';
 import * as aggregation from './Aggregation';
 import { ExpressionFilter } from './Filtering';

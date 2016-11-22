@@ -22,7 +22,6 @@ const DimensionHeaders = ({ store, scrollLeft, scrollTop, height, width, preview
     fieldWhoseWidthToGet = null;
   }
   const headerWidth = store.getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
-  const right = 0;
   headers.push(
     ...columnDimensionHeaders.map((dimensionHeader) => {
       const field = dimensionHeader.value;
@@ -31,7 +30,7 @@ const DimensionHeaders = ({ store, scrollLeft, scrollTop, height, width, preview
       return (
         <DimensionHeader
           key={`dimension-header-${field.code}`}
-          right={right}
+          right={0}
           top={top}
           width={headerWidth}
           height={headerHeight}
@@ -56,7 +55,6 @@ const DimensionHeaders = ({ store, scrollLeft, scrollTop, height, width, preview
     fieldWhoseHeightToGet = null;
   }
   const headerHeight = store.getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet);
-  const bottom = 0;
   headers.push(
     ...rowDimensionHeaders.map((dimensionHeader) => {
       const field = dimensionHeader.value;
@@ -66,7 +64,7 @@ const DimensionHeaders = ({ store, scrollLeft, scrollTop, height, width, preview
         <DimensionHeader
           key={`dimension-header-${field.code}`}
           left={left}
-          bottom={bottom}
+          bottom={0}
           height={headerHeight}
           width={headerWidth}
           field={field}
@@ -80,7 +78,7 @@ const DimensionHeaders = ({ store, scrollLeft, scrollTop, height, width, preview
   return (
     // Putting position as relative here allows its children (the dimension headers)
     // to be absolutely positioned relatively to their parent
-    <div style={{ position: 'relative', height: '100%' }}>
+    <div style={{ position: 'relative', height, width }}>
       {headers}
     </div>
   );
