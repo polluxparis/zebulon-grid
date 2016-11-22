@@ -313,7 +313,7 @@ export class Grid extends Component {
     }
 
     const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
-    // this.datacellsCache[cellKey] = cell.value;
+    this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
     if (this.isUpdating) {
       const oldcell = this.state.cellsCache[cellKey];
@@ -797,78 +797,82 @@ export class Grid extends Component {
       <div>
         <DragLayer />
         <ScrollSync>
-          {({ onScroll, scrollLeft, scrollTop }) => (
-            <div>
-              <div style={{ position: 'relative' }}>
-                {/* Putting position as relative here allows its children (the dimension headers)
-                  to be absolutely positioned relatively to their parent */}
-                <div style={{ position: 'absolute', height: columnHeadersHeight, width: rowHeadersWidth }}>
-                  {this.dimensionHeaders({ scrollLeft, scrollTop })}
+          {({ onScroll, scrollLeft, scrollTop }) => {
+            this.datacellsCache = {};
+            return (
+              <div>
+                <div style={{ position: 'relative' }}>
+                  {/* Putting position as relative here allows its children (the dimension headers)
+                    to be absolutely positioned relatively to their parent */}
+                  <div style={{ position: 'absolute', height: columnHeadersHeight, width: rowHeadersWidth }}>
+                    {this.dimensionHeaders({ scrollLeft, scrollTop })}
+                  </div>
+                  {/* Column headers */}
+                  <div style={{ position: 'relative', left: rowHeadersWidth }}>
+                    <ReactVirtualizedGrid
+                      cellRangeRenderer={this.columnHeadersRenderer}
+                      cellRenderer={function mock() {}}
+                      className="OrbGrid-column-headers"
+                      columnCount={columnHorizontalCount}
+                      columnWidth={store.getColumnWidth}
+                      height={columnHeadersHeight}
+                      overscanColumnCount={0}
+                      ref={(ref) => { this.columnHeadersRef = ref; }}
+                      rowCount={columnVerticalCount}
+                      rowHeight={store.getRowHeight}
+                      scrollLeft={scrollLeft}
+                      // We set overflowX and overflowY and not overflow
+                      // because react-virtualized sets them during render
+                      style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
+                      width={columnHeadersVisibleWidth}
+                    />
+                  </div>
                 </div>
-                {/* Column headers */}
-                <div style={{ position: 'relative', left: rowHeadersWidth }}>
-                  <ReactVirtualizedGrid
-                    cellRangeRenderer={this.columnHeadersRenderer}
-                    cellRenderer={function mock() {}}
-                    className="OrbGrid-column-headers"
-                    columnCount={columnHorizontalCount}
-                    columnWidth={store.getColumnWidth}
-                    height={columnHeadersHeight}
-                    overscanColumnCount={0}
-                    ref={(ref) => { this.columnHeadersRef = ref; }}
-                    rowCount={columnVerticalCount}
-                    rowHeight={store.getRowHeight}
-                    scrollLeft={scrollLeft}
-                    // We set overflowX and overflowY and not overflow
-                    // because react-virtualized sets them during render
-                    style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
-                    width={columnHeadersVisibleWidth}
-                  />
+                <div style={{ display: 'flex' }}>
+                  {/* Row headers */}
+                  <div>
+                    <ReactVirtualizedGrid
+                      cellRangeRenderer={this.rowHeadersRenderer}
+                      cellRenderer={function mock() {}}
+                      className="OrbGrid-row-headers"
+                      columnCount={rowHorizontalCount}
+                      columnWidth={store.getColumnWidth}
+                      height={rowHeadersVisibleHeight}
+                      overscanRowCount={0}
+                      ref={(ref) => { this.rowHeadersRef = ref; }}
+                      rowCount={rowVerticalCount}
+                      rowHeight={store.getRowHeight}
+                      scrollTop={scrollTop}
+                      // We set overflowX and overflowY and not overflow
+                      // because react-virtualized sets them during render
+                      style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
+                      width={rowHeadersWidth}
+                    />
+                  </div>
+                  <div>
+                    <ReactVirtualizedGrid
+                      cellRenderer={this.dataCellRenderer}
+                      className="OrbGrid-data-cells"
+                      columnCount={columnHorizontalCount}
+                      columnWidth={store.getColumnWidth}
+                      height={Math.min(height - columnHeadersHeight,
+                        rowHeadersHeight + scrollbarSize())}
+                      onScroll={onScroll}
+                      ref={(ref) => { this.dataCellsRef = ref; }}
+                      rowCount={rowVerticalCount}
+                      rowHeight={store.getRowHeight}
+                      scrollLeft={this.scrollLeft}
+                      scrollTop={this.scrollTop}
+                      style={{ fontSize: `${this.props.store.zoom * 100}%` }}
+                      width={Math.min(width - rowHeadersWidth,
+                        columnHeadersWidth + scrollbarSize())}
+                    />
+                  </div>
                 </div>
               </div>
-              <div style={{ display: 'flex' }}>
-                {/* Row headers */}
-                <div>
-                  <ReactVirtualizedGrid
-                    cellRangeRenderer={this.rowHeadersRenderer}
-                    cellRenderer={function mock() {}}
-                    className="OrbGrid-row-headers"
-                    columnCount={rowHorizontalCount}
-                    columnWidth={store.getColumnWidth}
-                    height={rowHeadersVisibleHeight}
-                    overscanRowCount={0}
-                    ref={(ref) => { this.rowHeadersRef = ref; }}
-                    rowCount={rowVerticalCount}
-                    rowHeight={store.getRowHeight}
-                    scrollTop={scrollTop}
-                    // We set overflowX and overflowY and not overflow
-                    // because react-virtualized sets them during render
-                    style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
-                    width={rowHeadersWidth}
-                  />
-                </div>
-                <div>
-                  <ReactVirtualizedGrid
-                    cellRenderer={this.dataCellRenderer}
-                    className="OrbGrid-data-cells"
-                    columnCount={columnHorizontalCount}
-                    columnWidth={store.getColumnWidth}
-                    height={Math.min(height - columnHeadersHeight,
-                      rowHeadersHeight + scrollbarSize())}
-                    onScroll={onScroll}
-                    ref={(ref) => { this.dataCellsRef = ref; }}
-                    rowCount={rowVerticalCount}
-                    rowHeight={store.getRowHeight}
-                    scrollLeft={this.scrollLeft}
-                    scrollTop={this.scrollTop}
-                    style={{ fontSize: `${this.props.store.zoom * 100}%` }}
-                    width={Math.min(width - rowHeadersWidth,
-                      columnHeadersWidth + scrollbarSize())}
-                  />
-                </div>
-              </div>
-            </div>
-         )}
+            );
+          }
+         }
         </ScrollSync>
       </div>);
   }
