@@ -94,7 +94,7 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
         output += '\t';
       }
     }
-    output = columns.reduce((column, current) => `${current}+${replaceNullAndUndefined(column[y])}\t`);
+    output = columns.reduce((accumulator, column) => `${accumulator}${replaceNullAndUndefined(column[y])}\t`, output);
     output = output.slice(0, -1);
     output += '\n';
   }
@@ -233,7 +233,11 @@ export class Grid extends Component {
   handleKeyDown(e) {
     const { rowsUi, columnsUi } = this.props.store;
     if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
-      if (findDOMNode(this.gridRef) === e.target) {
+      if (
+        findDOMNode(this.dataCellsRef) === e.target
+        || findDOMNode(this.columnHeadersRef) === e.target
+        || findDOMNode(this.rowHeadersRef) === e.target
+      ) {
         this.setState({
           selectedCellStart: [0, 0],
           selectedCellEnd: [columnsUi.headers.length, rowsUi.headers.length],
