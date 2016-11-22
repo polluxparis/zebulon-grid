@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
 import { AxisType } from '../../Axis';
@@ -6,7 +6,7 @@ import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
 import Header from '../Header';
 import getHeaderSize from '../../utils/headerSize';
 
-class ColumnHeaders extends Component {
+class ColumnHeaders extends PureComponent {
   constructor() {
     super();
     this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);

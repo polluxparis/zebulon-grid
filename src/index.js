@@ -6,15 +6,19 @@ import createScrollingTestCase from './fpsTests/tests';
 
 import App from './App';
 import {
-  // getMockDatasource,
+  getMockDatasource,
   getObservableMockDatasource,
   basicConfig,
  } from './utils/mock';
+ import Perf from 'react-addons-perf'; // ES6
 
 
-// const datasource = getMockDatasource(1, 10);
-const datasource = getObservableMockDatasource(1000);
+const datasource = getMockDatasource(1, 10);
+// const datasource = getObservableMockDatasource(1100);
 
+if (process.env.NODE_ENV !== 'production') {
+  window.Perf = Perf;
+}
 
 ReactDOM.render(<App config={basicConfig} datasource={datasource} />, document.getElementById('root'));
 

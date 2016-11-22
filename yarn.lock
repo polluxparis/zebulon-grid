@@ -4721,9 +4721,13 @@ react:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
-react-addons-shallow-compare@^15.3.2:
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.3.2.tgz#c9edba49b9eab44d0c59024d289beb1ab97318b5"
+react-addons-perf:
+  version "15.4.0"
+  resolved "http://localhost:4873/react-addons-perf/-/react-addons-perf-15.4.0.tgz#1e8b694677b31eb759289f7ddeb72e9f9215c745"
+
+react-addons-shallow-compare@latest:
+  version "15.4.0"
+  resolved "http://localhost:4873/react-addons-shallow-compare/-/react-addons-shallow-compare-15.4.0.tgz#17b2cced1928937bbcdb4832fb200bc34bd47871"
 
 react-addons-test-utils@15.3.2:
   version "15.3.2"

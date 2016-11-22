@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
+// import { findDOMNode } from 'react-dom';
 import { ScrollSync } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
@@ -9,7 +9,6 @@ import ColumnHeaders from '../ColumnHeaders';
 import RowHeaders from '../RowHeaders';
 import DragLayer from './DragLayer';
 import { scrollbarSize } from '../../utils/domHelpers';
-import copy from '../../services/copyService';
 
 export class Grid extends Component {
   constructor(props) {
@@ -22,8 +21,6 @@ export class Grid extends Component {
       columnVerticalCount: store.layout.columnVerticalCount,
       columnHorizontalCount: store.layout.columnHorizontalCount,
       cellsCache: { },
-      selectedCellStart: null,
-      selectedCellEnd: null,
     };
 
     this.scrollLeft = 0;
@@ -31,24 +28,10 @@ export class Grid extends Component {
 
     this.isMouseDown = false;
 
-    this.handleCopy = this.handleCopy.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
     store.getColumnWidth = store.getColumnWidth.bind(store);
     store.getRowHeight = store.getRowHeight.bind(store);
     store.getLastChildSize = store.getLastChildSize.bind(store);
   }
-
-  componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
-    document.addEventListener('mousedown', this.handleDocumentMouseDown);
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('copy', this.handleCopy);
-  }
-
 
   componentWillReceiveProps(nextProps) {
     // // Change scroll values to stay at the same position when modifying the layout
@@ -65,11 +48,10 @@ export class Grid extends Component {
       rowHorizontalCount: nextProps.store.layout.rowHorizontalCount,
       columnVerticalCount: nextProps.store.layout.columnVerticalCount,
       columnHorizontalCount: nextProps.store.layout.columnHorizontalCount,
-      cellsCache: this.datacellsCache || { },
     });
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     // Clean cache for cell sizes
     // Call forceUpdate on the grid, so cannot be done in render
     this.columnHeadersRef.grid.recomputeGridSize();
@@ -77,70 +59,6 @@ export class Grid extends Component {
     this.dataCellsRef.grid.recomputeGridSize();
   }
 
-  componentDidUnMount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousedown', this.handleDocumentMouseDown);
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('copy', this.handleCopy);
-  }
-
-  handleMouseDown(e, [columnIndex, rowIndex]) {
-    if (e.button === 0) {
-      this.isMouseDown = true;
-      this.setState({ selectedCellStart: [columnIndex, rowIndex] });
-      this.setState({ selectedCellEnd: [columnIndex, rowIndex] });
-    }
-  }
-
-  handleMouseUp() {
-    this.isMouseDown = false;
-  }
-
-  handleMouseOver([columnIndex, rowIndex]) {
-    if (this.isMouseDown) {
-      this.setState({ selectedCellEnd: [columnIndex, rowIndex] });
-    }
-  }
-
-  handleDocumentMouseDown(e) {
-    if (e.button === 0 && this.state.selectedCellStart) {
-      if (!this.isMouseDown) {
-        this.setState({ selectedCellStart: null, selectedCellEnd: null });
-      }
-    }
-  }
-
-  handleKeyDown(e) {
-    const { rowsUi, columnsUi } = this.props.store;
-    if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
-      if (
-        findDOMNode(this.dataCellsRef) === e.target
-        || findDOMNode(this.columnHeadersRef) === e.target
-        || findDOMNode(this.rowHeadersRef) === e.target
-      ) {
-        this.setState({
-          selectedCellStart: [0, 0],
-          selectedCellEnd: [columnsUi.headers.length, rowsUi.headers.length],
-        });
-      }
-      e.preventDefault();
-    }
-  }
-
-  handleCopy() {
-    try {
-      if (
-        findDOMNode(this.dataCellsRef) === document.activeElement
-        || findDOMNode(this.columnHeadersRef) === document.activeElement
-        || findDOMNode(this.rowHeadersRef) === document.activeElement
-      ) {
-        const { selectedCellStart, selectedCellEnd } = this.state;
-        copy({ selectedCellStart, selectedCellEnd, store: this.props.store });
-      }
-    } catch (error) {
-      // console.error('error in handleCopy', error);
-    }
-  }
 
   render() {
     const { connectDropTarget, store } = this.props;
@@ -155,6 +73,8 @@ export class Grid extends Component {
       columnVerticalCount,
       rowHorizontalCount,
       rowVerticalCount,
+      // selectedCellStart,
+      // selectedCellEnd,
     } = this.state;
     const height = this.props.height !== undefined ? this.props.height : store.config.height;
     const width = this.props.width !== undefined ? this.props.width : store.config.width;
@@ -185,8 +105,6 @@ export class Grid extends Component {
                 <div style={{ display: 'flex' }}>
                   <DimensionHeaders
                     store={store}
-                    scrollLeft={scrollLeft}
-                    scrollTop={scrollTop}
                     previewSizes={previewSizes}
                     height={columnHeadersHeight}
                     width={rowHeadersWidth}
@@ -223,10 +141,10 @@ export class Grid extends Component {
                       rowHeadersHeight + scrollbarSize())}
                     width={Math.min(width - rowHeadersWidth,
                       columnHeadersWidth + scrollbarSize())}
-                    handleMouseDown={this.handleMouseDown}
-                    handleMouseOver={this.handleMouseOver}
-                    selectedCellStart={this.state.selectedCellStart}
-                    selectedCellEnd={this.state.selectedCellEnd}
+                    // handleMouseDown={this.handleMouseDown}
+                    // handleMouseOver={this.handleMouseOver}
+                    // selectedCellStart={selectedCellStart}
+                    // selectedCellEnd={selectedCellEnd}
                   />
                 </div>
               </div>

@@ -19,17 +19,18 @@
     "eslint-plugin-react": "^6.6.0",
     "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
+    "react-addons-perf": "latest",
     "react-addons-test-utils": "15.3.2",
     "react-scripts": "0.7.0",
-    "react-test-renderer": "^15.4.0"
+    "react-test-renderer": "latest"
   },
   "dependencies": {
     "chroma-js": "^1.2.1",
-    "react": "^15.3.2",
-    "react-addons-shallow-compare": "^15.3.2",
+    "react": "latest",
+    "react-addons-shallow-compare": "latest",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
-    "react-dom": "^15.3.2",
+    "react-dom": "latest",
     "react-overlays": "^0.6.10",
     "react-resizable": "^1.4.5",
     "react-virtualized": "^8.0.11",
@@ -62,6 +63,12 @@
             ".js",
             ".jsx"
           ]
+        }
+      ],
+      "react/prefer-stateless-function": [
+        2,
+        {
+          "ignorePureComponents": true
         }
       ]
     },
