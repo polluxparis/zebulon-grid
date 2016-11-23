@@ -146,7 +146,7 @@ class ColumnHeaders extends PureComponent {
         columnCount={columnCount}
         columnWidth={store.getColumnWidth}
         height={height}
-        overscanColumnCount={0}
+        overscanRowCount={0}
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
         rowHeight={store.getRowHeight}
