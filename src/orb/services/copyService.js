@@ -1,0 +1,108 @@
+import { DataCell } from '../Cells';
+
+function replaceNullAndUndefined(val) {
+  if (val === null || val === undefined) {
+    return '';
+  }
+  return val;
+}
+
+function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
+  const { columnsUi, rowsUi } = store;
+
+  // Build rows headers array
+  const rowsRange = [
+    Math.min(selectedCellStart[1], selectedCellEnd[1]),
+    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1];
+  const rowHeaderLeafs = rowsUi.headers.slice(...rowsRange)
+    .map(headers => headers[headers.length - 1]);
+  const rows = rowHeaderLeafs.map((header) => {
+    const res = [];
+    let currentHeader = header;
+    while (currentHeader) {
+      res.unshift(currentHeader.caption);
+      currentHeader = currentHeader.parent;
+    }
+    return res;
+  });
+
+  // Build columns headers array
+  const columnsRange = [
+    Math.min(selectedCellStart[0], selectedCellEnd[0]),
+    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1];
+  const columnHeaderLeafs = columnsUi.headers.slice(...columnsRange)
+    .map(headers => headers[headers.length - 1]);
+  const columns = columnHeaderLeafs.map((header) => {
+    const res = [];
+    let currentHeader = header;
+    while (currentHeader) {
+      res.unshift(currentHeader.caption);
+      currentHeader = currentHeader.parent;
+    }
+    return res;
+  });
+
+  // Build data array
+  const cells = rowHeaderLeafs.map(rowHeader =>
+    columnHeaderLeafs
+      .map(columnHeader => new DataCell(store, true, rowHeader, columnHeader).caption));
+  const rowDimensions = rowsUi.dimensionHeaders.map(header => header.value.caption);
+  const columnDimensions = columnsUi.dimensionHeaders.map(header => header.value.caption);
+
+  // Format data to text
+  let output = '';
+  // First rows with only the dimension and columns headers
+  const depth = columns[0].length;
+  const width = rows[0].length;
+  for (let y = 0; y < depth; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      if (x === width - 1 && y < depth - 1) {
+        output += `${replaceNullAndUndefined(columnDimensions[y])}\t`;
+      } else if (y === depth - 1 && x < width - 1) {
+        output += `${replaceNullAndUndefined(rowDimensions[x])}\t`;
+      } else if (y === depth - 1 && x === width - 1) {
+        // Handle corner case
+        // Dimension header in bottom right cell can refer to a column header
+        // or a row header depending on data headers location
+        if (store.config.dataHeadersLocation === 'columns') {
+          output += `${replaceNullAndUndefined(rowDimensions[x])}\t`;
+        } else {
+          output += `${replaceNullAndUndefined(columnDimensions[y])}\t`;
+        }
+      } else {
+        output += '\t';
+      }
+    }
+    output = columns.reduce((accumulator, column) => `${accumulator}${replaceNullAndUndefined(column[y])}\t`, output);
+    output = output.slice(0, -1);
+    output += '\n';
+  }
+  // Other rows with rows headers and data
+  for (let y = 0; y < rows.length; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      output += `${replaceNullAndUndefined(rows[y][x])}\t`;
+    }
+    for (let x = 0; x < columnHeaderLeafs.length; x += 1) {
+      output += `${replaceNullAndUndefined(cells[y][x])}\t`;
+    }
+    output = output.slice(0, -1);
+    output += '\n';
+  }
+  output = output.slice(0, -1);
+  return output;
+}
+
+export default function copy({ selectedCellStart, selectedCellEnd, store }) {
+  const bodyElement = document.getElementsByTagName('body')[0];
+  const clipboardTextArea = document.createElement('textarea');
+  clipboardTextArea.style.position = 'absolute';
+  clipboardTextArea.style.left = '-10000px';
+  bodyElement.appendChild(clipboardTextArea);
+  clipboardTextArea.innerHTML = getSelectedText({
+    selectedCellStart,
+    selectedCellEnd,
+    store,
+  });
+  clipboardTextArea.select();
+  window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea); }, 0);
+}

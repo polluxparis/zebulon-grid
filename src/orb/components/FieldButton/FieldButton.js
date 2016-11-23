@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 import { DragSource } from 'react-dnd';
 import { Overlay } from 'react-overlays';
@@ -7,7 +7,7 @@ import FilterPanel from '../FilterPanel';
 
 const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px';
 
-class FieldButton extends Component {
+class FieldButton extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { filtering: false };

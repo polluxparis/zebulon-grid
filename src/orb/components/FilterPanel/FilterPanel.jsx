@@ -2,7 +2,7 @@ import React from 'react';
 import { ResizableBox } from 'react-resizable';
 import VirtualizedCheckbox from 'react-virtualized-checkbox';
 
-import * as utils from '../../Utils';
+import * as utils from '../../utils/generic';
 
 const startingHeight = 223;
 const startingWidth = 301;

@@ -4,7 +4,7 @@ import { Axis, AxisType } from '../Axis';
 import AxisUi from '../AxisUi';
 import { Config } from '../Config';
 import { ExpressionFilter } from '../Filtering';
-import * as utils from '../Utils';
+import * as utils from '../utils/generic';
 
 export const MEASURE_ID = '__measures__';
 export const TOTAL_ID = '__total__';
