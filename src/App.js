@@ -79,14 +79,14 @@ class App extends Component {
                 onClick={() => this.store.handleZoom()}
               >-</button>
             </div>
-            {/* <ResizableBox height={600} width={800}>
+            <ResizableBox height={600} width={800}>
               <AutoSizer>
                 {({ width, height }) =>
                   <Grid height={height} width={width} store={this.store} />
                 }
               </AutoSizer>
-            </ResizableBox> */}
-            <Grid store={this.store} height={600} width={800} />
+            </ResizableBox>
+            {/* <Grid store={this.store} height={600} width={800} /> */}
           </div>
         </div>
       </div>

@@ -191,7 +191,7 @@ class DataCells extends PureComponent {
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
         rowHeight={store.getRowHeight}
-        // scrollToAlignment="start"
+        scrollToAlignment="start"
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}

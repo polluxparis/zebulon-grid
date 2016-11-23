@@ -98,6 +98,7 @@ class PivotGrid extends Component {
         <DragLayer />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
+          mode="cells"
           rowCount={rowVerticalCount}
         >
           {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
