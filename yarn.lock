@@ -1020,10 +1020,6 @@ Base64@~0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/Base64/-/Base64-0.2.1.tgz#ba3a4230708e186705065e66babdd4c35cf60028"
 
-batch-processor@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/batch-processor/-/batch-processor-1.0.0.tgz#75c95c32b748e0850d10c2b168f6bdbe9891ace8"
-
 batch@0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.5.3.tgz#3f3414f380321743bfc1042f9a83ff1d5824d464"
@@ -1288,7 +1284,7 @@ clap@^1.0.9:
   dependencies:
     chalk "^1.1.3"
 
-classnames@^2.2.3, classnames@^2.2.5, classnames@2.2.5:
+classnames@^2.2.3, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -1504,13 +1500,9 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "http://localhost:4873/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0:
+core-js@^2.4.0, core-js@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
-
-core-js@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.0.tgz#df408ab46d01aff91c01c3e7971935d422c54f81"
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -1687,9 +1679,9 @@ d3-path@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.2.tgz#9941a472daed62084e5ecf4394987bcadc8c39a7"
 
-d3-scale@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-1.0.0.tgz#0b4175ca31cbe65e254427e4662dfaefc373462d"
+d3-scale@^1.0.3:
+  version "1.0.4"
+  resolved "http://localhost:4873/d3-scale/-/d3-scale-1.0.4.tgz#50e28bf6a193b706745528515ed9b3d44205a033"
   dependencies:
     d3-array "1"
     d3-collection "1"
@@ -1699,9 +1691,9 @@ d3-scale@1.0.0:
     d3-time "1"
     d3-time-format "2"
 
-d3-shape@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.0.0.tgz#cca332487579e457354c8838a0a283be638459ba"
+d3-shape@^1.0.3:
+  version "1.0.4"
+  resolved "http://localhost:4873/d3-shape/-/d3-shape-1.0.4.tgz#145ee100ccbec42f8e3f1996cd05c786f79fe1c6"
   dependencies:
     d3-path "1"
 
@@ -1903,12 +1895,6 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
-element-resize-detector@^1.1.0:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/element-resize-detector/-/element-resize-detector-1.1.9.tgz#2304f5753165625eed17a7e953e25687e3b1d322"
-  dependencies:
-    batch-processor "^1.0.0"
-
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -2027,15 +2013,15 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-config-airbnb-base@^10.0.0:
-  version "10.0.1"
-  resolved "http://localhost:4873/eslint-config-airbnb-base/-/eslint-config-airbnb-base-10.0.1.tgz#f17d4e52992c1d45d1b7713efbcd5ecd0e7e0506"
-
-eslint-config-airbnb@latest:
+eslint-config-airbnb:
   version "13.0.0"
   resolved "http://localhost:4873/eslint-config-airbnb/-/eslint-config-airbnb-13.0.0.tgz#688d15d3c276c0c753ae538c92a44397d76ae46e"
   dependencies:
     eslint-config-airbnb-base "^10.0.0"
+
+eslint-config-airbnb-base@^10.0.0:
+  version "10.0.1"
+  resolved "http://localhost:4873/eslint-config-airbnb-base/-/eslint-config-airbnb-base-10.0.1.tgz#f17d4e52992c1d45d1b7713efbcd5ecd0e7e0506"
 
 eslint-config-react-app@^0.3.0:
   version "0.3.0"
@@ -2371,6 +2357,17 @@ fb-watchman@^1.8.0, fb-watchman@^1.9.0:
   resolved "https://registry.yarnpkg.com/fb-watchman/-/fb-watchman-1.9.0.tgz#6f268f1f347a6b3c875d1e89da7e1ed79adfc0ec"
   dependencies:
     bser "^1.0.2"
+
+fbjs@^0.8.1:
+  version "0.8.6"
+  resolved "http://localhost:4873/fbjs/-/fbjs-0.8.6.tgz#7eb67d6986b2d5007a9b6e92e0e7cb6f75cad290"
+  dependencies:
+    core-js "^1.0.0"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    ua-parser-js "^0.7.9"
 
 fbjs@^0.8.4:
   version "0.8.5"
@@ -2942,7 +2939,7 @@ interpret@^1.0.0:
   version "1.0.1"
   resolved "http://localhost:4873/interpret/-/interpret-1.0.1.tgz#d579fb7f693b858004947af39fa0db49f795602c"
 
-invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.0, invariant@^2.2.1:
+invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.1.tgz#b097010547668c7e337028ebe816ebe36c8a8d54"
   dependencies:
@@ -3705,7 +3702,7 @@ lodash@^4.0.0, lodash@^4.15.0, lodash@^4.16.2, lodash@^4.16.4, lodash@^4.2.0, lo
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
 
-lodash@~4.13.1, lodash@4.13.1:
+lodash@~4.13.1:
   version "4.13.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.13.1.tgz#83e4b10913f48496d4d16fec4a560af2ee744b68"
 
@@ -4713,36 +4710,21 @@ rc@~1.1.0:
     minimist "^1.2.0"
     strip-json-comments "~1.0.4"
 
-react:
-  version "15.3.2"
-  resolved "http://localhost:4873/react/-/react-15.3.2.tgz#a7bccd2fee8af126b0317e222c28d1d54528d09e"
-  dependencies:
-    fbjs "^0.8.4"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-
 react-addons-perf:
   version "15.4.0"
   resolved "http://localhost:4873/react-addons-perf/-/react-addons-perf-15.4.0.tgz#1e8b694677b31eb759289f7ddeb72e9f9215c745"
 
-react-addons-shallow-compare@latest:
-  version "15.4.0"
-  resolved "http://localhost:4873/react-addons-shallow-compare/-/react-addons-shallow-compare-15.4.0.tgz#17b2cced1928937bbcdb4832fb200bc34bd47871"
+react-addons-shallow-compare:
+  version "15.4.1"
+  resolved "http://localhost:4873/react-addons-shallow-compare/-/react-addons-shallow-compare-15.4.1.tgz#b68103dd4d13144cb221065f6021de1822bd435a"
 
-react-addons-test-utils@15.3.2:
-  version "15.3.2"
-  resolved "http://localhost:4873/react-addons-test-utils/-/react-addons-test-utils-15.3.2.tgz#c09a44f583425a4a9c1b38444d7a6c3e6f0f41f6"
+react-addons-transition-group:
+  version "15.4.1"
+  resolved "http://localhost:4873/react-addons-transition-group/-/react-addons-transition-group-15.4.1.tgz#27d92717089c5e2db202e654a85b76a41b703acc"
 
 "react-addons-transition-group@^0.14.0 || ^15.0.0":
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-addons-transition-group/-/react-addons-transition-group-15.3.2.tgz#64f758d18bd1e59128726b1c9a4db79127c4f1ed"
-
-react-container-dimensions@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-container-dimensions/-/react-container-dimensions-1.2.0.tgz#bfb5e70e10aa82d2ecba49147d14bb4c22cafdaa"
-  dependencies:
-    element-resize-detector "^1.1.0"
-    invariant "^2.2.1"
 
 react-dev-utils@^0.3.0:
   version "0.3.0"
@@ -4771,13 +4753,17 @@ react-dnd@^2.1.4:
     invariant "^2.1.0"
     lodash "^4.2.0"
 
-react-dom:
-  version "15.3.2"
-  resolved "http://localhost:4873/react-dom/-/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
+react-dom@15.4.1:
+  version "15.4.1"
+  resolved "http://localhost:4873/react-dom/-/react-dom-15.4.1.tgz#d54c913261aaedb17adc20410d029dcc18a1344a"
+  dependencies:
+    fbjs "^0.8.1"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
 
 react-draggable@^2.1.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-2.2.2.tgz#80932da5ad81795bdfd141e846d7a9309680e270"
+  version "2.2.3"
+  resolved "http://localhost:4873/react-draggable/-/react-draggable-2.2.3.tgz#17628cb8aaefed639d38e0021b978a685d80b08b"
   dependencies:
     classnames "^2.2.5"
 
@@ -4796,11 +4782,15 @@ react-prop-types@^0.4.0:
   dependencies:
     warning "^3.0.0"
 
-react-resizable@^1.4.5:
+react-resizable:
   version "1.4.5"
-  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
+  resolved "http://localhost:4873/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
   dependencies:
     react-draggable "^2.1.0"
+
+react-resize-detector@^0.3.3:
+  version "0.3.3"
+  resolved "http://localhost:4873/react-resize-detector/-/react-resize-detector-0.3.3.tgz#ca07443072324843586666d9443a6356da7c0501"
 
 react-scripts@0.7.0:
   version "0.7.0"
@@ -4853,9 +4843,9 @@ react-scripts@0.7.0:
   optionalDependencies:
     fsevents "1.0.14"
 
-react-smooth@0.1.11:
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-0.1.11.tgz#f389f8e58cbb546abb4921ca0cbe7b079bc51a0d"
+react-smooth@^0.1.15:
+  version "0.1.15"
+  resolved "http://localhost:4873/react-smooth/-/react-smooth-0.1.15.tgz#144e93ccc3d357b2f77eb0a64e5cdbddecb76333"
   dependencies:
     lodash "~4.13.1"
     raf "^3.2.0"
@@ -4864,6 +4854,14 @@ react-smooth@0.1.11:
 react-test-renderer:
   version "15.4.0"
   resolved "http://localhost:4873/react-test-renderer/-/react-test-renderer-15.4.0.tgz#80138338e40903821847c3e4edd87d0d74c77cc8"
+
+react-virtualized:
+  version "8.5.3"
+  resolved "http://localhost:4873/react-virtualized/-/react-virtualized-8.5.3.tgz#52d06c67b8dfb4e8800b7b91b6aa20d4e842cf7a"
+  dependencies:
+    babel-runtime "^6.11.6"
+    classnames "^2.2.3"
+    dom-helpers "^2.4.0"
 
 react-virtualized-checkbox@^2.0.3:
   version "2.0.3"
@@ -4878,6 +4876,14 @@ react-virtualized@^8.0.11:
     babel-runtime "^6.11.6"
     classnames "^2.2.3"
     dom-helpers "^2.4.0"
+
+react@15.4.1:
+  version "15.4.1"
+  resolved "http://localhost:4873/react/-/react-15.4.1.tgz#498e918602677a3983cd0fd206dfe700389a0dd6"
+  dependencies:
+    fbjs "^0.8.4"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
 
 read-file-stdin@^0.2.0:
   version "0.2.1"
@@ -4958,23 +4964,23 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-recharts-scale@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/recharts-scale/-/recharts-scale-0.2.1.tgz#378f543ed17c3245e4d9afb10aaf6298240d2fcb"
-
-recharts@^0.15.1:
-  version "0.15.1"
-  resolved "https://registry.yarnpkg.com/recharts/-/recharts-0.15.1.tgz#be68ac14d786b154a297939da048f7026f07d88b"
+recharts:
+  version "0.18.0"
+  resolved "http://localhost:4873/recharts/-/recharts-0.18.0.tgz#5d4c755e2a9ae1f9a9adbca4d8704319cadb0926"
   dependencies:
-    classnames "2.2.5"
-    core-js "2.4.0"
-    d3-scale "1.0.0"
-    d3-shape "1.0.0"
-    lodash "4.13.1"
-    react-container-dimensions "1.2.0"
-    react-smooth "0.1.11"
-    recharts-scale "0.2.1"
+    classnames "^2.2.5"
+    core-js "^2.4.1"
+    d3-scale "^1.0.3"
+    d3-shape "^1.0.3"
+    lodash "^4.16.4"
+    react-resize-detector "^0.3.3"
+    react-smooth "^0.1.15"
+    recharts-scale "^0.2.1"
     reduce-css-calc "^1.3.0"
+
+recharts-scale@^0.2.1:
+  version "0.2.1"
+  resolved "http://localhost:4873/recharts-scale/-/recharts-scale-0.2.1.tgz#378f543ed17c3245e4d9afb10aaf6298240d2fcb"
 
 rechoir@^0.6.2:
   version "0.6.2"
