@@ -10,7 +10,7 @@ import RowHeaders from '../RowHeaders';
 import DragLayer from './DragLayer';
 import { scrollbarSize } from '../../utils/domHelpers';
 
-export class Grid extends Component {
+class PivotGrid extends Component {
   constructor(props) {
     super(props);
     const { store } = props;
@@ -34,14 +34,14 @@ export class Grid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // // Change scroll values to stay at the same position when modifying the layout
-    // // The current implementation only works when all cells have the same size
-    // // A better implementation would be to find which cells are at the beginning
-    // // upon receiving props and jumping there after
-    // this.scrollLeft = this.dataCellsRef.state.scrollLeft
-    //   * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
-    // this.scrollTop = this.dataCellsRef.state.scrollTop
-    //   * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
+    // Change scroll values to stay at the same position when modifying the layout
+    // The current implementation only works when all cells have the same size
+    // A better implementation would be to find which cells are at the beginning
+    // upon receiving props and jumping there after
+    this.scrollLeft = this.dataCellsRef.grid.state.scrollLeft
+      * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
+    this.scrollTop = this.dataCellsRef.grid.state.scrollTop
+      * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
 
     this.setState({
       rowVerticalCount: nextProps.store.layout.rowVerticalCount,
@@ -131,13 +131,15 @@ export class Grid extends Component {
                     width={rowHeadersWidth}
                   />
                   <DataCells
-                    onScroll={onScroll}
-                    store={store}
                     columnCount={columnHorizontalCount}
-                    rowCount={rowVerticalCount}
-                    ref={(ref) => { this.dataCellsRef = ref; }}
                     height={Math.min(height - columnHeadersHeight,
                       rowHeadersHeight + scrollbarSize())}
+                    onScroll={onScroll}
+                    ref={(ref) => { this.dataCellsRef = ref; }}
+                    rowCount={rowVerticalCount}
+                    scrollLeft={this.scrollLeft}
+                    scrollTop={this.scrollTop}
+                    store={store}
                     width={Math.min(width - rowHeadersWidth,
                       columnHeadersWidth + scrollbarSize())}
                   />
@@ -164,4 +166,4 @@ const collect = connect => ({
   connectDropTarget: connect.dropTarget(),
 });
 
-export default DropTarget('cell-resize-handle', gridSpec, collect)(Grid);
+export default DropTarget('cell-resize-handle', gridSpec, collect)(PivotGrid);

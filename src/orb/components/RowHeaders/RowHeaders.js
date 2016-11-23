@@ -6,7 +6,7 @@ import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
 import Header from '../Header';
 import getHeaderSize from '../../utils/headerSize';
 
-class ColumnHeaders extends PureComponent {
+class RowHeaders extends PureComponent {
   constructor() {
     super();
     this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);
@@ -160,4 +160,4 @@ class ColumnHeaders extends PureComponent {
   }
 }
 
-export default ColumnHeaders;
+export default RowHeaders;
