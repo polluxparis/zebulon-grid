@@ -1,7 +1,6 @@
 import { Observable } from 'rx-lite';
 
-export function getMockDatasource(dataRepetition = 1, nToto = 10) {
-  const nTiti = 10;
+export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   const nTutu = 2;
   let obj = [];
   const res = [];
