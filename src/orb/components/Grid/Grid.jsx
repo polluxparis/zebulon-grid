@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import { findDOMNode } from 'react-dom';
-import { ScrollSync } from 'react-virtualized';
+import { ScrollSync, ArrowKeyStepper } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
 import DataCells from '../DataCells';
@@ -96,59 +96,69 @@ class PivotGrid extends Component {
       // Width has to be set in order to render correctly in a resizable box
       <div style={{ width }}>
         <DragLayer />
-        <ScrollSync>
-          {({ onScroll, scrollLeft, scrollTop }) => {
-            this.datacellsCache = {};
-            return (
-              <div>
-                <div style={{ display: 'flex' }}>
-                  <DimensionHeaders
-                    store={store}
-                    previewSizes={previewSizes}
-                    height={columnHeadersHeight}
-                    width={rowHeadersWidth}
-                  />
-                  <ColumnHeaders
-                    columnCount={columnHorizontalCount}
-                    height={columnHeadersHeight}
-                    previewSizes={previewSizes}
-                    ref={(ref) => { this.columnHeadersRef = ref; }}
-                    rowCount={columnVerticalCount}
-                    scrollLeft={scrollLeft}
-                    store={store}
-                    width={columnHeadersVisibleWidth}
-                  />
-                </div>
-                <div style={{ display: 'flex' }}>
-                  <RowHeaders
-                    columnCount={rowHorizontalCount}
-                    height={rowHeadersVisibleHeight}
-                    previewSizes={previewSizes}
-                    ref={(ref) => { this.rowHeadersRef = ref; }}
-                    rowCount={rowVerticalCount}
-                    scrollTop={scrollTop}
-                    store={store}
-                    width={rowHeadersWidth}
-                  />
-                  <DataCells
-                    columnCount={columnHorizontalCount}
-                    height={Math.min(height - columnHeadersHeight,
-                      rowHeadersHeight + scrollbarSize())}
-                    onScroll={onScroll}
-                    ref={(ref) => { this.dataCellsRef = ref; }}
-                    rowCount={rowVerticalCount}
-                    scrollLeft={this.scrollLeft}
-                    scrollTop={this.scrollTop}
-                    store={store}
-                    width={Math.min(width - rowHeadersWidth,
-                      columnHeadersWidth + scrollbarSize())}
-                  />
-                </div>
-              </div>
-            );
-          }
-         }
-        </ScrollSync>
+        <ArrowKeyStepper
+          columnCount={columnHorizontalCount}
+          rowCount={rowVerticalCount}
+        >
+          {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
+            <ScrollSync>
+              {({ onScroll, scrollLeft, scrollTop }) => {
+                this.datacellsCache = {};
+                return (
+                  <div>
+                    <div style={{ display: 'flex' }}>
+                      <DimensionHeaders
+                        store={store}
+                        previewSizes={previewSizes}
+                        height={columnHeadersHeight}
+                        width={rowHeadersWidth}
+                      />
+                      <ColumnHeaders
+                        columnCount={columnHorizontalCount}
+                        height={columnHeadersHeight}
+                        previewSizes={previewSizes}
+                        ref={(ref) => { this.columnHeadersRef = ref; }}
+                        rowCount={columnVerticalCount}
+                        scrollLeft={scrollLeft}
+                        store={store}
+                        width={columnHeadersVisibleWidth}
+                      />
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                      <RowHeaders
+                        columnCount={rowHorizontalCount}
+                        height={rowHeadersVisibleHeight}
+                        previewSizes={previewSizes}
+                        ref={(ref) => { this.rowHeadersRef = ref; }}
+                        rowCount={rowVerticalCount}
+                        scrollTop={scrollTop}
+                        store={store}
+                        width={rowHeadersWidth}
+                      />
+                      <DataCells
+                        onSectionRendered={onSectionRendered}
+                        scrollToColumn={scrollToColumn}
+                        scrollToRow={scrollToRow}
+                        columnCount={columnHorizontalCount}
+                        height={Math.min(height - columnHeadersHeight,
+                          rowHeadersHeight + scrollbarSize())}
+                        onScroll={onScroll}
+                        ref={(ref) => { this.dataCellsRef = ref; }}
+                        rowCount={rowVerticalCount}
+                        scrollLeft={this.scrollLeft}
+                        scrollTop={this.scrollTop}
+                        store={store}
+                        width={Math.min(width - rowHeadersWidth,
+                          columnHeadersWidth + scrollbarSize())}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+             }
+            </ScrollSync>
+          )}
+        </ArrowKeyStepper>
       </div>);
   }
  }

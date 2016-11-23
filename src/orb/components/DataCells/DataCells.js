@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
+import { Grid as ReactVirtualizedGrid, ArrowKeyStepper } from 'react-virtualized';
 
 import copy from '../../services/copyService';
 import { isInRange } from '../../utils/generic';
@@ -175,6 +175,9 @@ class DataCells extends PureComponent {
       scrollTop,
       height,
       width,
+      scrollToColumn,
+      scrollToRow,
+      onSectionRendered,
      } = this.props;
     this.datacellsCache = {};
     return (
@@ -188,11 +191,16 @@ class DataCells extends PureComponent {
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
         rowHeight={store.getRowHeight}
+        // scrollToAlignment="start"
+        onSectionRendered={onSectionRendered}
+        scrollToColumn={scrollToColumn}
+        scrollToRow={scrollToRow}
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
         style={{ fontSize: `${this.props.store.zoom * 100}%` }}
         width={width}
-      />);
+      />
+    );
   }
 }
 
