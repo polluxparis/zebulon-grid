@@ -73,8 +73,6 @@ export class Grid extends Component {
       columnVerticalCount,
       rowHorizontalCount,
       rowVerticalCount,
-      // selectedCellStart,
-      // selectedCellEnd,
     } = this.state;
     const height = this.props.height !== undefined ? this.props.height : store.config.height;
     const width = this.props.width !== undefined ? this.props.width : store.config.width;
@@ -95,7 +93,8 @@ export class Grid extends Component {
       columnHeadersWidth + rowHeadersWidth);
 
     return connectDropTarget(
-      <div>
+      // Width has to be set in order to render correctly in a resizable box
+      <div style={{ width }}>
         <DragLayer />
         <ScrollSync>
           {({ onScroll, scrollLeft, scrollTop }) => {
@@ -141,10 +140,6 @@ export class Grid extends Component {
                       rowHeadersHeight + scrollbarSize())}
                     width={Math.min(width - rowHeadersWidth,
                       columnHeadersWidth + scrollbarSize())}
-                    // handleMouseDown={this.handleMouseDown}
-                    // handleMouseOver={this.handleMouseOver}
-                    // selectedCellStart={selectedCellStart}
-                    // selectedCellEnd={selectedCellEnd}
                   />
                 </div>
               </div>

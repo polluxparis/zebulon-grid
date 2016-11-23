@@ -3,8 +3,8 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import 'react-virtualized/styles.css';
 import 'react-resizable/css/styles.css';
-// import { ResizableBox } from 'react-resizable';
-// import { AutoSizer } from 'react-virtualized';
+import { ResizableBox } from 'react-resizable';
+import { AutoSizer } from 'react-virtualized';
 
 import {
   // ChartConfiguration,
@@ -82,7 +82,7 @@ class App extends Component {
             {/* <ResizableBox height={600} width={800}>
               <AutoSizer>
                 {({ width, height }) =>
-                  <Grid height={height} width={width} store={store} />
+                  <Grid height={height} width={width} store={this.store} />
                 }
               </AutoSizer>
             </ResizableBox> */}
