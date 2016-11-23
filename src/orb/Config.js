@@ -406,11 +406,10 @@ export class Config {
           return oldaxetype;
         } else if (oldaxetype === AxisType.FIELDS) {
           return newaxetype;
-        } else {
-          return -1;
         }
       }
     }
+    return -1;
   }
 
   selectField(fieldname) {

@@ -9,6 +9,8 @@ import * as utils from '../utils/generic';
 export const MEASURE_ID = '__measures__';
 export const TOTAL_ID = '__total__';
 
+const defaultfield = { name: '#undefined#' };
+
 /**
  * Creates a new instance of store
  * @class
@@ -19,7 +21,6 @@ export default class Store {
 
   constructor(config, forceUpdateCallback, datasource) {
     this.init = false;
-    this.defaultfield = { name: '#undefined#' };
     // If no forceUpdate function is passed, use a mock
     // Useful for tests
     this.forceUpdateCallback = forceUpdateCallback || function mockForceUpdate() {};
@@ -530,7 +531,7 @@ export default class Store {
   getData(field, rowdim, coldim, aggregateFunc) {
     let value;
     if (rowdim && coldim) {
-      const datafieldName = field || (this.config.activatedDataFields[0] || this.defaultfield).name;
+      const datafieldName = field || (this.config.activatedDataFields[0] || defaultfield).name;
       value = this.calcAggregation(
         rowdim.isRoot ? null : rowdim.getRowIndexes().slice(0),
         coldim.isRoot ? null : coldim.getRowIndexes().slice(0),
@@ -588,7 +589,7 @@ export default class Store {
           datafieldIndex < this.config.activatedDataFieldsCount;
           datafieldIndex += 1
         ) {
-          datafield = this.config.activatedDataFields[datafieldIndex] || this.defaultfield;
+          datafield = this.config.activatedDataFields[datafieldIndex] || defaultfield;
           if (aggregateFunc || datafield.aggregateFunc) {
             datafields.push({
               field: datafield,

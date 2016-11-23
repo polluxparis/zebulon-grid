@@ -30,7 +30,6 @@ class RowHeaders extends PureComponent {
     const { rowsUi } = store;
     const rowHeaders = rowsUi.headers;
 
-
     const renderedCells = [];
 
     // Because of the offset caused by the fixed headers,
@@ -68,7 +67,7 @@ class RowHeaders extends PureComponent {
         previewOffsets.bottom = left - scrollLeft;
         renderedCells.push(
           <Header
-            key={`header-${header.key}?`}
+            key={`header-${header.key}`}
             axis={AxisType.ROWS}
             header={header}
             positionStyle={positionStyle}
@@ -86,7 +85,6 @@ class RowHeaders extends PureComponent {
     for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
       const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
       const top = main.offset + verticalOffsetAdjustment;
-      // + this.props.store.sizes.columnHeadersHeight;
       renderedCells.push(
         ...rowHeaders[rowIndex].map((header) => {
           const span = header.vspan();
@@ -118,7 +116,7 @@ class RowHeaders extends PureComponent {
           previewOffsets.bottom = left - scrollLeft;
           return (
             <Header
-              key={`header-${header.key}?`}
+              key={`header-${header.key}`}
               axis={AxisType.ROWS}
               header={header}
               positionStyle={positionStyle}

@@ -63,7 +63,7 @@ class ColumnHeaders extends PureComponent {
         previewOffsets.bottom = (left - scrollLeft) + store.sizes.rowHeadersWidth;
         renderedCells.push(
           <Header
-            key={`header-${header.key}?`}
+            key={`header-${header.key}`}
             axis={AxisType.COLUMNS}
             header={header}
             positionStyle={positionStyle}
@@ -117,7 +117,7 @@ class ColumnHeaders extends PureComponent {
           previewOffsets.bottom = (left - scrollLeft) + store.sizes.rowHeadersWidth;
           return (
             <Header
-              key={`header-${header.key}?`}
+              key={`header-${header.key}`}
               axis={AxisType.COLUMNS}
               header={header}
               positionStyle={positionStyle}

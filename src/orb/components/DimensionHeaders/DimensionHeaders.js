@@ -62,21 +62,21 @@ class DimensionHeaders extends PureComponent {
         const headerWidth = store.getDimensionSize(AxisType.ROWS, field.code);
         return (
           <DimensionHeader
+            bottom={0}
+            crossFieldCode={fieldWhoseHeightToGet}
+            field={field}
+            height={headerHeight}
             key={`dimension-header-${field.code}`}
             left={left}
-            bottom={0}
-            height={headerHeight}
-            width={headerWidth}
-            field={field}
             mainDirection="down"
-            crossFieldCode={fieldWhoseHeightToGet}
             previewSizes={previewSizes}
+            width={headerWidth}
           />);
       }));
     return (
       // Putting position as relative here allows its children (the dimension headers)
       // to be absolutely positioned relatively to their parent
-      <div style={{ position: 'relative', height, width }}>
+      <div style={{ position: 'relative', height, width, fontSize: `${store.zoom * 100}%`, overflow: 'hidden' }}>
         {headers}
       </div>
     );

@@ -13,7 +13,7 @@ import {
  import Perf from 'react-addons-perf'; // ES6
 
 
-const datasource = getMockDatasource(1, 100, 100);
+const datasource = getMockDatasource(1, 10, 10);
 // const datasource = getObservableMockDatasource(1100);
 
 if (process.env.NODE_ENV !== 'production') {
