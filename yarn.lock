@@ -2756,6 +2756,10 @@ hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
+hoist-non-react-statics@^1.0.3:
+  version "1.2.0"
+  resolved "http://localhost:4873/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz#aa448cf0986d55cc40773b17174b7dd066cb7cfb"
+
 home-or-tmp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/home-or-tmp/-/home-or-tmp-1.0.0.tgz#4b9f1e40800c3e50c6c27f781676afcce71f3985"
@@ -4782,6 +4786,15 @@ react-prop-types@^0.4.0:
   dependencies:
     warning "^3.0.0"
 
+react-redux:
+  version "4.4.6"
+  resolved "http://localhost:4873/react-redux/-/react-redux-4.4.6.tgz#4b9d32985307a11096a2dd61561980044fcc6209"
+  dependencies:
+    hoist-non-react-statics "^1.0.3"
+    invariant "^2.0.0"
+    lodash "^4.2.0"
+    loose-envify "^1.1.0"
+
 react-resizable:
   version "1.4.5"
   resolved "http://localhost:4873/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
@@ -5021,7 +5034,7 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "~0.1.0"
 
-redux@^3.2.0:
+redux, redux@^3.2.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
   dependencies:

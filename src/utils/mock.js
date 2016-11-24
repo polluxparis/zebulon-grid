@@ -72,7 +72,7 @@ export const basicConfig = {
   fields: [
     {
       name: 'toto_lb',
-      code: 'toto',
+      id: 'toto',
       caption: 'Toto',
       sort: {
         order: 'asc',
@@ -97,11 +97,11 @@ export const basicConfig = {
     //     },
     // },
     {
-      name: 'titi',
+      id: 'titi',
       caption: 'Titi',
     },
     {
-      name: 'tutu',
+      id: 'tutu',
       caption: 'Tutu',
     },
   // {
@@ -119,14 +119,14 @@ export const basicConfig = {
   //     }
   // },
   ],
-  dataFields: [
+  datafields: [
     {
-      name: 'qty',
+      id: 'qty',
       caption: 'Quantity',
       aggregateFunc: 'sum',
     },
     {
-      name: 'amt',
+      id: 'amt',
       caption: 'Amount',
       aggregateFunc: 'sum',
       aggregateFuncName: 'whatever',

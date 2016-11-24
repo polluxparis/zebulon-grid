@@ -15,8 +15,8 @@ export default class Chart extends Component {
     const { store } = this.props;
     const type = this.props.type || 'bar';
     const dimension = store.getChartAxis().root;
-    const measures = store.config.dataFields;
-    const colors = chroma.scale('Spectral').colors(store.config.dataFields.length);
+    const measures = store.config.datafields;
+    const colors = chroma.scale('Spectral').colors(store.config.datafields.length);
     let data = [];
     if (['bar', 'line', 'area'].indexOf(type) > -1) {
       data = Object.keys(dimension.subdimvals)

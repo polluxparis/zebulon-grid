@@ -16,7 +16,6 @@ class PivotGrid extends Component {
     const { store } = props;
 
     this.state = {
-      rows: store.rows,
       rowVerticalCount: store.layout.rowVerticalCount,
       rowHorizontalCount: store.layout.rowHorizontalCount,
       columnVerticalCount: store.layout.columnVerticalCount,
@@ -48,7 +47,6 @@ class PivotGrid extends Component {
     // this.scrollToRow = this.dataCellsRef.grid.props.scrollToRow;
 
     this.setState({
-      rows: nextProps.store.rows,
       rowVerticalCount: nextProps.store.layout.rowVerticalCount,
       rowHorizontalCount: nextProps.store.layout.rowHorizontalCount,
       columnVerticalCount: nextProps.store.layout.columnVerticalCount,

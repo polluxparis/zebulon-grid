@@ -108,7 +108,7 @@ class FieldButton extends PureComponent {
 const fieldSource = {
   beginDrag(props) {
     return {
-      id: props.field.name,
+      id: props.field.id,
       axetype: props.axetype,
     };
   },

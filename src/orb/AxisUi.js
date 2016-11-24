@@ -11,9 +11,9 @@ export default class AxisUi {
 
   constructor(axis, config) {
     const { dataHeadersLocation, activatedDataFieldsCount } = config;
-    this.dataFieldsCount = this.getDataFieldsCount({ axisType: axis.type, dataHeadersLocation, activatedDataFieldsCount });
+    this.datafieldsCount = this.getDataFieldsCount({ axisType: axis.type, dataHeadersLocation, activatedDataFieldsCount });
 
-    this.hasDataFields = this.dataFieldsCount >= 1;
+    this.hasDataFields = this.datafieldsCount >= 1;
     /**
      * Headers render properties
      * @type {Array}
@@ -51,7 +51,7 @@ export default class AxisUi {
 
         if (config.grandTotal.rowsvisible) {
           const lastrow = headers[headers.length - 1];
-          grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.dataFieldsCount, this._x, y, null, crossAxisFieldsCode);
+          grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.datafieldsCount, this._x, y, null, crossAxisFieldsCode);
           if (lastrow.length === 0) {
             lastrow.push(grandtotalHeader);
           } else {
@@ -61,7 +61,7 @@ export default class AxisUi {
       }
 
       if (headers.length === 0) {
-        headers.push([grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.dataFieldsCount, this._x, y = 0, null, crossAxisFieldsCode)]);
+        headers.push([grandtotalHeader = new Header(axis.type, HeaderType.GRAND_TOTAL, axis.root, null, this.datafieldsCount, this._x, y = 0, null, crossAxisFieldsCode)]);
       }
 
       if (grandtotalHeader) {
@@ -92,12 +92,12 @@ export default class AxisUi {
         let subTotalHeader;
         if (!subdim.isLeaf && subdim.field.subTotal.visible) {
           // x here will probably create bugs. To change when necessary
-          subTotalHeader = new Header(axisType, HeaderType.SUB_TOTAL, subdim, parent, this.dataFieldsCount, this._x, y);
+          subTotalHeader = new Header(axisType, HeaderType.SUB_TOTAL, subdim, parent, this.datafieldsCount, this._x, y);
         } else {
           subTotalHeader = null;
         }
 
-        const newHeader = new Header(axisType, null, subdim, parent, this.dataFieldsCount, this._x, y, subTotalHeader);
+        const newHeader = new Header(axisType, null, subdim, parent, this.datafieldsCount, this._x, y, subTotalHeader);
 
         if (valIndex > 0) {
           infos.push((lastInfosArray = []));
@@ -125,15 +125,15 @@ export default class AxisUi {
   addDataHeaders({ axisType, infos, parent, dataHeadersLocation, activatedDataFieldsCount, activatedDataFields, y }) {
     if (this.hasDataFields) {
       let lastInfosArray = infos[infos.length - 1];
-      for (let [index, dataField] of activatedDataFields.entries()) {
+      for (let [index, datafield] of activatedDataFields.entries()) {
         lastInfosArray.push(new DataHeader(
           dataHeadersLocation === 'columns' ? AxisType.COLUMNS : AxisType.ROWS,
-          dataField,
+          datafield,
           parent,
           this._x++,
           y,
         ));
-        if (index < this.dataFieldsCount - 1) {
+        if (index < this.datafieldsCount - 1) {
           infos.push((lastInfosArray = []));
         }
       }

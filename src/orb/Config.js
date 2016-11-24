@@ -41,12 +41,10 @@ export class SortConfig {
 
 export class Field {
 
-  constructor(options, createSubOptions) {
-    options = options || {};
-
+  constructor(options = {}, createSubOptions) {
     // field name
-    this.name = options.name;
-    this.code = options.code || this.name;
+    this.id = options.id;
+    this.name = options.name || this.id;
 
     // shared settings
     this.caption = options.caption || this.name;
@@ -160,7 +158,7 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 
     caption: getpropertyvalue('caption', merged.configs, ''),
 
-    code: getpropertyvalue('code', merged.configs, ''),
+    id: getpropertyvalue('id', merged.configs, ''),
 
     sort: {
       order: getpropertyvalue('order', merged.sorts, null),
@@ -202,38 +200,59 @@ export class Config {
     this.columnSettings = new Field(config.columnSettings, false);
     this.dataSettings = new Field(config.dataSettings, false);
 
-    this.allFields = (config.fields || []).map(fieldConfig => new Field(fieldConfig));
-    this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig));
+    let fieldsPosition = 0;
+    let columnFieldsPosition = 0;
+    let rowFieldsPosition = 0;
+    this.allFields = (config.fields || [])
+      .map(fieldConfig => new Field(fieldConfig))
+      .map((field) => {
+        if (config.rows.indexOf(field.caption) > -1) {
+          field.axis = AxisType.ROWS;
+          field.position = rowFieldsPosition;
+          rowFieldsPosition += 1;
+        } else if (config.columns.indexOf(field.caption) > -1) {
+          field.axis = AxisType.COLUMNS;
+          field.position = columnFieldsPosition;
+          columnFieldsPosition += 1;
+        } else {
+          field.axis = AxisType.FIELDS;
+          field.position = fieldsPosition;
+          fieldsPosition += 1;
+        }
+        return field;
+      });
+    this.datafields = (config.datafields || [])
+      .map(fieldConfig => new Field(fieldConfig));
 
-    // map fields names to captions
-    this.dataFieldNames = this.allFields.map(f => f.name);
-    this.dataFieldCaptions = this.allFields.map(f => f.caption);
+    // // map fields names to captions
+    // this.datafieldNames = this.allFields.map(f => f.name);
+    // this.datafieldCaptions = this.allFields.map(f => f.caption);
 
-    this.rowFields = (config.rows || []).map((fieldconfig) => {
-      fieldconfig = this.ensureFieldConfig(fieldconfig);
-      return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
-    });
+    // this.rowFields = (config.rows || []).map((fieldconfig) => {
+    //   fieldconfig = this.ensureFieldConfig(fieldconfig);
+    //   return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    // });
+    //
+    // this.columnFields = (config.columns || []).map((fieldconfig) => {
+    //   fieldconfig = this.ensureFieldConfig(fieldconfig);
+    //   return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    // });
 
-    this.columnFields = (config.columns || []).map((fieldconfig) => {
-      fieldconfig = this.ensureFieldConfig(fieldconfig);
-      return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
-    });
-
-    this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
-
-    this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1);
-
-    this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
-
-    this.runtimeVisibility = {
-      subtotals: {
-        rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
-        columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true,
-      },
-    };
-    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
-    this.availableFields = this.getavailableFields();
-    this.preFilters = this.getpreFilters();
+    // this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
+    //
+    // this.activatedDataFields = this.datafields.filter(field => config.data.indexOf(field.caption) > -1);
+    //
+    // this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
+    //
+    // this.runtimeVisibility = {
+    //   subtotals: {
+    //     rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
+    //     columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true,
+    //   },
+    // };
+    // this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
+    // this.availableFields = this.getavailableFields();
+    // this.preFilters = this.getpreFilters();
   }
 
   getactivatedDataFieldsCount() {
@@ -278,13 +297,13 @@ export class Config {
   }
 
   captionToName(caption) {
-    const fcaptionIndex = this.dataFieldCaptions.indexOf(caption);
-    return fcaptionIndex >= 0 ? this.dataFieldNames[fcaptionIndex] : caption;
+    const fcaptionIndex = this.datafieldCaptions.indexOf(caption);
+    return fcaptionIndex >= 0 ? this.datafieldNames[fcaptionIndex] : caption;
   }
 
   nameToCaption(name) {
-    const fnameIndex = this.dataFieldNames.indexOf(name);
-    return fnameIndex >= 0 ? this.dataFieldCaptions[fnameIndex] : name;
+    const fnameIndex = this.datafieldNames.indexOf(name);
+    return fnameIndex >= 0 ? this.datafieldCaptions[fnameIndex] : name;
   }
   // setTheme (newTheme) {
   //   return this.theme.current() !== this.theme.current(newTheme)
@@ -329,7 +348,7 @@ export class Config {
   }
 
   getDataField(fieldname) {
-    return this.getfield(this.dataFields, fieldname);
+    return this.getfield(this.datafields, fieldname);
   }
 
   moveField(fieldname, oldaxetype, newaxetype, position) {
