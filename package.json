@@ -38,6 +38,7 @@
     "react-virtualized-checkbox": "^2.0.3",
     "recharts": "^0.18.0",
     "redux": "^3.6.0",
+    "reselect": "^2.5.4",
     "rx-lite": "^4.0.8"
   },
   "scripts": {

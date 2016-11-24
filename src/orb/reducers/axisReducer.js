@@ -1,6 +1,6 @@
 import { ADD_FIELD, REMOVE_FIELD } from '../actions';
 
-export default (state = { rows: [], columns: [] }, action) => {
+export default (state = { rows: [], columns: [], fields: [] }, action) => {
   const { type, id, position, axis } = action;
   let newAxis;
   switch (type) {

@@ -34,7 +34,7 @@ const FieldList = ({ buttons, axetype, connectDropTarget, isOverCurrent, isOver,
       <div>
         <DropIndicator
           isLast
-          position={null}
+          position={index + 1}
           axetype={axetype}
           moveButton={moveButton}
         />

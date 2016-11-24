@@ -72,7 +72,7 @@ class App extends Component {
                 }
               </AutoSizer>
             </ResizableBox> */}
-            <Grid height={600} width={800} />
+            {/* <Grid height={600} width={800} /> */}
           </div>
         </div>
       </div>

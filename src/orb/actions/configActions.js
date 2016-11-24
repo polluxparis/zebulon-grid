@@ -1,6 +1,17 @@
 import { Config } from '../Config';
 import { AxisType } from '../Axis';
 
+const axisTypeToString = (type) => {
+  switch (type) {
+    case AxisType.ROWS:
+      return 'rows';
+    case AxisType.COLUMNS:
+      return 'columns';
+    default:
+      return 'fields';
+  }
+};
+
 export const SET_CONFIG = 'SET_CONFIG';
 export const setConfig = configObject => ({
   type: SET_CONFIG,
@@ -17,7 +28,7 @@ export const ADD_FIELD = 'ADD_FIELD';
 export const addField = (fieldId, axis, position) => ({
   type: ADD_FIELD,
   id: fieldId,
-  axis: axis === AxisType.ROWS ? 'rows' : 'columns',
+  axis: axisTypeToString(axis),
   position,
 });
 
@@ -25,5 +36,5 @@ export const REMOVE_FIELD = 'REMOVE_FIELD';
 export const removeField = (fieldId, axis) => ({
   type: REMOVE_FIELD,
   id: fieldId,
-  axis: axis === AxisType.ROWS ? 'rows' : 'columns',
+  axis: axisTypeToString(axis),
 });

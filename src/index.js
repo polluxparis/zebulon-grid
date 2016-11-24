@@ -40,6 +40,17 @@ basicConfig.columns.forEach((fieldCaption, index) => {
   const fieldId = basicConfig.fields.find(field => field.caption === fieldCaption).id;
   store.dispatch(addField(fieldId, AxisType.COLUMNS, index));
 });
+Object.values(basicConfig.fields)
+.filter((field) => {
+  const state = store.getState();
+  const rows = state.axis.rows;
+  const columns = state.axis.columns;
+  return !(rows.includes(field.id) || columns.includes(field.id));
+})
+.forEach((field, index) => {
+  store.dispatch(addField(field.id, AxisType.FIELDS, index));
+});
+
 basicConfig.data.forEach((fieldCaption) => {
   const fieldId = basicConfig.datafields.find(field => field.caption === fieldCaption).id;
   store.dispatch(toggleDatafield(fieldId));
