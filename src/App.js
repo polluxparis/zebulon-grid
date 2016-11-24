@@ -10,11 +10,12 @@ import {
   // ChartConfiguration,
   // Chart,
   // GridConfiguration,
-  Grid,
+  // Grid,
   Store,
  } from './orb';
 
 import GridConfiguration from './orb/containers/GridConfiguration';
+import PivotGrid from './orb/containers/PivotGrid';
 
 import './App.css';
 import logo from './logo.svg';
@@ -72,7 +73,7 @@ class App extends Component {
                 }
               </AutoSizer>
             </ResizableBox> */}
-            {/* <Grid height={600} width={800} /> */}
+            <PivotGrid />
           </div>
         </div>
       </div>

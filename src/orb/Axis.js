@@ -124,7 +124,7 @@ export class Axis {
             const depth = this.dimensionsCount - findex;
             const field = this.fields[findex];
             const name = row[field.name];
-            const id = row[field.code];
+            const id = row[field.id];
             const subdimvals = dim.subdimvals;
             if (subdimvals[id] !== undefined) {
               dim = subdimvals[id];

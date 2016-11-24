@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
 import { AxisType } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
+import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import Header from '../Header';
 import getHeaderSize from '../../utils/headerSize';
 
@@ -26,9 +26,7 @@ class RowHeaders extends PureComponent {
     scrollTop,
     verticalOffsetAdjustment,
    }) {
-    const { store, columnCount, previewSizes } = this.props;
-    const { rowsUi } = store;
-    const rowHeaders = rowsUi.headers;
+    const { rowHeaders, sizes, columnCount, previewSizes, getLastChildSize, getDimensionSize, dimensionPositions } = this.props;
 
     const renderedCells = [];
 
@@ -53,8 +51,8 @@ class RowHeaders extends PureComponent {
         const span = header.vspan();
         const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
-        const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-        const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
+        const width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
+        const left = scrollLeft + dimensionPositions[header.dim.field.id];
         const positionStyle = {
           position: 'absolute',
           left,
@@ -63,7 +61,7 @@ class RowHeaders extends PureComponent {
           width,
         };
         const previewOffsets = { };
-        previewOffsets.right = (top - scrollTop) + store.sizes.columnHeadersHeight;
+        previewOffsets.right = (top - scrollTop) + sizes.columnHeadersHeight;
         previewOffsets.bottom = left - scrollLeft;
         renderedCells.push(
           <Header
@@ -77,7 +75,7 @@ class RowHeaders extends PureComponent {
             scrollTop={scrollTop}
             previewSizes={previewSizes}
             previewOffsets={previewOffsets}
-            getLastChildSize={store.getLastChildSize}
+            getLastChildSize={getLastChildSize}
           />);
       }
     }
@@ -94,15 +92,15 @@ class RowHeaders extends PureComponent {
           let left = scrollLeft;
           if (!header.dim) {
             // Measure header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, MEASURE_ID);
-            left += this.props.store.dimensionPositions.rows[MEASURE_ID];
+            width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
+            left += dimensionPositions[MEASURE_ID];
           } else if (header.dim.field) {
             // Normal dimension header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-            left += this.props.store.dimensionPositions.rows[header.dim.field.code];
+            width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
+            left += dimensionPositions[header.dim.field.id];
           } else {
             // Total header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
+            width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
           }
           const positionStyle = {
             position: 'absolute',
@@ -112,7 +110,7 @@ class RowHeaders extends PureComponent {
             width,
           };
           const previewOffsets = { };
-          previewOffsets.right = (top - scrollTop) + store.sizes.columnHeadersHeight;
+          previewOffsets.right = (top - scrollTop) + sizes.columnHeadersHeight;
           previewOffsets.bottom = left - scrollLeft;
           return (
             <Header
@@ -126,7 +124,7 @@ class RowHeaders extends PureComponent {
               scrollTop={scrollTop}
               previewSizes={previewSizes}
               previewOffsets={previewOffsets}
-              getLastChildSize={store.getLastChildSize}
+              getLastChildSize={getLastChildSize}
             />);
         }));
     }
@@ -135,23 +133,23 @@ class RowHeaders extends PureComponent {
 
 
   render() {
-    const { store, columnCount, rowCount, scrollTop, height, width } = this.props;
+    const { zoom, getRowHeight, getColumnWidth, columnCount, rowCount, scrollTop, height, width } = this.props;
     return (
       <ReactVirtualizedGrid
         cellRangeRenderer={this.rowHeadersRenderer}
         cellRenderer={function mock() {}}
         className="OrbGrid-row-headers"
         columnCount={columnCount}
-        columnWidth={store.getColumnWidth}
+        columnWidth={getColumnWidth}
         height={height}
         overscanRowCount={0}
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
-        rowHeight={store.getRowHeight}
+        rowHeight={getRowHeight}
         scrollTop={scrollTop}
         // We set overflowX and overflowY and not overflow
         // because react-virtualized sets them during render
-        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
+        style={{ fontSize: `${zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
         width={width}
       />
     );

@@ -18,6 +18,13 @@ export const setConfig = configObject => ({
   config: new Config(configObject),
 });
 
+export const SET_CONFIG_PROPERTY = 'SET_CONFIG_PROPERTY';
+export const setConfigProperty = (configObject, property, defaultValue) => ({
+  type: SET_CONFIG_PROPERTY,
+  property,
+  value: configObject[property] || defaultValue,
+});
+
 export const TOGGLE_DATAFIELD = 'TOGGLE_DATAFIELD';
 export const toggleDatafield = datafieldId => ({
   type: TOGGLE_DATAFIELD,

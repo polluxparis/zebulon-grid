@@ -3,23 +3,23 @@ import React, { Component } from 'react';
 import { ScrollSync, ArrowKeyStepper } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
-import DataCells from '../DataCells';
+import DataCells from '../../containers/DataCells';
 import DimensionHeaders from '../DimensionHeaders';
 import ColumnHeaders from '../ColumnHeaders';
-import RowHeaders from '../RowHeaders';
+import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { scrollbarSize } from '../../utils/domHelpers';
 
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
-    const { store } = props;
+    const { layout } = props;
 
     this.state = {
-      rowVerticalCount: store.layout.rowVerticalCount,
-      rowHorizontalCount: store.layout.rowHorizontalCount,
-      columnVerticalCount: store.layout.columnVerticalCount,
-      columnHorizontalCount: store.layout.columnHorizontalCount,
+      rowVerticalCount: layout.rowVerticalCount,
+      rowHorizontalCount: layout.rowHorizontalCount,
+      columnVerticalCount: layout.columnVerticalCount,
+      columnHorizontalCount: layout.columnHorizontalCount,
       cellsCache: { },
     };
 
@@ -28,9 +28,9 @@ class PivotGrid extends Component {
 
     this.isMouseDown = false;
 
-    store.getColumnWidth = store.getColumnWidth.bind(store);
-    store.getRowHeight = store.getRowHeight.bind(store);
-    store.getLastChildSize = store.getLastChildSize.bind(store);
+    // store.getColumnWidth = store.getColumnWidth.bind(store);
+    // store.getRowHeight = store.getRowHeight.bind(store);
+    // store.getLastChildSize = store.getLastChildSize.bind(store);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,10 +47,10 @@ class PivotGrid extends Component {
     // this.scrollToRow = this.dataCellsRef.grid.props.scrollToRow;
 
     this.setState({
-      rowVerticalCount: nextProps.store.layout.rowVerticalCount,
-      rowHorizontalCount: nextProps.store.layout.rowHorizontalCount,
-      columnVerticalCount: nextProps.store.layout.columnVerticalCount,
-      columnHorizontalCount: nextProps.store.layout.columnHorizontalCount,
+      rowVerticalCount: nextProps.layout.rowVerticalCount,
+      rowHorizontalCount: nextProps.layout.rowHorizontalCount,
+      columnVerticalCount: nextProps.layout.columnVerticalCount,
+      columnHorizontalCount: nextProps.layout.columnHorizontalCount,
     });
   }
 
@@ -64,21 +64,19 @@ class PivotGrid extends Component {
 
 
   render() {
-    const { connectDropTarget, store } = this.props;
+    const { connectDropTarget, sizes, height, width } = this.props;
     const {
       columnHeadersHeight,
       columnHeadersWidth,
       rowHeadersHeight,
       rowHeadersWidth,
-     } = store.sizes;
+     } = sizes;
     const {
       columnHorizontalCount,
       columnVerticalCount,
       rowHorizontalCount,
       rowVerticalCount,
     } = this.state;
-    const height = this.props.height !== undefined ? this.props.height : store.config.height;
-    const width = this.props.width !== undefined ? this.props.width : store.config.width;
     const hasScrollbarAtBottom = width
     < columnHeadersWidth + rowHeadersWidth + scrollbarSize();
     const hasScrollbarAtRight = height
@@ -111,22 +109,22 @@ class PivotGrid extends Component {
                 return (
                   <div>
                     <div style={{ display: 'flex' }}>
-                      <DimensionHeaders
-                        store={store}
+                      {/* <DimensionHeaders
+                        // store={store}
                         previewSizes={previewSizes}
                         height={columnHeadersHeight}
                         width={rowHeadersWidth}
-                      />
-                      <ColumnHeaders
+                      /> */}
+                      {/* <ColumnHeaders
                         columnCount={columnHorizontalCount}
                         height={columnHeadersHeight}
                         previewSizes={previewSizes}
                         ref={(ref) => { this.columnHeadersRef = ref; }}
                         rowCount={columnVerticalCount}
                         scrollLeft={scrollLeft}
-                        store={store}
+                        // store={store}
                         width={columnHeadersVisibleWidth}
-                      />
+                      /> */}
                     </div>
                     <div style={{ display: 'flex' }}>
                       <RowHeaders
@@ -136,7 +134,6 @@ class PivotGrid extends Component {
                         ref={(ref) => { this.rowHeadersRef = ref; }}
                         rowCount={rowVerticalCount}
                         scrollTop={scrollTop}
-                        store={store}
                         width={rowHeadersWidth}
                       />
                       <DataCells
@@ -149,7 +146,6 @@ class PivotGrid extends Component {
                         onScroll={onScroll}
                         ref={(ref) => { this.dataCellsRef = ref; }}
                         rowCount={rowVerticalCount}
-                        store={store}
                         width={Math.min(width - rowHeadersWidth,
                           columnHeadersWidth + scrollbarSize())}
                       />

@@ -1,11 +1,7 @@
 import { connect } from 'react-redux';
-
+import { getRowFields, getColumnFields, getAvailableFields } from '../selectors';
 import GridConfiguration from '../components/GridConfiguration';
 import { addField, removeField, toggleDatafield } from '../actions';
-
-const getRowFields = state => state.axis.rows.map(id => state.fields[id]);
-const getColumnFields = state => state.axis.columns.map(id => state.fields[id]);
-const getAvailableFields = state => state.axis.fields.map(id => state.fields[id]);
 
 const mapStateToProps = state => ({
   datafields: state.datafields,

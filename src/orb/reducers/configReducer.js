@@ -1,9 +1,10 @@
-import { SET_CONFIG } from '../actions';
+import { SET_CONFIG_PROPERTY } from '../actions';
 
 export default (state = {}, action) => {
-  switch (action.type) {
-    case SET_CONFIG:
-      return action.config;
+  const { type, property, value } = action;
+  switch (type) {
+    case SET_CONFIG_PROPERTY:
+      return { ...state, [property]: value };
     default:
       return state;
   }

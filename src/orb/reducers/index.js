@@ -5,5 +5,6 @@ import config from './configReducer';
 import fields from './fieldsReducer';
 import datafields from './datafieldsReducer';
 import axis from './axisReducer';
+import sizes from './sizesReducer';
 
-export default combineReducers({ data, config, fields, datafields, axis });
+export default combineReducers({ data, config, fields, datafields, axis, sizes });

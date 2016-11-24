@@ -4,12 +4,9 @@ export function toAggregateFunc(func) {
       return eval(func);  // eslint-disable-line no-eval
     } else if (typeof func === 'function') {
       return func;
-    } else {
-      return sum;
     }
-  } else {
-    return sum;
   }
+  return sum;
 }
 
 export function count(datafield, intersection, data) {
@@ -98,11 +95,12 @@ export function calcVariance(datafield, intersection, data, population) {
 }
 
 export function forEachIntersection(datafield, intersection, data, callback) {
-  const all = intersection === 'all';
-  intersection = all ? data : intersection;
+  // const all = intersection === 'all';
+  // intersection = all ? data : intersection;
   if (intersection.length > 0) {
-    for (let i = 0; i < intersection.length; i++) {
-      callback((all ? intersection[i] : data[intersection[i]])[datafield]);
+    for (let i = 0; i < intersection.length; i += 1) {
+      // callback((all ? intersection[i] : data[intersection[i]])[datafield]);
+      callback(data[intersection[i]][datafield]);
     }
   }
 }

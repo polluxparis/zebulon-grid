@@ -59,7 +59,7 @@ export class Field {
         ? options.aggregateFunc : 'custom')
         : null);
 
-    this.aggregateFunc(options.aggregateFunc);
+    this.aggregateFunc = aggregation.toAggregateFunc(options.aggregateFunc);
     this.formatFunc(options.formatFunc || this.defaultFormatFunc);
 
     if (createSubOptions !== false) {
@@ -73,14 +73,6 @@ export class Field {
     return val != null ? val.toString() : '';
   }
 
-  aggregateFunc(func) {
-    if (func) {
-      this._aggregatefunc = aggregation.toAggregateFunc(func);
-    } else {
-      return this._aggregatefunc;
-    }
-  }
-
   formatFunc(func) {
     if (func) {
       this._formatfunc = func;
@@ -92,7 +84,7 @@ export class Field {
 }
 
 const getpropertyvalue = (property, configs, defaultvalue) => {
-  for (let i = 0; i < configs.length; i++) {
+  for (let i = 0; i < configs.length; i += 1) {
     if (configs[i][property] != null) {
       return configs[i][property];
     }
@@ -108,14 +100,14 @@ const mergefieldconfigs = (...args) => {
     functions: [],
   };
 
-  for (let i = 0; i < args.length; i++) {
+  for (let i = 0; i < args.length; i += 1) {
     const nnconfig = args[i] || {};
     merged.configs.push(nnconfig);
     merged.sorts.push(nnconfig.sort || {});
     merged.subtotals.push(nnconfig.subTotal || {});
     merged.functions.push({
       aggregateFuncName: nnconfig.aggregateFuncName,
-      aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
+      aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc : null),
       formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
     });
   }
@@ -224,35 +216,35 @@ export class Config {
     this.datafields = (config.datafields || [])
       .map(fieldConfig => new Field(fieldConfig));
 
-    // // map fields names to captions
-    // this.datafieldNames = this.allFields.map(f => f.name);
-    // this.datafieldCaptions = this.allFields.map(f => f.caption);
+    // map fields names to captions
+    this.datafieldNames = this.allFields.map(f => f.name);
+    this.datafieldCaptions = this.allFields.map(f => f.caption);
 
-    // this.rowFields = (config.rows || []).map((fieldconfig) => {
-    //   fieldconfig = this.ensureFieldConfig(fieldconfig);
-    //   return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
-    // });
-    //
-    // this.columnFields = (config.columns || []).map((fieldconfig) => {
-    //   fieldconfig = this.ensureFieldConfig(fieldconfig);
-    //   return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
-    // });
+    this.rowFields = (config.rows || []).map((fieldconfig) => {
+      fieldconfig = this.ensureFieldConfig(fieldconfig);
+      return createfield(this, AxisType.ROWS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    });
 
-    // this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
-    //
-    // this.activatedDataFields = this.datafields.filter(field => config.data.indexOf(field.caption) > -1);
-    //
-    // this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
-    //
-    // this.runtimeVisibility = {
-    //   subtotals: {
-    //     rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
-    //     columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true,
-    //   },
-    // };
-    // this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
-    // this.availableFields = this.getavailableFields();
-    // this.preFilters = this.getpreFilters();
+    this.columnFields = (config.columns || []).map((fieldconfig) => {
+      fieldconfig = this.ensureFieldConfig(fieldconfig);
+      return createfield(this, AxisType.COLUMNS, fieldconfig, this.getfield(this.allFields, fieldconfig.name));
+    });
+
+    this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
+
+    this.activatedDataFields = this.datafields.filter(field => config.data.indexOf(field.caption) > -1);
+
+    this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
+
+    this.runtimeVisibility = {
+      subtotals: {
+        rows: this.rowSettings.subTotal.visible !== undefined ? this.rowSettings.subTotal.visible : true,
+        columns: this.columnSettings.subTotal.visible !== undefined ? this.columnSettings.subTotal.visible : true,
+      },
+    };
+    this.activatedDataFieldsCount = this.getactivatedDataFieldsCount();
+    this.availableFields = this.getavailableFields();
+    this.preFilters = this.getpreFilters();
   }
 
   getactivatedDataFieldsCount() {
@@ -327,7 +319,7 @@ export class Config {
   }
 
   getfieldindex(axefields, fieldname) {
-    for (let fi = 0; fi < axefields.length; fi++) {
+    for (let fi = 0; fi < axefields.length; fi += 1) {
       if (axefields[fi].name === fieldname) {
         return fi;
       }
@@ -463,7 +455,7 @@ export class Config {
     }
 
     newState = newState === false ? null : true;
-    for (i = 0; i < axeFields.length; i++) {
+    for (i = 0; i < axeFields.length; i += 1) {
       if (axeFields[i].subTotal.visible !== false) {
         axeFields[i].subTotal.visible = newState;
       }

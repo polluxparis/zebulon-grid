@@ -6,14 +6,14 @@ import DimensionHeader from '../DimensionHeader';
 
 class DimensionHeaders extends PureComponent {
   render() {
-    const { store, height, width, previewSizes } = this.props;
+    const { store, height, width, previewSizes, dataHeadersLocation } = this.props;
     const rowDimensionHeaders = store.rowsUi.dimensionHeaders;
     const columnDimensionHeaders = store.columnsUi.dimensionHeaders;
     const headers = [];
 
     // Get width for column dimension headers
     let fieldWhoseWidthToGet;
-    if (store.config.dataHeadersLocation === 'rows') {
+    if (dataHeadersLocation === 'rows') {
       // Dimension headers are on top of the measures column
       fieldWhoseWidthToGet = MEASURE_ID;
     } else if (store.rows.fields.length) {
@@ -44,7 +44,7 @@ class DimensionHeaders extends PureComponent {
       }));
     // Get height for row dimension headers in different cases
     let fieldWhoseHeightToGet;
-    if (store.config.dataHeadersLocation === 'columns') {
+    if (dataHeadersLocation === 'columns') {
       // Dimension headers are to the left of the measures row
       fieldWhoseHeightToGet = MEASURE_ID;
     } else if (store.columns.fields.length) {
