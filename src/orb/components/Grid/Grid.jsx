@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 // import { findDOMNode } from 'react-dom';
 import { ScrollSync, ArrowKeyStepper } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
 import DataCells from '../../containers/DataCells';
-import DimensionHeaders from '../DimensionHeaders';
-import ColumnHeaders from '../ColumnHeaders';
+import DimensionHeaders from '../../containers/DimensionHeaders';
+import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { scrollbarSize } from '../../utils/domHelpers';
 
-class PivotGrid extends Component {
+class PivotGrid extends PureComponent {
   constructor(props) {
     super(props);
     const { layout } = props;
@@ -54,44 +54,21 @@ class PivotGrid extends Component {
     });
   }
 
-  componentDidUpdate() {
-    // Clean cache for cell sizes
-    // Call forceUpdate on the grid, so cannot be done in render
-    this.columnHeadersRef.grid.recomputeGridSize();
-    this.rowHeadersRef.grid.recomputeGridSize();
-    this.dataCellsRef.grid.recomputeGridSize();
-  }
+  // componentDidUpdate() {
+  //   // Clean cache for cell sizes
+  //   // Call forceUpdate on the grid, so cannot be done in render
+  //   // this.columnHeadersRef.grid.recomputeGridSize();
+  //   // this.rowHeadersRef.grid.recomputeGridSize();
+  //   // this.dataCellsRef.grid.recomputeGridSize();
+  // }
 
 
   render() {
-    const { connectDropTarget, sizes, height, width } = this.props;
-    const {
-      columnHeadersHeight,
-      columnHeadersWidth,
-      rowHeadersHeight,
-      rowHeadersWidth,
-     } = sizes;
+    const { connectDropTarget, width } = this.props;
     const {
       columnHorizontalCount,
-      columnVerticalCount,
-      rowHorizontalCount,
       rowVerticalCount,
     } = this.state;
-    const hasScrollbarAtBottom = width
-    < columnHeadersWidth + rowHeadersWidth + scrollbarSize();
-    const hasScrollbarAtRight = height
-    < columnHeadersHeight + rowHeadersHeight + scrollbarSize();
-    const rowHeadersVisibleHeight = Math.min(
-      height - columnHeadersHeight - (hasScrollbarAtBottom ? scrollbarSize() : 0),
-      rowHeadersHeight);
-    const columnHeadersVisibleWidth = Math.min(
-      width - rowHeadersWidth - (hasScrollbarAtRight ? scrollbarSize() : 0),
-      columnHeadersWidth);
-    const previewSizes = {};
-    previewSizes.height = Math.min(height - (hasScrollbarAtBottom ? scrollbarSize() : 0),
-      rowHeadersHeight + columnHeadersHeight);
-    previewSizes.width = Math.min(width - (hasScrollbarAtRight ? scrollbarSize() : 0),
-      columnHeadersWidth + rowHeadersWidth);
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
@@ -109,45 +86,27 @@ class PivotGrid extends Component {
                 return (
                   <div>
                     <div style={{ display: 'flex' }}>
-                      {/* <DimensionHeaders
-                        // store={store}
-                        previewSizes={previewSizes}
-                        height={columnHeadersHeight}
-                        width={rowHeadersWidth}
-                      /> */}
-                      {/* <ColumnHeaders
-                        columnCount={columnHorizontalCount}
-                        height={columnHeadersHeight}
-                        previewSizes={previewSizes}
-                        ref={(ref) => { this.columnHeadersRef = ref; }}
-                        rowCount={columnVerticalCount}
+                      <DimensionHeaders />
+                      <ColumnHeaders
                         scrollLeft={scrollLeft}
-                        // store={store}
-                        width={columnHeadersVisibleWidth}
-                      /> */}
+                      />
                     </div>
                     <div style={{ display: 'flex' }}>
                       <RowHeaders
-                        columnCount={rowHorizontalCount}
-                        height={rowHeadersVisibleHeight}
-                        previewSizes={previewSizes}
-                        ref={(ref) => { this.rowHeadersRef = ref; }}
-                        rowCount={rowVerticalCount}
                         scrollTop={scrollTop}
-                        width={rowHeadersWidth}
                       />
                       <DataCells
                         onSectionRendered={onSectionRendered}
                         scrollToColumn={scrollToColumn}
                         scrollToRow={scrollToRow}
-                        columnCount={columnHorizontalCount}
-                        height={Math.min(height - columnHeadersHeight,
-                          rowHeadersHeight + scrollbarSize())}
+                        // columnCount={columnHorizontalCount}
+                        // height={Math.min(height - columnHeadersHeight,
+                        //   rowHeadersHeight + scrollbarSize())}
                         onScroll={onScroll}
-                        ref={(ref) => { this.dataCellsRef = ref; }}
-                        rowCount={rowVerticalCount}
-                        width={Math.min(width - rowHeadersWidth,
-                          columnHeadersWidth + scrollbarSize())}
+                        // ref={(ref) => { this.dataCellsRef = ref; }}
+                        // rowCount={rowVerticalCount}
+                        // width={Math.min(width - rowHeadersWidth,
+                          // columnHeadersWidth + scrollbarSize())}
                       />
                     </div>
                   </div>
@@ -166,7 +125,7 @@ const gridSpec = {
     const handle = monitor.getItem();
     const initialOffset = monitor.getInitialClientOffset();
     const offset = monitor.getClientOffset();
-    component.props.store.updateCellSizes(handle, offset, initialOffset);
+    component.props.updateCellSize({ handle, offset, initialOffset });
   },
 };
 

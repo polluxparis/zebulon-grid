@@ -48,7 +48,7 @@ const Header = ({
     dimensionId = MEASURE_ID;
   } else if (header.dim.field) {
     // Normal header
-    dimensionId = header.dim.field.code;
+    dimensionId = header.dim.field.id;
   } else {
     // Total header
     dimensionId = TOTAL_ID;

@@ -38,6 +38,7 @@ class DataCells extends PureComponent {
 
   componentDidUpdate() {
     this.isUpdating = false;
+    this.grid.recomputeGridSize();
   }
 
   componentDidUnMount() {

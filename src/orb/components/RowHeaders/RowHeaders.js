@@ -12,25 +12,31 @@ class RowHeaders extends PureComponent {
     this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);
   }
 
+  componentDidUpdate() {
+    this.grid.recomputeGridSize();
+  }
+
   rowHeadersRenderer({
-    // cellCache,
-    // columnSizeAndPositionManager,
-    // columnStartIndex,
-    // columnStopIndex,
-    // horizontalOffsetAdjustment,
-    // isScrolling,
     rowSizeAndPositionManager,
     rowStartIndex,
     rowStopIndex,
-    scrollLeft,
     scrollTop,
     verticalOffsetAdjustment,
    }) {
-    const { rowHeaders, sizes, columnCount, previewSizes, getLastChildSize, getDimensionSize, dimensionPositions } = this.props;
+    const {
+     rowHeaders,
+     columnHeadersHeight,
+     columnCount,
+     previewSizes,
+     getLastChildSize,
+     getDimensionSize,
+     dimensionPositions,
+    } = this.props;
 
     const renderedCells = [];
 
     // Because of the offset caused by the fixed headers,
+
     // we have to make the cell count artificially higher.
     // This ensures that we don't render inexistent headers.
     const correctRowStopIndex = Math.min(
@@ -52,7 +58,7 @@ class RowHeaders extends PureComponent {
         const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
         const width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
-        const left = scrollLeft + dimensionPositions[header.dim.field.id];
+        const left = 0 + dimensionPositions.rows[header.dim.field.id];
         const positionStyle = {
           position: 'absolute',
           left,
@@ -61,8 +67,8 @@ class RowHeaders extends PureComponent {
           width,
         };
         const previewOffsets = { };
-        previewOffsets.right = (top - scrollTop) + sizes.columnHeadersHeight;
-        previewOffsets.bottom = left - scrollLeft;
+        previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+        previewOffsets.bottom = left - 0;
         renderedCells.push(
           <Header
             key={`header-${header.key}`}
@@ -71,7 +77,7 @@ class RowHeaders extends PureComponent {
             positionStyle={positionStyle}
             span={span}
             startIndex={rowStartIndex}
-            scrollLeft={scrollLeft}
+            scrollLeft={0}
             scrollTop={scrollTop}
             previewSizes={previewSizes}
             previewOffsets={previewOffsets}
@@ -89,15 +95,15 @@ class RowHeaders extends PureComponent {
           const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span);
           // 3 cases: normal dimension header, measure header or total header
           let width;
-          let left = scrollLeft;
+          let left = 0;
           if (!header.dim) {
             // Measure header
             width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
-            left += dimensionPositions[MEASURE_ID];
+            left += dimensionPositions.rows[MEASURE_ID];
           } else if (header.dim.field) {
             // Normal dimension header
             width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
-            left += dimensionPositions[header.dim.field.id];
+            left += dimensionPositions.rows[header.dim.field.id];
           } else {
             // Total header
             width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
@@ -110,8 +116,8 @@ class RowHeaders extends PureComponent {
             width,
           };
           const previewOffsets = { };
-          previewOffsets.right = (top - scrollTop) + sizes.columnHeadersHeight;
-          previewOffsets.bottom = left - scrollLeft;
+          previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+          previewOffsets.bottom = left - 0;
           return (
             <Header
               key={`header-${header.key}`}
@@ -120,7 +126,7 @@ class RowHeaders extends PureComponent {
               positionStyle={positionStyle}
               span={span}
               startIndex={rowStartIndex}
-              scrollLeft={scrollLeft}
+              scrollLeft={0}
               scrollTop={scrollTop}
               previewSizes={previewSizes}
               previewOffsets={previewOffsets}
@@ -133,7 +139,16 @@ class RowHeaders extends PureComponent {
 
 
   render() {
-    const { zoom, getRowHeight, getColumnWidth, columnCount, rowCount, scrollTop, height, width } = this.props;
+    const {
+      zoom,
+      getRowHeight,
+      getColumnWidth,
+      columnCount,
+      rowCount,
+      scrollTop,
+      height,
+      width,
+    } = this.props;
     return (
       <ReactVirtualizedGrid
         cellRangeRenderer={this.rowHeadersRenderer}
@@ -146,6 +161,7 @@ class RowHeaders extends PureComponent {
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
         rowHeight={getRowHeight}
+        scrollLeft={0}
         scrollTop={scrollTop}
         // We set overflowX and overflowY and not overflow
         // because react-virtualized sets them during render

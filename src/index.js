@@ -22,6 +22,9 @@ import {
  import { AxisType } from './orb/Axis';
  import Perf from 'react-addons-perf'; // ES6
 
+
+import {getCellSizes, getHeaderSizes} from './orb/selectors';
+
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
 }
@@ -93,4 +96,5 @@ function initializeStore(store) {
     const fieldId = basicConfig.datafields.find(field => field.caption === fieldCaption).id;
     store.dispatch(toggleDatafield(fieldId));
   });
+
 }

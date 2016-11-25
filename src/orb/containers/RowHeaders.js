@@ -1,26 +1,33 @@
 import { connect } from 'react-redux';
 
+import { AxisType } from '../Axis';
 import {
-  getRowUiAxis,
-  getColumnWidth,
-  getRowHeight,
+  getDimensionPositions,
+  getDimensionSize,
   getHeaderSizes,
   getLastChildSize,
-  getDimensionSizeSelector,
-  getDimensionPositions,
+  getLayout,
+  getPreviewSizes,
+  getRowHeadersVisibleHeight,
+  getRowHeight,
+  getRowUiAxis,
 } from '../selectors';
 import RowHeaders from '../components/RowHeaders';
 
 const mapStateToProps = state => ({
-  zoom: state.config.zoom,
-  rowHeaders: getRowUiAxis(state).headers,
-  sizes: getHeaderSizes(state),
-  getColumnWidth: getColumnWidth(state),
-  getDimensionSize: getDimensionSizeSelector(state),
-  dimensionPositions: getDimensionPositions(state).rows,
-  getRowHeight: getRowHeight(state),
+  columnCount: getLayout(state).rowHorizontalCount,
+  columnHeadersHeight: getHeaderSizes(state).columnHeadersHeight,
+  dimensionPositions: getDimensionPositions(state),
+  getColumnWidth: ({ index }) => getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
+  getDimensionSize: getDimensionSize(state),
   getLastChildSize: getLastChildSize(state),
-  dataHeadersLocation: state => state.config.dataHeadersLocation,
+  getRowHeight: getRowHeight(state),
+  height: getRowHeadersVisibleHeight(state),
+  previewSizes: getPreviewSizes(state),
+  rowCount: getLayout(state).rowVerticalCount,
+  rowHeaders: getRowUiAxis(state).headers,
+  width: getHeaderSizes(state).rowHeadersWidth,
+  zoom: state.config.zoom,
 });
 
 export default connect(mapStateToProps)(RowHeaders);
