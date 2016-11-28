@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
-import copy from '../../services/copyService';
 import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';
 import DataCellComponent from '../DataCell';
@@ -102,18 +101,17 @@ class DataCells extends PureComponent {
   }
 
   handleCopy() {
-    try {
-      if (
-        // Works only if the data cells are focused
-        // Later we could make it work if any part of the grid
-        // (row and columns headers...) are focused
-        findDOMNode(this.grid) === document.activeElement
-      ) {
-        const { selectedCellStart, selectedCellEnd } = this.state;
-        copy({ selectedCellStart, selectedCellEnd, store: this.props.store });
-      }
-    } catch (error) {
-      // console.error('error in handleCopy', error);
+    if (
+      // Works only if the data cells are focused
+      // Later we could make it work if any part of the grid
+      // (row and columns headers...) are focused
+      findDOMNode(this.grid) === document.activeElement
+    ) {
+      const { selectedCellStart, selectedCellEnd } = this.state;
+      this.props.copy({
+        selectedCellStart,
+        selectedCellEnd,
+      });
     }
   }
 

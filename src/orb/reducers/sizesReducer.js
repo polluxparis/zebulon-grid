@@ -1,4 +1,4 @@
-import { UPDATE_CELL_SIZE } from '../actions';
+import { UPDATE_CELL_SIZE } from '../constants';
 
 export default (
   state = { rows: { leafs: {}, dimensions: {} }, columns: { leafs: {}, dimensions: {} } },

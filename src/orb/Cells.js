@@ -1,5 +1,4 @@
 import { AxisType } from './Axis';
-import { Store } from './orb.store';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -12,7 +11,14 @@ export const HeaderType = {
   GRAND_TOTAL: 8,
   DIMENSION_HEADER: 9,
   getHeaderClass(headerType, axetype) {
-    let cssclass = axetype === AxisType.ROWS ? 'header-row' : (axetype === AxisType.COLUMNS ? 'header-col' : '');
+    let cssclass;
+    if (axetype === AxisType.ROWS) {
+      cssclass = 'header-row';
+    } else if (axetype === AxisType.COLUMNS) {
+      cssclass = 'header-col';
+    } else {
+      cssclass = '';
+    }
     switch (headerType) {
       case HeaderType.EMPTY:
       case HeaderType.FIELD_BUTTON:
@@ -117,12 +123,8 @@ class CellBase {
     this.visible = options.isvisible || (() => true);
 
     this.key = this.axetype + this.type + this.value;
-
-    this.store = new Store();
   }
 
-  getState() { return this.store.get(this.key); }
-  setState(newState) { this.store.set(this.key, newState); }
 }
 
 /**
@@ -136,7 +138,17 @@ class CellBase {
  */
 export class Header extends CellBase {
 
-  constructor(axetype, headerTypeP, dim, parent, datafieldscount, x, y, subtotalHeader, crossAxisFieldsCode = []) {
+  constructor(
+    axetype,
+    headerTypeP,
+    dim,
+    parent,
+    datafieldscount,
+    x,
+    y,
+    subtotalHeader,
+    crossAxisFieldsCode = [],
+  ) {
     const isOnRowAxis = axetype === AxisType.ROWS;
     const headerType = headerTypeP || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
     let value;
@@ -183,7 +195,9 @@ export class Header extends CellBase {
     this.subtotalHeader = subtotalHeader;
     this.parent = parent;
     this.dim = dim;
-    this.expanded = this.getState() ? this.getState().expanded : (headerType !== HeaderType.SUB_TOTAL || !dim.field.subTotal.collapsed);
+    // this.expanded = this.getState()
+    // ? this.getState().expanded
+    // : (headerType !== HeaderType.SUB_TOTAL || !dim.field.subTotal.collapsed);
     this.subheaders = [];
 
     if (parent != null) {
@@ -202,16 +216,16 @@ export class Header extends CellBase {
 
   expand() {
     this.expanded = true;
-    this.setState({
-      expanded: this.expanded,
-    });
+    // this.setState({
+    //   expanded: this.expanded,
+    // });
   }
 
   collapse() {
     this.expanded = false;
-    this.setState({
-      expanded: this.expanded,
-    });
+    // this.setState({
+    //   expanded: this.expanded,
+    // });
   }
 
   isParentExpanded() {
@@ -224,23 +238,28 @@ export class Header extends CellBase {
         hparent = hparent.parent;
       }
       return true;
-    } else {
-      const isexpanded = this.dim.isRoot || this.dim.isLeaf || !this.dim.field.subTotal.visible || this.subtotalHeader.expanded;
-      if (!isexpanded) {
-        return false;
-      }
-
-      let par = this.parent;
-      while (par != null && (!par.dim.field.subTotal.visible || (par.subtotalHeader != null && par.subtotalHeader.expanded))) {
-        par = par.parent;
-      }
-      return par == null || par.subtotalHeader == null ? isexpanded : par.subtotalHeader.expanded;
     }
+    const isexpanded = this.dim.isRoot
+    || this.dim.isLeaf
+    || !this.dim.field.subTotal.visible
+    || this.subtotalHeader.expanded;
+    if (!isexpanded) {
+      return false;
+    }
+
+    let par = this.parent;
+    while (
+      par != null
+      && (
+        !par.dim.field.subTotal.visible
+        || (par.subtotalHeader != null && par.subtotalHeader.expanded)
+      )) {
+      par = par.parent;
+    }
+    return par == null || par.subtotalHeader == null ? isexpanded : par.subtotalHeader.expanded;
   }
 
   calcSpan(ignoreVisibility) {
-    // console.log('calcSpan')
-    // console.log(this)
     let span = 0;
     let subSpan;
     let addone = false;
@@ -302,7 +321,7 @@ export class DataHeader extends CellBase {
 }
 
 export class DimensionHeader extends CellBase {
-  constructor(axetype, field, x, y) {
+  constructor(axetype, field) {
     super({
       axetype,
       type: HeaderType.DIMENSION_HEADER,
@@ -323,7 +342,9 @@ export class DataCell extends CellBase {
 
   constructor(getCellValue, dataHeadersLocation, rowinfo, colinfo) {
     const rowDimension = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.dim : rowinfo.dim;
-    const columnDimension = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.dim : colinfo.dim;
+    const columnDimension = colinfo.type === HeaderType.DATA_HEADER
+    ? colinfo.parent.dim
+    : colinfo.dim;
     const rowType = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.type : rowinfo.type;
     const colType = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.type : colinfo.type;
 
@@ -346,7 +367,9 @@ export class DataCell extends CellBase {
     this.colType = colType;
     this.datafield = datafield;
 
-    this.caption = (this.datafield && this.datafield.formatFunc) ? this.datafield.formatFunc()(this.value) : this.value;
+    this.caption = (this.datafield && this.datafield.formatFunc)
+    ? this.datafield.formatFunc()(this.value)
+    : this.value;
   }
 }
 

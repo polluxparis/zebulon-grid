@@ -6,14 +6,6 @@ import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { AutoSizer } from 'react-virtualized';
 
-import {
-  // ChartConfiguration,
-  // Chart,
-  // GridConfiguration,
-  // Grid,
-  Store,
- } from './orb';
-
 import GridConfiguration from './orb/containers/GridConfiguration';
 import PivotGrid from './orb/containers/PivotGrid';
 

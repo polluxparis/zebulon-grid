@@ -1,4 +1,4 @@
-import { SET_CONFIG, TOGGLE_DATAFIELD } from '../actions';
+import { SET_CONFIG, TOGGLE_DATAFIELD } from '../constants';
 
 export default (state = {}, action) => {
   const { type, config, id } = action;

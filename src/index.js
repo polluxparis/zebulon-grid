@@ -1,69 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+
+import Perf from 'react-addons-perf'; // ES6
+import { TestRunner } from 'fps-measurer';
+
+import './orb/index.css';
 import reducer from './orb/reducers';
 import { pushData, setConfig, setConfigProperty, addField, toggleDatafield } from './orb/actions';
 
-import { TestRunner } from 'fps-measurer';
 import createScrollingTestCase from './fpsTests/tests';
 
-import { Config } from './orb/Config';
-
 import App from './App';
-import Store from './orb/stores/Store';
 
 import {
   getMockDatasource,
-  getObservableMockDatasource,
+  // getObservableMockDatasource,
   basicConfig,
  } from './utils/mock';
 
- import { AxisType } from './orb/Axis';
- import Perf from 'react-addons-perf'; // ES6
-
-
-import {getCellSizes, getHeaderSizes} from './orb/selectors';
+import { AxisType } from './orb/Axis';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
 }
 
-const store = createStore(reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
-initializeStore(store);
-
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root'));
-
-if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
-  const testCase = createScrollingTestCase(document.getElementsByClassName('OrbGrid-data-cells')[0]);
-  const testRunner = new TestRunner(testCase, 5);
-
-  const btn = document.createElement('button');
-  btn.innerText = 'Run FPS test';
-  document.body.prepend(btn);
-  btn.addEventListener('click', () => {
-    if (testRunner.isRunning()) {
-      testRunner.stop();
-    } else {
-      testRunner.start();
-    }
-  });
-}
-
 function initializeStore(store) {
-  const datasource = getMockDatasource(1, 10, 10);
+  const datasource = getMockDatasource(1, 100, 100);
   store.dispatch(pushData(datasource));
 
-  // const datasource = getObservableMockDatasource(1100);
-  // datasource.subscribe(data => store.dispatch(pushData(data)));
-  // console.log(new Config(basicConfig));
-  // console.log(new Store(basicConfig));
   store.dispatch(setConfig(basicConfig));
 
   store.dispatch(setConfigProperty(basicConfig, 'dataHeadersLocation', 'columns'));
@@ -95,5 +61,32 @@ function initializeStore(store) {
   basicConfig.data.forEach((fieldCaption) => {
     const fieldId = basicConfig.datafields.find(field => field.caption === fieldCaption).id;
     store.dispatch(toggleDatafield(fieldId));
+  });
+}
+
+const store = createStore(reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+initializeStore(store);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root'));
+
+if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
+  const testCase = createScrollingTestCase(document.getElementsByClassName('OrbGrid-data-cells')[0]);
+  const testRunner = new TestRunner(testCase, 5);
+
+  const btn = document.createElement('button');
+  btn.innerText = 'Run FPS test';
+  document.body.prepend(btn);
+  btn.addEventListener('click', () => {
+    if (testRunner.isRunning()) {
+      testRunner.stop();
+    } else {
+      testRunner.start();
+    }
   });
 }

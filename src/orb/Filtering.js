@@ -92,10 +92,34 @@ export const Operators = {
   },
 };
 
+export function pass(filter, value) {
+  if (Array.isArray(filter.staticValue)) {
+    const found = filter.staticValue.includes(value);
+    return (filter.excludeStatic && !found) || (!filter.excludeStatic && found);
+  } else if (filter.term) {
+    return filter.operator.func(value, filter.term);
+  } else if (filter.staticValue === true || filter.staticValue === ALL) {
+    return true;
+  } else if (filter.staticValue === false || filter.staticValue === NONE) {
+    return false;
+  }
+  return true;
+}
+
+function isAlwaysTrue() {
+  return !(
+    this.term
+    || Array.isArray(this.staticValue)
+    || this.staticValue === NONE
+    || this.staticValue === false
+  );
+}
+
+
 export class ExpressionFilter {
 
-  constructor(fieldName, operator, term, staticValue, excludeStatic) {
-    this.fieldName = fieldName;
+  constructor(fieldId, operator, term, staticValue, excludeStatic) {
+    this.fieldId = fieldId;
     this.regexpMode = false;
     this.operator = Operators.get(operator);
     this.term = term || null;
@@ -110,28 +134,5 @@ export class ExpressionFilter {
 
     this.staticValue = staticValue;
     this.excludeStatic = excludeStatic;
-  }
-
-  pass(value) {
-    if (Array.isArray(this.staticValue)) {
-      const found = this.staticValue.indexOf(value) >= 0;
-      return (this.excludeStatic && !found) || (!this.excludeStatic && found);
-    } else if (this.term) {
-      return this.operator.func(value, this.term);
-    } else if (this.staticValue === true || this.staticValue === ALL) {
-      return true;
-    } else if (this.staticValue === false || this.staticValue === NONE) {
-      return false;
-    }
-    return true;
-  }
-
-  isAlwaysTrue() {
-    return !(
-      this.term
-      || Array.isArray(this.staticValue)
-      || this.staticValue === NONE
-      || this.staticValue === false
-    );
   }
 }

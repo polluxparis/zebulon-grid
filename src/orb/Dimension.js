@@ -75,8 +75,7 @@ export default class Dimension {
         result.push(this.rowIndexes[j]);
       }
       return result;
-    } else {
-      return this.rowIndexes;
     }
+    return this.rowIndexes;
   }
 }
