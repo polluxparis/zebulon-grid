@@ -94,7 +94,7 @@ export const Operators = {
 
 export class ExpressionFilter {
 
-  constructor(fieldName, data, operator, term, staticValue, excludeStatic) {
+  constructor(fieldName, operator, term, staticValue, excludeStatic) {
     this.fieldName = fieldName;
     this.regexpMode = false;
     this.operator = Operators.get(operator);
@@ -110,7 +110,6 @@ export class ExpressionFilter {
 
     this.staticValue = staticValue;
     this.excludeStatic = excludeStatic;
-    this.data = data;
   }
 
   pass(value) {

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Grid as ReactVirtualizedGrid, ArrowKeyStepper } from 'react-virtualized';
+import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
 import copy from '../../services/copyService';
 import { isInRange } from '../../utils/generic';
@@ -38,6 +38,7 @@ class DataCells extends PureComponent {
 
   componentDidUpdate() {
     this.isUpdating = false;
+    this.grid.recomputeGridSize();
   }
 
   componentDidUnMount() {
@@ -74,7 +75,7 @@ class DataCells extends PureComponent {
   }
 
   handleKeyDown(e) {
-    const { rowsUi, columnsUi } = this.props.store;
+    const { columnHeaders, rowHeaders } = this.props;
     if (e.which === 69) {
       if (!this.perf) {
         window.Perf.start();
@@ -93,7 +94,7 @@ class DataCells extends PureComponent {
       ) {
         this.setState({
           selectedCellStart: [0, 0],
-          selectedCellEnd: [columnsUi.headers.length, rowsUi.headers.length],
+          selectedCellEnd: [columnHeaders.length, rowHeaders.length],
         });
       }
       e.preventDefault();
@@ -124,11 +125,11 @@ class DataCells extends PureComponent {
     style: position,
    }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
-    const { store, drilldown } = this.props;
-    const { rowsUi, columnsUi } = store;
-    const rowHeaderRow = rowsUi.headers[rowIndex];
+    const { drilldown, getCellValue, dataHeadersLocation } = this.props;
+    const { rowHeaders, columnHeaders } = this.props;
+    const rowHeaderRow = rowHeaders[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
-    const columnHeaderColumn = columnsUi.headers[columnIndex];
+    const columnHeaderColumn = columnHeaders[columnIndex];
     const columnHeader = columnHeaderColumn[columnHeaderColumn.length - 1];
     let selected = false;
     if (selectedCellStart && selectedCellEnd) {
@@ -136,8 +137,8 @@ class DataCells extends PureComponent {
     }
 
     const cell = new DataCell(
-      store,
-      true,
+      getCellValue,
+      dataHeadersLocation,
       rowHeader,
       columnHeader);
     const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
@@ -167,7 +168,9 @@ class DataCells extends PureComponent {
 
   render() {
     const {
-      store,
+      // store,
+      getColumnWidth,
+      getRowHeight,
       onScroll,
       columnCount,
       rowCount,
@@ -178,6 +181,7 @@ class DataCells extends PureComponent {
       scrollToColumn,
       scrollToRow,
       onSectionRendered,
+      zoom,
      } = this.props;
     this.datacellsCache = {};
     return (
@@ -185,19 +189,19 @@ class DataCells extends PureComponent {
         cellRenderer={this.cellRenderer}
         className="OrbGrid-data-cells"
         columnCount={columnCount}
-        columnWidth={store.getColumnWidth}
+        columnWidth={getColumnWidth}
         height={height}
         onScroll={onScroll}
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
-        rowHeight={store.getRowHeight}
+        rowHeight={getRowHeight}
         scrollToAlignment="start"
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
-        style={{ fontSize: `${this.props.store.zoom * 100}%` }}
+        style={{ fontSize: `${zoom * 100}%` }}
         width={width}
       />
     );

@@ -8,8 +8,8 @@ export default class DataButton extends Component {
   }
 
   onClick() {
-    const { field, store } = this.props;
-    store.toggleDataField(field.name);
+    const { field } = this.props;
+    this.props.handleClick(field.id);
   }
 
   render() {

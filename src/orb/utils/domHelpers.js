@@ -95,7 +95,7 @@ export function getStyle(element, styleProps, keepString) {
       f = function (prop) { return currStyle.getPropertyValue(prop); };
     }
 
-    for (let i = 0; i < styleProps.length; i++) {
+    for (let i = 0; i < styleProps.length; i += 1) {
       const val = f(fixProp ? replaceHyphenByUcase(styleProps[i]) : styleProps[i]);
       values.push(val && keepString !== true ? Math.ceil(parseFloat(val)) : val);
     }
@@ -120,7 +120,7 @@ export function updateTableColGroup(tableNode, widths) {
       while (colGroupNode.firstChild) {
         colGroupNode.removeChild(colGroupNode.firstChild);
       }
-      for (let i = 0; i < widths.length; i++) {
+      for (let i = 0; i < widths.length; i += 1) {
         const col = document.createElement('col');
         col.style.width = `${widths[i]}px`;
         colGroupNode.appendChild(col);

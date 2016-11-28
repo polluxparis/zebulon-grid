@@ -6,33 +6,29 @@ import ResizeHandle from '../ResizeHandle';
 const DimensionHeader = ({
   field,
   left,
-  right,
   top,
-  bottom,
   height,
   width,
-  crossFieldCode,
+  crossFieldId,
   mainDirection,
   previewSizes,
  }) => {
   const ids = {};
   if (mainDirection === 'down') {
-    ids.right = field.code;
-    ids.bottom = crossFieldCode;
+    ids.right = field.id;
+    ids.bottom = crossFieldId;
   } else {
-    ids.bottom = field.code;
-    ids.right = crossFieldCode;
+    ids.bottom = field.id;
+    ids.right = crossFieldId;
   }
   return (
     <div
-      key={`fixed-dim-${field.code}`}
+      key={`fixed-dim-${field.id}`}
       className={'OrbGrid-cell'}
       style={{
         position: 'absolute',
-        left: left && left,
-        right: right && right,
-        bottom: bottom && bottom,
-        top: top && top,
+        left,
+        top,
         width,
         height,
         zIndex: 3,

@@ -40,7 +40,7 @@ class ChartConfiguration extends Component {
       </div>
     const dropTargetContainerStyle = {display: 'flex', alignItems: 'center'}
 
-    const dataButtons = config.dataFields
+    const dataButtons = config.datafields
       .map((field, index) =>
         <div style={{padding: '0px 4px'}} key={'div-' + field.name}>
           <DataButton

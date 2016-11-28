@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { DragSource } from 'react-dnd';
 import { Overlay } from 'react-overlays';
 
-import FilterPanel from '../FilterPanel';
+import FilterPanel from '../../containers/FilterPanel';
 
 const filterImage = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAMUlEQVQYlWP4//9/I7GYgSzFDHgAVsX/sQCsirFpQFaI1c0wDegKB0AxeihQFs7EYAAT8WYwzt7jxgAAAABJRU5ErkJggg==) no-repeat 0px 0px';
 
@@ -14,7 +14,6 @@ class FieldButton extends PureComponent {
 
     this.addFilterPanel = this.addFilterPanel.bind(this);
     this.removeFilterPanel = this.removeFilterPanel.bind(this);
-    this.onFilter = this.onFilter.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -23,31 +22,24 @@ class FieldButton extends PureComponent {
     this.buttonDOMNode = findDOMNode(this.buttonRef);
   }
 
-  onFilter(all, operator, term, staticValue, excludeStatic) {
-    const { store, field, axetype } = this.props;
-    store.applyFilter(field.name, axetype, all, operator, term, staticValue, excludeStatic);
-    this.removeFilterPanel();
-  }
-
   removeFilterPanel() {
     this.setState({ filtering: false });
   }
 
   addFilterPanel(e) {
-    const { filtering } = this.state;
-    if (!filtering) {
+    if (!this.state.filtering) {
       this.setState({ filtering: true });
     }
     e.preventDefault();
   }
 
   handleClick() {
-    const { store, axetype, field } = this.props;
-    store.sort(axetype, field.name);
+    const { sort, field } = this.props;
+    sort(field.id);
   }
 
   render() {
-    const { field, store, axetype, connectDragSource, isDragging } = this.props;
+    const { field, connectDragSource, isDragging } = this.props;
     const { filtering } = this.state;
     const styles = {
       div: {
@@ -95,10 +87,7 @@ class FieldButton extends PureComponent {
         >
           <FilterPanel
             field={field}
-            axetype={axetype}
-            store={store}
-            onFilter={this.onFilter}
-            onCancel={() => this.removeFilterPanel()}
+            onHide={this.removeFilterPanel}
           />
         </Overlay>
       </div>);
@@ -108,7 +97,7 @@ class FieldButton extends PureComponent {
 const fieldSource = {
   beginDrag(props) {
     return {
-      id: props.field.name,
+      id: props.field.id,
       axetype: props.axetype,
     };
   },

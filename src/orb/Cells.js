@@ -249,7 +249,7 @@ export class Header extends CellBase {
       if (!this.dim.isLeaf) {
         // subdimvals 'own' properties are the set of values for this dimension
         if (this.subheaders.length > 0) {
-          for (let i = 0; i < this.subheaders.length; i++) {
+          for (let i = 0; i < this.subheaders.length; i += 1) {
             const subheader = this.subheaders[i];
             // if it's not an array
             if (!subheader.dim.isLeaf) {
@@ -321,25 +321,23 @@ export class DimensionHeader extends CellBase {
 
 export class DataCell extends CellBase {
 
-  constructor(store, isvisible, rowinfo, colinfo) {
+  constructor(getCellValue, dataHeadersLocation, rowinfo, colinfo) {
     const rowDimension = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.dim : rowinfo.dim;
     const columnDimension = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.dim : colinfo.dim;
     const rowType = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.type : rowinfo.type;
     const colType = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.type : colinfo.type;
 
-    const datafield = store.config.activatedDataFieldsCount > 1
-      ? (store.config.dataHeadersLocation === 'rows'
+    const datafield = dataHeadersLocation === 'rows'
         ? rowinfo.value
-        : colinfo.value)
-      : store.config.activatedDataFields[0];
+        : colinfo.value;
 
     super({
       axetype: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
-      value: store.getData(datafield ? datafield.name : null, rowDimension, columnDimension),
+      value: getCellValue(datafield || null, rowDimension, columnDimension),
       cssclass: `cell ${HeaderType.getCellClass(rowType, colType)}`,
-      isvisible,
+      isvisible: true,
     });
 
     this.rowDimension = rowDimension;

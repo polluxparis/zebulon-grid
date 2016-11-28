@@ -10,7 +10,7 @@
 //   while (i < parts.length) {
 //     parent[parts[i]] = parent[parts[i]] || {};
 //     parent = parent[parts[i]];
-//     i++;
+//     i += 1;
 //   }
 //   return parent;
 // }
@@ -41,7 +41,7 @@
 // export function forEach(list, callback, forceContinue) {
 //   let ret;
 //   if (list) {
-//     for (let i = 0, l = list.length; i < l; i++) {
+//     for (let i = 0, l = list.length; i < l; i += 1) {
 //       ret = callback(list[i], i);
 //       if (ret && forceContinue !== true) {
 //         break;
@@ -112,7 +112,7 @@ export function escapeRegex(re) {
  */
 export function findInArray(array, predicate) {
   if (this.isArray(array) && predicate) {
-    for (let i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i += 1) {
       const item = array[i];
       if (predicate(item)) {
         return item;
@@ -245,12 +245,12 @@ export function findInArray(array, predicate) {
 //             // initialize result and counters
 //             var bc = 0, bs, buffer, idx = 0, output = ''
 //             // get next character
-//             (buffer = str.charAt(idx++))
+//             (buffer = str.charAt(idx += 1))
 //             // character found in table? initialize bit storage and add its ascii value
 //             ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
 //                 // and if not first of each 4 characters,
 //                 // convert the first 8 bits to one ascii character
-//                 bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
+//                 bc += 1 % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
 //         ) {
 //             // try to find character in table (0-63, not found => -1)
 //             buffer = chars.indexOf(buffer)
@@ -268,13 +268,13 @@ export function twoArraysIntersect(arg0, arg1) {
   const res = [];
   while (i < n && j < m) {
     if (arg0[i] > arg1[j]) {
-      j++;
+      j += 1;
     } else if (arg0[i] < arg1[j]) {
-      i++;
+      i += 1;
     } else {
       res.push(arg0[i]);
-      i++;
-      j++;
+      i += 1;
+      j += 1;
     }
   }
   return res;
@@ -288,17 +288,17 @@ export function twoArraysIntersect(arg0, arg1) {
 //   const nOthers = arguments.length - 1;
 //   let nShortest = arguments[0].length;
 //   let shortest = 0;
-//   for (let i = 0; i <= nOthers; i++) {
+//   for (let i = 0; i <= nOthers; i += 1) {
 //     n = arguments[i].length;
 //     if (n < nShortest) {
 //       shortest = i;
 //       nShortest = n;
 //     }
 //   }
-//   for (let i = 0; i <= nOthers; i++) {
+//   for (let i = 0; i <= nOthers; i += 1) {
 //     n = (i === shortest) ? 0 : (i || shortest); // Read the shortest array first. Read the first array instead of the shortest
 //     len = arguments[n].length;
-//     for (let j = 0; j < len; j++) {
+//     for (let j = 0; j < len; j += 1) {
 //       const elem = arguments[n][j];
 //       if (obj[elem] === i - 1) {
 //         if (i === nOthers) {

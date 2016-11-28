@@ -41,12 +41,10 @@ export class SortConfig {
 
 export class Field {
 
-  constructor(options, createSubOptions) {
-    options = options || {};
-
+  constructor(options = {}, createSubOptions) {
     // field name
-    this.name = options.name;
-    this.code = options.code || this.name;
+    this.id = options.id;
+    this.name = options.name || this.id;
 
     // shared settings
     this.caption = options.caption || this.name;
@@ -61,7 +59,7 @@ export class Field {
         ? options.aggregateFunc : 'custom')
         : null);
 
-    this.aggregateFunc(options.aggregateFunc);
+    this.aggregateFunc = aggregation.toAggregateFunc(options.aggregateFunc);
     this.formatFunc(options.formatFunc || this.defaultFormatFunc);
 
     if (createSubOptions !== false) {
@@ -75,14 +73,6 @@ export class Field {
     return val != null ? val.toString() : '';
   }
 
-  aggregateFunc(func) {
-    if (func) {
-      this._aggregatefunc = aggregation.toAggregateFunc(func);
-    } else {
-      return this._aggregatefunc;
-    }
-  }
-
   formatFunc(func) {
     if (func) {
       this._formatfunc = func;
@@ -94,7 +84,7 @@ export class Field {
 }
 
 const getpropertyvalue = (property, configs, defaultvalue) => {
-  for (let i = 0; i < configs.length; i++) {
+  for (let i = 0; i < configs.length; i += 1) {
     if (configs[i][property] != null) {
       return configs[i][property];
     }
@@ -110,14 +100,14 @@ const mergefieldconfigs = (...args) => {
     functions: [],
   };
 
-  for (let i = 0; i < args.length; i++) {
+  for (let i = 0; i < args.length; i += 1) {
     const nnconfig = args[i] || {};
     merged.configs.push(nnconfig);
     merged.sorts.push(nnconfig.sort || {});
     merged.subtotals.push(nnconfig.subTotal || {});
     merged.functions.push({
       aggregateFuncName: nnconfig.aggregateFuncName,
-      aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
+      aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc : null),
       formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
     });
   }
@@ -160,7 +150,7 @@ const createfield = (rootconfig, axetype, fieldconfig, defaultfieldconfig) => {
 
     caption: getpropertyvalue('caption', merged.configs, ''),
 
-    code: getpropertyvalue('code', merged.configs, ''),
+    id: getpropertyvalue('id', merged.configs, ''),
 
     sort: {
       order: getpropertyvalue('order', merged.sorts, null),
@@ -202,12 +192,33 @@ export class Config {
     this.columnSettings = new Field(config.columnSettings, false);
     this.dataSettings = new Field(config.dataSettings, false);
 
-    this.allFields = (config.fields || []).map(fieldConfig => new Field(fieldConfig));
-    this.dataFields = (config.dataFields || []).map(fieldConfig => new Field(fieldConfig));
+    let fieldsPosition = 0;
+    let columnFieldsPosition = 0;
+    let rowFieldsPosition = 0;
+    this.allFields = (config.fields || [])
+      .map(fieldConfig => new Field(fieldConfig))
+      .map((field) => {
+        if (config.rows.indexOf(field.caption) > -1) {
+          field.axis = AxisType.ROWS;
+          field.position = rowFieldsPosition;
+          rowFieldsPosition += 1;
+        } else if (config.columns.indexOf(field.caption) > -1) {
+          field.axis = AxisType.COLUMNS;
+          field.position = columnFieldsPosition;
+          columnFieldsPosition += 1;
+        } else {
+          field.axis = AxisType.FIELDS;
+          field.position = fieldsPosition;
+          fieldsPosition += 1;
+        }
+        return field;
+      });
+    this.datafields = (config.datafields || [])
+      .map(fieldConfig => new Field(fieldConfig));
 
     // map fields names to captions
-    this.dataFieldNames = this.allFields.map(f => f.name);
-    this.dataFieldCaptions = this.allFields.map(f => f.caption);
+    this.datafieldNames = this.allFields.map(f => f.name);
+    this.datafieldCaptions = this.allFields.map(f => f.caption);
 
     this.rowFields = (config.rows || []).map((fieldconfig) => {
       fieldconfig = this.ensureFieldConfig(fieldconfig);
@@ -221,7 +232,7 @@ export class Config {
 
     this.selectedField = this.allFields.filter(field => field.caption === config.rows[0])[0];
 
-    this.activatedDataFields = this.dataFields.filter(field => config.data.indexOf(field.caption) > -1);
+    this.activatedDataFields = this.datafields.filter(field => config.data.indexOf(field.caption) > -1);
 
     this.drilldown = config.drilldown || (cell => console.log('drilldown on cell (default)', cell));
 
@@ -278,13 +289,13 @@ export class Config {
   }
 
   captionToName(caption) {
-    const fcaptionIndex = this.dataFieldCaptions.indexOf(caption);
-    return fcaptionIndex >= 0 ? this.dataFieldNames[fcaptionIndex] : caption;
+    const fcaptionIndex = this.datafieldCaptions.indexOf(caption);
+    return fcaptionIndex >= 0 ? this.datafieldNames[fcaptionIndex] : caption;
   }
 
   nameToCaption(name) {
-    const fnameIndex = this.dataFieldNames.indexOf(name);
-    return fnameIndex >= 0 ? this.dataFieldCaptions[fnameIndex] : name;
+    const fnameIndex = this.datafieldNames.indexOf(name);
+    return fnameIndex >= 0 ? this.datafieldCaptions[fnameIndex] : name;
   }
   // setTheme (newTheme) {
   //   return this.theme.current() !== this.theme.current(newTheme)
@@ -308,7 +319,7 @@ export class Config {
   }
 
   getfieldindex(axefields, fieldname) {
-    for (let fi = 0; fi < axefields.length; fi++) {
+    for (let fi = 0; fi < axefields.length; fi += 1) {
       if (axefields[fi].name === fieldname) {
         return fi;
       }
@@ -329,7 +340,7 @@ export class Config {
   }
 
   getDataField(fieldname) {
-    return this.getfield(this.dataFields, fieldname);
+    return this.getfield(this.datafields, fieldname);
   }
 
   moveField(fieldname, oldaxetype, newaxetype, position) {
@@ -444,7 +455,7 @@ export class Config {
     }
 
     newState = newState === false ? null : true;
-    for (i = 0; i < axeFields.length; i++) {
+    for (i = 0; i < axeFields.length; i += 1) {
       if (axeFields[i].subTotal.visible !== false) {
         axeFields[i].subTotal.visible = newState;
       }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import FieldButton from '../FieldButton';
+import FieldButton from '../../containers/FieldButton';
 import DataButton from '../DataButton';
 import FieldList from '../FieldList';
 import { AxisType } from '../../Axis';
@@ -12,51 +12,48 @@ class GridConfiguration extends Component {
   }
 
   moveButton(buttonId, oldAxisType, newAxisType, position) {
-    this.props.store.moveField(buttonId, oldAxisType, newAxisType, position);
+    this.props.moveField(buttonId, oldAxisType, newAxisType, position);
   }
 
   render() {
-    const { store } = this.props;
-    const { config } = store;
-    let unusedFieldList;
+    const { availableFields, datafields, rowFields, columnFields } = this.props;
     const dropTargetContainerStyle = { display: 'flex', alignItems: 'center' };
 
-    if (config.canMoveFields) {
-      const fieldsButtons = config.availableFields.map((field, index) =>
-        <FieldButton
-          key={field.name}
-          field={field}
-          axetype={AxisType.FIELDS}
-          position={index}
-          store={store}
-        />);
-      unusedFieldList = (
-        <div style={dropTargetContainerStyle}>
-          <div style={{ padding: '7px 4px' }}>
-            Fields
-          </div>
-          <div style={{ padding: '7px 4px' }}>
-            <FieldList
-              buttons={fieldsButtons}
-              axetype={AxisType.FIELDS}
-              moveButton={this.moveButton}
-            />
-          </div>
+    // if (canMoveFields) {
+    const fieldsButtons = availableFields.map((field, index) =>
+      <FieldButton
+        key={field.id}
+        field={field}
+        axetype={AxisType.FIELDS}
+        position={index}
+      />);
+    const unusedFieldList = (
+      <div style={dropTargetContainerStyle}>
+        <div style={{ padding: '7px 4px' }}>
+          Fields
         </div>
-      );
-    } else {
-      unusedFieldList = null;
-    }
+        <div style={{ padding: '7px 4px' }}>
+          <FieldList
+            buttons={fieldsButtons}
+            axetype={AxisType.FIELDS}
+            moveButton={this.moveButton}
+          />
+        </div>
+      </div>
+    );
+    // } else {
+    //   unusedFieldList = null;
+    // }
 
-    const dataButtons = config.dataFields
+    const dataButtons = Object.values(datafields)
       .map((field, index) =>
-        <div style={{ padding: '0px 4px' }} key={`data-button-${field.name}`}>
+        <div style={{ padding: '0px 4px' }} key={`data-button-${field.id}`}>
           <DataButton
-            key={field.name}
+            key={field.id}
             field={field}
             position={index}
-            active={config.activatedDataFields.filter(fld => fld.name === field.name).length}
-            store={store}
+            active={field.activated}
+            handleClick={this.props.toggleDatafield}
           />
         </div>);
 
@@ -75,13 +72,12 @@ class GridConfiguration extends Component {
       </div>
     );
 
-    const columnButtons = config.columnFields.map((field, index) =>
+    const columnButtons = columnFields.map((field, index) =>
       <FieldButton
-        key={field.name}
+        key={field.id}
         field={field}
         axetype={AxisType.COLUMNS}
         position={index}
-        store={store}
       />);
 
     const columnFieldList = (
@@ -99,13 +95,12 @@ class GridConfiguration extends Component {
       </div>
     );
 
-    const rowButtons = config.rowFields.map((field, index) =>
+    const rowButtons = rowFields.map((field, index) =>
       <FieldButton
-        key={field.name}
+        key={field.id}
         field={field}
         axetype={AxisType.ROWS}
         position={index}
-        store={store}
       />);
 
     const rowFieldList = (

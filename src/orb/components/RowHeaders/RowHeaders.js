@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
 
 import { AxisType } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
+import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import Header from '../Header';
 import getHeaderSize from '../../utils/headerSize';
 
@@ -12,27 +12,31 @@ class RowHeaders extends PureComponent {
     this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);
   }
 
+  componentDidUpdate() {
+    this.grid.recomputeGridSize();
+  }
+
   rowHeadersRenderer({
-    // cellCache,
-    // columnSizeAndPositionManager,
-    // columnStartIndex,
-    // columnStopIndex,
-    // horizontalOffsetAdjustment,
-    // isScrolling,
     rowSizeAndPositionManager,
     rowStartIndex,
     rowStopIndex,
-    scrollLeft,
     scrollTop,
     verticalOffsetAdjustment,
    }) {
-    const { store, columnCount, previewSizes } = this.props;
-    const { rowsUi } = store;
-    const rowHeaders = rowsUi.headers;
+    const {
+     rowHeaders,
+     columnHeadersHeight,
+     columnCount,
+     previewSizes,
+     getLastChildSize,
+     getDimensionSize,
+     dimensionPositions,
+    } = this.props;
 
     const renderedCells = [];
 
     // Because of the offset caused by the fixed headers,
+
     // we have to make the cell count artificially higher.
     // This ensures that we don't render inexistent headers.
     const correctRowStopIndex = Math.min(
@@ -53,8 +57,8 @@ class RowHeaders extends PureComponent {
         const span = header.vspan();
         const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
-        const width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-        const left = scrollLeft + this.props.store.dimensionPositions.rows[header.dim.field.code];
+        const width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
+        const left = 0 + dimensionPositions.rows[header.dim.field.id];
         const positionStyle = {
           position: 'absolute',
           left,
@@ -63,8 +67,8 @@ class RowHeaders extends PureComponent {
           width,
         };
         const previewOffsets = { };
-        previewOffsets.right = (top - scrollTop) + store.sizes.columnHeadersHeight;
-        previewOffsets.bottom = left - scrollLeft;
+        previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+        previewOffsets.bottom = left - 0;
         renderedCells.push(
           <Header
             key={`header-${header.key}`}
@@ -73,11 +77,11 @@ class RowHeaders extends PureComponent {
             positionStyle={positionStyle}
             span={span}
             startIndex={rowStartIndex}
-            scrollLeft={scrollLeft}
+            scrollLeft={0}
             scrollTop={scrollTop}
             previewSizes={previewSizes}
             previewOffsets={previewOffsets}
-            getLastChildSize={store.getLastChildSize}
+            getLastChildSize={getLastChildSize}
           />);
       }
     }
@@ -91,18 +95,18 @@ class RowHeaders extends PureComponent {
           const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span);
           // 3 cases: normal dimension header, measure header or total header
           let width;
-          let left = scrollLeft;
+          let left = 0;
           if (!header.dim) {
             // Measure header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, MEASURE_ID);
-            left += this.props.store.dimensionPositions.rows[MEASURE_ID];
+            width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
+            left += dimensionPositions.rows[MEASURE_ID];
           } else if (header.dim.field) {
             // Normal dimension header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, header.dim.field.code);
-            left += this.props.store.dimensionPositions.rows[header.dim.field.code];
+            width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
+            left += dimensionPositions.rows[header.dim.field.id];
           } else {
             // Total header
-            width = this.props.store.getDimensionSize(AxisType.ROWS, TOTAL_ID);
+            width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
           }
           const positionStyle = {
             position: 'absolute',
@@ -112,8 +116,8 @@ class RowHeaders extends PureComponent {
             width,
           };
           const previewOffsets = { };
-          previewOffsets.right = (top - scrollTop) + store.sizes.columnHeadersHeight;
-          previewOffsets.bottom = left - scrollLeft;
+          previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+          previewOffsets.bottom = left - 0;
           return (
             <Header
               key={`header-${header.key}`}
@@ -122,11 +126,11 @@ class RowHeaders extends PureComponent {
               positionStyle={positionStyle}
               span={span}
               startIndex={rowStartIndex}
-              scrollLeft={scrollLeft}
+              scrollLeft={0}
               scrollTop={scrollTop}
               previewSizes={previewSizes}
               previewOffsets={previewOffsets}
-              getLastChildSize={store.getLastChildSize}
+              getLastChildSize={getLastChildSize}
             />);
         }));
     }
@@ -135,23 +139,33 @@ class RowHeaders extends PureComponent {
 
 
   render() {
-    const { store, columnCount, rowCount, scrollTop, height, width } = this.props;
+    const {
+      zoom,
+      getRowHeight,
+      getColumnWidth,
+      columnCount,
+      rowCount,
+      scrollTop,
+      height,
+      width,
+    } = this.props;
     return (
       <ReactVirtualizedGrid
         cellRangeRenderer={this.rowHeadersRenderer}
         cellRenderer={function mock() {}}
         className="OrbGrid-row-headers"
         columnCount={columnCount}
-        columnWidth={store.getColumnWidth}
+        columnWidth={getColumnWidth}
         height={height}
         overscanRowCount={0}
         ref={(ref) => { this.grid = ref; }}
         rowCount={rowCount}
-        rowHeight={store.getRowHeight}
+        rowHeight={getRowHeight}
+        scrollLeft={0}
         scrollTop={scrollTop}
         // We set overflowX and overflowY and not overflow
         // because react-virtualized sets them during render
-        style={{ fontSize: `${this.props.store.zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
+        style={{ fontSize: `${zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
         width={width}
       />
     );

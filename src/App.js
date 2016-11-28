@@ -9,33 +9,20 @@ import { AutoSizer } from 'react-virtualized';
 import {
   // ChartConfiguration,
   // Chart,
-  GridConfiguration,
-  Grid,
+  // GridConfiguration,
+  // Grid,
   Store,
  } from './orb';
+
+import GridConfiguration from './orb/containers/GridConfiguration';
+import PivotGrid from './orb/containers/PivotGrid';
 
 import './App.css';
 import logo from './logo.svg';
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.store = new Store(props.config, this.forceUpdate.bind(this));
-  }
-
-  componentDidMount() {
-    // Store is subscribed here because it triggers a forceUpdate
-    // And forceUpdate can only be called on a mounted Component
-    this.store.subscribe(this.props.datasource);
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.store.subscribe(newProps.datasource);
-  }
-
   render() {
-    console.log(this.store);
     return (
       <div className="App">
         <div className="App-header">
@@ -68,8 +55,8 @@ class App extends Component {
             </ResizableBox>
           </div> */}
           <div>
-            <GridConfiguration store={this.store} />
-            <div className="Zoom-bar">
+            <GridConfiguration />
+            {/* <div className="Zoom-bar">
               <button
                 className="Zoom-icon Zoom-icon-in"
                 onClick={() => this.store.handleZoom(true)}
@@ -78,15 +65,15 @@ class App extends Component {
                 className="Zoom-icon Zoom-icon-out"
                 onClick={() => this.store.handleZoom()}
               >-</button>
-            </div>
-            <ResizableBox height={600} width={800}>
+            </div> */}
+            {/* <ResizableBox height={600} width={800}>
               <AutoSizer>
                 {({ width, height }) =>
                   <Grid height={height} width={width} store={this.store} />
                 }
               </AutoSizer>
-            </ResizableBox>
-            {/* <Grid store={this.store} height={600} width={800} /> */}
+            </ResizableBox> */}
+            <PivotGrid />
           </div>
         </div>
       </div>

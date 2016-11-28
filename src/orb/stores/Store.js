@@ -437,24 +437,12 @@ export default class Store {
   }
 
   getColumnWidth({ index }) {
-    // Need to pass the axis when the grid receives new props
-    if (index >= this.columnsUi.headers.length) {
-      // Because of offset, it's necessary to make column and row counts greater than normal
-      // This ensures that the additional cells are correctly handled
-      return this.sizes.rowHeadersWidth / this.layout.rowHorizontalCount;
-    }
     const headers = this.columnsUi.headers[index];
     const key = headers[headers.length - 1].key;
     return this.getLeafHeaderSize(AxisType.COLUMNS, key);
   }
 
   getRowHeight({ index }) {
-    // Need to pass the axis when the grid receives new props
-    if (index >= this.rowsUi.headers.length) {
-      // Because of offset, it's necessary to make column and row counts greater than normal
-      // This ensures that the additional cells are correctly handled
-      return this.sizes.columnHeadersHeight / this.layout.columnVerticalCount;
-    }
     const headers = this.rowsUi.headers[index];
     const key = headers[headers.length - 1].key;
     return this.getLeafHeaderSize(AxisType.ROWS, key);
