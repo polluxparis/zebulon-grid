@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import FieldButton from '../FieldButton';
+import FieldButton from '../../containers/FieldButton';
 import DataButton from '../DataButton';
 import FieldList from '../FieldList';
 import { AxisType } from '../../Axis';

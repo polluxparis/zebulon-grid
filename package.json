@@ -20,7 +20,6 @@
     "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
     "react-addons-perf": "^15.4.0",
-    "react-resizable": "^1.4.5",
     "react-scripts": "0.7.0",
     "react-test-renderer": "^15.4.0"
   },
@@ -34,6 +33,7 @@
     "react-dom": "15.4.1",
     "react-overlays": "^0.6.10",
     "react-redux": "^4.4.6",
+    "react-resizable": "^1.4.5",
     "react-virtualized": "^8.5.3",
     "react-virtualized-checkbox": "^2.0.3",
     "recharts": "^0.18.0",

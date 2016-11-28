@@ -42,8 +42,8 @@ class FieldButton extends PureComponent {
   }
 
   handleClick() {
-    const { store, axetype, field } = this.props;
-    store.sort(axetype, field.name);
+    const { sort, field } = this.props;
+    sort(field.id);
   }
 
   render() {
