@@ -5,6 +5,7 @@ import AxisUi from '../AxisUi';
 import { MEASURE_ID, TOTAL_ID } from '../constants';
 import { twoArraysIntersect, isNumber, isDate } from '../utils/generic';
 import { scrollbarSize } from '../utils/domHelpers';
+import { pass } from '../Filtering';
 
 export const getCellSizes = createSelector(
   [
@@ -43,7 +44,7 @@ export const getFilteredData = createSelector(
       return data;
     }
     return data.filter(row =>
-      filters.every(filter => filter.pass(row[filter.fieldName])));
+      filters.every(filter => pass(filter, row[filter.fieldId])));
   },
 );
 

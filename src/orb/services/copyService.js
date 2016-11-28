@@ -7,14 +7,21 @@ function replaceNullAndUndefined(val) {
   return val;
 }
 
-function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
-  const { columnsUi, rowsUi } = store;
-
+function getSelectedText({
+  selectedCellStart,
+  selectedCellEnd,
+  dataHeadersLocation,
+  getCellValue,
+  columnHeaders,
+  rowHeaders,
+  columnDimensionHeaders,
+  rowDimensionHeaders,
+ }) {
   // Build rows headers array
   const rowsRange = [
     Math.min(selectedCellStart[1], selectedCellEnd[1]),
     Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1];
-  const rowHeaderLeafs = rowsUi.headers.slice(...rowsRange)
+  const rowHeaderLeafs = rowHeaders.slice(...rowsRange)
     .map(headers => headers[headers.length - 1]);
   const rows = rowHeaderLeafs.map((header) => {
     const res = [];
@@ -30,7 +37,7 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
   const columnsRange = [
     Math.min(selectedCellStart[0], selectedCellEnd[0]),
     Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1];
-  const columnHeaderLeafs = columnsUi.headers.slice(...columnsRange)
+  const columnHeaderLeafs = columnHeaders.slice(...columnsRange)
     .map(headers => headers[headers.length - 1]);
   const columns = columnHeaderLeafs.map((header) => {
     const res = [];
@@ -45,9 +52,12 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
   // Build data array
   const cells = rowHeaderLeafs.map(rowHeader =>
     columnHeaderLeafs
-      .map(columnHeader => new DataCell(store, true, rowHeader, columnHeader).caption));
-  const rowDimensions = rowsUi.dimensionHeaders.map(header => header.value.caption);
-  const columnDimensions = columnsUi.dimensionHeaders.map(header => header.value.caption);
+    // get getCellValue from the store
+    // maybe better to go without datacell and get caption directly
+    // be careful about rendering function though
+      .map(columnHeader => new DataCell(getCellValue, true, rowHeader, columnHeader).caption));
+  const rowDimensions = rowDimensionHeaders.map(header => header.value.caption);
+  const columnDimensions = columnDimensionHeaders.map(header => header.value.caption);
 
   // Format data to text
   let output = '';
@@ -64,7 +74,7 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
         // Handle corner case
         // Dimension header in bottom right cell can refer to a column header
         // or a row header depending on data headers location
-        if (store.config.dataHeadersLocation === 'columns') {
+        if (dataHeadersLocation === 'columns') {
           output += `${replaceNullAndUndefined(rowDimensions[x])}\t`;
         } else {
           output += `${replaceNullAndUndefined(columnDimensions[y])}\t`;
@@ -92,17 +102,35 @@ function getSelectedText({ selectedCellStart, selectedCellEnd, store }) {
   return output;
 }
 
-export default function copy({ selectedCellStart, selectedCellEnd, store }) {
-  const bodyElement = document.getElementsByTagName('body')[0];
-  const clipboardTextArea = document.createElement('textarea');
-  clipboardTextArea.style.position = 'absolute';
-  clipboardTextArea.style.left = '-10000px';
-  bodyElement.appendChild(clipboardTextArea);
-  clipboardTextArea.innerHTML = getSelectedText({
-    selectedCellStart,
-    selectedCellEnd,
-    store,
-  });
-  clipboardTextArea.select();
-  window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea); }, 0);
+export default function copy({
+  selectedCellStart,
+  selectedCellEnd,
+  rowHeaders,
+  columnHeaders,
+  getCellValue,
+  dataHeadersLocation,
+  columnDimensionHeaders,
+  rowDimensionHeaders,
+ }) {
+  try {
+    const bodyElement = document.getElementsByTagName('body')[0];
+    const clipboardTextArea = document.createElement('textarea');
+    clipboardTextArea.style.position = 'absolute';
+    clipboardTextArea.style.left = '-10000px';
+    bodyElement.appendChild(clipboardTextArea);
+    clipboardTextArea.innerHTML = getSelectedText({
+      selectedCellStart,
+      selectedCellEnd,
+      getCellValue,
+      rowHeaders,
+      columnHeaders,
+      dataHeadersLocation,
+      columnDimensionHeaders,
+      rowDimensionHeaders,
+    });
+    clipboardTextArea.select();
+    window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea); }, 0);
+  } catch (error) {
+    console.error('error during copy', error);
+  }
 }

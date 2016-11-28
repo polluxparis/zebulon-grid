@@ -1,12 +1,9 @@
-export function toAggregateFunc(func) {
-  if (func) {
-    if (typeof func === 'string' && eval(func)) { // eslint-disable-line no-eval
-      return eval(func);  // eslint-disable-line no-eval
-    } else if (typeof func === 'function') {
-      return func;
+export function forEachIntersection(datafield, intersection, data, callback) {
+  if (intersection.length > 0) {
+    for (let i = 0; i < intersection.length; i += 1) {
+      callback(data[intersection[i]][datafield]);
     }
   }
-  return sum;
 }
 
 export function count(datafield, intersection, data) {
@@ -59,19 +56,7 @@ export function prod(datafield, intersection, data) {
   }
   return prod;
 }
-export function stdev(datafield, intersection, data) {
-  return Math.sqrt(calcVariance(datafield, intersection, data, false));
-}
-export function stdevp(datafield, intersection, data) {
-  return Math.sqrt(calcVariance(datafield, intersection, data, true));
-}
-export function _var(datafield, intersection, data) {
-  return calcVariance(datafield, intersection, data, false);
-}
-export function varp(datafield, intersection, data) {
-  return calcVariance(datafield, intersection, data, true);
-}
-// }
+
 
 export function calcVariance(datafield, intersection, data, population) {
   let variance = 0;
@@ -94,13 +79,26 @@ export function calcVariance(datafield, intersection, data, population) {
   return variance;
 }
 
-export function forEachIntersection(datafield, intersection, data, callback) {
-  // const all = intersection === 'all';
-  // intersection = all ? data : intersection;
-  if (intersection.length > 0) {
-    for (let i = 0; i < intersection.length; i += 1) {
-      // callback((all ? intersection[i] : data[intersection[i]])[datafield]);
-      callback(data[intersection[i]][datafield]);
+export function stdev(datafield, intersection, data) {
+  return Math.sqrt(calcVariance(datafield, intersection, data, false));
+}
+export function stdevp(datafield, intersection, data) {
+  return Math.sqrt(calcVariance(datafield, intersection, data, true));
+}
+export function _var(datafield, intersection, data) {
+  return calcVariance(datafield, intersection, data, false);
+}
+export function varp(datafield, intersection, data) {
+  return calcVariance(datafield, intersection, data, true);
+}
+
+export function toAggregateFunc(func) {
+  if (func) {
+    if (typeof func === 'string' && eval(func)) { // eslint-disable-line no-eval
+      return eval(func);  // eslint-disable-line no-eval
+    } else if (typeof func === 'function') {
+      return func;
     }
   }
+  return sum;
 }

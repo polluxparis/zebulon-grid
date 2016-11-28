@@ -1,4 +1,4 @@
-import { ADD_FIELD, REMOVE_FIELD } from '../actions';
+import { ADD_FIELD, REMOVE_FIELD } from '../constants';
 
 export default (state = { rows: [], columns: [], fields: [] }, action) => {
   const { type, id, position, axis } = action;

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { AxisType } from '../../Axis';
-import { MEASURE_ID } from '../../stores/Store';
+import { MEASURE_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader';
 
 class DimensionHeaders extends PureComponent {

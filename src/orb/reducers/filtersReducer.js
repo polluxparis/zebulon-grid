@@ -1,4 +1,4 @@
-import { SET_CONFIG, ADD_FILTER, DELETE_FILTER } from '../actions';
+import { SET_CONFIG, ADD_FILTER, DELETE_FILTER } from '../constants';
 
 export default (state = {}, action) => {
   const { type, field, filter } = action;

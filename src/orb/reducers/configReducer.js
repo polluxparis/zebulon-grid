@@ -1,4 +1,4 @@
-import { SET_CONFIG_PROPERTY } from '../actions';
+import { SET_CONFIG_PROPERTY } from '../constants';
 
 export default (state = {}, action) => {
   const { type, property, value } = action;

@@ -1,11 +1,12 @@
-import Store from './Store';
-import { AxisType } from '../Axis';
-import { getMockDatasource, basicConfig } from '../../utils/mock';
+import { getMockDatasource } from '../../utils/mock';
+import { getFilteredData } from './index';
+import { ExpressionFilter } from '../Filtering';
 
-const store = new Store(basicConfig, null, getMockDatasource());
-
-it('filter correctly', () => {
-  store.addFilter('toto_lb', AxisType.ROWS, false, '', '', ['toto 1'], false);
+fit('filter correctly', () => {
+  const actual = getFilteredData({
+    data: getMockDatasource(),
+    filters: { toto: new ExpressionFilter('toto', '', '', ['1']) },
+  });
   const filteredData = [
     { toto: '1', toto_lb: 'toto 1', titi: 'titi 9', tutu: '1', qty: 191, amt: 191 },
     { toto: '1', toto_lb: 'toto 1', titi: 'titi 9', tutu: '0', qty: 190, amt: 190 },
@@ -28,5 +29,5 @@ it('filter correctly', () => {
     { toto: '1', toto_lb: 'toto 1', titi: 'titi 0', tutu: '1', qty: 101, amt: 101 },
     { toto: '1', toto_lb: 'toto 1', titi: 'titi 0', tutu: '0', qty: 100, amt: 100 },
   ];
-  expect(store.filter(store.data)).toEqual(filteredData);
+  expect(actual).toEqual(filteredData);
 });

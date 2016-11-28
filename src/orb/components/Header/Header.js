@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { AxisType } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../stores/Store';
+import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
 
 function getLeafSubheaders(header, result) {
@@ -93,7 +93,6 @@ const Header = ({
 
 const InnerHeader = ({ cell, style }) => {
   let value;
-  //
   switch (cell.template) {
     case 'cell-template-row-header':
     case 'cell-template-column-header':

@@ -1,8 +1,8 @@
 import { AxisType } from '../Axis';
+import { UPDATE_CELL_SIZE } from '../constants';
 
 function getNewCellSize(size, offset) { return Math.max(size + offset, 10); }
 
-export const UPDATE_CELL_SIZE = 'UPDATE_CELL_SIZE';
 export const updateCellSize = ({
   handle,
   offset,

@@ -1,4 +1,4 @@
-import { SET_CONFIG, CHANGE_SORT_ORDER } from '../actions';
+import { SET_CONFIG, CHANGE_SORT_ORDER } from '../constants';
 
 export default (state = {}, action) => {
   const { type, config, field } = action;
