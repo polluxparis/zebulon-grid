@@ -2,27 +2,30 @@ import React from 'react';
 import { ResizableBox } from 'react-resizable';
 import VirtualizedCheckbox from 'react-virtualized-checkbox';
 
-import * as utils from '../../utils/generic';
+import { twoArraysIntersect } from '../../utils/generic';
 
 const startingHeight = 223;
 const startingWidth = 301;
 
-const FilterPanel = ({ store, field, onFilter, onCancel, style }) => {
-  const filter = store.filters.get(field.name);
-  const values = store.getFieldValues(field.name);
-  const checkedValues = filter && filter.staticValue.length < values.length
-  ? utils.twoArraysIntersect(values, filter.staticValue)
-  : values;
+const FilterPanel = ({ values, filter, handleFilter, onHide, style }) => {
+  let checkedValues;
+  if (filter && filter.staticValue.length < values.length) {
+    checkedValues = twoArraysIntersect(values.map(val => val.value), filter.staticValue);
+  } else {
+    checkedValues = values.map(value => value.value);
+  }
+
   const options = values.map(val => ({
-    checked: checkedValues.indexOf(val) > -1,
-    label: val,
+    checked: checkedValues.includes(val.value),
+    label: val.label,
+    value: val.value,
   }));
 
   const checkboxes = (
     <VirtualizedCheckbox
       items={options}
-      onOk={(all, result) => onFilter(all, '', '', result.map(box => box.label), false)}
-      onCancel={onCancel}
+      onOk={(all, result) => handleFilter(all, '', '', result.map(box => box.value), false)}
+      onCancel={onHide}
       maxHeight={startingHeight}
     />);
 

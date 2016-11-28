@@ -96,5 +96,4 @@ function initializeStore(store) {
     const fieldId = basicConfig.datafields.find(field => field.caption === fieldCaption).id;
     store.dispatch(toggleDatafield(fieldId));
   });
-
 }
