@@ -1,11 +1,10 @@
 import { getMockDatasource } from '../../utils/mock';
 import { getFilteredData } from './index';
-import { ExpressionFilter } from '../Filtering';
 
-fit('filter correctly', () => {
+it('filter correctly', () => {
   const actual = getFilteredData({
     data: getMockDatasource(),
-    filters: { toto: new ExpressionFilter('toto', '', '', ['1']) },
+    filters: { toto: { fieldId: 'toto', staticValues: ['1'] } },
   });
   const filteredData = [
     { toto: '1', toto_lb: 'toto 1', titi: 'titi 9', tutu: '1', qty: 191, amt: 191 },
