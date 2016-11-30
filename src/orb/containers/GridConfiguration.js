@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { getRowFields, getColumnFields, getAvailableFields } from '../selectors';
 import GridConfiguration from '../components/GridConfiguration';
-import { addField, removeField, toggleDatafield } from '../actions';
+import { moveField, toggleDatafield } from '../actions';
 
 const mapStateToProps = state => ({
   datafields: state.datafields,
@@ -12,8 +12,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   moveField: (fieldId, oldAxis, newAxis, position) => {
-    dispatch(removeField(fieldId, oldAxis));
-    dispatch(addField(fieldId, newAxis, position));
+    dispatch(moveField(fieldId, oldAxis, newAxis, position));
   },
   toggleDatafield: (fieldId) => {
     dispatch(toggleDatafield(fieldId));

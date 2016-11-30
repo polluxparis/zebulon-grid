@@ -8,7 +8,7 @@ import { TestRunner } from 'fps-measurer';
 
 import './orb/index.css';
 import reducer from './orb/reducers';
-import { pushData, setConfig, setConfigProperty, addField, toggleDatafield } from './orb/actions';
+import { pushData, setConfig, setConfigProperty, moveField, toggleDatafield } from './orb/actions';
 
 import createScrollingTestCase from './fpsTests/tests';
 
@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 function initializeStore(store) {
-  const datasource = getMockDatasource(1, 100, 100);
+  const datasource = getMockDatasource(1, 20, 20);
   store.dispatch(pushData(datasource));
 
   store.dispatch(setConfig(basicConfig));
@@ -41,11 +41,11 @@ function initializeStore(store) {
 
   basicConfig.rows.forEach((fieldCaption, index) => {
     const fieldId = basicConfig.fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(addField(fieldId, AxisType.ROWS, index));
+    store.dispatch(moveField(fieldId, AxisType.FIELD, AxisType.ROWS, index));
   });
   basicConfig.columns.forEach((fieldCaption, index) => {
     const fieldId = basicConfig.fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(addField(fieldId, AxisType.COLUMNS, index));
+    store.dispatch(moveField(fieldId, AxisType.FIELD, AxisType.COLUMNS, index));
   });
   Object.values(basicConfig.fields)
   .filter((field) => {
@@ -55,7 +55,7 @@ function initializeStore(store) {
     return !(rows.includes(field.id) || columns.includes(field.id));
   })
   .forEach((field, index) => {
-    store.dispatch(addField(field.id, AxisType.FIELDS, index));
+    store.dispatch(moveField(field.id, AxisType.FIELDS, AxisType.FIELDS, index));
   });
 
   basicConfig.data.forEach((fieldCaption) => {

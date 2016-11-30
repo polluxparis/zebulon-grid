@@ -1,15 +1,14 @@
-import { ADD_FIELD, REMOVE_FIELD } from '../constants';
+import { MOVE_FIELD } from '../constants';
 
 export default (state = { rows: [], columns: [], fields: [] }, action) => {
-  const { type, id, position, axis } = action;
-  let newAxis;
+  const { type, id, position, oldAxis, newAxis } = action;
+  let newAxisValue;
+  let oldAxisValue;
   switch (type) {
-    case ADD_FIELD:
-      newAxis = [...state[axis].slice(0, position), id, ...state[axis].slice(position)];
-      return { ...state, [axis]: newAxis };
-    case REMOVE_FIELD:
-      newAxis = state[axis].filter(field => field !== id);
-      return { ...state, [axis]: newAxis };
+    case MOVE_FIELD:
+      newAxisValue = [...state[newAxis].slice(0, position), id, ...state[newAxis].slice(position)];
+      oldAxisValue = state[oldAxis].filter(field => field !== id);
+      return { ...state, [newAxis]: newAxisValue, [oldAxis]: oldAxisValue };
     default:
       return state;
   }

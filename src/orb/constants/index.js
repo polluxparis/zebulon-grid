@@ -6,8 +6,7 @@ export const TOTAL_ID = '__total__';
 export const SET_CONFIG = 'SET_CONFIG';
 export const SET_CONFIG_PROPERTY = 'SET_CONFIG_PROPERTY';
 export const TOGGLE_DATAFIELD = 'TOGGLE_DATAFIELD';
-export const ADD_FIELD = 'ADD_FIELD';
-export const REMOVE_FIELD = 'REMOVE_FIELD';
+export const MOVE_FIELD = 'MOVE_FIELD';
 
 export const PUSH_DATA = 'PUSH_DATA';
 

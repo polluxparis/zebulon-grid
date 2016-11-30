@@ -1,6 +1,6 @@
 import { Config } from '../Config';
 import { AxisType } from '../Axis';
-import { SET_CONFIG, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, ADD_FIELD, REMOVE_FIELD } from '../constants';
+import { SET_CONFIG, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, MOVE_FIELD } from '../constants';
 
 
 const axisTypeToString = (type) => {
@@ -30,15 +30,10 @@ export const toggleDatafield = datafieldId => ({
   id: datafieldId,
 });
 
-export const addField = (fieldId, axis, position) => ({
-  type: ADD_FIELD,
+export const moveField = (fieldId, oldAxis, newAxis, position) => ({
+  type: MOVE_FIELD,
   id: fieldId,
-  axis: axisTypeToString(axis),
+  oldAxis: axisTypeToString(oldAxis),
+  newAxis: axisTypeToString(newAxis),
   position,
-});
-
-export const removeField = (fieldId, axis) => ({
-  type: REMOVE_FIELD,
-  id: fieldId,
-  axis: axisTypeToString(axis),
 });

@@ -8,7 +8,6 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
-import { scrollbarSize } from '../../utils/domHelpers';
 
 class PivotGrid extends PureComponent {
   constructor(props) {
@@ -45,7 +44,6 @@ class PivotGrid extends PureComponent {
 
     // this.scrollToColumn = this.dataCellsRef.grid.props.scrollToColumn;
     // this.scrollToRow = this.dataCellsRef.grid.props.scrollToRow;
-
     this.setState({
       rowVerticalCount: nextProps.layout.rowVerticalCount,
       rowHorizontalCount: nextProps.layout.rowHorizontalCount,
