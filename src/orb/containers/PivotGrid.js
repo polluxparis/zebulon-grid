@@ -1,7 +1,16 @@
 import { connect } from 'react-redux';
 
 import PivotGrid from '../components/Grid/Grid';
-import { getLayout, getHeaderSizes, getCellSizes } from '../selectors';
+import {
+  getLayout,
+  getHeaderSizes,
+  getCellSizes,
+  getRowAxis,
+  getColumnUiAxis,
+  getRowUiAxis,
+  getColumnAxis,
+  getActivatedDataFields,
+ } from '../selectors';
 import { updateCellSize } from '../actions';
 import { AxisType } from '../Axis';
 
@@ -11,6 +20,11 @@ const mapStateToProps = state => ({
   defaultCellSizes: getCellSizes(state),
   headerSizes: getHeaderSizes(state),
   sizes: state.sizes,
+  columnHeaders: getColumnUiAxis(state).headers,
+  rowHeaders: getRowUiAxis(state).headers,
+  rowFields: getRowAxis(state).fields,
+  columnFields: getColumnAxis(state).fields,
+  dataFieldsCount: getActivatedDataFields(state).length,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -43,12 +57,27 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (
-  { height, width, layout, headerSizes, sizes, defaultCellSizes },
+  {
+    width,
+    layout,
+    headerSizes,
+    sizes,
+    defaultCellSizes,
+    columnHeaders,
+    rowHeaders,
+    rowFields,
+    columnFields,
+    dataFieldsCount,
+   },
   { updateCellSize },
 ) => ({
-  height,
+  rowFields,
+  columnFields,
+  columnHeaders,
+  rowHeaders,
   width,
   layout,
+  dataFieldsCount,
   headerSizes,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),

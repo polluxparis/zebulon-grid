@@ -1,5 +1,6 @@
 import { AxisType } from './Axis';
 import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
+import { KEY_SEPARATOR } from './constants';
 
 function getDataFieldsCount({ axisType, dataHeadersLocation, activatedDataFieldsCount }) {
   if ((dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS) || (dataHeadersLocation === 'rows' && axisType === AxisType.ROWS)) {
@@ -7,6 +8,29 @@ function getDataFieldsCount({ axisType, dataHeadersLocation, activatedDataFields
   }
   return 0;
 }
+
+const findHeader = (headers, keys) => {
+  if (keys.length === 1) {
+    return headers.find(header => header.value === keys[0]);
+  }
+  const parentHeader = headers.find(header => header.value === keys[0]);
+  if (!parentHeader) throw new Error('header not found');
+  return findHeader(parentHeader.subheaders, keys.slice(1));
+};
+
+export const keyToIndex = (headers, key) => {
+  const keys = key.split(KEY_SEPARATOR);
+  const depth = headers[0].length;
+  const ancestorHeaders = headers
+    .filter(headersRow => headersRow.length === depth)
+    .map(headersRow => headersRow[0]);
+  try {
+    return findHeader(ancestorHeaders, keys).x;
+  } catch (e) {
+    // console.error(`Header with key ${key} not found in following headers`, headers);
+    return -1;
+  }
+};
 
 /**
  * Creates a new instance of rows/columns ui properties.

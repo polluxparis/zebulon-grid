@@ -1,4 +1,5 @@
 import { AxisType } from './Axis';
+import { KEY_SEPARATOR } from './constants';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -161,7 +162,7 @@ export class Header extends CellBase {
         value = 'Total';
         hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1;
-        key = `__total__-//-${crossAxisFieldsCode.join('-/-')}`;
+        key = `__total__-//-${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
         break;
       case HeaderType.SUB_TOTAL:
         value = dim.caption;

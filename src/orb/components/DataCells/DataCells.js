@@ -166,14 +166,11 @@ class DataCells extends PureComponent {
 
   render() {
     const {
-      // store,
       getColumnWidth,
       getRowHeight,
       onScroll,
       columnCount,
       rowCount,
-      scrollLeft,
-      scrollTop,
       height,
       width,
       scrollToColumn,
@@ -197,8 +194,6 @@ class DataCells extends PureComponent {
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}
-        scrollLeft={scrollLeft}
-        scrollTop={scrollTop}
         style={{ fontSize: `${zoom * 100}%` }}
         width={width}
       />

@@ -33,6 +33,8 @@ class RowHeaders extends PureComponent {
      dimensionPositions,
     } = this.props;
 
+    this.firstLeafHeader = rowHeaders[rowStartIndex][rowHeaders[rowStartIndex].length - 1];
+
     const renderedCells = [];
 
     // Because of the offset caused by the fixed headers,

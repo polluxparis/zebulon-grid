@@ -19,14 +19,37 @@ export const getCellSizes = createSelector(
   }),
 );
 
-export const getRowFields = state => state.axis.rows.map(id => state.fields[id]);
-export const getColumnFields = state => state.axis.columns.map(id => state.fields[id]);
-export const getAvailableFields = state => state.axis.fields.map(id => state.fields[id]);
+export const getRowFields = createSelector(
+  [
+    state => state.axis.rows,
+    state => state.fields,
+  ],
+  (rowAxis, fields) => rowAxis.map(id => fields[id]),
+);
+
+export const getColumnFields = createSelector(
+  [
+    state => state.axis.columns,
+    state => state.fields,
+  ],
+  (columnAxis, fields) => columnAxis.map(id => fields[id]),
+);
+
+export const getAvailableFields = createSelector(
+  [
+    state => state.axis.fields,
+    state => state.fields,
+  ],
+  (fieldAxis, fields) => fieldAxis.map(id => fields[id]),
+);
+
 const getDataFields = state => state.datafields;
 
-const getActivatedDataFields = createSelector(
+export const getActivatedDataFields = createSelector(
   [getDataFields],
-  datafields => Object.values(datafields).filter(field => field.activated),
+  datafields => Object.keys(datafields)
+    .map(id => datafields[id])
+    .filter(field => field.activated),
 );
 const getActivatedDataFieldsCount = createSelector(
   [getActivatedDataFields],
@@ -39,7 +62,9 @@ const getData = state => state.data;
 export const getFilteredData = createSelector(
   [getData, getFilters],
   (data, filtersObject) => {
-    const filters = [...Object.values(filtersObject)];
+    const filters = [
+      ...Object.keys(filtersObject).map(id => filtersObject[id]),
+    ];
     if (filters.length === 0) {
       return data;
     }

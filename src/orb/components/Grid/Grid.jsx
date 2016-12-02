@@ -8,65 +8,86 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
+import { keyToIndex } from '../../AxisUi';
+import { KEY_SEPARATOR } from '../../constants';
+
+
+function getNextKey(current, next) {
+  const firstLeafHeader = current.firstHeaderRow[current.firstHeaderRow.length - 1];
+  const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
+  let nextKey = '';
+  if (current.fields.length > next.fields.length) {
+    const nextFieldIds = next.fields.map(field => field.id);
+    const missingFieldPosition = current.fields
+      .findIndex(field => !nextFieldIds.includes(field.id));
+    nextKey = keys.slice(0, missingFieldPosition).join(KEY_SEPARATOR);
+  } else if (current.fields.length < next.fields.length) {
+    const previousFieldIds = current.fields.map(field => field.id);
+    const newFieldPosition = next.fields
+      .findIndex(field => !previousFieldIds.includes(field.id));
+    nextKey = keys.slice(0, newFieldPosition).join(KEY_SEPARATOR);
+  } else if (current.dataFieldsCount !== next.dataFieldsCount) {
+    // A data field has been toggled
+    nextKey = keys.slice(0, -1).join(KEY_SEPARATOR);
+  } else {
+    // A filter has been modified
+    // For the moment, do nothing
+    nextKey = '';
+  }
+  return nextKey;
+}
 
 class PivotGrid extends PureComponent {
   constructor(props) {
     super(props);
-    const { layout } = props;
-
-    this.state = {
-      rowVerticalCount: layout.rowVerticalCount,
-      rowHorizontalCount: layout.rowHorizontalCount,
-      columnVerticalCount: layout.columnVerticalCount,
-      columnHorizontalCount: layout.columnHorizontalCount,
-      cellsCache: { },
-    };
-
-    // this.scrollLeft = 0;
-    // this.scrollTop = 0;
-
-    this.isMouseDown = false;
-
-    // store.getColumnWidth = store.getColumnWidth.bind(store);
-    // store.getRowHeight = store.getRowHeight.bind(store);
-    // store.getLastChildSize = store.getLastChildSize.bind(store);
+    this.rowStartIndex = 0;
+    this.columnStartIndex = 0;
   }
 
   componentWillReceiveProps(nextProps) {
-    // Change scroll values to stay at the same position when modifying the layout
-    // The current implementation only works when all cells have the same size
-    // A better implementation would be to find which cells are at the beginning
-    // upon receiving props and jumping there after
-    // this.scrollLeft = this.dataCellsRef.grid.state.scrollLeft
-    //   * (this.props.store.layout.columnHorizontalCount / this.state.columnHorizontalCount);
-    // this.scrollTop = this.dataCellsRef.grid.state.scrollTop
-    //   * (this.props.store.layout.rowVerticalCount / this.state.rowVerticalCount);
-
-    // this.scrollToColumn = this.dataCellsRef.grid.props.scrollToColumn;
-    // this.scrollToRow = this.dataCellsRef.grid.props.scrollToRow;
-    this.setState({
-      rowVerticalCount: nextProps.layout.rowVerticalCount,
-      rowHorizontalCount: nextProps.layout.rowHorizontalCount,
-      columnVerticalCount: nextProps.layout.columnVerticalCount,
-      columnHorizontalCount: nextProps.layout.columnHorizontalCount,
-    });
+    const current = {};
+    const next = {};
+    if (this.props.rowHeaders.length !== nextProps.rowHeaders.length) {
+      current.fields = this.props.rowFields;
+      next.fields = nextProps.rowFields;
+      current.firstHeaderRow = this.props.rowHeaders[this.rowStartIndex];
+      current.dataFieldsCount = this.props.dataFieldsCount;
+      next.dataFieldsCount = nextProps.dataFieldsCount;
+      const nextFirstHeaderKey = getNextKey(current, next);
+      const nextRowStartIndex = keyToIndex(nextProps.rowHeaders, nextFirstHeaderKey);
+      this.rowStartIndex = nextRowStartIndex;
+    } else if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
+      current.fields = this.props.columnFields;
+      next.fields = nextProps.columnFields;
+      current.firstHeaderRow = this.props.columnHeaders[this.columnStartIndex];
+      current.dataFieldsCount = this.props.dataFieldsCount;
+      next.dataFieldsCount = nextProps.dataFieldsCount;
+      const nextFirstHeaderKey = getNextKey(current, next);
+      const nextColumnStartIndex = keyToIndex(nextProps.columnHeaders, nextFirstHeaderKey);
+      this.columnStartIndex = nextColumnStartIndex;
+    }
   }
 
-  // componentDidUpdate() {
-  //   // Clean cache for cell sizes
-  //   // Call forceUpdate on the grid, so cannot be done in render
-  //   // this.columnHeadersRef.grid.recomputeGridSize();
-  //   // this.rowHeadersRef.grid.recomputeGridSize();
-  //   // this.dataCellsRef.grid.recomputeGridSize();
-  // }
+  handleSectionRendered(onSectionRendered) {
+    return (indexes) => {
+      const { rowStartIndex, columnStartIndex } = indexes;
+      // When the data cells grid is re rendered, it resets row and column
+      // start indexes, losing the information about the previous position,
+      // this prevents that.
+      // I's a hack until I better understand this behaviour.
+      if (rowStartIndex) this.rowStartIndex = rowStartIndex;
+      if (columnStartIndex) this.columnStartIndex = columnStartIndex;
+      onSectionRendered(indexes);
+    };
+  }
 
 
   render() {
-    const { connectDropTarget, width } = this.props;
+    const { connectDropTarget, width, layout } = this.props;
     const {
       columnHorizontalCount,
       rowVerticalCount,
-    } = this.state;
+    } = layout;
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
@@ -74,42 +95,36 @@ class PivotGrid extends PureComponent {
         <DragLayer />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
-          mode="cells"
+          mode="edges"
           rowCount={rowVerticalCount}
+          scrollToRow={this.rowStartIndex}
+          scrollToColumn={this.columnStartIndex}
         >
           {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
             <ScrollSync>
-              {({ onScroll, scrollLeft, scrollTop }) => {
-                this.datacellsCache = {};
-                return (
-                  <div>
-                    <div style={{ display: 'flex' }}>
-                      <DimensionHeaders />
-                      <ColumnHeaders
-                        scrollLeft={scrollLeft}
-                      />
-                    </div>
-                    <div style={{ display: 'flex' }}>
-                      <RowHeaders
-                        scrollTop={scrollTop}
-                      />
-                      <DataCells
-                        onSectionRendered={onSectionRendered}
-                        scrollToColumn={scrollToColumn}
-                        scrollToRow={scrollToRow}
-                        // columnCount={columnHorizontalCount}
-                        // height={Math.min(height - columnHeadersHeight,
-                        //   rowHeadersHeight + scrollbarSize())}
-                        onScroll={onScroll}
-                        // ref={(ref) => { this.dataCellsRef = ref; }}
-                        // rowCount={rowVerticalCount}
-                        // width={Math.min(width - rowHeadersWidth,
-                          // columnHeadersWidth + scrollbarSize())}
-                      />
-                    </div>
+              {({ onScroll, scrollLeft, scrollTop }) => (
+                <div>
+                  <div style={{ display: 'flex' }}>
+                    <DimensionHeaders />
+                    <ColumnHeaders
+                      scrollLeft={scrollLeft}
+                      ref={(ref) => { this.columnHeaders = ref; }}
+                    />
                   </div>
-                );
-              }
+                  <div style={{ display: 'flex' }}>
+                    <RowHeaders
+                      scrollTop={scrollTop}
+                      ref={(ref) => { this.rowHeaders = ref; }}
+                    />
+                    <DataCells
+                      onSectionRendered={this.handleSectionRendered(onSectionRendered)}
+                      scrollToColumn={scrollToColumn}
+                      scrollToRow={scrollToRow}
+                      onScroll={onScroll}
+                    />
+                  </div>
+                </div>
+              )
              }
             </ScrollSync>
           )}
