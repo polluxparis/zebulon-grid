@@ -7,11 +7,11 @@ import Perf from 'react-addons-perf'; // ES6
 import { TestRunner } from 'fps-measurer';
 
 import './orb/index.css';
+
 import reducer from './orb/reducers';
 import { pushData, setConfig, setConfigProperty, moveField, toggleDatafield } from './orb/actions';
 
 import createScrollingTestCase from './fpsTests/tests';
-
 import App from './App';
 
 import {
