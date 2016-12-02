@@ -45,27 +45,28 @@ class PivotGrid extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
+    let nextRowStartIndex;
+    let nextColumnStartIndex;
     const current = {};
     const next = {};
+    current.dataFieldsCount = this.props.dataFieldsCount;
+    next.dataFieldsCount = nextProps.dataFieldsCount;
     if (this.props.rowHeaders.length !== nextProps.rowHeaders.length) {
       current.fields = this.props.rowFields;
       next.fields = nextProps.rowFields;
       current.firstHeaderRow = this.props.rowHeaders[this.rowStartIndex];
-      current.dataFieldsCount = this.props.dataFieldsCount;
-      next.dataFieldsCount = nextProps.dataFieldsCount;
       const nextFirstHeaderKey = getNextKey(current, next);
-      const nextRowStartIndex = keyToIndex(nextProps.rowHeaders, nextFirstHeaderKey);
-      this.rowStartIndex = nextRowStartIndex;
-    } else if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
+      nextRowStartIndex = keyToIndex(nextProps.rowHeaders, nextFirstHeaderKey);
+    }
+    if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
       current.fields = this.props.columnFields;
       next.fields = nextProps.columnFields;
       current.firstHeaderRow = this.props.columnHeaders[this.columnStartIndex];
-      current.dataFieldsCount = this.props.dataFieldsCount;
-      next.dataFieldsCount = nextProps.dataFieldsCount;
       const nextFirstHeaderKey = getNextKey(current, next);
-      const nextColumnStartIndex = keyToIndex(nextProps.columnHeaders, nextFirstHeaderKey);
-      this.columnStartIndex = nextColumnStartIndex;
+      nextColumnStartIndex = keyToIndex(nextProps.columnHeaders, nextFirstHeaderKey);
     }
+    if (nextRowStartIndex) this.rowStartIndex = nextRowStartIndex;
+    if (nextColumnStartIndex) this.columnStartIndex = nextColumnStartIndex;
   }
 
   handleSectionRendered(onSectionRendered) {
