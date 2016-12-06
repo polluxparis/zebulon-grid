@@ -163,7 +163,7 @@ export const getLastChildSize = createSelector(
     while (lastChild.subheaders && lastChild.subheaders.length) {
       lastChild = lastChild.subheaders[lastChild.subheaders.length - 1];
     }
-    return getLeafHeaderSize(axis, header.key, sizes, cellSizes);
+    return getLeafHeaderSize(axis, lastChild.key, sizes, cellSizes);
   },
 );
 
