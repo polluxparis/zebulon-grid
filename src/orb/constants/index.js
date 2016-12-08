@@ -5,7 +5,8 @@ export const KEY_SEPARATOR = '-/-';
 
 // ACTIONS
 
-export const SET_CONFIG = 'SET_CONFIG';
+export const SET_FIELDS = 'SET_FIELDS';
+export const SET_DATAFIELDS = 'SET_DATAFIELDS';
 export const SET_CONFIG_PROPERTY = 'SET_CONFIG_PROPERTY';
 export const TOGGLE_DATAFIELD = 'TOGGLE_DATAFIELD';
 export const MOVE_FIELD = 'MOVE_FIELD';

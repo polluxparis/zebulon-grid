@@ -70,6 +70,7 @@ const mergeProps = (
     dataFieldsCount,
    },
   { updateCellSize },
+  ownProps,
 ) => ({
   rowFields,
   columnFields,
@@ -81,6 +82,7 @@ const mergeProps = (
   headerSizes,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
+  ...ownProps,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(PivotGrid);

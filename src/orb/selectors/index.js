@@ -290,7 +290,7 @@ export const getCellValue = createSelector(
     getActivatedDataFields,
     getFilteredData,
   ],
-  (activatedDataFields, data) => (datafield, rowDimension, columnDimension) => {
+  (activatedDataFields, data) => (datafield, rowDimension, columnDimension, aggregateFunc) => {
     if (!(rowDimension && columnDimension)) {
       return null;
     }
@@ -311,7 +311,7 @@ export const getCellValue = createSelector(
     if (emptyIntersection) {
       return null;
     }
-    return datafield.aggregateFunc(datafield.id, intersection, data);
+    return aggregateFunc(datafield.id, intersection, data);
   },
 );
 

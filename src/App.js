@@ -65,7 +65,7 @@ class App extends Component {
                 }
               </AutoSizer>
             </ResizableBox> */}
-            <PivotGrid />
+            <PivotGrid customFunctions={this.props.customFunctions} />
           </div>
         </div>
       </div>

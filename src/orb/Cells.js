@@ -341,7 +341,7 @@ export class DimensionHeader extends CellBase {
 
 export class DataCell extends CellBase {
 
-  constructor(getCellValue, dataHeadersLocation, rowinfo, colinfo) {
+  constructor(getCellValue, dataHeadersLocation, rowinfo, colinfo, customFunctions) {
     const rowDimension = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.dim : rowinfo.dim;
     const columnDimension = colinfo.type === HeaderType.DATA_HEADER
     ? colinfo.parent.dim
@@ -353,11 +353,18 @@ export class DataCell extends CellBase {
         ? rowinfo.value
         : colinfo.value;
 
+    const value = getCellValue(
+      datafield || null,
+      rowDimension,
+      columnDimension,
+      customFunctions.aggregation[datafield.id],
+    );
+
     super({
       axetype: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
-      value: getCellValue(datafield || null, rowDimension, columnDimension),
+      value,
       cssclass: `cell ${HeaderType.getCellClass(rowType, colType)}`,
       isvisible: true,
     });
@@ -368,9 +375,11 @@ export class DataCell extends CellBase {
     this.colType = colType;
     this.datafield = datafield;
 
-    this.caption = (this.datafield && this.datafield.formatFunc)
-    ? this.datafield.formatFunc()(this.value)
-    : this.value;
+    if (this.datafield && customFunctions.format[datafield.id]) {
+      this.caption = customFunctions.format[datafield.id](value);
+    } else {
+      this.caption = this.value;
+    }
   }
 }
 

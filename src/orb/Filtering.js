@@ -1,4 +1,4 @@
-import * as utils from './utils/generic';
+import { isRegExp } from './utils/generic';
 
 export const ALL = '#All#';
 export const NONE = '#None#';
@@ -32,7 +32,7 @@ export const Operators = {
     name: 'Matches',
     func(value, term) {
       if (value) {
-        return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
+        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
       }
       return !(term);
     },
@@ -42,7 +42,7 @@ export const Operators = {
     name: 'Does Not Match',
     func(value, term) {
       if (value) {
-        return value.toString().search(utils.isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
+        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
       }
       return !!term;
     },
@@ -115,24 +115,21 @@ function isAlwaysTrue() {
   );
 }
 
-
-export class ExpressionFilter {
-
-  constructor(fieldId, operator, term, staticValue, excludeStatic) {
-    this.fieldId = fieldId;
-    this.regexpMode = false;
-    this.operator = Operators.get(operator);
-    this.term = term || null;
-    if (this.term && this.operator && this.operator.regexpSupported) {
-      if (utils.isRegExp(this.term)) {
-        this.regexpMode = true;
-        if (!this.term.ignoreCase) {
-          this.term = new RegExp(this.term.source, 'i');
-        }
+export function expressionFilter(fieldId, operator, term, staticValue, excludeStatic) {
+  const expressionFilter = {
+    fieldId,
+    regexpMode: false,
+    operator: Operators.get(operator),
+    staticValue,
+    excludeStatic,
+  };
+  if (term && operator && operator.regexpSupported) {
+    if (isRegExp(term)) {
+      expressionFilter.regexpMode = true;
+      if (!term.ignoreCase) {
+        expressionFilter.term = new RegExp(term.source, 'i');
       }
     }
-
-    this.staticValue = staticValue;
-    this.excludeStatic = excludeStatic;
   }
+  return expressionFilter;
 }

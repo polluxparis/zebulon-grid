@@ -1,11 +1,11 @@
-import { SET_CONFIG, CHANGE_SORT_ORDER } from '../constants';
+import { SET_FIELDS, CHANGE_SORT_ORDER } from '../constants';
 
 export default (state = {}, action) => {
-  const { type, config, field } = action;
+  const { type, fields, field } = action;
   let sort;
   switch (type) {
-    case SET_CONFIG:
-      return config.allFields
+    case SET_FIELDS:
+      return fields
         .reduce((acc, field) => ({ ...acc, [field.id]: field }), {});
     case CHANGE_SORT_ORDER:
       sort = state[field].sort;

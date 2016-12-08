@@ -1,6 +1,6 @@
-import { Config } from '../Config';
+import { fieldFactory, datafieldFactory } from '../fields';
 import { AxisType } from '../Axis';
-import { SET_CONFIG, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, MOVE_FIELD } from '../constants';
+import { SET_FIELDS, SET_DATAFIELDS, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, MOVE_FIELD } from '../constants';
 
 
 const axisTypeToString = (type) => {
@@ -14,9 +14,14 @@ const axisTypeToString = (type) => {
   }
 };
 
-export const setConfig = configObject => ({
-  type: SET_CONFIG,
-  config: new Config(configObject),
+export const setFields = configObject => ({
+  type: SET_FIELDS,
+  fields: configObject.fields.map(field => fieldFactory(field)),
+});
+
+export const setDatafields = configObject => ({
+  type: SET_DATAFIELDS,
+  datafields: configObject.datafields.map(field => datafieldFactory(field)),
 });
 
 export const setConfigProperty = (configObject, property, defaultValue) => ({

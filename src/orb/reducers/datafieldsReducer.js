@@ -1,11 +1,11 @@
-import { SET_CONFIG, TOGGLE_DATAFIELD } from '../constants';
+import { SET_DATAFIELDS, TOGGLE_DATAFIELD } from '../constants';
 
 export default (state = {}, action) => {
-  const { type, config, id } = action;
+  const { type, datafields, id } = action;
   let datafield;
   switch (type) {
-    case SET_CONFIG:
-      return config.datafields
+    case SET_DATAFIELDS:
+      return datafields
         .reduce((acc, field) => ({ ...acc, [field.id]: field }), {});
     case TOGGLE_DATAFIELD:
       datafield = state[id];

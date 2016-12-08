@@ -123,7 +123,7 @@ class DataCells extends PureComponent {
     style: position,
    }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
-    const { drilldown, getCellValue, dataHeadersLocation } = this.props;
+    const { drilldown, getCellValue, dataHeadersLocation, customFunctions } = this.props;
     const { rowHeaders, columnHeaders } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
@@ -138,7 +138,9 @@ class DataCells extends PureComponent {
       getCellValue,
       dataHeadersLocation,
       rowHeader,
-      columnHeader);
+      columnHeader,
+      customFunctions,
+    );
     const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
     this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
