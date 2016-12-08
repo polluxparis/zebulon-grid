@@ -65,8 +65,10 @@ class PivotGrid extends PureComponent {
       const nextFirstHeaderKey = getNextKey(current, next);
       nextColumnStartIndex = keyToIndex(nextProps.columnHeaders, nextFirstHeaderKey);
     }
-    if (nextRowStartIndex) this.rowStartIndex = nextRowStartIndex;
-    if (nextColumnStartIndex) this.columnStartIndex = nextColumnStartIndex;
+    // If keyToIndex does not find the key in the headers, it returns -1
+    // In this case, do nothing
+    if (nextRowStartIndex >= 0) this.rowStartIndex = nextRowStartIndex;
+    if (nextColumnStartIndex >= 0) this.columnStartIndex = nextColumnStartIndex;
   }
 
   handleSectionRendered(onSectionRendered) {
