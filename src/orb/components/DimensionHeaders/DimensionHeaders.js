@@ -86,7 +86,10 @@ class DimensionHeaders extends PureComponent {
     return (
       // Putting position as relative here allows its children (the dimension headers)
       // to be absolutely positioned relatively to their parent
-      <div style={{ position: 'relative', height, width, fontSize: `${zoom * 100}%`, overflow: 'hidden' }}>
+      <div
+        style={{ position: 'relative', height, width, fontSize: `${zoom * 100}%`, overflow: 'hidden' }}
+        className="orb-dimension-headers"
+      >
         {headers}
       </div>
     );

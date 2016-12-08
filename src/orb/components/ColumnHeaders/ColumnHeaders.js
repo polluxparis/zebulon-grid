@@ -156,7 +156,7 @@ class ColumnHeaders extends PureComponent {
       <ReactVirtualizedGrid
         cellRangeRenderer={this.columnHeadersRenderer}
         cellRenderer={function mock() {}}
-        className="OrbGrid-column-headers"
+        className="orb-column-headers"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}

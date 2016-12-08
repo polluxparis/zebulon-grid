@@ -182,7 +182,7 @@ class DataCells extends PureComponent {
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
-        className="OrbGrid-data-cells"
+        className="orb-data-cells"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}

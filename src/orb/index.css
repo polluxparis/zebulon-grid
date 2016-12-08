@@ -1,22 +1,23 @@
-.OrbGrid-cell {
+.orb-cell {
   user-select: none;
   cursor: default;
+  border: solid lightgrey thin;
 }
 
-.OrbGrid-cell-highlighted {
+.orb-data-cell-highlighted {
     animation-name: anim-info-updated;
     animation-duration: 1s;
 }
 
-.OrbGrid-column-headers {
+.orb-column-headers {
   outline: none;
 }
 
-.OrbGrid-row-headers {
+.orb-row-headers {
   outline: none;
 }
 
-.OrbGrid-data-cells {
+.orb-data-cells {
   outline: none;
 }
 
@@ -27,4 +28,39 @@
     }
     100% {
     }
+}
+
+
+.orb-header {
+  background-color: #eef8fb;
+}
+
+.orb-header-inner {
+  margin: 0.2em;
+  margin-left: '0.5em';
+}
+
+.orb-dimension-header {
+  background-color: #fafad2;
+}
+
+.orb-dimension-header-inner {
+  margin: 0.2em;
+  margin-left: '0.5em';
+}
+
+.orb-data-cell {
+  text-align: right;
+}
+
+.orb-data-cell-uneven {
+  background-color: rgb(230, 230, 230);
+}
+
+.orb-data-cell-even {
+  background-color: white;
+}
+
+.orb-data-cell-selected {
+  background-color: lightcyan;
 }

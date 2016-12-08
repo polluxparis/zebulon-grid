@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import classnames from 'classnames';
 
 export default class DataCell extends PureComponent {
 
@@ -23,29 +24,21 @@ export default class DataCell extends PureComponent {
 
   render() {
     const { cell, position, rowIndex, selected, valueHasChanged } = this.props;
-    let className = 'OrbGrid-cell OrbGrid-data-cell';
-    if (valueHasChanged) {
-      className += ' OrbGrid-cell-highlighted';
-    }
-    let style = {
-      border: 'solid lightgrey thin',
+    const style = {
       boxSizing: 'border-box',
       overflow: 'hidden',
     };
-    const unEvenRowStyle = { backgroundColor: 'rgba(211, 211, 211, 0.4)' };
-    const evenRowStyle = { backgroundColor: 'white' };
 
-    if (rowIndex % 2) {
-      style = { ...style, ...unEvenRowStyle };
-    } else {
-      style = { ...style, ...evenRowStyle };
-    }
-
-    const selectedStyle = { backgroundColor: 'lightcyan' };
-
-    if (selected) {
-      style = { ...style, ...selectedStyle };
-    }
+    const className = classnames(
+      'orb-cell',
+      'orb-data-cell',
+      {
+        'orb-data-cell-even': !(rowIndex % 2),
+        'orb-data-cell-uneven': rowIndex % 2,
+        'orb-data-cell-highlighted': valueHasChanged,
+        'orb-data-cell-selected': selected,
+      },
+    );
 
 
     return (

@@ -57,12 +57,12 @@ const Header = ({
   return (
     <div
       key={`fixed-${axis}-${x}-${y}`}
-      className={'OrbGrid-cell OrbGrid-cell-header'}
+      className="orb-cell orb-header orb-column-header"
       style={{
         boxSizing: 'border-box',
         overflow: 'hidden',
-        border: 'solid lightgrey thin',
-        backgroundColor: '#eef8fb',
+        // border: 'solid lightgrey thin',
+        // backgroundColor: '#eef8fb',
         zIndex: 1,
         display: 'flex',
         ...positionStyle,
@@ -107,9 +107,6 @@ const InnerHeader = ({ cell, style }) => {
   }
 
   const computedStyle = {
-    textAlign: 'left',
-    margin: '0.2em',
-    marginLeft: '0.5em',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     ...style,
@@ -117,6 +114,7 @@ const InnerHeader = ({ cell, style }) => {
 
   return (
     <span
+      className="orb-header-inner"
       style={computedStyle}
     >
       {value}

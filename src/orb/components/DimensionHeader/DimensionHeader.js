@@ -24,7 +24,7 @@ const DimensionHeader = ({
   return (
     <div
       key={`fixed-dim-${field.id}`}
-      className={'OrbGrid-cell'}
+      className="orb-cell orb-dimension-header"
       style={{
         position: 'absolute',
         left,
@@ -32,14 +32,18 @@ const DimensionHeader = ({
         width,
         height,
         zIndex: 3,
-        border: 'lightgrey 0.1em solid',
+        // border: 'lightgrey 0.1em solid',
         boxSizing: 'border-box',
-        textAlign: 'left',
+        // textAlign: 'left',
         display: 'flex',
-        backgroundColor: '#fafad2',
+        // backgroundColor: '#fafad2',
       }}
     >
-      <span>{ field.caption }</span>
+      <span
+        className="orb-dimension-header-inner"
+      >
+        { field.caption }
+      </span>
       <ResizeHandle
         position="right"
         size={height}
