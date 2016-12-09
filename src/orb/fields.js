@@ -8,11 +8,11 @@ export function fieldFactory(fieldConfig) {
     sort,
   } = fieldConfig;
   if (!id) {
-    console.error('Configuration error: field definition needs an id.');
+    console.error('Configuration error: field definition needs an id.', fieldConfig);
   }
-  const res = { id };
-  res.name = name || res.id;
-  res.caption = caption || res.name;
+  const field = { id };
+  field.name = name || field.id;
+  field.caption = caption || field.name;
 
   let sortValue;
   if (sort) {
@@ -23,11 +23,11 @@ export function fieldFactory(fieldConfig) {
   } else {
     sortValue = { order: null };
   }
-  res.sort = sortValue;
+  field.sort = sortValue;
 
-  res.subTotal = {};
+  field.subTotal = {};
 
-  return res;
+  return field;
 }
 
 export function datafieldFactory(fieldConfig) {
@@ -39,22 +39,22 @@ export function datafieldFactory(fieldConfig) {
     aggregateFunc,
   } = fieldConfig;
   if (!id) {
-    console.error('Configuration error: field definition needs an id.', fieldConfig);
+    console.error('Configuration error: datafield definition needs an id.', fieldConfig);
   }
-  const res = { id };
-  res.name = name || res.id;
-  res.caption = caption || res.name;
+  const datafield = { id };
+  datafield.name = name || datafield.id;
+  datafield.caption = caption || datafield.name;
 
   if (aggregateFuncName) {
-    res.aggregateFuncName = aggregateFuncName;
+    datafield.aggregateFuncName = aggregateFuncName;
   } else if (aggregateFunc) {
     if (isString(aggregateFunc)) {
-      res.aggregateFuncName = aggregateFunc;
+      datafield.aggregateFuncName = aggregateFunc;
     } else {
-      res.aggregateFuncName = 'custom';
+      datafield.aggregateFuncName = 'custom';
     }
   } else {
-    res.aggregateFuncName = null;
+    datafield.aggregateFuncName = null;
   }
-  return res;
+  return datafield;
 }

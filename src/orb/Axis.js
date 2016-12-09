@@ -42,25 +42,19 @@ export class Axis {
     this.fields = fields;
 
     /**
-     * Number of dimensions in this axe
-     * @type {Number}
-     */
-    this.dimensionsCount = this.fields.length;
-
-    /**
      * Root dimension
      * @type {orb.dimension}
      */
-    this.root = new Dimension(-1, null, null, null, this.dimensionsCount + 1, true, false);
+    this.root = new Dimension(-1, null, null, null, this.fields.length + 1, true, false);
     this.fill(data);
     // initial sort
     this.fields.forEach((field) => {
-      this.sort(field.name, true);
+      this.sort(field.id, true);
     });
   }
 
-  sort(fieldName, doNotToggle) {
-    const field = this.fields[this.getFieldIndex(fieldName)];
+  sort(fieldId, doNotToggle) {
+    const field = this.fields[this.getFieldIndex(fieldId)];
     if (doNotToggle !== true) {
       if (field.sort.order !== 'asc') {
         field.sort.order = 'asc';
@@ -73,9 +67,9 @@ export class Axis {
       field.sort.order = 'asc';
     }
 
-    const depth = this.dimensionsCount - this.getFieldIndex(field.name);
+    const depth = this.fields.length - this.getFieldIndex(field.id);
     let dimensions;
-    if (depth === this.dimensionsCount) {
+    if (depth === this.fields.length) {
       dimensions = [this.root];
     } else {
       dimensions = this.getDimensionsByDepth(depth + 1);
@@ -95,13 +89,13 @@ export class Axis {
   // perhaps introduce a result parameter to obtain tail call optimisation
   getDimensionsByDepth(depth, dim = this.root) {
     // if (!dim) { dim = this.root; }
-    if (depth === this.dimensionsCount + 1) { return [dim]; }
+    if (depth === this.fields.length + 1) { return [dim]; }
     return [].concat(...Object.keys(dim.subdimvals)
       .map(dimValue => this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])));
   }
 
-  getFieldIndex(fieldName) {
-    return this.fields.map(fld => fld.name).indexOf(fieldName);
+  getFieldIndex(fieldId) {
+    return this.fields.map(fld => fld.id).indexOf(fieldId);
   }
 
   /**
@@ -114,13 +108,13 @@ export class Axis {
         (used for calculating aggregations)
    */
   fill(data) {
-    if (data != null && this.dimensionsCount > 0) {
+    if (data != null && this.fields.length > 0) {
       if (data != null && Array.isArray(data) && data.length > 0) {
         for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex += 1) {
           const row = data[rowIndex];
           let dim = this.root;
-          for (let findex = 0; findex < this.dimensionsCount; findex += 1) {
-            const depth = this.dimensionsCount - findex;
+          for (let findex = 0; findex < this.fields.length; findex += 1) {
+            const depth = this.fields.length - findex;
             const field = this.fields[findex];
             const name = row[field.name];
             const id = row[field.id];
@@ -136,7 +130,7 @@ export class Axis {
                 field,
                 depth,
                 false,
-                findex === this.dimensionsCount - 1,
+                findex === this.fields.length - 1,
               );
               subdimvals[id] = dim;
               dim.rowIndexes = [];

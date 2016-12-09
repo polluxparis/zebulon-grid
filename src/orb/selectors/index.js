@@ -56,7 +56,7 @@ const getActivatedDataFieldsCount = createSelector(
   datafields => datafields.length,
 );
 
-export const getFilters = state => state.filters;
+export const getFilters = state => state.filters || {};
 const getData = state => state.data;
 
 export const getFilteredData = createSelector(
@@ -290,7 +290,7 @@ export const getCellValue = createSelector(
     getActivatedDataFields,
     getFilteredData,
   ],
-  (activatedDataFields, data) => (datafield, rowDimension, columnDimension, aggregateFunc) => {
+  (activatedDataFields, data) => (datafield, rowDimension, columnDimension, aggregateFunc = () => null) => {
     if (!(rowDimension && columnDimension)) {
       return null;
     }
