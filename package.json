@@ -1,6 +1,6 @@
 {
   "name": "orb-private",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
