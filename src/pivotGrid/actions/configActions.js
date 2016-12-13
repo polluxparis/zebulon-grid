@@ -1,18 +1,18 @@
 import { fieldFactory, datafieldFactory } from '../fields';
-import { AxisType } from '../Axis';
+// import { AxisType } from '../Axis';
 import { SET_FIELDS, SET_DATAFIELDS, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, MOVE_FIELD } from '../constants';
 
 
-const axisTypeToString = (type) => {
-  switch (type) {
-    case AxisType.ROWS:
-      return 'rows';
-    case AxisType.COLUMNS:
-      return 'columns';
-    default:
-      return 'fields';
-  }
-};
+// const axisTypeToString = (type) => {
+//   switch (type) {
+//     case AxisType.ROWS:
+//       return 'rows';
+//     case AxisType.COLUMNS:
+//       return 'columns';
+//     default:
+//       return 'fields';
+//   }
+// };
 
 export const setFields = configObject => ({
   type: SET_FIELDS,
@@ -38,7 +38,7 @@ export const toggleDatafield = datafieldId => ({
 export const moveField = (fieldId, oldAxis, newAxis, position) => ({
   type: MOVE_FIELD,
   id: fieldId,
-  oldAxis: axisTypeToString(oldAxis),
-  newAxis: axisTypeToString(newAxis),
+  oldAxis,
+  newAxis,
   position,
 });

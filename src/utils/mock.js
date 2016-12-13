@@ -123,7 +123,7 @@ export const basicConfig = {
     {
       id: 'qty',
       caption: 'Quantity',
-      aggregateFunc: 'max',
+      aggregateFunc: 'sum',
     },
     {
       id: 'amt',

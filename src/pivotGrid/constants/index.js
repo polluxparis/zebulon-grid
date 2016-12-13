@@ -12,6 +12,7 @@ export const TOGGLE_DATAFIELD = 'TOGGLE_DATAFIELD';
 export const MOVE_FIELD = 'MOVE_FIELD';
 
 export const PUSH_DATA = 'PUSH_DATA';
+export const SET_DATA = 'SET_DATA';
 
 export const CHANGE_SORT_ORDER = 'CHANGE_SORT_ORDER';
 

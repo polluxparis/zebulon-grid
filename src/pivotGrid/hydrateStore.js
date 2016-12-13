@@ -1,6 +1,5 @@
 import { pushData, setFields, setDatafields, setConfigProperty, moveField, toggleDatafield } from './actions';
 import { toAggregateFunc } from './Aggregation';
-import { AxisType } from './Axis';
 
 
 export default function hydrateStore(store, config, datasource) {
@@ -18,11 +17,11 @@ export default function hydrateStore(store, config, datasource) {
 
   config.rows.forEach((fieldCaption, index) => {
     const fieldId = config.fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, -1, AxisType.ROWS, index));
+    store.dispatch(moveField(fieldId, 'fields', 'rows', index));
   });
   config.columns.forEach((fieldCaption, index) => {
     const fieldId = config.fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, -1, AxisType.COLUMNS, index));
+    store.dispatch(moveField(fieldId, 'fields', 'columns', index));
   });
   Object.values(config.fields)
   .filter((field) => {
@@ -32,7 +31,7 @@ export default function hydrateStore(store, config, datasource) {
     return !(rows.includes(field.id) || columns.includes(field.id));
   })
   .forEach((field, index) => {
-    store.dispatch(moveField(field.id, -1, AxisType.FIELDS, index));
+    store.dispatch(moveField(field.id, 'fields', 'fields', index));
   });
 
   config.data.forEach((fieldCaption) => {
