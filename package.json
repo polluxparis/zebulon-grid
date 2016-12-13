@@ -1,6 +1,6 @@
 {
   "name": "orb-grid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
@@ -53,9 +53,9 @@
     "eject": "react-scripts eject",
     "prepublish": "rm -r lib && npm run compile",
     "build:test": "REACT_APP_ORB_ENV=fps-test npm run build",
-    "compile": "npm run compile:js && npm run compile:es && npm run compile:css",
+    "compile": "npm run compile:es && npm run compile:css",
     "compile:js": "NODE_ENV=production babel src/pivotGrid -d lib/commonjs --presets react-app --ignore test.js",
-    "compile:es": "NODE_ENV=production babel src/pivotGrid -d lib/es --presets stage-3,react,es2015-rollup --ignore test.js",
+    "compile:es": "NODE_ENV=production babel src/pivotGrid -d lib --presets stage-3,react,es2015-rollup --ignore test.js",
     "compile:css": "postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css",
     "format": "eslint --fix src/**/*"
   },
