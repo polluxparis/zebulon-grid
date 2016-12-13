@@ -4,7 +4,7 @@ import PivotGrid from './containers/PivotGrid';
 import WrappedGrid from './WrappedGrid';
 // import Chart from './components/Chart/Chart';
 import reducer from './reducers';
-import actions from './actions';
+import * as actions from './actions';
 import hydrateStore from './hydrateStore';
 
 import './index.css';
