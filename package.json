@@ -1,15 +1,15 @@
 {
   "name": "orb-grid",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
   "license": "UNLICENSED",
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
-  "main": "lib/commonjs/index.js",
-  "module": "lib/es/index.js",
-  "jsnext:main": "lib/es/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "jsnext:main": "lib/index.js",
   "devDependencies": {
     "autoprefixer": "^6.5.0",
     "babel-cli": "^6.16.0",
