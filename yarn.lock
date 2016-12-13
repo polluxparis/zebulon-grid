@@ -1266,10 +1266,6 @@ chokidar@^1.0.0, chokidar@^1.5.1:
   optionalDependencies:
     fsevents "^1.0.0"
 
-chroma-js@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-1.2.1.tgz#83d44f1aa5c7633e2de3d2c143b9089fc22ba987"
-
 ci-info@^1.0.0:
   version "1.0.0"
   resolved "http://localhost:4873/ci-info/-/ci-info-1.0.0.tgz#dc5285f2b4e251821683681c381c3388f46ec534"
@@ -1500,7 +1496,7 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "http://localhost:4873/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.4.1:
+core-js@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
 
@@ -1652,60 +1648,6 @@ d@^0.1.1, d@~0.1.1:
   resolved "https://registry.yarnpkg.com/d/-/d-0.1.1.tgz#da184c535d18d8ee7ba2aa229b914009fae11309"
   dependencies:
     es5-ext "~0.10.2"
-
-d3-array@1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.0.1.tgz#375c02874fcd96c16ed9f1bcf5b4a7be53f358e7"
-
-d3-collection@1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/d3-collection/-/d3-collection-1.0.1.tgz#5b5c5626f731122b600b107d71a08833fec049ad"
-
-d3-color@1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/d3-color/-/d3-color-1.0.1.tgz#73cc91f4ee3f12e00ca06b1596a7c83cf104723a"
-
-d3-format@1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/d3-format/-/d3-format-1.0.2.tgz#138618320b4bbeb43b5c0ff30519079fbbd7375e"
-
-d3-interpolate@1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.1.1.tgz#f9ad4f9a421b22cad8838cf53d9bd2cbad0b8fd7"
-  dependencies:
-    d3-color "1"
-
-d3-path@1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.2.tgz#9941a472daed62084e5ecf4394987bcadc8c39a7"
-
-d3-scale@^1.0.3:
-  version "1.0.4"
-  resolved "http://localhost:4873/d3-scale/-/d3-scale-1.0.4.tgz#50e28bf6a193b706745528515ed9b3d44205a033"
-  dependencies:
-    d3-array "1"
-    d3-collection "1"
-    d3-color "1"
-    d3-format "1"
-    d3-interpolate "1"
-    d3-time "1"
-    d3-time-format "2"
-
-d3-shape@^1.0.3:
-  version "1.0.4"
-  resolved "http://localhost:4873/d3-shape/-/d3-shape-1.0.4.tgz#145ee100ccbec42f8e3f1996cd05c786f79fe1c6"
-  dependencies:
-    d3-path "1"
-
-d3-time-format@2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/d3-time-format/-/d3-time-format-2.0.2.tgz#1c537e9d4558966a658c51f4ca3dd1b47369c2d5"
-  dependencies:
-    d3-time "1"
-
-d3-time@1:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.4.tgz#2ceba09a76b7450c992a1ded4e10fc6195e69649"
 
 damerau-levenshtein@^1.0.0:
   version "1.0.3"
@@ -3706,10 +3648,6 @@ lodash@^4.0.0, lodash@^4.15.0, lodash@^4.16.2, lodash@^4.16.4, lodash@^4.2.0, lo
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
 
-lodash@~4.13.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.13.1.tgz#83e4b10913f48496d4d16fec4a560af2ee744b68"
-
 log-symbols@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-1.0.2.tgz#376ff7b58ea3086a0f09facc74617eca501e1a18"
@@ -4726,10 +4664,6 @@ react-addons-transition-group:
   version "15.4.1"
   resolved "http://localhost:4873/react-addons-transition-group/-/react-addons-transition-group-15.4.1.tgz#27d92717089c5e2db202e654a85b76a41b703acc"
 
-"react-addons-transition-group@^0.14.0 || ^15.0.0":
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/react-addons-transition-group/-/react-addons-transition-group-15.3.2.tgz#64f758d18bd1e59128726b1c9a4db79127c4f1ed"
-
 react-dev-utils@^0.3.0:
   version "0.3.0"
   resolved "http://localhost:4873/react-dev-utils/-/react-dev-utils-0.3.0.tgz#4a0527062a757579cb316fa254681aecca09d038"
@@ -4771,21 +4705,6 @@ react-draggable@^2.1.0:
   dependencies:
     classnames "^2.2.5"
 
-react-overlays:
-  version "0.6.10"
-  resolved "http://localhost:4873/react-overlays/-/react-overlays-0.6.10.tgz#e7e52dad47f00a0fc784eb044428c3a9e874bfa3"
-  dependencies:
-    classnames "^2.2.5"
-    dom-helpers "^2.4.0"
-    react-prop-types "^0.4.0"
-    warning "^3.0.0"
-
-react-prop-types@^0.4.0:
-  version "0.4.0"
-  resolved "http://localhost:4873/react-prop-types/-/react-prop-types-0.4.0.tgz#f99b0bfb4006929c9af2051e7c1414a5c75b93d0"
-  dependencies:
-    warning "^3.0.0"
-
 react-redux:
   version "4.4.6"
   resolved "http://localhost:4873/react-redux/-/react-redux-4.4.6.tgz#4b9d32985307a11096a2dd61561980044fcc6209"
@@ -4800,10 +4719,6 @@ react-resizable:
   resolved "http://localhost:4873/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
   dependencies:
     react-draggable "^2.1.0"
-
-react-resize-detector@^0.3.3:
-  version "0.3.3"
-  resolved "http://localhost:4873/react-resize-detector/-/react-resize-detector-0.3.3.tgz#ca07443072324843586666d9443a6356da7c0501"
 
 react-scripts@0.7.0:
   version "0.7.0"
@@ -4856,14 +4771,6 @@ react-scripts@0.7.0:
   optionalDependencies:
     fsevents "1.0.14"
 
-react-smooth@^0.1.15:
-  version "0.1.15"
-  resolved "http://localhost:4873/react-smooth/-/react-smooth-0.1.15.tgz#144e93ccc3d357b2f77eb0a64e5cdbddecb76333"
-  dependencies:
-    lodash "~4.13.1"
-    raf "^3.2.0"
-    react-addons-transition-group "^0.14.0 || ^15.0.0"
-
 react-test-renderer:
   version "15.4.0"
   resolved "http://localhost:4873/react-test-renderer/-/react-test-renderer-15.4.0.tgz#80138338e40903821847c3e4edd87d0d74c77cc8"
@@ -4871,20 +4778,6 @@ react-test-renderer:
 react-virtualized:
   version "8.5.3"
   resolved "http://localhost:4873/react-virtualized/-/react-virtualized-8.5.3.tgz#52d06c67b8dfb4e8800b7b91b6aa20d4e842cf7a"
-  dependencies:
-    babel-runtime "^6.11.6"
-    classnames "^2.2.3"
-    dom-helpers "^2.4.0"
-
-react-virtualized-checkbox@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/react-virtualized-checkbox/-/react-virtualized-checkbox-2.0.3.tgz#809667d23cec5f5b02dc4aa15ebea76d118ab6a2"
-  dependencies:
-    react-virtualized "^8.0.11"
-
-react-virtualized@^8.0.11:
-  version "8.0.12"
-  resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-8.0.12.tgz#d73930f3a7c9852ca4fee607a80e84e24a841602"
   dependencies:
     babel-runtime "^6.11.6"
     classnames "^2.2.3"
@@ -4977,24 +4870,6 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-recharts:
-  version "0.18.0"
-  resolved "http://localhost:4873/recharts/-/recharts-0.18.0.tgz#5d4c755e2a9ae1f9a9adbca4d8704319cadb0926"
-  dependencies:
-    classnames "^2.2.5"
-    core-js "^2.4.1"
-    d3-scale "^1.0.3"
-    d3-shape "^1.0.3"
-    lodash "^4.16.4"
-    react-resize-detector "^0.3.3"
-    react-smooth "^0.1.15"
-    recharts-scale "^0.2.1"
-    reduce-css-calc "^1.3.0"
-
-recharts-scale@^0.2.1:
-  version "0.2.1"
-  resolved "http://localhost:4873/recharts-scale/-/recharts-scale-0.2.1.tgz#378f543ed17c3245e4d9afb10aaf6298240d2fcb"
-
 rechoir@^0.6.2:
   version "0.6.2"
   resolved "http://localhost:4873/rechoir/-/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
@@ -5020,7 +4895,7 @@ redeyed@~1.0.0:
   dependencies:
     esprima "~2.7.0"
 
-reduce-css-calc@^1.2.6, reduce-css-calc@^1.3.0:
+reduce-css-calc@^1.2.6:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/reduce-css-calc/-/reduce-css-calc-1.3.0.tgz#747c914e049614a4c9cfbba629871ad1d2927716"
   dependencies:
@@ -5211,10 +5086,6 @@ run-async@^0.1.0:
 rx-lite@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-3.1.2.tgz#19ce502ca572665f3b647b10939f97fd1615f102"
-
-rx-lite@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
 sane@~1.4.1:
   version "1.4.1"
@@ -5858,12 +5729,6 @@ walker@~1.0.5:
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
-
-warning@^3.0.0:
-  version "3.0.0"
-  resolved "http://localhost:4873/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
-  dependencies:
-    loose-envify "^1.0.0"
 
 watch@~0.10.0:
   version "0.10.0"
