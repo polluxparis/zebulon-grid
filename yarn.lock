@@ -211,6 +211,17 @@ autoprefixer@^6.3.1, autoprefixer@^6.5.0:
     postcss "^5.2.2"
     postcss-value-parser "^3.2.3"
 
+autoprefixer@^6.5.4:
+  version "6.5.4"
+  resolved "http://localhost:4873/autoprefixer/-/autoprefixer-6.5.4.tgz#1386eb6708ccff36aefff70adc694ecfd60af1b0"
+  dependencies:
+    browserslist "~1.4.0"
+    caniuse-db "^1.0.30000597"
+    normalize-range "^0.1.2"
+    num2fraction "^1.2.2"
+    postcss "^5.2.6"
+    postcss-value-parser "^3.2.3"
+
 autoprefixer@6.5.1:
   version "6.5.1"
   resolved "http://localhost:4873/autoprefixer/-/autoprefixer-6.5.1.tgz#ae759a5221e709f3da17c2d656230e67c43cbb75"
@@ -1185,6 +1196,10 @@ caniuse-db@^1.0.30000539, caniuse-db@^1.0.30000540:
 caniuse-db@^1.0.30000554:
   version "1.0.30000566"
   resolved "http://localhost:4873/caniuse-db/-/caniuse-db-1.0.30000566.tgz#9463db955f509136fd35b385903bb61b07150f27"
+
+caniuse-db@^1.0.30000597:
+  version "1.0.30000597"
+  resolved "http://localhost:4873/caniuse-db/-/caniuse-db-1.0.30000597.tgz#b52e6cbe9dc83669affb98501629feaee1af6588"
 
 cardinal@^1.0.0:
   version "1.0.0"
@@ -4085,6 +4100,16 @@ optionator@^0.8.1, optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
+orb-controls:
+  version "0.1.2"
+  resolved "http://localhost:4873/orb-controls/-/orb-controls-0.1.2.tgz#f822152f208de80f8be1ebb083591642039148fe"
+  dependencies:
+    autoprefixer "^6.5.4"
+    postcss-cli "^2.6.0"
+    react-overlays "^0.6.10"
+    react-resizable "^1.4.5"
+    react-virtualized-checkbox "^2.0.3"
+
 original@>=0.0.5:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/original/-/original-1.0.0.tgz#9147f93fa1696d04be61e01bd50baeaca656bd3b"
@@ -4527,6 +4552,15 @@ postcss@^5.2.4:
     source-map "^0.5.6"
     supports-color "^3.1.2"
 
+postcss@^5.2.6:
+  version "5.2.6"
+  resolved "http://localhost:4873/postcss/-/postcss-5.2.6.tgz#a252cd67cd52585035f17e9ad12b35137a7bdd9e"
+  dependencies:
+    chalk "^1.1.3"
+    js-base64 "^2.1.9"
+    source-map "^0.5.6"
+    supports-color "^3.1.2"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -4705,6 +4739,21 @@ react-draggable@^2.1.0:
   dependencies:
     classnames "^2.2.5"
 
+react-overlays@^0.6.10:
+  version "0.6.10"
+  resolved "http://localhost:4873/react-overlays/-/react-overlays-0.6.10.tgz#e7e52dad47f00a0fc784eb044428c3a9e874bfa3"
+  dependencies:
+    classnames "^2.2.5"
+    dom-helpers "^2.4.0"
+    react-prop-types "^0.4.0"
+    warning "^3.0.0"
+
+react-prop-types@^0.4.0:
+  version "0.4.0"
+  resolved "http://localhost:4873/react-prop-types/-/react-prop-types-0.4.0.tgz#f99b0bfb4006929c9af2051e7c1414a5c75b93d0"
+  dependencies:
+    warning "^3.0.0"
+
 react-redux:
   version "4.4.6"
   resolved "http://localhost:4873/react-redux/-/react-redux-4.4.6.tgz#4b9d32985307a11096a2dd61561980044fcc6209"
@@ -4714,7 +4763,7 @@ react-redux:
     lodash "^4.2.0"
     loose-envify "^1.1.0"
 
-react-resizable:
+react-resizable, react-resizable@^1.4.5:
   version "1.4.5"
   resolved "http://localhost:4873/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
   dependencies:
@@ -4778,6 +4827,20 @@ react-test-renderer:
 react-virtualized:
   version "8.5.3"
   resolved "http://localhost:4873/react-virtualized/-/react-virtualized-8.5.3.tgz#52d06c67b8dfb4e8800b7b91b6aa20d4e842cf7a"
+  dependencies:
+    babel-runtime "^6.11.6"
+    classnames "^2.2.3"
+    dom-helpers "^2.4.0"
+
+react-virtualized-checkbox@^2.0.3:
+  version "2.0.3"
+  resolved "http://localhost:4873/react-virtualized-checkbox/-/react-virtualized-checkbox-2.0.3.tgz#c20fc84eb537492fbef6c06d4e3f070c84492cae"
+  dependencies:
+    react-virtualized "^8.0.11"
+
+react-virtualized@^8.0.11:
+  version "8.8.0"
+  resolved "http://localhost:4873/react-virtualized/-/react-virtualized-8.8.0.tgz#013c92b007192beb90adf3aef9c4a10e9502af23"
   dependencies:
     babel-runtime "^6.11.6"
     classnames "^2.2.3"
@@ -5067,7 +5130,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@^2.2.8, rimraf@^2.4.3, rimraf@^2.4.4, rimraf@~2.5.0, rimraf@~2.5.1, rimraf@2, rimraf@2.5.4:
+rimraf, rimraf@^2.2.8, rimraf@^2.4.3, rimraf@^2.4.4, rimraf@~2.5.0, rimraf@~2.5.1, rimraf@2, rimraf@2.5.4:
   version "2.5.4"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.5.4.tgz#96800093cbf1a0c86bd95b4625467535c29dfa04"
   dependencies:
@@ -5729,6 +5792,12 @@ walker@~1.0.5:
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
+
+warning@^3.0.0:
+  version "3.0.0"
+  resolved "http://localhost:4873/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
+  dependencies:
+    loose-envify "^1.0.0"
 
 watch@~0.10.0:
   version "0.10.0"

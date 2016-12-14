@@ -18,10 +18,12 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
     "fps-measurer": "^0.0.2",
+    "orb-controls": "^0.1.2",
     "postcss-cli": "^2.6.0",
     "react-addons-perf": "^15.4.0",
     "react-scripts": "0.7.0",
-    "react-test-renderer": "^15.4.0"
+    "react-test-renderer": "^15.4.0",
+    "rimraf": "^2.5.4"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -42,7 +44,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prepublish": "rm -r lib && npm run compile",
+    "prepublish": "rimraf lib && npm run compile",
     "build:test": "REACT_APP_ORB_ENV=fps-test npm run build",
     "compile": "npm run compile:js && npm run compile:css",
     "compile:js": "NODE_ENV=production babel src/pivotGrid -d lib --presets react-app --ignore test.js",
