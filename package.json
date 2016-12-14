@@ -1,59 +1,79 @@
 {
-  "name": "orb",
-  "version": "1.0.9",
+  "name": "zebulon-grid",
+  "version": "0.0.6",
+  "publish-Config": {
+    "registry": "http://localhost:4873"
+  },
   "license": "MIT",
   "description": "Pivot table javascript library",
-  "author": "Najmeddine Nouri <devnajm@gmail.com>",
-  "homepage": "http://orbjs.net/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nnajm/orb.git"
-  },
-  "keywords": [
-    "pivot table",
-    "pivot",
-    "table",
-    "pivot grid",
-    "grid",
-    "crosstab",
-    "aggregation",
-    "dimension"
-  ],
-  "main": "src/js/orb.js",
-  "files": [
-    "README.md",
-    "LICENCE",
-    "dist/*.js",
-    "dist/*.css",
-    "dist/*.map",
-    "src/"
-  ],
-  "engines": {
-    "node": ">=0.10.25"
+  "author": "Emile Bres <emile.bres@gmail.com>",
+  "main": "lib/index.js",
+  "devDependencies": {
+    "autoprefixer": "^6.5.0",
+    "babel-cli": "^6.16.0",
+    "babel-preset-react-app": "^0.2.1",
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0",
+    "fps-measurer": "^0.0.2",
+    "postcss-cli": "^2.6.0",
+    "react-addons-perf": "^15.4.0",
+    "react-scripts": "0.7.0",
+    "react-test-renderer": "^15.4.0"
   },
   "dependencies": {
-    "react": "~0.12.2"
+    "classnames": "^2.2.5",
+    "react": "15.4.1",
+    "react-addons-shallow-compare": "^15.4.1",
+    "react-addons-transition-group": "^15.4.1",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "15.4.1",
+    "react-redux": "^4.4.6",
+    "react-resizable": "^1.4.5",
+    "react-virtualized": "^8.5.3",
+    "redux": "^3.6.0",
+    "reselect": "^2.5.4"
   },
-  "devDependencies": {
-    "gulp": "~3.8.10",
-    "browserify": "~8.1.1",
-    "vinyl-source-stream": "~1.0.0",
-    "vinyl-buffer": "~1.0.0",
-    "gulp-uglify": "~1.1.0",
-    "gulp-sourcemaps": "~1.3.0",
-    "gulp-replace": "~0.5.1",
-    "gulp-rename": "~1.2.0",
-    "gulp-derequire": "~2.0.0",
-    "gulp-header": "~1.2.2",
-    "gulp-concat": "~2.4.3",
-    "gulp-react": "~2.0.0",
-    "gulp-less": "~2.0.1",
-    "gulp-minify-css": "~0.3.13",
-    "gulp-jsbeautifier": "0.0.4",
-    "jasmine": "~2.1.1",
-    "gulp-jasmine": "~2.0.0",
-    "gulp-tap": "~0.1.3",
-    "less": "~2.2.0",
-    "del": "~1.1.1"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prepublish": "rm -r lib && npm run compile",
+    "build:test": "REACT_APP_ORB_ENV=fps-test npm run build",
+    "compile": "npm run compile:js && npm run compile:css",
+    "compile:js": "NODE_ENV=production babel src/pivotGrid -d lib --presets react-app --ignore test.js",
+    "compile:css": "postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css",
+    "format": "eslint --fix src/**/*"
+  },
+  "peerDependencies": {},
+  "eslintConfig": {
+    "extends": "airbnb",
+    "rules": {
+      "react/prop-types": 0,
+      "no-shadow": 0,
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
+        }
+      ],
+      "react/prefer-stateless-function": [
+        2,
+        {
+          "ignorePureComponents": true
+        }
+      ]
+    },
+    "env": {
+      "browser": true,
+      "jest": true
+    }
   }
 }

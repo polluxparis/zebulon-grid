@@ -1,6 +1,16 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
 node_modules
-.npm-debug.log
-tmp
-build
+
+# testing
 coverage
-.sublime*
+
+# production
+build
+lib
+
+# misc
+.DS_Store
+.env
+npm-debug.log
