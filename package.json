@@ -1,10 +1,10 @@
 {
-  "name": "orb-grid",
+  "name": "zebulon-grid",
   "version": "0.0.6",
   "publish-Config": {
     "registry": "http://localhost:4873"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
   "main": "lib/index.js",

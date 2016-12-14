@@ -1,1 +1,3 @@
-Zebulon client visualization component
+### Work in progress
+
+Pivot grid written in Javascript
