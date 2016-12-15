@@ -6,34 +6,33 @@ import { createStore } from 'redux';
 import Perf from 'react-addons-perf'; // ES6
 import { TestRunner } from 'fps-measurer';
 
-// import './orb/index.css';
+import './pivotGrid/index.css';
 
-// import reducer from './orb/reducers';
-// import hydrateStore from './orb/hydrateStore';
+import reducer from './pivotGrid/reducers';
+import hydrateStore from './pivotGrid/hydrateStore';
 
 import createScrollingTestCase from './fpsTests/tests';
 import App from './App';
 
-// import {
-//   getMockDatasource,
-//   // getObservableMockDatasource,
-//   basicConfig,
-//  } from './utils/mock';
+import {
+  getMockDatasource,
+  basicConfig,
+ } from './utils/mock';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
 }
 
-// const store = createStore(reducer,
-//   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
-// const data = getMockDatasource(1, 100, 100);
-// const customFunctions = hydrateStore(store, basicConfig);
+const data = getMockDatasource(1, 100, 100);
+const customFunctions = hydrateStore(store, basicConfig, data);
 
 ReactDOM.render(
-  // <Provider store={store}>
-    <App />,
-  // </Provider>,
+  <Provider store={store}>
+    <App customFunctions={customFunctions} />
+  </Provider>,
   document.getElementById('root'));
 
 if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
