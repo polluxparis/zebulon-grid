@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-// import { findDOMNode } from 'react-dom';
-import { ScrollSync, ArrowKeyStepper } from 'react-virtualized';
+import { ScrollSync } from 'react-virtualized';
 import { DropTarget } from 'react-dnd';
 
+import ArrowKeyStepper from '../ArrowKeyStepper/ArrowKeyStepper';
 import DataCells from '../../containers/DataCells';
 import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
@@ -104,7 +104,7 @@ class PivotGrid extends PureComponent {
         <DragLayer />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
-          mode="edges"
+          mode="align:top-left"
           rowCount={rowVerticalCount}
           scrollToRow={this.rowStartIndex}
           scrollToColumn={this.columnStartIndex}
