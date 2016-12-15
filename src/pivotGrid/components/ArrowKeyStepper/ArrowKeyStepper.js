@@ -56,7 +56,10 @@ export default class ArrowKeyStepper extends PureComponent {
         if (mode === 'cells') {
           scrollToRow = Math.min(scrollToRow + 1, rowCount - 1);
         } else if (mode === 'align:top-left') {
-          scrollToRow = Math.min(this.rowStartIndex + 1, rowCount - 1);
+          // To avoid weird behaviour when the grid has scrolled to the bottom
+          if (this.rowStopIndex + 1 < rowCount) {
+            scrollToRow = Math.min(this.rowStartIndex + 1, rowCount - 1);
+          }
         } else if (mode === 'align:bottom-right') {
           scrollToRow = Math.min(this.rowStopIndex + 1, rowCount - 1);
         } else {
@@ -78,7 +81,10 @@ export default class ArrowKeyStepper extends PureComponent {
         if (mode === 'cells') {
           scrollToColumn = Math.min(scrollToColumn + 1, columnCount - 1);
         } else if (mode === 'align:top-left') {
-          scrollToColumn = Math.min(this.columnStartIndex + 1, columnCount - 1);
+          // To avoid weird behaviour when the grid has scrolled to the right
+          if (this.columnStopIndex + 1 < columnCount) {
+            scrollToColumn = Math.min(this.columnStartIndex + 1, columnCount - 1);
+          }
         } else if (mode === 'align:bottom-right') {
           scrollToColumn = Math.min(this.columnStopIndex + 1, columnCount - 1);
         } else {
