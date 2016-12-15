@@ -11,7 +11,7 @@ import {
   getColumnAxis,
   getActivatedDataFields,
  } from '../selectors';
-import { updateCellSize } from '../actions';
+import { updateCellSize, setConfigProperty } from '../actions';
 import { AxisType } from '../Axis';
 
 const mapStateToProps = state => ({
@@ -54,6 +54,10 @@ const mapDispatchToProps = dispatch => ({
       dispatch(updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }));
     }
   },
+  setSizes: ({ height, width }) => {
+    if (height) dispatch(setConfigProperty({ height, width }, 'height'));
+    if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+  },
 });
 
 const mergeProps = (
@@ -69,7 +73,7 @@ const mergeProps = (
     columnFields,
     dataFieldsCount,
    },
-  { updateCellSize },
+  { updateCellSize, setSizes },
   ownProps,
 ) => ({
   rowFields,
@@ -82,6 +86,7 @@ const mergeProps = (
   headerSizes,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
+  setSizes,
   ...ownProps,
 });
 

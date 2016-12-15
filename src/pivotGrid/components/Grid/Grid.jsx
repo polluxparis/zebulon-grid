@@ -71,6 +71,13 @@ class PivotGrid extends PureComponent {
     if (nextColumnStartIndex >= 0) this.columnStartIndex = nextColumnStartIndex;
   }
 
+  componentDidUpdate(prevProps) {
+    const { height, width, setSizes } = this.props;
+    if (height !== prevProps.height || width !== prevProps.width) {
+      setSizes({ height, width });
+    }
+  }
+
   handleSectionRendered(onSectionRendered) {
     return (indexes) => {
       const { rowStartIndex, columnStartIndex } = indexes;
@@ -83,7 +90,6 @@ class PivotGrid extends PureComponent {
       onSectionRendered(indexes);
     };
   }
-
 
   render() {
     const { connectDropTarget, width, layout, customFunctions } = this.props;

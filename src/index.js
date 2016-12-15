@@ -31,7 +31,7 @@ const customFunctions = hydrateStore(store, basicConfig, data);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App customFunctions={customFunctions} />
+    <App customFunctions={customFunctions} config={store.getState().config} />
   </Provider>,
   document.getElementById('root'));
 

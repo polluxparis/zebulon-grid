@@ -3,12 +3,11 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import 'react-virtualized/styles.css';
 import 'react-resizable/css/styles.css';
-// import { ResizableBox } from 'react-resizable';
-// import { AutoSizer } from 'react-virtualized';
+import { ResizableBox } from 'react-resizable';
+import { AutoSizer } from 'react-virtualized';
 
 import { PivotGrid } from './pivotGrid';
 import './App.css';
-import logo from './logo.svg';
 
 let i = 0;
 
@@ -49,7 +48,18 @@ class App extends Component {
   render() {
     return (
       <div>
-        <PivotGrid customFunctions={this.props.customFunctions} />
+        {/* <PivotGrid customFunctions={this.props.customFunctions} /> */}
+        <ResizableBox height={this.props.config.height} width={this.props.config.width}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <PivotGrid
+                customFunctions={this.props.customFunctions}
+                height={height}
+                width={width}
+              />)
+            }
+          </AutoSizer>
+        </ResizableBox>
         {/* <div>
           <button onClick={this.addData}>Add data</button>
           <button onClick={this.moveField}>Move Field</button>
