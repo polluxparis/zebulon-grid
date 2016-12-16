@@ -16,6 +16,7 @@ function getSelectedText({
   rowHeaders,
   columnDimensionHeaders,
   rowDimensionHeaders,
+  customFunctions,
  }) {
   // Build rows headers array
   const rowsRange = [
@@ -55,7 +56,9 @@ function getSelectedText({
     // get getCellValue from the store
     // maybe better to go without datacell and get caption directly
     // be careful about rendering function though
-      .map(columnHeader => new DataCell(getCellValue, true, rowHeader, columnHeader).caption));
+      .map(columnHeader =>
+        new DataCell(getCellValue, true, rowHeader, columnHeader, customFunctions).caption),
+      );
   const rowDimensions = rowDimensionHeaders.map(header => header.value.caption);
   const columnDimensions = columnDimensionHeaders.map(header => header.value.caption);
 
@@ -111,6 +114,7 @@ export default function copy({
   dataHeadersLocation,
   columnDimensionHeaders,
   rowDimensionHeaders,
+  customFunctions,
  }) {
   try {
     const bodyElement = document.getElementsByTagName('body')[0];
@@ -127,6 +131,7 @@ export default function copy({
       dataHeadersLocation,
       columnDimensionHeaders,
       rowDimensionHeaders,
+      customFunctions,
     });
     clipboardTextArea.select();
     window.setTimeout(() => { bodyElement.removeChild(clipboardTextArea); }, 0);
