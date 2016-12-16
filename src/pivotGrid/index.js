@@ -7,7 +7,7 @@ import reducer from './reducers';
 import * as actions from './actions';
 import hydrateStore from './hydrateStore';
 
-import './index.css';
+// import './index.css';
 
 // export { GridConfiguration };
 // export { ChartConfiguration };

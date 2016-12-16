@@ -140,7 +140,7 @@ export const basicConfig = {
   ],
   columns: ['Titi'],
   rows: ['Toto', 'Tutu'],
-  data: ['Quantity'],
+  data: ['Quantity', 'Amount'],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {
     // 'Titi': ['titi0']
