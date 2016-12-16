@@ -31,7 +31,10 @@ class WrappedGrid extends Component {
   render() {
     return (
       <Provider store={this.store}>
-        <PivotGrid customFunctions={this.customFunctions} height={this.props.height} width={this.props.width}/>
+        <PivotGrid
+          customFunctions={this.customFunctions}
+          height={this.props.height}
+          width={this.props.width}/>
       </Provider>
     );
   }
