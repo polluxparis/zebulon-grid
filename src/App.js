@@ -56,6 +56,7 @@ class App extends Component {
                 customFunctions={this.props.customFunctions}
                 height={height}
                 width={width}
+                drilldown={(cell) => { console.log('drilldown', cell); }}
               />)
             }
           </AutoSizer>

@@ -92,7 +92,7 @@ class PivotGrid extends PureComponent {
   }
 
   render() {
-    const { connectDropTarget, width, layout, customFunctions } = this.props;
+    const { connectDropTarget, width, layout, customFunctions, drilldown } = this.props;
     const {
       columnHorizontalCount,
       rowVerticalCount,
@@ -131,6 +131,7 @@ class PivotGrid extends PureComponent {
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
                       onScroll={onScroll}
+                      drilldown={drilldown}
                     />
                   </div>
                 </div>
