@@ -56,9 +56,18 @@ class ColumnHeaders extends PureComponent {
         const left = main.offset + horizontalOffsetAdjustment;
         const span = header.hspan();
         const width = getHeaderSize(columnSizeAndPositionManager, header.x, span);
-        const top = 0
-        + dimensionPositions.columns[header.dim.field.id];
-        const height = getDimensionSize(AxisType.COLUMNS, header.dim.field.id);
+        let top;
+        let height;
+        if (header.dim.field) {
+          // Normal header
+          top = dimensionPositions.columns[header.dim.field.id];
+          height = getDimensionSize(AxisType.COLUMNS, header.dim.field.id);
+        } else {
+          // Total header
+          // Important when the size of the grid is smaller than the width of the measure cells
+          top = 0;
+          height = getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
+        }
         const positionStyle = {
           position: 'absolute',
           left,
