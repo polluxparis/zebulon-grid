@@ -174,7 +174,7 @@ export class Header extends CellBase {
         value = dim.caption;
         hspan = isOnRowAxis ? 1 : null;
         vspan = isOnRowAxis ? null : 1;
-        key = parent ? `${parent.key}-/-${dim.id}` : dim.id;
+        key = parent ? `${parent.key}-/-${dim.id}` : String(dim.id);
         break;
     }
 
@@ -312,7 +312,7 @@ export class DataHeader extends CellBase {
       this.parent.subheaders.push(this);
     }
 
-    this.key = parent ? `${parent.key}-/-${datafield.id}` : datafield.id;
+    this.key = parent ? `${parent.key}-/-${datafield.id}` : String(datafield.id);
 
     this.caption = this.value.caption;
 
@@ -332,7 +332,7 @@ export class DimensionHeader extends CellBase {
       isvisible: () => true,
     });
 
-    this.key = field.id;
+    this.key = String(field.id);
 
     this.hspan = () => 1;
     this.vspan = () => 1;
