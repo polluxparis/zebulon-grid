@@ -21,7 +21,7 @@
     "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
     "react-addons-perf": "^15.4.0",
-    "react-scripts": "0.7.0",
+    "react-scripts": "0.9.0",
     "react-test-renderer": "^15.4.0",
     "rimraf": "^2.5.4",
     "webpack": "^1.14.0"
