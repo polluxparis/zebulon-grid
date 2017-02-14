@@ -54,33 +54,33 @@ export const basicConfig = {
   height: 601,
   cellHeight: 30,
   cellWidth: 100,
-  theme: 'green',
-  toolbar: {
-    visible: true,
-  },
-  grandTotal: {
-    rowsvisible: false,
-    columnsvisible: false,
-  },
-  subTotal: {
-    visible: false,
-    collapsed: false,
-    collapsible: false,
-  },
-  rowSettings: {
-    subTotal: {
-      visible: false,
-      collapsed: false,
-      collapsible: false,
-    },
-  },
-  columnSettings: {
-    subTotal: {
-      visible: false,
-      collapsed: false,
-      collapsible: false,
-    },
-  },
+  // theme: 'green',
+  // toolbar: {
+  //   visible: true,
+  // },
+  // grandTotal: {
+  //   rowsvisible: false,
+  //   columnsvisible: false,
+  // },
+  // subTotal: {
+  //   visible: false,
+  //   collapsed: false,
+  //   collapsible: false,
+  // },
+  // rowSettings: {
+  //   subTotal: {
+  //     visible: false,
+  //     collapsed: false,
+  //     collapsible: false,
+  //   },
+  // },
+  // columnSettings: {
+  //   subTotal: {
+  //     visible: false,
+  //     collapsed: false,
+  //     collapsible: false,
+  //   },
+  // },
   fields: [
     {
       name: 'toto_lb',
