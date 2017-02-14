@@ -23,7 +23,14 @@ class App extends Component {
 
   addData() {
     this.grid.pushData([
-      { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0' },
+      {
+        toto: '0',
+        toto_lb: 'toto 0',
+        qty: 100,
+        amt: 100,
+        titi: 'titi 0',
+        tutu: '0',
+      },
     ]);
     // this.setState({ pushData: [
     //   // ...this.state.data,
@@ -48,33 +55,28 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <PivotGrid customFunctions={this.props.customFunctions} /> */}
-        <ResizableBox height={this.props.config.height} width={this.props.config.width}>
+        {}
+        <ResizableBox
+          height={this.props.config.height}
+          width={this.props.config.width}
+        >
           <AutoSizer>
             {({ height, width }) => (
               <PivotGrid
                 customFunctions={this.props.customFunctions}
                 height={height}
                 width={width}
-                drilldown={(cell) => { console.log('drilldown', cell); }}
-              />)
-            }
+                drilldown={cell => {
+                  console.log('drilldown', cell);
+                }}
+              />
+            )}
           </AutoSizer>
         </ResizableBox>
-        {/* <div>
-          <button onClick={this.addData}>Add data</button>
-          <button onClick={this.moveField}>Move Field</button>
-          <button onClick={this.toggleDatafield}>Toggle datafield</button>
-        </div>
-        <WrappedGrid
-          ref={(ref) => { this.grid = ref.getDecoratedComponentInstance(); }}
-          config={basicConfig}
-          data={getMockDatasource(1, 100, 100)}
-        /> */}
+        {}
       </div>
     );
   }
-
 }
 
 export default DragDropContext(HTML5Backend)(App);

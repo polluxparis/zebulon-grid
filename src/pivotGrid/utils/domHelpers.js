@@ -1,8 +1,10 @@
 let calculatedScrollBarSize;
+let lastDevicePixelRatio;
 
 const inDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 export function scrollbarSize(recalc) {
-  if (!calculatedScrollBarSize || recalc) {
+  // scrollbar size changes when zoom (devicePixelRatio) is modified
+  if (!calculatedScrollBarSize || recalc || window.devicePixelRatio !== lastDevicePixelRatio) {
     if (inDOM) {
       const inner = document.createElement('p');
       inner.style.width = '100% !important';
@@ -27,6 +29,7 @@ export function scrollbarSize(recalc) {
       document.body.removeChild(outer);
 
       calculatedScrollBarSize = (w1 - w2);
+      lastDevicePixelRatio = window.devicePixelRatio;
     }
   }
   return calculatedScrollBarSize || 0;
