@@ -8,7 +8,10 @@ export function fieldFactory(fieldConfig) {
     sort,
   } = fieldConfig;
   if (!id) {
-    console.error('Configuration error: field definition needs an id.', fieldConfig);
+    console.error(
+      'Configuration error: field definition needs an id.',
+      fieldConfig,
+    );
   }
   const field = { id };
   field.name = name || field.id;
@@ -39,7 +42,10 @@ export function datafieldFactory(fieldConfig) {
     aggregateFunc,
   } = fieldConfig;
   if (!id) {
-    console.error('Configuration error: datafield definition needs an id.', fieldConfig);
+    console.error(
+      'Configuration error: datafield definition needs an id.',
+      fieldConfig,
+    );
   }
   const datafield = { id };
   datafield.name = name || datafield.id;

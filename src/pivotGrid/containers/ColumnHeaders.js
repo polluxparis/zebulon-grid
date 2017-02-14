@@ -14,15 +14,15 @@ import {
 } from '../selectors';
 import ColumnHeaders from '../components/ColumnHeaders';
 
-const mapStateToProps = state =>
-({
+const mapStateToProps = state => ({
   columnCount: getLayout(state).columnHorizontalCount,
   columnHeaders: getColumnUiAxis(state).headers,
   dimensionPositions: getDimensionPositions(state),
   getColumnWidth: getColumnWidth(state),
   getDimensionSize: getDimensionSize(state),
   getLastChildSize: getLastChildSize(state),
-  getRowHeight: ({ index }) => getDimensionSize(state)(AxisType.COLUMNS, state.axis.columns[index]),
+  getRowHeight: ({ index }) =>
+    getDimensionSize(state)(AxisType.COLUMNS, state.axis.columns[index]),
   height: getHeaderSizes(state).columnHeadersHeight,
   previewSizes: getPreviewSizes(state),
   rowCount: getLayout(state).columnVerticalCount,

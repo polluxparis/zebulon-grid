@@ -34,7 +34,9 @@ class CustomDragLayer extends Component {
   render() {
     let height;
     let width;
-    if (!this.props.item || this.props.itemType !== 'cell-resize-handle') { return null; }
+    if (!this.props.item || this.props.itemType !== 'cell-resize-handle') {
+      return null;
+    }
     const { position, previewSize } = this.props.item;
     if (position === 'right') {
       width = 2;
@@ -43,17 +45,24 @@ class CustomDragLayer extends Component {
       width = previewSize;
       height = 2;
     }
-    return (<div
-      style={{
-        position: 'fixed',
-        pointerEvents: 'none',
-        zIndex: 100,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-      }}
-    ><div style={{ height, width, backgroundColor: 'grey', ...getItemPosition(this.props) }} /></div>);
+    return <div
+        style={{
+          position: 'fixed',
+          pointerEvents: 'none',
+          zIndex: 100,
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      ><div
+        style={{
+          height,
+          width,
+          backgroundColor: 'grey',
+          ...getItemPosition(this.props),
+        }}
+      /></div>;
   }
 }
 

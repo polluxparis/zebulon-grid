@@ -13,8 +13,8 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
           obj.toto_lb = `toto ${String(o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
-          obj.qty = u + (10 * i) + (100 * o); // +9999999999.1234567890123456
-          obj.amt = u + (10 * i) + (100 * o);// +9999999999.1234567890123456
+          obj.qty = u + 10 * i + 100 * o; // +9999999999.1234567890123456
+          obj.amt = u + 10 * i + 100 * o; // +9999999999.1234567890123456
           res.push(obj);
         }
       }
@@ -27,8 +27,22 @@ export function getObservableMockDatasource(interval) {
   const data = [
     getMockDatasource(),
     [
-      { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '1' },
-      { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0' },
+      {
+        toto: '0',
+        toto_lb: 'toto 0',
+        qty: 100,
+        amt: 100,
+        titi: 'titi 0',
+        tutu: '1',
+      },
+      {
+        toto: '0',
+        toto_lb: 'toto 0',
+        qty: 100,
+        amt: 100,
+        titi: 'titi 0',
+        tutu: '0',
+      },
     ],
     { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' },
   ];
@@ -104,20 +118,20 @@ export const basicConfig = {
       id: 'tutu',
       caption: 'Tutu',
     },
-  // {
-  //     name: '4',
-  //     caption: 'Category',
-  //     sort: {
-  //         customfunc: function(a, b) {
-  //             if(a.trim() == 'Touch Screen Phones'){
-  //              return -1
-  //             }
-  //             if(a < b) return -1
-  //             if(a > b) return 1
-  //             return 0
-  //         }
-  //     }
-  // },
+    // {
+    //     name: '4',
+    //     caption: 'Category',
+    //     sort: {
+    //         customfunc: function(a, b) {
+    //             if(a.trim() == 'Touch Screen Phones'){
+    //              return -1
+    //             }
+    //             if(a < b) return -1
+    //             if(a > b) return 1
+    //             return 0
+    //         }
+    //     }
+    // },
   ],
   datafields: [
     {
@@ -130,7 +144,7 @@ export const basicConfig = {
       caption: 'Amount',
       aggregateFunc: 'sum',
       aggregateFuncName: 'whatever',
-      formatFunc: (value) => {
+      formatFunc: value => {
         if (value || value === 0) {
           return `${Number(value).toFixed(0)} $`;
         }

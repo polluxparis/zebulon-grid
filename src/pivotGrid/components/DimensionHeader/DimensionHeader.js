@@ -3,16 +3,18 @@ import React from 'react';
 import { AxisType } from '../../Axis';
 import ResizeHandle from '../ResizeHandle';
 
-const DimensionHeader = ({
-  field,
-  left,
-  top,
-  height,
-  width,
-  crossFieldId,
-  mainDirection,
-  previewSizes,
- }) => {
+const DimensionHeader = (
+  {
+    field,
+    left,
+    top,
+    height,
+    width,
+    crossFieldId,
+    mainDirection,
+    previewSizes,
+  },
+) => {
   const ids = {};
   if (mainDirection === 'down') {
     ids.right = field.id;
@@ -39,10 +41,8 @@ const DimensionHeader = ({
         // backgroundColor: '#fafad2',
       }}
     >
-      <span
-        className="orb-dimension-header-inner"
-      >
-        { field.caption }
+      <span className="orb-dimension-header-inner">
+        {field.caption}
       </span>
       <ResizeHandle
         position="right"

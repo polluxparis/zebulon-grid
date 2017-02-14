@@ -14,17 +14,16 @@ import hydrateStore from './pivotGrid/hydrateStore';
 import createScrollingTestCase from './fpsTests/tests';
 import App from './App';
 
-import {
-  getMockDatasource,
-  basicConfig,
- } from './utils/mock';
+import { getMockDatasource, basicConfig } from './utils/mock';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
 }
 
-const store = createStore(reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+);
 
 const data = getMockDatasource(1, 100, 100);
 const customFunctions = hydrateStore(store, basicConfig, data);
@@ -33,10 +32,13 @@ ReactDOM.render(
   <Provider store={store}>
     <App customFunctions={customFunctions} config={store.getState().config} />
   </Provider>,
-  document.getElementById('root'));
+  document.getElementById('root'),
+);
 
 if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
-  const testCase = createScrollingTestCase(document.getElementsByClassName('OrbGrid-data-cells')[0]);
+  const testCase = createScrollingTestCase(
+    document.getElementsByClassName('OrbGrid-data-cells')[0],
+  );
   const testRunner = new TestRunner(testCase, 5);
 
   const btn = document.createElement('button');

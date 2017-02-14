@@ -315,7 +315,11 @@ export function twoArraysIntersect(arg0, arg1) {
 //   return ret;
 // }
 
-export function isInRange([columnIndex, rowIndex], [columnIndexStart, rowIndexStart], [columnIndexEnd, rowIndexEnd]) {
+export function isInRange(
+  [columnIndex, rowIndex],
+  [columnIndexStart, rowIndexStart],
+  [columnIndexEnd, rowIndexEnd],
+) {
   let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {
     inRows = columnIndexStart <= columnIndex && columnIndex <= columnIndexEnd;

@@ -17,7 +17,11 @@ class DataCells extends PureComponent {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
 
-    this.state = { cellsCache: {}, selectedCellStart: null, selectedCellEnd: null };
+    this.state = {
+      cellsCache: {},
+      selectedCellStart: null,
+      selectedCellEnd: null,
+    };
   }
 
   componentDidMount() {
@@ -115,15 +119,21 @@ class DataCells extends PureComponent {
     }
   }
 
-
-  cellRenderer({
-    columnIndex,
-    key,
-    rowIndex,
-    style: position,
-   }) {
+  cellRenderer(
+    {
+      columnIndex,
+      key,
+      rowIndex,
+      style: position,
+    },
+  ) {
     const { selectedCellStart, selectedCellEnd } = this.state;
-    const { drilldown, getCellValue, dataHeadersLocation, customFunctions } = this.props;
+    const {
+      drilldown,
+      getCellValue,
+      dataHeadersLocation,
+      customFunctions,
+    } = this.props;
     const { rowHeaders, columnHeaders } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
@@ -131,7 +141,11 @@ class DataCells extends PureComponent {
     const columnHeader = columnHeaderColumn[columnHeaderColumn.length - 1];
     let selected = false;
     if (selectedCellStart && selectedCellEnd) {
-      selected = isInRange([columnIndex, rowIndex], selectedCellStart, selectedCellEnd);
+      selected = isInRange(
+        [columnIndex, rowIndex],
+        selectedCellStart,
+        selectedCellEnd,
+      );
     }
 
     const cell = new DataCell(
@@ -179,7 +193,7 @@ class DataCells extends PureComponent {
       scrollToRow,
       onSectionRendered,
       zoom,
-     } = this.props;
+    } = this.props;
     this.datacellsCache = {};
     return (
       <ReactVirtualizedGrid
@@ -189,7 +203,9 @@ class DataCells extends PureComponent {
         columnWidth={getColumnWidth}
         height={height}
         onScroll={onScroll}
-        ref={(ref) => { this.grid = ref; }}
+        ref={ref => {
+          this.grid = ref;
+        }}
         rowCount={rowCount}
         rowHeight={getRowHeight}
         scrollToAlignment="start"

@@ -21,12 +21,11 @@ export const AxisType = {
  * @param  {orb.axe.Type} type - Axis type (rows, columns, data)
  */
 export class Axis {
-
-/**
+  /**
  * Dimensions dictionary indexed by depth
  * @type {Object} Dictionary of (depth, arrays)
  */
-// this.dimensionsByDepth = null
+  // this.dimensionsByDepth = null
 
   constructor(type, fields, data) {
     /**
@@ -45,10 +44,18 @@ export class Axis {
      * Root dimension
      * @type {orb.dimension}
      */
-    this.root = new Dimension(-1, null, null, null, this.fields.length + 1, true, false);
+    this.root = new Dimension(
+      -1,
+      null,
+      null,
+      null,
+      this.fields.length + 1,
+      true,
+      false,
+    );
     this.fill(data);
     // initial sort
-    this.fields.forEach((field) => {
+    this.fields.forEach(field => {
       this.sort(field.id, true);
     });
   }
@@ -74,7 +81,7 @@ export class Axis {
     } else {
       dimensions = this.getDimensionsByDepth(depth + 1);
     }
-    dimensions.forEach((dimension) => {
+    dimensions.forEach(dimension => {
       if (field.sort.customfunc !== null) {
         dimension.values.sort(field.sort.customfunc);
       } else {
@@ -89,9 +96,14 @@ export class Axis {
   // perhaps introduce a result parameter to obtain tail call optimisation
   getDimensionsByDepth(depth, dim = this.root) {
     // if (!dim) { dim = this.root; }
-    if (depth === this.fields.length + 1) { return [dim]; }
-    return [].concat(...Object.keys(dim.subdimvals)
-      .map(dimValue => this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])));
+    if (depth === this.fields.length + 1) {
+      return [dim];
+    }
+    return [].concat(
+      ...Object.keys(dim.subdimvals)
+        .map(dimValue =>
+          this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])),
+    );
   }
 
   getFieldIndex(fieldId) {
@@ -110,7 +122,11 @@ export class Axis {
   fill(data) {
     if (data != null && this.fields.length > 0) {
       if (data != null && Array.isArray(data) && data.length > 0) {
-        for (let rowIndex = 0, dataLength = data.length; rowIndex < dataLength; rowIndex += 1) {
+        for (
+          let rowIndex = 0, dataLength = data.length;
+          rowIndex < dataLength;
+          rowIndex += 1
+        ) {
           const row = data[rowIndex];
           let dim = this.root;
           for (let findex = 0; findex < this.fields.length; findex += 1) {

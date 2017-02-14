@@ -5,7 +5,6 @@ import React, { PureComponent, PropTypes } from 'react';
  by scrolling one row or column at a time.
  */
 export default class ArrowKeyStepper extends PureComponent {
-
   constructor(props, context) {
     super(props, context);
 
@@ -83,7 +82,10 @@ export default class ArrowKeyStepper extends PureComponent {
         } else if (mode === 'align:top-left') {
           // To avoid weird behaviour when the grid has scrolled to the right
           if (this.columnStopIndex + 1 < columnCount) {
-            scrollToColumn = Math.min(this.columnStartIndex + 1, columnCount - 1);
+            scrollToColumn = Math.min(
+              this.columnStartIndex + 1,
+              columnCount - 1,
+            );
           }
         } else if (mode === 'align:bottom-right') {
           scrollToColumn = Math.min(this.columnStopIndex + 1, columnCount - 1);
@@ -116,7 +118,9 @@ export default class ArrowKeyStepper extends PureComponent {
     }
   }
 
-  onSectionRendered({ columnStartIndex, columnStopIndex, rowStartIndex, rowStopIndex }) {
+  onSectionRendered(
+    { columnStartIndex, columnStopIndex, rowStartIndex, rowStopIndex },
+  ) {
     this.columnStartIndex = columnStartIndex;
     this.columnStopIndex = columnStopIndex;
     this.rowStartIndex = rowStartIndex;
@@ -128,10 +132,7 @@ export default class ArrowKeyStepper extends PureComponent {
     const { scrollToColumn, scrollToRow } = this.state;
 
     return (
-      <div
-        className={className}
-        onKeyDown={this.onKeyDown}
-      >
+      <div className={className} onKeyDown={this.onKeyDown}>
         {children({
           onSectionRendered: this.onSectionRendered,
           scrollToColumn,
@@ -140,8 +141,6 @@ export default class ArrowKeyStepper extends PureComponent {
       </div>
     );
   }
-
-
 }
 
 ArrowKeyStepper.defaultProps = {
@@ -156,7 +155,12 @@ ArrowKeyStepper.propTypes = {
   className: PropTypes.string,
   columnCount: PropTypes.number.isRequired,
   disabled: PropTypes.bool.isRequired,
-  mode: PropTypes.oneOf(['cells', 'edges', 'align:top-left', 'align:bottom-right']),
+  mode: PropTypes.oneOf([
+    'cells',
+    'edges',
+    'align:top-left',
+    'align:bottom-right',
+  ]),
   rowCount: PropTypes.number.isRequired,
   scrollToColumn: PropTypes.number.isRequired,
   scrollToRow: PropTypes.number.isRequired,

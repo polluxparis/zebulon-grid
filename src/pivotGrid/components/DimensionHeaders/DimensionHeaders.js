@@ -18,7 +18,7 @@ class DimensionHeaders extends PureComponent {
       rows,
       width,
       zoom,
-     } = this.props;
+    } = this.props;
     const headers = [];
 
     // Get width for column dimension headers
@@ -35,7 +35,7 @@ class DimensionHeaders extends PureComponent {
     }
     const headerWidth = getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
     headers.push(
-      ...columnDimensionHeaders.map((dimensionHeader) => {
+      ...columnDimensionHeaders.map(dimensionHeader => {
         const field = dimensionHeader.value;
         const top = dimensionPositions.columns[field.id];
         const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
@@ -50,8 +50,10 @@ class DimensionHeaders extends PureComponent {
             mainDirection="right"
             crossFieldId={fieldWhoseWidthToGet}
             previewSizes={previewSizes}
-          />);
-      }));
+          />
+        );
+      }),
+    );
     // Get height for row dimension headers in different cases
     let fieldWhoseHeightToGet;
     if (dataHeadersLocation === 'columns') {
@@ -64,9 +66,12 @@ class DimensionHeaders extends PureComponent {
       // Dimension headers are to the left of the Total header --> get default height
       fieldWhoseHeightToGet = null;
     }
-    const headerHeight = getDimensionSize(AxisType.COLUMNS, fieldWhoseHeightToGet);
+    const headerHeight = getDimensionSize(
+      AxisType.COLUMNS,
+      fieldWhoseHeightToGet,
+    );
     headers.push(
-      ...rowDimensionHeaders.map((dimensionHeader) => {
+      ...rowDimensionHeaders.map(dimensionHeader => {
         const field = dimensionHeader.value;
         const left = dimensionPositions.rows[field.id];
         const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
@@ -81,17 +86,27 @@ class DimensionHeaders extends PureComponent {
             mainDirection="down"
             previewSizes={previewSizes}
             width={headerWidth}
-          />);
-      }));
+          />
+        );
+      }),
+    );
     return (
       // Putting position as relative here allows its children (the dimension headers)
       // to be absolutely positioned relatively to their parent
-      <div
-        style={{ position: 'relative', height, width, fontSize: `${zoom * 100}%`, overflow: 'hidden' }}
-        className="orb-dimension-headers"
-      >
-        {headers}
-      </div>
+      (
+        <div
+          style={{
+            position: 'relative',
+            height,
+            width,
+            fontSize: `${zoom * 100}%`,
+            overflow: 'hidden',
+          }}
+          className="orb-dimension-headers"
+        >
+          {headers}
+        </div>
+      )
     );
   }
 }

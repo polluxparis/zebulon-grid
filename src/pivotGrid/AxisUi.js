@@ -2,8 +2,13 @@ import { AxisType } from './Axis';
 import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
 import { KEY_SEPARATOR } from './constants';
 
-function getDataFieldsCount({ axisType, dataHeadersLocation, activatedDataFieldsCount }) {
-  if ((dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS) || (dataHeadersLocation === 'rows' && axisType === AxisType.ROWS)) {
+function getDataFieldsCount(
+  { axisType, dataHeadersLocation, activatedDataFieldsCount },
+) {
+  if (
+    dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS ||
+    dataHeadersLocation === 'rows' && axisType === AxisType.ROWS
+  ) {
     return activatedDataFieldsCount;
   }
   return 0;
@@ -39,9 +44,12 @@ export const keyToIndex = (headers, key) => {
  * @param  {orb.axe} axe - axe containing all dimensions.
  */
 export default class AxisUi {
-
   constructor(axis, config, crossAxisFieldsCode) {
-    const { dataHeadersLocation, activatedDataFieldsCount, activatedDataFields } = config;
+    const {
+      dataHeadersLocation,
+      activatedDataFieldsCount,
+      activatedDataFields,
+    } = config;
     this.datafieldsCount = getDataFieldsCount({
       axisType: axis.type,
       dataHeadersLocation,
@@ -81,17 +89,19 @@ export default class AxisUi {
       }
 
       if (headers.length === 0) {
-        headers.push([grandtotalHeader = new Header(
-          axis.type,
-          HeaderType.GRAND_TOTAL,
-          axis.root,
-          null,
-          this.datafieldsCount,
-          this.x,
-          y = 0,
-          null,
-          crossAxisFieldsCode,
-        )]);
+        headers.push([
+          grandtotalHeader = new Header(
+            axis.type,
+            HeaderType.GRAND_TOTAL,
+            axis.root,
+            null,
+            this.datafieldsCount,
+            this.x,
+            (y = 0),
+            null,
+            crossAxisFieldsCode,
+          ),
+        ]);
       }
 
       if (grandtotalHeader) {
@@ -108,9 +118,10 @@ export default class AxisUi {
       }
     }
     this.headers = headers;
-    this.dimensionHeaders = axis.fields.map(field => new DimensionHeader(axis.type, field));
+    this.dimensionHeaders = axis.fields.map(
+      field => new DimensionHeader(axis.type, field),
+    );
   }
-
 
   /**
   * Fills the infos array given in argument with the dimension layout infos as row.
@@ -118,21 +129,29 @@ export default class AxisUi {
   * @param  {object}  infos - array to fill with ui dimension info
   * @param  {number}  axisType - type of the axe (rows or columns)
   */
-  getUiInfo({
-    infos,
-    dimension,
-    axisType,
-    dataHeadersLocation,
-    activatedDataFields,
-    activatedDataFieldsCount,
-    y = 0,
-  }) {
+  getUiInfo(
+    {
+      infos,
+      dimension,
+      axisType,
+      dataHeadersLocation,
+      activatedDataFields,
+      activatedDataFieldsCount,
+      y = 0,
+    },
+  ) {
     if (dimension.values.length > 0) {
       const infosMaxIndex = infos.length - 1;
       let lastInfosArray = infos[infosMaxIndex];
-      const parent = lastInfosArray.length > 0 ? lastInfosArray[lastInfosArray.length - 1] : null;
+      const parent = lastInfosArray.length > 0
+        ? lastInfosArray[lastInfosArray.length - 1]
+        : null;
 
-      for (let valIndex = 0; valIndex < dimension.values.length; valIndex += 1) {
+      for (
+        let valIndex = 0;
+        valIndex < dimension.values.length;
+        valIndex += 1
+      ) {
         const subvalue = dimension.values[valIndex];
         const subdim = dimension.subdimvals[subvalue];
 
@@ -164,7 +183,7 @@ export default class AxisUi {
         );
 
         if (valIndex > 0) {
-          infos.push((lastInfosArray = []));
+          infos.push(lastInfosArray = []);
         }
 
         lastInfosArray.push(newHeader);
@@ -184,7 +203,8 @@ export default class AxisUi {
 
             // add sub-total data headers
             // if more than 1 data field and they will be the leaf headers
-            this.addDataHeaders({ axisType,
+            this.addDataHeaders({
+              axisType,
               infos,
               activatedDataFields,
               activatedDataFieldsCount,
@@ -195,7 +215,8 @@ export default class AxisUi {
           }
         } else {
           // add data headers if more than 1 data field and they will be the leaf headers
-          this.addDataHeaders({ axisType,
+          this.addDataHeaders({
+            axisType,
             infos,
             activatedDataFields,
             activatedDataFieldsCount,
@@ -209,32 +230,35 @@ export default class AxisUi {
     return y;
   }
 
-  addDataHeaders({
-    infos,
-    parent,
-    dataHeadersLocation,
-    activatedDataFields,
-    y,
-  }) {
+  addDataHeaders(
+    {
+      infos,
+      parent,
+      dataHeadersLocation,
+      activatedDataFields,
+      y,
+    },
+  ) {
     if (this.hasDataFields) {
       let lastInfosArray = infos[infos.length - 1];
       for (let [index, datafield] of activatedDataFields.entries()) {
         lastInfosArray.push(new DataHeader(
-          dataHeadersLocation === 'columns' ? AxisType.COLUMNS : AxisType.ROWS,
+          (dataHeadersLocation === 'columns'
+            ? AxisType.COLUMNS
+            : AxisType.ROWS),
           datafield,
           parent,
-          this.x += 1,
+          (this.x += 1),
           y,
         ));
         if (index < this.datafieldsCount - 1) {
-          infos.push((lastInfosArray = []));
+          infos.push(lastInfosArray = []);
         }
       }
     } else {
       this.x += 1;
     }
   }
-
   // toggleFieldExpansion(field, newState) {
   //   const toToggle = [];
   //   let allExpanded = true;

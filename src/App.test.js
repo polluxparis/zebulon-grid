@@ -1,7 +1,6 @@
 it('mocks', () => {
   expect(true).toBe(true);
 });
-
 // import React from 'react';
 // import ReactDOM from 'react-dom';
 // // import renderer from 'react-test-renderer';

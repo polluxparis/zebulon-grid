@@ -1,7 +1,12 @@
 import { fieldFactory, datafieldFactory } from '../fields';
 // import { AxisType } from '../Axis';
-import { SET_FIELDS, SET_DATAFIELDS, SET_CONFIG_PROPERTY, TOGGLE_DATAFIELD, MOVE_FIELD } from '../constants';
-
+import {
+  SET_FIELDS,
+  SET_DATAFIELDS,
+  SET_CONFIG_PROPERTY,
+  TOGGLE_DATAFIELD,
+  MOVE_FIELD,
+} from '../constants';
 
 // const axisTypeToString = (type) => {
 //   switch (type) {

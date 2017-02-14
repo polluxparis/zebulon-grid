@@ -18,7 +18,8 @@ const mapStateToProps = state => ({
   columnCount: getLayout(state).rowHorizontalCount,
   columnHeadersHeight: getHeaderSizes(state).columnHeadersHeight,
   dimensionPositions: getDimensionPositions(state),
-  getColumnWidth: ({ index }) => getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
+  getColumnWidth: ({ index }) =>
+    getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
   getDimensionSize: getDimensionSize(state),
   getLastChildSize: getLastChildSize(state),
   getRowHeight: getRowHeight(state),

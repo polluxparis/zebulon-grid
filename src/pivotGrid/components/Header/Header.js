@@ -6,25 +6,28 @@ import ResizeHandle from '../ResizeHandle';
 
 function getLeafSubheaders(header, result) {
   if (header.subheaders && header.subheaders.length) {
-    header.subheaders.forEach(subheader => getLeafSubheaders(subheader, result));
+    header.subheaders.forEach(subheader =>
+      getLeafSubheaders(subheader, result));
     return result;
   }
   result.push(header);
   return result;
 }
 
-const Header = ({
-  axis,
-  getLastChildSize,
-  header,
-  positionStyle,
-  previewSizes,
-  previewOffsets,
-  span,
-  startIndex,
-  scrollLeft,
-  scrollTop,
-}) => {
+const Header = (
+  {
+    axis,
+    getLastChildSize,
+    header,
+    positionStyle,
+    previewSizes,
+    previewOffsets,
+    span,
+    startIndex,
+    scrollLeft,
+    scrollTop,
+  },
+) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
   // Handle affix
@@ -40,7 +43,9 @@ const Header = ({
       style = { position: 'relative', top: offset };
     }
   }
-  const innerHeader = <InnerHeader key={`${axis}-${x}-${y}`} cell={header} style={style} />;
+  const innerHeader = (
+    <InnerHeader key={`${axis}-${x}-${y}`} cell={header} style={style} />
+  );
   const leafHeaderId = header.key;
   let dimensionId;
   if (!header.dim) {
@@ -113,10 +118,7 @@ const InnerHeader = ({ cell, style }) => {
   };
 
   return (
-    <span
-      className="orb-header-inner"
-      style={computedStyle}
-    >
+    <span className="orb-header-inner" style={computedStyle}>
       {value}
     </span>
   );

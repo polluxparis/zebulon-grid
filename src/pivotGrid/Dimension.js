@@ -9,7 +9,6 @@
  * @param  {Boolean} isRoot - whether or not this is the root dimension for a given axe (row/column)
  */
 export default class Dimension {
-
   constructor(id, parent, caption, field, depth, isRoot, isLeaf) {
     /**
      * unique id within parent orb.axe instance.

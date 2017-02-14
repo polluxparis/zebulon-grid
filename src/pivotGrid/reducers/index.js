@@ -8,4 +8,12 @@ import axis from './axisReducer';
 import sizes from './sizesReducer';
 import filters from './filtersReducer';
 
-export default combineReducers({ data, config, fields, datafields, axis, sizes, filters });
+export default combineReducers({
+  data,
+  config,
+  fields,
+  datafields,
+  axis,
+  sizes,
+  filters,
+});

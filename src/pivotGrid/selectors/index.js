@@ -20,26 +20,17 @@ export const getCellSizes = createSelector(
 );
 
 export const getRowFields = createSelector(
-  [
-    state => state.axis.rows,
-    state => state.fields,
-  ],
+  [state => state.axis.rows, state => state.fields],
   (rowAxis, fields) => rowAxis.map(id => fields[id]),
 );
 
 export const getColumnFields = createSelector(
-  [
-    state => state.axis.columns,
-    state => state.fields,
-  ],
+  [state => state.axis.columns, state => state.fields],
   (columnAxis, fields) => columnAxis.map(id => fields[id]),
 );
 
 export const getAvailableFields = createSelector(
-  [
-    state => state.axis.fields,
-    state => state.fields,
-  ],
+  [state => state.axis.fields, state => state.fields],
   (fieldAxis, fields) => fieldAxis.map(id => fields[id]),
 );
 
@@ -47,9 +38,10 @@ const getDataFields = state => state.datafields;
 
 export const getActivatedDataFields = createSelector(
   [getDataFields],
-  datafields => Object.keys(datafields)
-    .map(id => datafields[id])
-    .filter(field => field.activated),
+  datafields =>
+    Object.keys(datafields)
+      .map(id => datafields[id])
+      .filter(field => field.activated),
 );
 const getActivatedDataFieldsCount = createSelector(
   [getActivatedDataFields],
@@ -59,19 +51,17 @@ const getActivatedDataFieldsCount = createSelector(
 export const getFilters = state => state.filters || {};
 const getData = state => state.data;
 
-export const getFilteredData = createSelector(
-  [getData, getFilters],
-  (data, filtersObject) => {
-    const filters = [
-      ...Object.keys(filtersObject).map(id => filtersObject[id]),
-    ];
-    if (filters.length === 0) {
-      return data;
-    }
-    return data.filter(row =>
-      filters.every(filter => pass(filter, row[filter.fieldId])));
-  },
-);
+export const getFilteredData = createSelector([getData, getFilters], (
+  data,
+  filtersObject,
+) => {
+  const filters = [...Object.keys(filtersObject).map(id => filtersObject[id])];
+  if (filters.length === 0) {
+    return data;
+  }
+  return data.filter(row =>
+    filters.every(filter => pass(filter, row[filter.fieldId])));
+});
 
 export const getRowAxis = createSelector(
   [getRowFields, getFilteredData],
@@ -80,7 +70,8 @@ export const getRowAxis = createSelector(
 
 export const getColumnAxis = createSelector(
   [getColumnFields, getFilteredData],
-  (columnFields, filteredData) => new Axis(AxisType.COLUMNS, columnFields, filteredData),
+  (columnFields, filteredData) =>
+    new Axis(AxisType.COLUMNS, columnFields, filteredData),
 );
 
 export const getRowUiAxis = createSelector(
@@ -91,11 +82,18 @@ export const getRowUiAxis = createSelector(
     state => state.config.dataHeadersLocation,
     state => state.axis.columns,
   ],
-  (rowAxis, activatedDataFields, activatedDataFieldsCount, dataHeadersLocation, crossFieldsCode) =>
+  (
+    rowAxis,
+    activatedDataFields,
+    activatedDataFieldsCount,
+    dataHeadersLocation,
+    crossFieldsCode,
+  ) =>
     new AxisUi(
       rowAxis,
       { activatedDataFields, activatedDataFieldsCount, dataHeadersLocation },
-      crossFieldsCode),
+      crossFieldsCode,
+    ),
 );
 
 export const getColumnUiAxis = createSelector(
@@ -105,12 +103,11 @@ export const getColumnUiAxis = createSelector(
     state => state.config.dataHeadersLocation,
   ],
   (columnAxis, activatedDataFields, dataHeadersLocation) =>
-    new AxisUi(columnAxis,
-      {
-        activatedDataFields,
-        activatedDataFieldsCount: activatedDataFields.length,
-        dataHeadersLocation,
-      }),
+    new AxisUi(columnAxis, {
+      activatedDataFields,
+      activatedDataFieldsCount: activatedDataFields.length,
+      dataHeadersLocation,
+    }),
 );
 
 export const getLayout = createSelector(
@@ -122,14 +119,28 @@ export const getLayout = createSelector(
     getActivatedDataFieldsCount,
     state => state.config.dataHeadersLocation,
   ],
-  (rowAxis, columnAxis, rowsUi, columnsUi, activatedDataFieldsCount, dataHeadersLocation) => {
+  (
+    rowAxis,
+    columnAxis,
+    rowsUi,
+    columnsUi,
+    activatedDataFieldsCount,
+    dataHeadersLocation,
+  ) => {
     const rowHorizontalCount = (rowAxis.fields.length || 1) +
       (dataHeadersLocation === 'rows' && activatedDataFieldsCount >= 1 ? 1 : 0);
     const rowVerticalCount = rowsUi.headers.length;
     const columnHorizontalCount = columnsUi.headers.length;
     const columnVerticalCount = (columnAxis.fields.length || 1) +
-      (dataHeadersLocation === 'columns' && activatedDataFieldsCount >= 1 ? 1 : 0);
-    return { rowHorizontalCount, rowVerticalCount, columnHorizontalCount, columnVerticalCount };
+      (dataHeadersLocation === 'columns' && activatedDataFieldsCount >= 1
+        ? 1
+        : 0);
+    return {
+      rowHorizontalCount,
+      rowVerticalCount,
+      columnHorizontalCount,
+      columnVerticalCount,
+    };
   },
 );
 
@@ -141,10 +152,7 @@ const getLeafHeaderSize = (axis, key, sizes, cellSizes) => {
 };
 
 export const getDimensionSize = createSelector(
-  [
-    state => state.sizes,
-    getCellSizes,
-  ],
+  [state => state.sizes, getCellSizes],
   (sizes, cellSizes) => (axis, id) => {
     if (axis === AxisType.COLUMNS) {
       return sizes.columns.dimensions[id] || cellSizes.height;
@@ -154,10 +162,7 @@ export const getDimensionSize = createSelector(
 );
 
 export const getLastChildSize = createSelector(
-  [
-    state => state.sizes,
-    getCellSizes,
-  ],
+  [state => state.sizes, getCellSizes],
   (sizes, cellSizes) => (axis, header) => {
     let lastChild = header;
     while (lastChild.subheaders && lastChild.subheaders.length) {
@@ -167,7 +172,12 @@ export const getLastChildSize = createSelector(
   },
 );
 
-const calculateDimensionPositions = (axis, fields, hasMeasures, getDimensionSize) => {
+const calculateDimensionPositions = (
+  axis,
+  fields,
+  hasMeasures,
+  getDimensionSize,
+) => {
   let axisType;
   if (axis === 'columns') {
     axisType = 1;
@@ -180,7 +190,7 @@ const calculateDimensionPositions = (axis, fields, hasMeasures, getDimensionSize
   if (!fields.length) {
     position += getDimensionSize(axisType, TOTAL_ID);
   } else {
-    fields.forEach((field) => {
+    fields.forEach(field => {
       res[field.id] = position;
       position += getDimensionSize(axisType, field.id);
     });
@@ -191,7 +201,6 @@ const calculateDimensionPositions = (axis, fields, hasMeasures, getDimensionSize
   return res;
 };
 
-
 export const getDimensionPositions = createSelector(
   [
     getDimensionSize,
@@ -200,17 +209,23 @@ export const getDimensionPositions = createSelector(
     getRowFields,
   ],
   (getDimensionSize, dataHeadersLocation, columnFields, rowFields) => ({
-    columns: calculateDimensionPositions('columns', columnFields, dataHeadersLocation === 'columns', getDimensionSize),
-    rows: calculateDimensionPositions('rows', rowFields, dataHeadersLocation === 'rows', getDimensionSize),
+    columns: calculateDimensionPositions(
+      'columns',
+      columnFields,
+      dataHeadersLocation === 'columns',
+      getDimensionSize,
+    ),
+    rows: calculateDimensionPositions(
+      'rows',
+      rowFields,
+      dataHeadersLocation === 'rows',
+      getDimensionSize,
+    ),
   }),
 );
 
 export const getColumnWidth = createSelector(
-  [
-    getColumnUiAxis,
-    state => state.sizes,
-    getCellSizes,
-  ],
+  [getColumnUiAxis, state => state.sizes, getCellSizes],
   (columnsUi, sizes, cellSizes) => ({ index }) => {
     const headers = columnsUi.headers[index];
     const key = headers[headers.length - 1].key;
@@ -218,13 +233,8 @@ export const getColumnWidth = createSelector(
   },
 );
 
-
 export const getRowHeight = createSelector(
-  [
-    getRowUiAxis,
-    state => state.sizes,
-    getCellSizes,
-  ],
+  [getRowUiAxis, state => state.sizes, getCellSizes],
   (rowsUi, sizes, cellSizes) => ({ index }) => {
     const headers = rowsUi.headers[index];
     const key = headers[headers.length - 1].key;
@@ -243,7 +253,16 @@ export const getHeaderSizes = createSelector(
     getCellSizes,
     getDimensionSize,
   ],
-  (dataHeadersLocation, sizes, rows, columns, rowsUi, columnsUi, cellSizes, getDimensionSize) => {
+  (
+    dataHeadersLocation,
+    sizes,
+    rows,
+    columns,
+    rowsUi,
+    columnsUi,
+    cellSizes,
+    getDimensionSize,
+  ) => {
     const columnsMeasures = dataHeadersLocation === 'columns';
     let rowHeadersWidth = 0;
     // Measures are on the row axis
@@ -252,50 +271,90 @@ export const getHeaderSizes = createSelector(
     }
     // There are no fields on the row axis
     if (!rows.length) {
-      rowHeadersWidth += getDimensionSize(AxisType.ROWS, TOTAL_ID, sizes, cellSizes);
+      rowHeadersWidth += getDimensionSize(
+        AxisType.ROWS,
+        TOTAL_ID,
+        sizes,
+        cellSizes,
+      );
     } else {
       rowHeadersWidth = rows.reduce(
-        (width, field) => width + getDimensionSize(AxisType.ROWS, field, sizes, cellSizes),
-        rowHeadersWidth);
+        (width, field) =>
+          width + getDimensionSize(AxisType.ROWS, field, sizes, cellSizes),
+        rowHeadersWidth,
+      );
     }
     let columnHeadersHeight = 0;
     // Measures are on the column axis
     if (columnsMeasures) {
-      columnHeadersHeight += sizes.columns.dimensions[MEASURE_ID] || cellSizes.height;
+      columnHeadersHeight += sizes.columns.dimensions[MEASURE_ID] ||
+        cellSizes.height;
     }
     // There are no fields on the column axis
     if (!columns.length) {
-      columnHeadersHeight += getDimensionSize(AxisType.COLUMNS, TOTAL_ID, sizes, cellSizes);
+      columnHeadersHeight += getDimensionSize(
+        AxisType.COLUMNS,
+        TOTAL_ID,
+        sizes,
+        cellSizes,
+      );
     } else {
       columnHeadersHeight = columns.reduce(
-        (height, field) => height + getDimensionSize(AxisType.COLUMNS, field, sizes, cellSizes),
-        columnHeadersHeight);
+        (height, field) =>
+          height + getDimensionSize(AxisType.COLUMNS, field, sizes, cellSizes),
+        columnHeadersHeight,
+      );
     }
     const rowHeadersHeight = rowsUi.headers.reduce(
       // (height, headers) => height + this.getRowHeight({ index: headers[0].x }),
-      (height, headers) => height
-      + getLeafHeaderSize(AxisType.ROWS, headers[headers.length - 1].key, sizes, cellSizes),
-      0);
+      (height, headers) =>
+        height +
+          getLeafHeaderSize(
+            AxisType.ROWS,
+            headers[headers.length - 1].key,
+            sizes,
+            cellSizes,
+          ),
+      0,
+    );
     const columnHeadersWidth = columnsUi.headers.reduce(
       // (width, headers) => width + this.getColumnWidth({ index: headers[0].x }),
-      (width, headers) => width
-      + getLeafHeaderSize(AxisType.COLUMNS, headers[headers.length - 1].key, sizes, cellSizes),
-      0);
-    return { rowHeadersWidth, columnHeadersWidth, rowHeadersHeight, columnHeadersHeight };
+      (width, headers) =>
+        width +
+          getLeafHeaderSize(
+            AxisType.COLUMNS,
+            headers[headers.length - 1].key,
+            sizes,
+            cellSizes,
+          ),
+      0,
+    );
+    return {
+      rowHeadersWidth,
+      columnHeadersWidth,
+      rowHeadersHeight,
+      columnHeadersHeight,
+    };
   },
 );
 
 export const getCellValue = createSelector(
-  [
-    getActivatedDataFields,
-    getFilteredData,
-  ],
-  (activatedDataFields, data) => (datafield, rowDimension, columnDimension, aggregateFunc = () => null) => {
+  [getActivatedDataFields, getFilteredData],
+  (activatedDataFields, data) => (
+    datafield,
+    rowDimension,
+    columnDimension,
+    aggregateFunc = () => null,
+  ) => {
     if (!(rowDimension && columnDimension)) {
       return null;
     }
-    const rowIndexes = rowDimension.isRoot ? null : rowDimension.getRowIndexes();
-    const columnIndexes = columnDimension.isRoot ? null : columnDimension.getRowIndexes();
+    const rowIndexes = rowDimension.isRoot
+      ? null
+      : rowDimension.getRowIndexes();
+    const columnIndexes = columnDimension.isRoot
+      ? null
+      : columnDimension.getRowIndexes();
     let intersection;
     if (rowIndexes === null && columnIndexes === null) {
       // At initialization, both rowIndexes and columnIndexes are null
@@ -316,15 +375,16 @@ export const getCellValue = createSelector(
 );
 
 const hasScrollbar = createSelector(
-  [
-    state => state.config.width,
-    state => state.config.height,
-    getHeaderSizes,
-  ],
+  [state => state.config.width, state => state.config.height, getHeaderSizes],
   (
     width,
     height,
-    { columnHeadersWidth, columnHeadersHeight, rowHeadersWidth, rowHeadersHeight },
+    {
+      columnHeadersWidth,
+      columnHeadersHeight,
+      rowHeadersWidth,
+      rowHeadersHeight,
+    },
   ) => ({
     bottom: width < columnHeadersWidth + rowHeadersWidth + scrollbarSize(),
     right: height < columnHeadersHeight + rowHeadersHeight + scrollbarSize(),
@@ -332,24 +392,18 @@ const hasScrollbar = createSelector(
 );
 
 export const getRowHeadersVisibleHeight = createSelector(
-  [
-    state => state.config.height,
-    getHeaderSizes,
-    hasScrollbar,
-  ],
+  [state => state.config.height, getHeaderSizes, hasScrollbar],
   (height, { columnHeadersHeight, rowHeadersHeight }, hasScrollbar) =>
     Math.min(
-      height - columnHeadersHeight - (hasScrollbar.bottom ? scrollbarSize() : 0),
+      height -
+        columnHeadersHeight -
+        (hasScrollbar.bottom ? scrollbarSize() : 0),
       rowHeadersHeight,
     ),
 );
 
 export const getColumnHeadersVisibleWidth = createSelector(
-  [
-    state => state.config.width,
-    getHeaderSizes,
-    hasScrollbar,
-  ],
+  [state => state.config.width, getHeaderSizes, hasScrollbar],
   (width, { rowHeadersWidth, columnHeadersWidth }, hasScrollbar) =>
     Math.min(
       width - rowHeadersWidth - (hasScrollbar.right ? scrollbarSize() : 0),
@@ -368,96 +422,103 @@ export const getPreviewSizes = createSelector(
     height,
     width,
     hasScrollbar,
-    { rowHeadersHeight, rowHeadersWidth, columnHeadersHeight, columnHeadersWidth }) => ({
-      height: Math.min(height - (hasScrollbar.bottom ? scrollbarSize() : 0),
-        rowHeadersHeight + columnHeadersHeight),
-      width: Math.min(width - (hasScrollbar.right ? scrollbarSize() : 0),
-        columnHeadersWidth + rowHeadersWidth),
-    }),
+    {
+      rowHeadersHeight,
+      rowHeadersWidth,
+      columnHeadersHeight,
+      columnHeadersWidth,
+    },
+  ) => ({
+    height: Math.min(
+      height - (hasScrollbar.bottom ? scrollbarSize() : 0),
+      rowHeadersHeight + columnHeadersHeight,
+    ),
+    width: Math.min(
+      width - (hasScrollbar.right ? scrollbarSize() : 0),
+      columnHeadersWidth + rowHeadersWidth,
+    ),
+  }),
 );
 
 export const getDataCellsHeight = createSelector(
-  [
-    state => state.config.height,
-    getHeaderSizes,
-    hasScrollbar,
-  ],
-  (height, { columnHeadersHeight, rowHeadersHeight }, hasScrollbar) => Math.min(
-    height - columnHeadersHeight,
-    rowHeadersHeight + (hasScrollbar.bottom ? scrollbarSize() : 0),
-  ),
+  [state => state.config.height, getHeaderSizes, hasScrollbar],
+  (height, { columnHeadersHeight, rowHeadersHeight }, hasScrollbar) =>
+    Math.min(
+      height - columnHeadersHeight,
+      rowHeadersHeight + (hasScrollbar.bottom ? scrollbarSize() : 0),
+    ),
 );
 
 export const getDataCellsWidth = createSelector(
-  [
-    state => state.config.width,
-    getHeaderSizes,
-    hasScrollbar,
-  ],
-  (width, { columnHeadersWidth, rowHeadersWidth }, hasScrollbar) => Math.min(
-    width - rowHeadersWidth,
-    columnHeadersWidth + (hasScrollbar.right ? scrollbarSize() : 0),
-  ),
+  [state => state.config.width, getHeaderSizes, hasScrollbar],
+  (width, { columnHeadersWidth, rowHeadersWidth }, hasScrollbar) =>
+    Math.min(
+      width - rowHeadersWidth,
+      columnHeadersWidth + (hasScrollbar.right ? scrollbarSize() : 0),
+    ),
 );
 
-export const getFieldValues = createSelector(
-  [getData],
-  data => (field, filterFunc) => {
-    const values = [];
-    const labels = [];
-    let res = [];
-    const labelsMap = {};
-    const valuesMap = {};
-    let containsBlank = false;
-    // We use data here instead of filteredData
-    // Otherwise you lose the filtered values the next time you open a Filter Panel
-    for (let i = 0; i < data.length; i += 1) {
-      const row = data[i];
-      const val = row[field.id];
-      const label = row[field.name];
-      labelsMap[val] = label;
-      valuesMap[label] = val;
-      if (filterFunc !== undefined) {
-        if (filterFunc === true || (typeof filterFunc === 'function' && filterFunc(val))) {
-          values.push(val);
-          labels.push(label);
-        }
-      } else if (val != null) {
+export const getFieldValues = createSelector([getData], data => (
+  field,
+  filterFunc,
+) => {
+  const values = [];
+  const labels = [];
+  let res = [];
+  const labelsMap = {};
+  const valuesMap = {};
+  let containsBlank = false;
+  // We use data here instead of filteredData
+  // Otherwise you lose the filtered values the next time you open a Filter Panel
+  for (let i = 0; i < data.length; i += 1) {
+    const row = data[i];
+    const val = row[field.id];
+    const label = row[field.name];
+    labelsMap[val] = label;
+    valuesMap[label] = val;
+    if (filterFunc !== undefined) {
+      if (
+        filterFunc === true ||
+        typeof filterFunc === 'function' && filterFunc(val)
+      ) {
         values.push(val);
         labels.push(label);
-      } else {
-        containsBlank = true;
       }
-    }
-    if (labels.length > 1) {
-      if (isNumber(labels[0]) || isDate(labels[0])) {
-        labels.sort((a, b) => {
-          if (a) {
-            if (b) {
-              return a - b;
-            }
-            return 1;
-          }
-          if (b) {
-            return -1;
-          }
-          return 0;
-        });
-      } else {
-        labels.sort();
-      }
-
-      for (let vi = 0; vi < labels.length; vi += 1) {
-        if (vi === 0 || labels[vi] !== res[res.length - 1].label) {
-          res.push({ value: valuesMap[labels[vi]], label: labels[vi] });
-        }
-      }
+    } else if (val != null) {
+      values.push(val);
+      labels.push(label);
     } else {
-      res = values.map(value => ({ value, label: labelsMap[value] }));
+      containsBlank = true;
     }
-    if (containsBlank) {
-      res.unshift({ value: null, label: '' });
+  }
+  if (labels.length > 1) {
+    if (isNumber(labels[0]) || isDate(labels[0])) {
+      labels.sort((a, b) => {
+        if (a) {
+          if (b) {
+            return a - b;
+          }
+          return 1;
+        }
+        if (b) {
+          return -1;
+        }
+        return 0;
+      });
+    } else {
+      labels.sort();
     }
-    return res;
-  },
-);
+
+    for (let vi = 0; vi < labels.length; vi += 1) {
+      if (vi === 0 || labels[vi] !== res[res.length - 1].label) {
+        res.push({ value: valuesMap[labels[vi]], label: labels[vi] });
+      }
+    }
+  } else {
+    res = values.map(value => ({ value, label: labelsMap[value] }));
+  }
+  if (containsBlank) {
+    res.unshift({ value: null, label: '' });
+  }
+  return res;
+});

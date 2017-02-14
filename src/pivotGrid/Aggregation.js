@@ -11,14 +11,14 @@ export function count(datafield, intersection, data) {
 }
 export function sum(datafield, intersection, data) {
   let sum = 0;
-  forEachIntersection(datafield, intersection, data, (val) => {
+  forEachIntersection(datafield, intersection, data, val => {
     sum += val;
   });
   return sum;
 }
 export function min(datafield, intersection, data) {
   let min = null;
-  forEachIntersection(datafield, intersection, data, (val) => {
+  forEachIntersection(datafield, intersection, data, val => {
     if (min == null || val < min) {
       min = val;
     }
@@ -27,7 +27,7 @@ export function min(datafield, intersection, data) {
 }
 export function max(datafield, intersection, data) {
   let max = null;
-  forEachIntersection(datafield, intersection, data, (val) => {
+  forEachIntersection(datafield, intersection, data, val => {
     if (max == null || val > max) {
       max = val;
     }
@@ -38,7 +38,7 @@ export function avg(datafield, intersection, data) {
   let avg = 0;
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
-    forEachIntersection(datafield, intersection, data, (val) => {
+    forEachIntersection(datafield, intersection, data, val => {
       avg += val;
     });
     avg /= len;
@@ -50,13 +50,12 @@ export function prod(datafield, intersection, data) {
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
     prod = 1;
-    forEachIntersection(datafield, intersection, data, (val) => {
+    forEachIntersection(datafield, intersection, data, val => {
       prod *= val;
     });
   }
   return prod;
 }
-
 
 export function calcVariance(datafield, intersection, data, population) {
   let variance = 0;
@@ -64,14 +63,14 @@ export function calcVariance(datafield, intersection, data, population) {
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
     if (population || len > 1) {
-      forEachIntersection(datafield, intersection, data, (val) => {
+      forEachIntersection(datafield, intersection, data, val => {
         avg += val;
       });
       avg /= len;
-      forEachIntersection(datafield, intersection, data, (val) => {
+      forEachIntersection(datafield, intersection, data, val => {
         variance += (val - avg) * (val - avg);
       });
-      variance /= (population ? len : len - 1);
+      variance /= population ? len : len - 1;
     } else {
       variance = NaN;
     }
@@ -94,8 +93,9 @@ export function varp(datafield, intersection, data) {
 
 export function toAggregateFunc(func) {
   if (func) {
-    if (typeof func === 'string' && eval(func)) { // eslint-disable-line no-eval
-      return eval(func);  // eslint-disable-line no-eval
+    if (typeof func === 'string' && eval(func)) {
+      // eslint-disable-line no-eval
+      return eval(func); // eslint-disable-line no-eval
     } else if (typeof func === 'function') {
       return func;
     }

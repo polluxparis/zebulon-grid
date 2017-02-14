@@ -16,24 +16,28 @@ class RowHeaders extends PureComponent {
     this.grid.recomputeGridSize();
   }
 
-  rowHeadersRenderer({
-    rowSizeAndPositionManager,
-    rowStartIndex,
-    rowStopIndex,
-    scrollTop,
-    verticalOffsetAdjustment,
-   }) {
+  rowHeadersRenderer(
+    {
+      rowSizeAndPositionManager,
+      rowStartIndex,
+      rowStopIndex,
+      scrollTop,
+      verticalOffsetAdjustment,
+    },
+  ) {
     const {
-     rowHeaders,
-     columnHeadersHeight,
-     columnCount,
-     previewSizes,
-     getLastChildSize,
-     getDimensionSize,
-     dimensionPositions,
+      rowHeaders,
+      columnHeadersHeight,
+      columnCount,
+      previewSizes,
+      getLastChildSize,
+      getDimensionSize,
+      dimensionPositions,
     } = this.props;
 
-    this.firstLeafHeader = rowHeaders[rowStartIndex][rowHeaders[rowStartIndex].length - 1];
+    this.firstLeafHeader = rowHeaders[rowStartIndex][
+      rowHeaders[rowStartIndex].length - 1
+    ];
 
     const renderedCells = [];
 
@@ -41,21 +45,23 @@ class RowHeaders extends PureComponent {
 
     // we have to make the cell count artificially higher.
     // This ensures that we don't render inexistent headers.
-    const correctRowStopIndex = Math.min(
-      rowStopIndex,
-      rowHeaders.length - 1);
-
+    const correctRowStopIndex = Math.min(rowStopIndex, rowHeaders.length - 1);
 
     // Render fixed left columns
 
     // Render big cells on the left of current cells if necessary
     // The check on the presence of the header is necessary
     // because it can be out of bounds when the headers array is modified
-    if (rowHeaders[rowStartIndex] && rowHeaders[rowStartIndex].length < columnCount) {
+    if (
+      rowHeaders[rowStartIndex] &&
+      rowHeaders[rowStartIndex].length < columnCount
+    ) {
       let header = rowHeaders[rowStartIndex][0];
       while (header.parent) {
         header = header.parent;
-        const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(header.x);
+        const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(
+          header.x,
+        );
         const span = header.vspan();
         const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
@@ -68,8 +74,8 @@ class RowHeaders extends PureComponent {
           height,
           width,
         };
-        const previewOffsets = { };
-        previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+        const previewOffsets = {};
+        previewOffsets.right = top - scrollTop + columnHeadersHeight;
         previewOffsets.bottom = left - 0;
         renderedCells.push(
           <Header
@@ -84,17 +90,26 @@ class RowHeaders extends PureComponent {
             previewSizes={previewSizes}
             previewOffsets={previewOffsets}
             getLastChildSize={getLastChildSize}
-          />);
+          />,
+        );
       }
     }
 
-    for (let rowIndex = rowStartIndex; rowIndex <= correctRowStopIndex; rowIndex += 1) {
+    for (
+      let rowIndex = rowStartIndex;
+      rowIndex <= correctRowStopIndex;
+      rowIndex += 1
+    ) {
       const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
       const top = main.offset + verticalOffsetAdjustment;
       renderedCells.push(
-        ...rowHeaders[rowIndex].map((header) => {
+        ...rowHeaders[rowIndex].map(header => {
           const span = header.vspan();
-          const height = getHeaderSize(rowSizeAndPositionManager, rowIndex, span);
+          const height = getHeaderSize(
+            rowSizeAndPositionManager,
+            rowIndex,
+            span,
+          );
           // 3 cases: normal dimension header, measure header or total header
           let width;
           let left = 0;
@@ -117,8 +132,8 @@ class RowHeaders extends PureComponent {
             height,
             width,
           };
-          const previewOffsets = { };
-          previewOffsets.right = (top - scrollTop) + columnHeadersHeight;
+          const previewOffsets = {};
+          previewOffsets.right = top - scrollTop + columnHeadersHeight;
           previewOffsets.bottom = left - 0;
           return (
             <Header
@@ -133,12 +148,13 @@ class RowHeaders extends PureComponent {
               previewSizes={previewSizes}
               previewOffsets={previewOffsets}
               getLastChildSize={getLastChildSize}
-            />);
-        }));
+            />
+          );
+        }),
+      );
     }
     return renderedCells;
   }
-
 
   render() {
     const {
@@ -160,14 +176,20 @@ class RowHeaders extends PureComponent {
         columnWidth={getColumnWidth}
         height={height}
         overscanRowCount={0}
-        ref={(ref) => { this.grid = ref; }}
+        ref={ref => {
+          this.grid = ref;
+        }}
         rowCount={rowCount}
         rowHeight={getRowHeight}
         scrollLeft={0}
         scrollTop={scrollTop}
         // We set overflowX and overflowY and not overflow
         // because react-virtualized sets them during render
-        style={{ fontSize: `${zoom * 100}%`, overflowX: 'hidden', overflowY: 'hidden' }}
+        style={{
+          fontSize: `${zoom * 100}%`,
+          overflowX: 'hidden',
+          overflowY: 'hidden',
+        }}
         width={width}
       />
     );

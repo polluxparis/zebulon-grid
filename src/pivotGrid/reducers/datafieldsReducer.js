@@ -5,11 +5,16 @@ export default (state = {}, action) => {
   let datafield;
   switch (type) {
     case SET_DATAFIELDS:
-      return datafields
-        .reduce((acc, field) => ({ ...acc, [field.id]: field }), {});
+      return datafields.reduce(
+        (acc, field) => ({ ...acc, [field.id]: field }),
+        {},
+      );
     case TOGGLE_DATAFIELD:
       datafield = state[id];
-      return { ...state, [id]: { ...datafield, activated: !datafield.activated } };
+      return {
+        ...state,
+        [id]: { ...datafield, activated: !datafield.activated },
+      };
     default:
       return state;
   }

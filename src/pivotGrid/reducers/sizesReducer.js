@@ -1,7 +1,10 @@
 import { UPDATE_CELL_SIZE } from '../constants';
 
 export default (
-  state = { rows: { leafs: {}, dimensions: {} }, columns: { leafs: {}, dimensions: {} } },
+  state = {
+    rows: { leafs: {}, dimensions: {} },
+    columns: { leafs: {}, dimensions: {} },
+  },
   action,
 ) => {
   const { type, axis, direction, size, id } = action;

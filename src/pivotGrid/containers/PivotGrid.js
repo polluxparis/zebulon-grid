@@ -10,7 +10,7 @@ import {
   getRowUiAxis,
   getColumnAxis,
   getActivatedDataFields,
- } from '../selectors';
+} from '../selectors';
 import { updateCellSize, setConfigProperty } from '../actions';
 import { AxisType } from '../Axis';
 
@@ -28,18 +28,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateCellSize: ({ handle, offset, initialOffset, sizes, defaultCellSizes }) => {
-    if (handle.leafSubheaders && handle.leafSubheaders.length &&
-      (
-        (handle.axis === AxisType.COLUMNS && handle.position === 'right')
-        || (handle.axis === AxisType.ROWS && handle.position === 'bottom')
-      )
+  updateCellSize: (
+    { handle, offset, initialOffset, sizes, defaultCellSizes },
+  ) => {
+    if (
+      handle.leafSubheaders &&
+      handle.leafSubheaders.length &&
+      (handle.axis === AxisType.COLUMNS && handle.position === 'right' ||
+        handle.axis === AxisType.ROWS && handle.position === 'bottom')
     ) {
       const fractionalOffset = {
         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
         y: (offset.y - initialOffset.y) / handle.leafSubheaders.length,
       };
-      handle.leafSubheaders.forEach((subheader) => {
+      handle.leafSubheaders.forEach(subheader => {
         dispatch(
           updateCellSize({
             handle: { ...handle, leafSubheaders: [], id: subheader.key },
@@ -48,10 +50,18 @@ const mapDispatchToProps = dispatch => ({
             defaultCellSizes,
             sizes,
           }),
-      );
+        );
       });
     } else {
-      dispatch(updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }));
+      dispatch(
+        updateCellSize({
+          handle,
+          offset,
+          initialOffset,
+          sizes,
+          defaultCellSizes,
+        }),
+      );
     }
   },
   setSizes: ({ height, width }) => {
@@ -72,7 +82,7 @@ const mergeProps = (
     rowFields,
     columnFields,
     dataFieldsCount,
-   },
+  },
   { updateCellSize, setSizes },
   ownProps,
 ) => ({
@@ -90,4 +100,6 @@ const mergeProps = (
   ...ownProps,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(PivotGrid);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+  PivotGrid,
+);

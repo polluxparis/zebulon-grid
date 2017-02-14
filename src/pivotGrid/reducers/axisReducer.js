@@ -21,7 +21,11 @@ export default (state = { rows: [], columns: [], fields: [] }, action) => {
       if (oldPosition === position) {
         return state;
       }
-      newAxisValue = [...state[oldAxis].slice(0, position), id, ...state[oldAxis].slice(position)];
+      newAxisValue = [
+        ...state[oldAxis].slice(0, position),
+        id,
+        ...state[oldAxis].slice(position),
+      ];
       if (oldPosition < position) {
         positionToRemove = oldPosition;
       } else {

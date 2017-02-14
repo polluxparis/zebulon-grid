@@ -8,7 +8,7 @@ import {
   getColumnFields,
   getLayout,
   getLastChildSize,
- } from './index';
+} from './index';
 import { AxisType } from '../Axis';
 import { datafieldFactory, fieldFactory } from '../fields';
 
@@ -90,7 +90,6 @@ describe('filtering data works', () => {
   });
 });
 
-
 describe('axis with one field', () => {
   it('is computed correctly', () => {
     const fields = {
@@ -161,7 +160,12 @@ describe('layout is computed correctly', () => {
       { field1: 1, field2: 8, field3: 9 },
     ];
     const axis = { rows: ['field2', 'field1'], columns: ['field3'] };
-    const config = { cellHeight: 30, cellWidth: 100, zoom: 1, dataHeadersLocation: 'columns' };
+    const config = {
+      cellHeight: 30,
+      cellWidth: 100,
+      zoom: 1,
+      dataHeadersLocation: 'columns',
+    };
     const {
       rowHorizontalCount,
       rowVerticalCount,
@@ -191,7 +195,12 @@ describe('layout is computed correctly', () => {
       { field1: 1, field2: 8, field3: 9 },
     ];
     const axis = { rows: ['field2', 'field1'], columns: ['field3'] };
-    const config = { cellHeight: 30, cellWidth: 100, zoom: 1, dataHeadersLocation: 'columns' };
+    const config = {
+      cellHeight: 30,
+      cellWidth: 100,
+      zoom: 1,
+      dataHeadersLocation: 'columns',
+    };
     const {
       rowHorizontalCount,
       rowVerticalCount,
@@ -222,7 +231,12 @@ describe('layout is computed correctly', () => {
       { field1: 1, field2: 8, field3: 9 },
     ];
     const axis = { rows: ['field2', 'field1'], columns: ['field3'] };
-    const config = { cellHeight: 30, cellWidth: 100, zoom: 1, dataHeadersLocation: 'rows' };
+    const config = {
+      cellHeight: 30,
+      cellWidth: 100,
+      zoom: 1,
+      dataHeadersLocation: 'rows',
+    };
     const {
       rowHorizontalCount,
       rowVerticalCount,
@@ -236,11 +250,18 @@ describe('layout is computed correctly', () => {
   });
 });
 
-
 describe('last child size is computed correctly', () => {
-  const config = { cellHeight: 30, cellWidth: 100, zoom: 1, dataHeadersLocation: 'rows' };
+  const config = {
+    cellHeight: 30,
+    cellWidth: 100,
+    zoom: 1,
+    dataHeadersLocation: 'rows',
+  };
   it('when no child', () => {
-    const sizes = { rows: { leafs: {}, dimensions: {} }, columns: { leafs: {}, dimensions: {} } };
+    const sizes = {
+      rows: { leafs: {}, dimensions: {} },
+      columns: { leafs: {}, dimensions: {} },
+    };
     const header = { key: 'field1a', subheaders: [] };
     const size = getLastChildSize({ sizes, config });
     expect(size(AxisType.ROWS, header)).toEqual(30);
@@ -257,12 +278,13 @@ describe('last child size is computed correctly', () => {
   });
 
   it('with children', () => {
-    const sizes = { rows: { leafs: { 'field1a-/-field2a': 80 }, dimensions: {} }, columns: { leafs: {}, dimensions: {} } };
+    const sizes = {
+      rows: { leafs: { 'field1a-/-field2a': 80 }, dimensions: {} },
+      columns: { leafs: {}, dimensions: {} },
+    };
     const header = {
       key: 'field1a',
-      subheaders: [
-      { key: 'field1a-/-field2a', subheaders: [] },
-      ],
+      subheaders: [{ key: 'field1a-/-field2a', subheaders: [] }],
     };
     const size = getLastChildSize({ sizes, config });
     expect(size(AxisType.ROWS, header)).toEqual(80);

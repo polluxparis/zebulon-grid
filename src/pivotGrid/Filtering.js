@@ -32,9 +32,11 @@ export const Operators = {
     name: 'Matches',
     func(value, term) {
       if (value) {
-        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
+        return value
+          .toString()
+          .search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
       }
-      return !(term);
+      return !term;
     },
     regexpSupported: true,
   },
@@ -42,7 +44,9 @@ export const Operators = {
     name: 'Does Not Match',
     func(value, term) {
       if (value) {
-        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
+        return value
+          .toString()
+          .search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
       }
       return !!term;
     },
@@ -95,7 +99,7 @@ export const Operators = {
 export function pass(filter, value) {
   if (Array.isArray(filter.staticValue)) {
     const found = filter.staticValue.includes(value);
-    return (filter.excludeStatic && !found) || (!filter.excludeStatic && found);
+    return filter.excludeStatic && !found || !filter.excludeStatic && found;
   } else if (filter.term) {
     return filter.operator.func(value, filter.term);
   } else if (filter.staticValue === true || filter.staticValue === ALL) {
@@ -107,15 +111,19 @@ export function pass(filter, value) {
 }
 
 function isAlwaysTrue() {
-  return !(
-    this.term
-    || Array.isArray(this.staticValue)
-    || this.staticValue === NONE
-    || this.staticValue === false
-  );
+  return !(this.term ||
+    Array.isArray(this.staticValue) ||
+    this.staticValue === NONE ||
+    this.staticValue === false);
 }
 
-export function expressionFilter(fieldId, operator, term, staticValue, excludeStatic) {
+export function expressionFilter(
+  fieldId,
+  operator,
+  term,
+  staticValue,
+  excludeStatic,
+) {
   const expressionFilter = {
     fieldId,
     regexpMode: false,

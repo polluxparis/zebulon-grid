@@ -19,13 +19,13 @@ class WrappedGrid extends Component {
   }
 
   // componentWillReceiveProps(nextProps) {
-    // const { pushData } = nextProps;
-    // if (this.props.pushData !== nextProps.pushData) {
-    //   this.store.dispatch(actions.pushData(pushData));
-    // }
-    // this.store = createStore(reducer);
-    // this.customFunctions = hydrateStore(this.store, config);
-    // this.store.dispatch(actions.data(data));
+  // const { pushData } = nextProps;
+  // if (this.props.pushData !== nextProps.pushData) {
+  //   this.store.dispatch(actions.pushData(pushData));
+  // }
+  // this.store = createStore(reducer);
+  // this.customFunctions = hydrateStore(this.store, config);
+  // this.store.dispatch(actions.data(data));
   // }
 
   render() {
@@ -34,14 +34,15 @@ class WrappedGrid extends Component {
         <PivotGrid
           customFunctions={this.customFunctions}
           height={this.props.height}
-          width={this.props.width}/>
+          width={this.props.width}
+        />
       </Provider>
     );
   }
 }
 
-Object.keys(actions).forEach((action) => {
-  WrappedGrid.prototype[action] = function (...args) {
+Object.keys(actions).forEach(action => {
+  WrappedGrid.prototype[action] = function(...args) {
     this.store.dispatch(actions[action](...args));
   };
 });
