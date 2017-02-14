@@ -22,7 +22,6 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   }
   return res;
 }
-
 export function getObservableMockDatasource(interval) {
   const data = [
     getMockDatasource(),
@@ -48,7 +47,6 @@ export function getObservableMockDatasource(interval) {
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
-
 export const basicConfig = {
   canMoveFields: true,
   dataHeadersLocation: 'columns',

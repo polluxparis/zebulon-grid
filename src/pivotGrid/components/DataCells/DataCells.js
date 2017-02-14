@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
+import {
+  Grid as ReactVirtualizedGrid,
+} from 'react-virtualized/dist/commonjs/Grid';
 
 import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';

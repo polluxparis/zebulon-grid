@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { ScrollSync } from 'react-virtualized';
+import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { DropTarget } from 'react-dnd';
 
 import ArrowKeyStepper from '../ArrowKeyStepper/ArrowKeyStepper';

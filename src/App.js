@@ -4,7 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import 'react-virtualized/styles.css';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
-import { AutoSizer } from 'react-virtualized';
+import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 
 import { PivotGrid } from './pivotGrid';
 import './App.css';

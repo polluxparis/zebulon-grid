@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized';
+import {
+  Grid as ReactVirtualizedGrid,
+} from 'react-virtualized/dist/commonjs/Grid';
 
 import { AxisType } from '../../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../../constants';

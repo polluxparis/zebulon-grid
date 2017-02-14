@@ -23,14 +23,24 @@ module.exports = {
     library: 'ZebulonGrid',
   },
   externals: {
-    'react': 'React',
+    react: 'React',
     'react-dom': 'ReactDOM',
   },
   plugins: [
+    // Minify the code.
     new webpack.optimize.UglifyJsPlugin({
-      beautify: true,
-      comments: true,
-      mangle: false,
+      compress: {
+        screw_ie8: true, // React doesn't support IE8
+        warnings: false,
+      },
+      mangle: {
+        screw_ie8: true,
+      },
+      output: {
+        comments: false,
+        screw_ie8: true,
+      },
+      sourceMap: true,
     }),
   ],
   resolve: {
