@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames';
 
 export default class DataCell extends PureComponent {
-
   constructor() {
     super();
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
@@ -11,7 +10,10 @@ export default class DataCell extends PureComponent {
   }
 
   handleMouseDown(e) {
-    this.props.handleMouseDown(e, [this.props.columnIndex, this.props.rowIndex]);
+    this.props.handleMouseDown(e, [
+      this.props.columnIndex,
+      this.props.rowIndex,
+    ]);
   }
 
   handleMouseOver() {
@@ -29,17 +31,12 @@ export default class DataCell extends PureComponent {
       overflow: 'hidden',
     };
 
-    const className = classnames(
-      'orb-cell',
-      'orb-data-cell',
-      {
-        'orb-data-cell-even': !(rowIndex % 2),
-        'orb-data-cell-uneven': rowIndex % 2,
-        'orb-data-cell-highlighted': valueHasChanged,
-        'orb-data-cell-selected': selected,
-      },
-    );
-
+    const className = classnames('orb-cell', 'orb-data-cell', {
+      'orb-data-cell-even': !(rowIndex % 2),
+      'orb-data-cell-uneven': rowIndex % 2,
+      'orb-data-cell-highlighted': valueHasChanged,
+      'orb-data-cell-selected': selected,
+    });
 
     return (
       <div
@@ -53,5 +50,4 @@ export default class DataCell extends PureComponent {
       </div>
     );
   }
-
 }

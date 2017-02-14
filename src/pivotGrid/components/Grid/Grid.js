@@ -11,20 +11,23 @@ import DragLayer from './DragLayer';
 import { keyToIndex } from '../../AxisUi';
 import { KEY_SEPARATOR } from '../../constants';
 
-
 function getNextKey(current, next) {
-  const firstLeafHeader = current.firstHeaderRow[current.firstHeaderRow.length - 1];
+  const firstLeafHeader = current.firstHeaderRow[
+    current.firstHeaderRow.length - 1
+  ];
   const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
   let nextKey = '';
   if (current.fields.length > next.fields.length) {
     const nextFieldIds = next.fields.map(field => field.id);
-    const missingFieldPosition = current.fields
-      .findIndex(field => !nextFieldIds.includes(field.id));
+    const missingFieldPosition = current.fields.findIndex(
+      field => !nextFieldIds.includes(field.id),
+    );
     nextKey = keys.slice(0, missingFieldPosition).join(KEY_SEPARATOR);
   } else if (current.fields.length < next.fields.length) {
     const previousFieldIds = current.fields.map(field => field.id);
-    const newFieldPosition = next.fields
-      .findIndex(field => !previousFieldIds.includes(field.id));
+    const newFieldPosition = next.fields.findIndex(
+      field => !previousFieldIds.includes(field.id),
+    );
     nextKey = keys.slice(0, newFieldPosition).join(KEY_SEPARATOR);
   } else if (current.dataFieldsCount !== next.dataFieldsCount) {
     // A data field has been toggled
@@ -63,7 +66,10 @@ class PivotGrid extends PureComponent {
       next.fields = nextProps.columnFields;
       current.firstHeaderRow = this.props.columnHeaders[this.columnStartIndex];
       const nextFirstHeaderKey = getNextKey(current, next);
-      nextColumnStartIndex = keyToIndex(nextProps.columnHeaders, nextFirstHeaderKey);
+      nextColumnStartIndex = keyToIndex(
+        nextProps.columnHeaders,
+        nextFirstHeaderKey,
+      );
     }
     // If keyToIndex does not find the key in the headers, it returns -1
     // In this case, do nothing
@@ -79,7 +85,7 @@ class PivotGrid extends PureComponent {
   }
 
   handleSectionRendered(onSectionRendered) {
-    return (indexes) => {
+    return indexes => {
       const { rowStartIndex, columnStartIndex } = indexes;
       // When the data cells grid is re rendered, it resets row and column
       // start indexes, losing the information about the previous position,
@@ -92,7 +98,13 @@ class PivotGrid extends PureComponent {
   }
 
   render() {
-    const { connectDropTarget, width, layout, customFunctions, drilldown } = this.props;
+    const {
+      connectDropTarget,
+      width,
+      layout,
+      customFunctions,
+      drilldown,
+    } = this.props;
     const {
       columnHorizontalCount,
       rowVerticalCount,
@@ -117,17 +129,23 @@ class PivotGrid extends PureComponent {
                     <DimensionHeaders />
                     <ColumnHeaders
                       scrollLeft={scrollLeft}
-                      ref={(ref) => { this.columnHeaders = ref; }}
+                      ref={ref => {
+                        this.columnHeaders = ref;
+                      }}
                     />
                   </div>
                   <div style={{ display: 'flex' }}>
                     <RowHeaders
                       scrollTop={scrollTop}
-                      ref={(ref) => { this.rowHeaders = ref; }}
+                      ref={ref => {
+                        this.rowHeaders = ref;
+                      }}
                     />
                     <DataCells
                       customFunctions={customFunctions}
-                      onSectionRendered={this.handleSectionRendered(onSectionRendered)}
+                      onSectionRendered={this.handleSectionRendered(
+                        onSectionRendered,
+                      )}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
                       onScroll={onScroll}
@@ -135,14 +153,14 @@ class PivotGrid extends PureComponent {
                     />
                   </div>
                 </div>
-              )
-             }
+              )}
             </ScrollSync>
           )}
         </ArrowKeyStepper>
-      </div>);
+      </div>,
+    );
   }
- }
+}
 
 const gridSpec = {
   drop(props, monitor, component) {
