@@ -84,7 +84,7 @@ export function getSize(element) {
   return { width: 0, height: 0 };
 }
 
-const reHyphenToUcase = /\-(\w)/g;
+const reHyphenToUcase = /-(\w)/g;
 function replaceHyphenByUcase(val) {
   return val.replace(reHyphenToUcase, (m, m1) => m1.toUpperCase());
 }
@@ -92,7 +92,9 @@ function replaceHyphenByUcase(val) {
 export function getStyle(element, styleProps, keepString) {
   const values = [];
   if (element && styleProps) {
-    let currStyle, f, fixProp;
+    let currStyle;
+    let f;
+    let fixProp;
     if (element.currentStyle) {
       currStyle = element.currentStyle;
       f = function(prop) {

@@ -102,7 +102,7 @@ export function isFunction(obj) {
  * Escapes all RegExp special characters.
  */
 export function escapeRegex(re) {
-  return re.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return re.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 /**
  * Returns the first element in the array that satisfies the given predicate

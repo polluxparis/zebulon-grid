@@ -45,8 +45,8 @@ class CustomDragLayer extends Component {
       width = previewSize;
       height = 2;
     }
-    return <div
-        style={{
+    return (<div
+      style={{
           position: 'fixed',
           pointerEvents: 'none',
           zIndex: 100,
@@ -55,14 +55,14 @@ class CustomDragLayer extends Component {
           width: '100%',
           height: '100%',
         }}
-      ><div
-        style={{
+    ><div
+      style={{
           height,
           width,
           backgroundColor: 'grey',
           ...getItemPosition(this.props),
         }}
-      /></div>;
+    /></div>);
   }
 }
 

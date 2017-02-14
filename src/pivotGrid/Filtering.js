@@ -110,12 +110,12 @@ export function pass(filter, value) {
   return true;
 }
 
-function isAlwaysTrue() {
-  return !(this.term ||
-    Array.isArray(this.staticValue) ||
-    this.staticValue === NONE ||
-    this.staticValue === false);
-}
+// function isAlwaysTrue() {
+//   return !(this.term ||
+//     Array.isArray(this.staticValue) ||
+//     this.staticValue === NONE ||
+//     this.staticValue === false);
+// }
 
 export function expressionFilter(
   fieldId,

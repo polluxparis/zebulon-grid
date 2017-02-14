@@ -241,7 +241,7 @@ export default class AxisUi {
   ) {
     if (this.hasDataFields) {
       let lastInfosArray = infos[infos.length - 1];
-      for (let [index, datafield] of activatedDataFields.entries()) {
+      activatedDataFields.forEach((datafield, index) => {
         lastInfosArray.push(new DataHeader(
           (dataHeadersLocation === 'columns'
             ? AxisType.COLUMNS
@@ -254,11 +254,14 @@ export default class AxisUi {
         if (index < this.datafieldsCount - 1) {
           infos.push(lastInfosArray = []);
         }
-      }
+      });
+      // for (let [index, datafield] of activatedDataFields.entries()) {
+      // }
     } else {
       this.x += 1;
     }
   }
+
   // toggleFieldExpansion(field, newState) {
   //   const toToggle = [];
   //   let allExpanded = true;
