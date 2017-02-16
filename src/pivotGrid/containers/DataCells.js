@@ -9,6 +9,7 @@ import {
   getColumnWidth,
   getRowHeight,
   getCellValue,
+  getCellInfos,
 } from '../selectors';
 import DataCells from '../components/DataCells';
 import copy from '../services/copyService';
@@ -38,6 +39,7 @@ const mapStateToProps = (state, ownProps) => {
     }),
     dataHeadersLocation,
     getCellValue: getCellValue(state),
+    getCellInfos: getCellInfos(state),
     getColumnWidth: getColumnWidth(state),
     getRowHeight: getRowHeight(state),
     height: getDataCellsHeight(state),

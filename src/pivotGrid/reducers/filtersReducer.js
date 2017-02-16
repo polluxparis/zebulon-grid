@@ -7,9 +7,10 @@ export default (state = {}, action) => {
       return state;
     case ADD_FILTER:
       return { ...state, [field]: filter };
-    case DELETE_FILTER:
-      let { [field]: deleted, ...newState } = state;
+    case DELETE_FILTER: {
+      const { [field]: deleted, ...newState } = state;
       return newState;
+    }
     default:
       return state;
   }

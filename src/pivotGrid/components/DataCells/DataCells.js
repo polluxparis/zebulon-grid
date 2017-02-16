@@ -18,6 +18,7 @@ class DataCells extends PureComponent {
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
+    this.handleDrilldown = this.handleDrilldown.bind(this);
 
     this.state = {
       cellsCache: {},
@@ -121,6 +122,10 @@ class DataCells extends PureComponent {
     }
   }
 
+  handleDrilldown(cell) {
+    return this.props.drilldown(this.props.getCellInfos(cell));
+  }
+
   cellRenderer(
     {
       columnIndex,
@@ -131,7 +136,6 @@ class DataCells extends PureComponent {
   ) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const {
-      drilldown,
       getCellValue,
       dataHeadersLocation,
       customFunctions,
@@ -174,7 +178,7 @@ class DataCells extends PureComponent {
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         cell={cell}
-        drilldown={drilldown}
+        drilldown={this.handleDrilldown}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         selected={selected}
