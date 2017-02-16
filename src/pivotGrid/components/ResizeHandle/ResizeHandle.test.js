@@ -1,0 +1,1 @@
+import React from 'react'; import { shallow } from 'enzyme'; import ResizeHandle from './ResizeHandle'; describe('ResizeHandle', () => { it('renders without crashing', () => { shallow(<ResizeHandle />); }); })

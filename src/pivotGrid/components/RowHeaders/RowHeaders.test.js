@@ -1,0 +1,1 @@
+import React from 'react'; import { shallow } from 'enzyme'; import RowHeaders from './RowHeaders'; describe('RowHeaders', () => { it('renders without crashing', () => { shallow(<RowHeaders />); }); })

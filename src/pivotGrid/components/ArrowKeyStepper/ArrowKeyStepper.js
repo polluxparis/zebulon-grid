@@ -148,6 +148,7 @@ ArrowKeyStepper.defaultProps = {
   mode: 'edges',
   scrollToColumn: 0,
   scrollToRow: 0,
+  className: '',
 };
 
 ArrowKeyStepper.propTypes = {

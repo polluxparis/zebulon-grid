@@ -1,11 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import {
   Grid as ReactVirtualizedGrid,
 } from 'react-virtualized/dist/commonjs/Grid';
 
 import { AxisType } from '../../Axis';
+import { Header, DataHeader } from '../../Cells';
 import { MEASURE_ID, TOTAL_ID } from '../../constants';
-import Header from '../Header';
+import HeaderComponent from '../Header';
 import getHeaderSize from '../../utils/headerSize';
 
 class RowHeaders extends PureComponent {
@@ -80,7 +81,7 @@ class RowHeaders extends PureComponent {
         previewOffsets.right = top - scrollTop + columnHeadersHeight;
         previewOffsets.bottom = left - 0;
         renderedCells.push(
-          <Header
+          <HeaderComponent
             key={`header-${header.key}`}
             axis={AxisType.ROWS}
             header={header}
@@ -138,7 +139,7 @@ class RowHeaders extends PureComponent {
           previewOffsets.right = top - scrollTop + columnHeadersHeight;
           previewOffsets.bottom = left - 0;
           return (
-            <Header
+            <HeaderComponent
               key={`header-${header.key}`}
               axis={AxisType.ROWS}
               header={header}
@@ -197,5 +198,32 @@ class RowHeaders extends PureComponent {
     );
   }
 }
+
+RowHeaders.propTypes = {
+  columnCount: PropTypes.number.isRequired,
+  rowHeaders: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.instanceOf(Header),
+        PropTypes.instanceOf(DataHeader),
+      ]),
+    ),
+  ).isRequired,
+  dimensionPositions: PropTypes.shape({
+    columns: PropTypes.objectOf(PropTypes.number),
+    rows: PropTypes.objectOf(PropTypes.number),
+  }).isRequired,
+  getColumnWidth: PropTypes.func.isRequired,
+  getDimensionSize: PropTypes.func.isRequired,
+  getLastChildSize: PropTypes.func.isRequired,
+  getRowHeight: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  previewSizes: PropTypes.objectOf(PropTypes.number).isRequired,
+  rowCount: PropTypes.number.isRequired,
+  columnHeadersHeight: PropTypes.number.isRequired,
+  scrollTop: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  zoom: PropTypes.number.isRequired,
+};
 
 export default RowHeaders;

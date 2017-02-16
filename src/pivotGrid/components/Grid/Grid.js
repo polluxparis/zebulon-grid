@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { DropTarget } from 'react-dnd';
 
@@ -8,6 +8,7 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
+import { Header, DataHeader } from '../../Cells';
 import { keyToIndex } from '../../AxisUi';
 import { KEY_SEPARATOR } from '../../constants';
 
@@ -105,6 +106,7 @@ class PivotGrid extends PureComponent {
       customFunctions,
       drilldown,
     } = this.props;
+
     const {
       columnHorizontalCount,
       rowVerticalCount,
@@ -174,5 +176,43 @@ const gridSpec = {
 const collect = connect => ({
   connectDropTarget: connect.dropTarget(),
 });
+
+PivotGrid.propTypes = {
+  columnFields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  columnHeaders: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.instanceOf(Header),
+        PropTypes.instanceOf(DataHeader),
+      ]),
+    ),
+  ).isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
+  customFunctions: PropTypes.shape({
+    aggregation: PropTypes.object,
+    format: PropTypes.object,
+    sort: PropTypes.object,
+  }).isRequired,
+  dataFieldsCount: PropTypes.number.isRequired,
+  drilldown: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  layout: PropTypes.shape({
+    columnHorizontalCount: PropTypes.number,
+    columnVerticalCount: PropTypes.number,
+    rowHorizontalCount: PropTypes.number,
+    rowVerticalCount: PropTypes.number,
+  }).isRequired,
+  rowFields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  rowHeaders: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.instanceOf(Header),
+        PropTypes.instanceOf(DataHeader),
+      ]),
+    ),
+  ).isRequired,
+  setSizes: PropTypes.func.isRequired,
+  width: PropTypes.number.isRequired,
+};
 
 export default DropTarget('cell-resize-handle', gridSpec, collect)(PivotGrid);

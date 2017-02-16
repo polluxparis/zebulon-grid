@@ -93,9 +93,9 @@ const mergeProps = (
   width,
   layout,
   dataFieldsCount,
-  headerSizes,
-  updateCellSize: ({ handle, offset, initialOffset }) =>
-    updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
+  // headerSizes,
+  // updateCellSize: ({ handle, offset, initialOffset }) =>
+  //   updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,
   ...ownProps,
 });
