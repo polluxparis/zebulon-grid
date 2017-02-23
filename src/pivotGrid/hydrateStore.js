@@ -4,12 +4,26 @@ import {
   setDatafields,
   setConfigProperty,
   moveField,
-  toggleDatafield,
+  toggleDatafield
 } from './actions';
+import { isPromise, isObservable } from './utils/generic';
 import { toAggregateFunc } from './Aggregation';
 
 export default function hydrateStore(store, config, datasource) {
-  store.dispatch(pushData(datasource));
+  if (Array.isArray(datasource)) {
+    store.dispatch(pushData(datasource));
+  } else if (isPromise(datasource)) {
+    datasource.then(data => store.dispatch(pushData(data)));
+  } else if (isObservable(datasource)) {
+    datasource.subscribe(data => {
+      store.dispatch(pushData(data));
+    });
+  } else {
+    throw new Error(
+      'datasource type is not supported, datasource must be an array, a promise or an observable, got ',
+      datasource
+    );
+  }
 
   store.dispatch(setFields(config));
   store.dispatch(setDatafields(config));
@@ -23,13 +37,13 @@ export default function hydrateStore(store, config, datasource) {
 
   config.rows.forEach((fieldCaption, index) => {
     const fieldId = config.fields.find(
-      field => field.caption === fieldCaption,
+      field => field.caption === fieldCaption
     ).id;
     store.dispatch(moveField(fieldId, 'fields', 'rows', index));
   });
   config.columns.forEach((fieldCaption, index) => {
     const fieldId = config.fields.find(
-      field => field.caption === fieldCaption,
+      field => field.caption === fieldCaption
     ).id;
     store.dispatch(moveField(fieldId, 'fields', 'columns', index));
   });
@@ -46,7 +60,7 @@ export default function hydrateStore(store, config, datasource) {
 
   config.data.forEach(fieldCaption => {
     const fieldId = config.datafields.find(
-      field => field.caption === fieldCaption,
+      field => field.caption === fieldCaption
     ).id;
     store.dispatch(toggleDatafield(fieldId));
   });
@@ -55,24 +69,24 @@ export default function hydrateStore(store, config, datasource) {
     sort: config.fields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id]: field.sort && field.sort.customfunc,
+        [field.id]: field.sort && field.sort.customfunc
       }),
-      {},
+      {}
     ),
     format: config.datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id]: field.formatFunc,
+        [field.id]: field.formatFunc
       }),
-      {},
+      {}
     ),
     aggregation: config.datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id]: toAggregateFunc(field.aggregateFunc),
+        [field.id]: toAggregateFunc(field.aggregateFunc)
       }),
-      {},
-    ),
+      {}
+    )
   };
   return customFunctions;
 }

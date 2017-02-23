@@ -1,5 +1,5 @@
 export function forEachIntersection(datafield, intersection, data, callback) {
-  if (intersection.length > 0) {
+  if (intersection && intersection.length > 0) {
     for (let i = 0; i < intersection.length; i += 1) {
       callback(data[intersection[i]][datafield]);
     }

@@ -98,6 +98,25 @@ export function isRegExp(obj) {
 export function isFunction(obj) {
   return Object.prototype.toString.apply(obj) === '[object Function]';
 }
+
+/**
+ * Returns whether or not obj is a Promise
+ * @param  {object}  obj
+ * @return {Boolean}
+ */
+export function isPromise(obj) {
+  return Promise.resolve(obj) === obj;
+}
+
+/**
+ * Returns whether or not obj is an observable
+ * @param  {object}  obj
+ * @return {Boolean}
+ */
+export function isObservable(obj) {
+  return obj && obj.subscribe !== undefined;
+}
+
 /**
  * Escapes all RegExp special characters.
  */
@@ -318,7 +337,7 @@ export function twoArraysIntersect(arg0, arg1) {
 export function isInRange(
   [columnIndex, rowIndex],
   [columnIndexStart, rowIndexStart],
-  [columnIndexEnd, rowIndexEnd],
+  [columnIndexEnd, rowIndexEnd]
 ) {
   let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {

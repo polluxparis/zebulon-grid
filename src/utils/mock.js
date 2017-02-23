@@ -32,7 +32,7 @@ export function getObservableMockDatasource(interval) {
         qty: 100,
         amt: 100,
         titi: 'titi 0',
-        tutu: '1',
+        tutu: '1'
       },
       {
         toto: '0',
@@ -40,10 +40,10 @@ export function getObservableMockDatasource(interval) {
         qty: 100,
         amt: 100,
         titi: 'titi 0',
-        tutu: '0',
-      },
+        tutu: '0'
+      }
     ],
-    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' },
+    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' }
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
@@ -87,8 +87,8 @@ export const basicConfig = {
       id: 'toto',
       caption: 'Toto',
       sort: {
-        order: 'asc',
-      },
+        order: 'asc'
+      }
     },
     // {
     //     name: '1',
@@ -110,12 +110,12 @@ export const basicConfig = {
     // },
     {
       id: 'titi',
-      caption: 'Titi',
+      caption: 'Titi'
     },
     {
       id: 'tutu',
-      caption: 'Tutu',
-    },
+      caption: 'Tutu'
+    }
     // {
     //     name: '4',
     //     caption: 'Category',
@@ -135,7 +135,7 @@ export const basicConfig = {
     {
       id: 'qty',
       caption: 'Quantity',
-      aggregateFunc: 'sum',
+      aggregateFunc: 'sum'
     },
     {
       id: 'amt',
@@ -147,8 +147,8 @@ export const basicConfig = {
           return `${Number(value).toFixed(0)} $`;
         }
         return '';
-      },
-    },
+      }
+    }
   ],
   columns: ['Titi'],
   rows: ['Toto', 'Tutu'],
@@ -161,5 +161,5 @@ export const basicConfig = {
     // 'Category': { 'Does Not Match': 'D' },
     // 'Amount': { '>': 40 },
     // 'Quantity': [4, 8, 12]
-  },
+  }
 };
