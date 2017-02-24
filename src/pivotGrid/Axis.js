@@ -1,4 +1,5 @@
 import Dimension from './Dimension';
+import { isNumber } from './utils/generic';
 
 /**
  * Axis types
@@ -86,6 +87,9 @@ export class Axis {
         if (field.sort.customfunc) {
           dimension.values.sort(field.sort.customfunc);
         } else {
+          if (isNumber(dimension.values[0])) {
+            dimension.values.sort((a, b) => a - b);
+          }
           dimension.values.sort();
         }
         if (field.sort.order === 'desc') {
