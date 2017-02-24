@@ -14,7 +14,7 @@ import hydrateStore from './pivotGrid/hydrateStore';
 import createScrollingTestCase from './fpsTests/tests';
 import App from './App';
 
-import { getObservableMockDatasource, basicConfig } from './utils/mock';
+import { getMockDatasource, basicConfig } from './utils/mock';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
@@ -25,7 +25,7 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-const data = getObservableMockDatasource(1000);
+const data = getMockDatasource(1, 100, 100);
 const customFunctions = hydrateStore(store, basicConfig, data);
 
 ReactDOM.render(

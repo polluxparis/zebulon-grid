@@ -10,7 +10,7 @@ export const AxisType = {
   ROWS: 2,
   DATA: 3,
   FIELDS: 4,
-  CHART: 5,
+  CHART: 5
 };
 
 /**
@@ -51,7 +51,7 @@ export class Axis {
       null,
       this.fields.length + 1,
       true,
-      false,
+      false
     );
     this.fill(data);
     // initial sort
@@ -68,7 +68,7 @@ export class Axis {
       } else {
         field.sort.order = 'desc';
       }
-    } else if (field.sort.order === null) {
+    } else if (!field.sort.order) {
       // If doNotToggle is true, fields without sort configuration are going to
       // be sorted in ascending order. This ensures that it is correctly recorded.
       field.sort.order = 'asc';
@@ -82,13 +82,15 @@ export class Axis {
       dimensions = this.getDimensionsByDepth(depth + 1);
     }
     dimensions.forEach(dimension => {
-      if (field.sort.customfunc !== null) {
-        dimension.values.sort(field.sort.customfunc);
-      } else {
-        dimension.values.sort();
-      }
-      if (field.sort.order === 'desc') {
-        dimension.values.reverse();
+      if (field.sort.order) {
+        if (field.sort.customfunc) {
+          dimension.values.sort(field.sort.customfunc);
+        } else {
+          dimension.values.sort();
+        }
+        if (field.sort.order === 'desc') {
+          dimension.values.reverse();
+        }
       }
     });
   }
@@ -102,7 +104,7 @@ export class Axis {
     return [].concat(
       ...Object.keys(dim.subdimvals)
         .map(dimValue =>
-          this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])),
+          this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue]))
     );
   }
 
@@ -146,7 +148,7 @@ export class Axis {
                 field,
                 depth,
                 false,
-                findex === this.fields.length - 1,
+                findex === this.fields.length - 1
               );
               subdimvals[id] = dim;
               dim.rowIndexes = [];
