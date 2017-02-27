@@ -29,8 +29,8 @@ class App extends Component {
         qty: 100,
         amt: 100,
         titi: 'titi 0',
-        tutu: '0',
-      },
+        tutu: '0'
+      }
     ]);
     // this.setState({ pushData: [
     //   // ...this.state.data,
@@ -55,7 +55,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        {}
         <ResizableBox
           height={this.props.config.height}
           width={this.props.config.width}
@@ -73,7 +72,6 @@ class App extends Component {
             )}
           </AutoSizer>
         </ResizableBox>
-        {}
       </div>
     );
   }

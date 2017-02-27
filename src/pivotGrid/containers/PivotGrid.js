@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import PivotGrid from '../components/Grid/Grid';
 import {
@@ -97,6 +99,10 @@ const mergeProps = (
   ...ownProps
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
-  PivotGrid
-);
+const PivotGridWithoutDndContext = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(PivotGrid);
+
+export default DragDropContext(HTML5Backend)(PivotGridWithoutDndContext);

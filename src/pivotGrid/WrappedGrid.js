@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
 import reducer from './reducers';
 import PivotGrid from './containers/PivotGrid';
@@ -47,4 +45,4 @@ Object.keys(actions).forEach(action => {
   };
 });
 
-export default DragDropContext(HTML5Backend)(WrappedGrid);
+export default WrappedGrid;
