@@ -99,7 +99,7 @@ const mergeProps = (
   ...ownProps
 });
 
-const PivotGridWithoutDndContext = connect(
+export const PivotGridWithoutDndContext = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
