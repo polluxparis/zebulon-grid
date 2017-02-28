@@ -10,11 +10,11 @@ import {
   getPreviewSizes,
   getRowHeadersVisibleHeight,
   getRowHeight,
-  getRowUiAxis,
+  getRowUiAxis
 } from '../selectors';
 import RowHeaders from '../components/RowHeaders';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   columnCount: getLayout(state).rowHorizontalCount,
   columnHeadersHeight: getHeaderSizes(state).columnHeadersHeight,
   dimensionPositions: getDimensionPositions(state),
@@ -29,6 +29,7 @@ const mapStateToProps = state => ({
   rowHeaders: getRowUiAxis(state).headers,
   width: getHeaderSizes(state).rowHeadersWidth,
   zoom: state.config.zoom,
+  gridId: ownProps.gridId
 });
 
 export default connect(mapStateToProps)(RowHeaders);

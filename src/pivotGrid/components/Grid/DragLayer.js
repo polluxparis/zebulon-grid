@@ -4,29 +4,36 @@ import { DragLayer } from 'react-dnd';
 const collectDragLayer = monitor => ({
   item: monitor.getItem(),
   itemType: monitor.getItemType(),
-  initialOffset: monitor.getInitialSourceClientOffset(),
-  currentOffset: monitor.getSourceClientOffset(),
-  isDragging: monitor.isDragging(),
+  clientOffset: monitor.getClientOffset(),
+  initialClientOffset: monitor.getInitialClientOffset()
 });
 
-const getItemPosition = ({ initialOffset, currentOffset, item }) => {
-  if (!initialOffset || !currentOffset) {
+const getItemPosition = (
+  {
+    clientOffset,
+    item,
+    gridRect
+  }
+) => {
+  if (!clientOffset) {
     return {
-      display: 'none',
+      display: 'none'
     };
   }
-
-  let { x, y } = currentOffset;
+  let x;
+  let y;
   if (item.position === 'right') {
-    y = initialOffset.y - item.previewOffset;
+    y = 0;
+    x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
   } else {
-    x = initialOffset.x - item.previewOffset;
+    x = 0;
+    y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
   }
 
   const transform = `translate(${x}px, ${y}px)`;
   return {
     transform,
-    WebkitTransform: transform,
+    WebkitTransform: transform
   };
 };
 
@@ -34,7 +41,11 @@ class CustomDragLayer extends Component {
   render() {
     let height;
     let width;
-    if (!this.props.item || this.props.itemType !== 'cell-resize-handle') {
+    if (
+      !this.props.item ||
+      this.props.itemType.substring(0, 18) !== 'cell-resize-handle' ||
+      this.props.item.gridId !== this.props.gridId
+    ) {
       return null;
     }
     const { position, previewSize } = this.props.item;
@@ -45,24 +56,29 @@ class CustomDragLayer extends Component {
       width = previewSize;
       height = 2;
     }
-    return (<div
-      style={{
-          position: 'fixed',
+    return (
+      <div
+        style={{
+          position: 'absolute',
           pointerEvents: 'none',
           zIndex: 100,
           left: 0,
           top: 0,
           width: '100%',
-          height: '100%',
+          height: '100%'
         }}
-    ><div
-      style={{
-          height,
-          width,
-          backgroundColor: 'grey',
-          ...getItemPosition(this.props),
-        }}
-    /></div>);
+      >
+        <div
+          style={{
+            position: 'absolute',
+            height,
+            width,
+            backgroundColor: 'grey',
+            ...getItemPosition(this.props)
+          }}
+        />
+      </div>
+    );
   }
 }
 

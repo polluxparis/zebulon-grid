@@ -1,6 +1,6 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
-  Grid as ReactVirtualizedGrid,
+  Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
 
 import { AxisType } from '../../Axis';
@@ -25,17 +25,17 @@ class ColumnHeaders extends PureComponent {
       columnStartIndex,
       columnStopIndex,
       horizontalOffsetAdjustment,
-      scrollLeft,
-    },
+      scrollLeft
+    }
   ) {
     const {
       columnHeaders,
       dimensionPositions,
       getDimensionSize,
       getLastChildSize,
+      gridId,
       previewSizes,
-      rowCount,
-      rowHeadersWidth,
+      rowCount
     } = this.props;
 
     const renderedCells = [];
@@ -45,7 +45,7 @@ class ColumnHeaders extends PureComponent {
     // This ensures that we don't render inexistent headers.
     const correctColumnStopIndex = Math.min(
       columnStopIndex,
-      columnHeaders.length - 1,
+      columnHeaders.length - 1
     );
 
     // Render fixed header rows
@@ -61,14 +61,14 @@ class ColumnHeaders extends PureComponent {
       while (header.parent) {
         header = header.parent;
         const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(
-          header.x,
+          header.x
         );
         const left = main.offset + horizontalOffsetAdjustment;
         const span = header.hspan();
         const width = getHeaderSize(
           columnSizeAndPositionManager,
           header.x,
-          span,
+          span
         );
         let top;
         let height;
@@ -87,11 +87,8 @@ class ColumnHeaders extends PureComponent {
           left,
           top,
           height,
-          width,
+          width
         };
-        const previewOffsets = {};
-        previewOffsets.right = top - 0;
-        previewOffsets.bottom = left - scrollLeft + rowHeadersWidth;
         renderedCells.push(
           <HeaderComponent
             key={`header-${header.key}`}
@@ -103,9 +100,9 @@ class ColumnHeaders extends PureComponent {
             scrollLeft={scrollLeft}
             scrollTop={0}
             previewSizes={previewSizes}
-            previewOffsets={previewOffsets}
             getLastChildSize={getLastChildSize}
-          />,
+            gridId={gridId}
+          />
         );
       }
     }
@@ -116,7 +113,7 @@ class ColumnHeaders extends PureComponent {
       columnIndex += 1
     ) {
       const main = columnSizeAndPositionManager.getSizeAndPositionOfCell(
-        columnIndex,
+        columnIndex
       );
       const left = main.offset + horizontalOffsetAdjustment;
       renderedCells.push(
@@ -125,7 +122,7 @@ class ColumnHeaders extends PureComponent {
           const width = getHeaderSize(
             columnSizeAndPositionManager,
             columnIndex,
-            span,
+            span
           );
           // 3 cases: normal dimension header, measure header or total header
           let top = 0;
@@ -147,11 +144,8 @@ class ColumnHeaders extends PureComponent {
             left,
             top,
             height,
-            width,
+            width
           };
-          const previewOffsets = {};
-          previewOffsets.right = top - 0;
-          previewOffsets.bottom = left - scrollLeft + rowHeadersWidth;
           return (
             <HeaderComponent
               key={`header-${header.key}`}
@@ -163,11 +157,11 @@ class ColumnHeaders extends PureComponent {
               scrollLeft={scrollLeft}
               scrollTop={0}
               previewSizes={previewSizes}
-              previewOffsets={previewOffsets}
+              gridId={gridId}
               getLastChildSize={getLastChildSize}
             />
           );
-        }),
+        })
       );
     }
     return renderedCells;
@@ -182,7 +176,7 @@ class ColumnHeaders extends PureComponent {
       rowCount,
       scrollLeft,
       width,
-      zoom,
+      zoom
     } = this.props;
     return (
       <ReactVirtualizedGrid
@@ -205,7 +199,7 @@ class ColumnHeaders extends PureComponent {
         style={{
           fontSize: `${zoom * 100}%`,
           overflowX: 'hidden',
-          overflowY: 'hidden',
+          overflowY: 'hidden'
         }}
         width={width}
       />
@@ -219,13 +213,13 @@ ColumnHeaders.propTypes = {
     PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader),
-      ]),
-    ),
+        PropTypes.instanceOf(DataHeader)
+      ])
+    )
   ).isRequired,
   dimensionPositions: PropTypes.shape({
     columns: PropTypes.objectOf(PropTypes.number),
-    rows: PropTypes.objectOf(PropTypes.number),
+    rows: PropTypes.objectOf(PropTypes.number)
   }).isRequired,
   getColumnWidth: PropTypes.func.isRequired,
   getDimensionSize: PropTypes.func.isRequired,
@@ -234,10 +228,9 @@ ColumnHeaders.propTypes = {
   height: PropTypes.number.isRequired,
   previewSizes: PropTypes.objectOf(PropTypes.number).isRequired,
   rowCount: PropTypes.number.isRequired,
-  rowHeadersWidth: PropTypes.number.isRequired,
   scrollLeft: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
-  zoom: PropTypes.number.isRequired,
+  zoom: PropTypes.number.isRequired
 };
 
 export default ColumnHeaders;

@@ -13,7 +13,8 @@ const DimensionHeader = (
     crossFieldId,
     mainDirection,
     previewSizes,
-  },
+    gridId
+  }
 ) => {
   const ids = {};
   if (mainDirection === 'down') {
@@ -37,7 +38,7 @@ const DimensionHeader = (
         // border: 'lightgrey 0.1em solid',
         boxSizing: 'border-box',
         // textAlign: 'left',
-        display: 'flex',
+        display: 'flex'
         // backgroundColor: '#fafad2',
       }}
     >
@@ -50,17 +51,17 @@ const DimensionHeader = (
         id={ids.right}
         isOnDimensionHeader
         axis={AxisType.ROWS}
+        gridId={gridId}
         previewSize={previewSizes.height}
-        previewOffset={top}
       />
       <ResizeHandle
         position="bottom"
         size={width}
+        gridId={gridId}
         id={ids.bottom}
         isOnDimensionHeader
         axis={AxisType.COLUMNS}
         previewSize={previewSizes.width}
-        previewOffset={left}
       />
     </div>
   );

@@ -6,7 +6,7 @@ import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 
-import { PivotGrid } from './pivotGrid';
+import PivotGrid from './pivotGrid';
 import './App.css';
 
 let i = 0;
@@ -55,23 +55,26 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ResizableBox
-          height={this.props.config.height}
-          width={this.props.config.width}
-        >
-          <AutoSizer>
-            {({ height, width }) => (
-              <PivotGrid
-                customFunctions={this.props.customFunctions}
-                height={height}
-                width={width}
-                drilldown={cell => {
-                  console.log('drilldown', cell);
-                }}
-              />
-            )}
-          </AutoSizer>
-        </ResizableBox>
+        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+          <ResizableBox
+            height={this.props.config.height}
+            width={this.props.config.width}
+          >
+            <AutoSizer>
+              {({ height, width }) => (
+                <PivotGrid
+                  id={0}
+                  customFunctions={this.props.customFunctions}
+                  height={height}
+                  width={width}
+                  drilldown={cell => {
+                    console.log('drilldown', cell);
+                  }}
+                />
+              )}
+            </AutoSizer>
+          </ResizableBox>
+        </div>
       </div>
     );
   }

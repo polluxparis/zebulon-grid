@@ -10,11 +10,11 @@ import {
   getDimensionPositions,
   getLayout,
   getColumnHeadersVisibleWidth,
-  getPreviewSizes,
+  getPreviewSizes
 } from '../selectors';
 import ColumnHeaders from '../components/ColumnHeaders';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   columnCount: getLayout(state).columnHorizontalCount,
   columnHeaders: getColumnUiAxis(state).headers,
   dimensionPositions: getDimensionPositions(state),
@@ -29,6 +29,7 @@ const mapStateToProps = state => ({
   rowHeadersWidth: getHeaderSizes(state).rowHeadersWidth,
   width: getColumnHeadersVisibleWidth(state),
   zoom: state.config.zoom,
+  gridId: ownProps.gridId
 });
 
 export default connect(mapStateToProps)(ColumnHeaders);

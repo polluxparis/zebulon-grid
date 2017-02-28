@@ -18,6 +18,7 @@ class DimensionHeaders extends PureComponent {
       rows,
       width,
       zoom,
+      gridId
     } = this.props;
     const headers = [];
 
@@ -52,7 +53,7 @@ class DimensionHeaders extends PureComponent {
             previewSizes={previewSizes}
           />
         );
-      }),
+      })
     );
     // Get height for row dimension headers in different cases
     let fieldWhoseHeightToGet;
@@ -68,7 +69,7 @@ class DimensionHeaders extends PureComponent {
     }
     const headerHeight = getDimensionSize(
       AxisType.COLUMNS,
-      fieldWhoseHeightToGet,
+      fieldWhoseHeightToGet
     );
     headers.push(
       ...rowDimensionHeaders.map(dimensionHeader => {
@@ -86,9 +87,10 @@ class DimensionHeaders extends PureComponent {
             mainDirection="down"
             previewSizes={previewSizes}
             width={headerWidth}
+            gridId={gridId}
           />
         );
-      }),
+      })
     );
     return (
       // Putting position as relative here allows its children (the dimension headers)
@@ -100,7 +102,7 @@ class DimensionHeaders extends PureComponent {
             height,
             width,
             fontSize: `${zoom * 100}%`,
-            overflow: 'hidden',
+            overflow: 'hidden'
           }}
           className="orb-dimension-headers"
         >

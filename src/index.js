@@ -13,6 +13,7 @@ import hydrateStore from './pivotGrid/hydrateStore';
 
 import createScrollingTestCase from './fpsTests/tests';
 import App from './App';
+import { WrappedGrid } from './pivotGrid';
 
 import { getMockDatasource, basicConfig } from './utils/mock';
 
@@ -29,9 +30,26 @@ const data = getMockDatasource(1, 100, 100);
 const customFunctions = hydrateStore(store, basicConfig, data);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App customFunctions={customFunctions} config={store.getState().config} />
-  </Provider>,
+  <div>
+    {/*<Provider store={store}>
+      <App customFunctions={customFunctions} config={store.getState().config} />
+    </Provider>,*/
+    }
+    <div>
+      <WrappedGrid
+        data={data}
+        config={basicConfig}
+        drilldown={() => 33}
+        id={0}
+      />
+      <WrappedGrid
+        data={data}
+        config={basicConfig}
+        drilldown={() => 33}
+        id={1}
+      />
+    </div>
+  </div>,
   document.getElementById('root')
 );
 

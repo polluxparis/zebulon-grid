@@ -18,15 +18,15 @@ const Header = (
   {
     axis,
     getLastChildSize,
+    gridId,
     header,
     positionStyle,
     previewSizes,
-    previewOffsets,
     span,
     startIndex,
     scrollLeft,
-    scrollTop,
-  },
+    scrollTop
+  }
 ) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
@@ -70,7 +70,7 @@ const Header = (
         // backgroundColor: '#eef8fb',
         zIndex: 1,
         display: 'flex',
-        ...positionStyle,
+        ...positionStyle
       }}
     >
       {innerHeader}
@@ -81,16 +81,16 @@ const Header = (
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.height}
-        previewOffset={previewOffsets.right}
+        gridId={gridId}
       />
       <ResizeHandle
         position="bottom"
         size={width}
         id={axis === AxisType.ROWS ? leafHeaderId : dimensionId}
+        gridId={gridId}
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.width}
-        previewOffset={previewOffsets.bottom}
       />
     </div>
   );
@@ -114,7 +114,7 @@ const InnerHeader = ({ cell, style }) => {
   const computedStyle = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    ...style,
+    ...style
   };
 
   return (

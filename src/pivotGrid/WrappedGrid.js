@@ -12,8 +12,8 @@ class WrappedGrid extends Component {
     super(props);
     const { data, config } = this.props;
     this.store = createStore(reducer);
-    this.customFunctions = hydrateStore(this.store, config);
-    this.store.dispatch(actions.setData(data));
+    this.customFunctions = hydrateStore(this.store, config, data);
+    // this.store.dispatch(actions.setData(data));
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -31,8 +31,8 @@ class WrappedGrid extends Component {
       <Provider store={this.store}>
         <PivotGrid
           customFunctions={this.customFunctions}
-          height={this.props.height}
-          width={this.props.width}
+          id={this.props.id}
+          drilldown={this.props.drilldown}
         />
       </Provider>
     );

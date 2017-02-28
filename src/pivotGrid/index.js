@@ -6,7 +6,6 @@ import WrappedGrid from './WrappedGrid';
 import reducer from './reducers';
 import * as actions from './actions';
 import hydrateStore from './hydrateStore';
-
 // import './index.css';
 
 // export { GridConfiguration };
