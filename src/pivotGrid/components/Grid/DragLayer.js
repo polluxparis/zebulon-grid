@@ -24,10 +24,12 @@ const getItemPosition = (
   let y;
   if (item.position === 'right') {
     y = 0;
-    x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
+    // x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
+    x = clientOffset.x - gridRect.left;
   } else {
     x = 0;
-    y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
+    // y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
+    y = clientOffset.y - gridRect.top;
   }
 
   const transform = `translate(${x}px, ${y}px)`;
