@@ -33,7 +33,7 @@ ReactDOM.render(
   <div>
     {/*<Provider store={store}>
       <App customFunctions={customFunctions} config={store.getState().config} />
-    </Provider>,*/
+    </Provider>*/
     }
     <div>
       <WrappedGrid

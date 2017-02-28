@@ -8,58 +8,79 @@ const collectDragLayer = monitor => ({
   initialClientOffset: monitor.getInitialClientOffset()
 });
 
-const getItemPosition = (
-  {
-    clientOffset,
-    item,
-    gridRect
+class CustomDragLayer extends Component {
+  constructor() {
+    super();
+
+    this.state = {};
+    this.getItemPosition = this.getItemPosition.bind(this);
   }
-) => {
-  if (!clientOffset) {
+
+  getItemPosition() {
+    const {
+      clientOffset,
+      item
+    } = this.props;
+    if (!clientOffset) {
+      return {
+        display: 'none'
+      };
+    }
+    let x;
+    let y;
+    const gridRect = this.element.getBoundingClientRect();
+    if (item.position === 'right') {
+      y = 0;
+      // Keep hint bar inside the grid
+      x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
+    } else {
+      x = 0;
+      // Keep hint bar inside the grid
+      y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
+    }
+
+    // Translate the hint bar in the correct position starting from the top left corner of the grid
+    const transform = `translate(${x}px, ${y}px)`;
     return {
-      display: 'none'
+      transform
     };
   }
-  let x;
-  let y;
-  if (item.position === 'right') {
-    y = 0;
-    // x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
-    x = clientOffset.x - gridRect.left;
-  } else {
-    x = 0;
-    // y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
-    y = clientOffset.y - gridRect.top;
-  }
-
-  const transform = `translate(${x}px, ${y}px)`;
-  return {
-    transform,
-    WebkitTransform: transform
-  };
-};
-
-class CustomDragLayer extends Component {
   render() {
     let height;
     let width;
+    let resizeBar;
     if (
       !this.props.item ||
       this.props.itemType.substring(0, 18) !== 'cell-resize-handle' ||
       this.props.item.gridId !== this.props.gridId
     ) {
-      return null;
-    }
-    const { position, previewSize } = this.props.item;
-    if (position === 'right') {
-      width = 2;
-      height = previewSize;
+      resizeBar = null;
     } else {
-      width = previewSize;
-      height = 2;
+      const { position, previewSize } = this.props.item;
+      if (position === 'right') {
+        width = 2;
+        height = previewSize;
+      } else {
+        width = previewSize;
+        height = 2;
+      }
+      resizeBar = (
+        <div
+          style={{
+            position: 'absolute',
+            height,
+            width,
+            backgroundColor: 'grey',
+            ...this.getItemPosition()
+          }}
+        />
+      );
     }
     return (
       <div
+        ref={element => {
+          this.element = element;
+        }}
         style={{
           position: 'absolute',
           pointerEvents: 'none',
@@ -70,15 +91,7 @@ class CustomDragLayer extends Component {
           height: '100%'
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            height,
-            width,
-            backgroundColor: 'grey',
-            ...getItemPosition(this.props)
-          }}
-        />
+        {resizeBar}
       </div>
     );
   }

@@ -1,5 +1,4 @@
-import React, { PropTypes, PureComponent } from 'react';
-import { findDOMNode } from 'react-dom';
+import React, { PropTypes, Component } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { DropTarget } from 'react-dnd';
 
@@ -42,18 +41,18 @@ function getNextKey(current, next) {
   return nextKey;
 }
 
-class PivotGrid extends PureComponent {
+class PivotGrid extends Component {
   constructor(props) {
     super(props);
     this.rowStartIndex = 0;
     this.columnStartIndex = 0;
-    this.getGridRect = this.getGridRect.bind(this);
-    this.state = {};
+    // this.getGridRect = this.getGridRect.bind(this);
+    // this.state = {};
   }
 
   componentDidMount() {
     // this.gridRect = this.getGridRect();
-    this.setState({ gridRect: this.getGridRect() });
+    // this.setState({ gridRect: this.getGridRect() });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -90,17 +89,10 @@ class PivotGrid extends PureComponent {
     const { height, width, setSizes } = this.props;
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
-      this.setState({ gridRect: this.getGridRect() });
+      // this.setState({ gridRect: this.getGridRect() });
     }
   }
 
-  getGridRect() {
-    if (!this.grid) {
-      return undefined;
-    }
-    const domNode = findDOMNode(this.grid);
-    return domNode.getBoundingClientRect();
-  }
   handleSectionRendered(onSectionRendered) {
     return indexes => {
       const { rowStartIndex, columnStartIndex } = indexes;
@@ -132,13 +124,8 @@ class PivotGrid extends PureComponent {
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
       // Position must be relative so that the absolutely positioned DragLayer behaves correctly
-      <div
-        style={{ width, position: 'relative' }}
-        ref={grid => {
-          this.grid = grid;
-        }}
-      >
-        <DragLayer gridRect={this.state.gridRect} gridId={gridId} />
+      <div style={{ width, position: 'relative' }}>
+        <DragLayer gridId={gridId} />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
           mode="align:top-left"
