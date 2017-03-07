@@ -112,14 +112,14 @@ class PivotGrid extends Component {
       width,
       layout,
       customFunctions,
-      drilldown
+      drilldown,
+      id: gridId
     } = this.props;
 
     const {
       columnHorizontalCount,
       rowVerticalCount
     } = layout;
-    const gridId = this.props.id || 0;
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
@@ -208,6 +208,7 @@ PivotGrid.propTypes = {
   dataFieldsCount: PropTypes.number.isRequired,
   drilldown: PropTypes.func.isRequired,
   // height: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   layout: PropTypes.shape({
     columnHorizontalCount: PropTypes.number,
     columnVerticalCount: PropTypes.number,
@@ -227,9 +228,11 @@ PivotGrid.propTypes = {
   width: PropTypes.number.isRequired
 };
 
+PivotGrid.defaultProps = { id: 0 };
+
 // Add grid id to the type to ensure only correct drop target is used
 export default DropTarget(
-  props => `cell-resize-handle--${props.id}`,
+  props => `cell-resize-handle--${props.id || 0}`,
   gridSpec,
   collect
 )(PivotGrid);
