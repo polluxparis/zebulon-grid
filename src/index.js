@@ -34,20 +34,7 @@ ReactDOM.render(
     {/*<Provider store={store}>
       <App customFunctions={customFunctions} config={store.getState().config} />
     </Provider>*/}
-    <div>
-      <WrappedGrid
-        data={data}
-        config={basicConfig}
-        drilldown={() => 33}
-        id={0}
-      />
-      <WrappedGrid
-        data={data}
-        config={basicConfig}
-        drilldown={() => 33}
-        id={1}
-      />
-    </div>
+    <WrappedGrid data={data} config={basicConfig} drilldown={() => 33} id={0} />
   </div>,
   document.getElementById('root')
 );

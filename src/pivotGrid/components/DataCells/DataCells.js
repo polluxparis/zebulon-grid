@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 import {
-  Grid as ReactVirtualizedGrid,
+  Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
 
 import { isInRange } from '../../utils/generic';
@@ -23,7 +23,7 @@ class DataCells extends PureComponent {
     this.state = {
       cellsCache: {},
       selectedCellStart: null,
-      selectedCellEnd: null,
+      selectedCellEnd: null
     };
   }
 
@@ -100,7 +100,7 @@ class DataCells extends PureComponent {
       ) {
         this.setState({
           selectedCellStart: [0, 0],
-          selectedCellEnd: [columnHeaders.length, rowHeaders.length],
+          selectedCellEnd: [columnHeaders.length, rowHeaders.length]
         });
       }
       e.preventDefault();
@@ -117,7 +117,7 @@ class DataCells extends PureComponent {
       const { selectedCellStart, selectedCellEnd } = this.state;
       this.props.copy({
         selectedCellStart,
-        selectedCellEnd,
+        selectedCellEnd
       });
     }
   }
@@ -131,14 +131,14 @@ class DataCells extends PureComponent {
       columnIndex,
       key,
       rowIndex,
-      style: position,
-    },
+      style: position
+    }
   ) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const {
       getCellValue,
       dataHeadersLocation,
-      customFunctions,
+      customFunctions
     } = this.props;
     const { rowHeaders, columnHeaders } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
@@ -150,7 +150,7 @@ class DataCells extends PureComponent {
       selected = isInRange(
         [columnIndex, rowIndex],
         selectedCellStart,
-        selectedCellEnd,
+        selectedCellEnd
       );
     }
 
@@ -159,7 +159,7 @@ class DataCells extends PureComponent {
       dataHeadersLocation,
       rowHeader,
       columnHeader,
-      customFunctions,
+      customFunctions
     );
     const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
     this.datacellsCache[cellKey] = cell.value;
@@ -198,7 +198,7 @@ class DataCells extends PureComponent {
       scrollToColumn,
       scrollToRow,
       onSectionRendered,
-      zoom,
+      zoom
     } = this.props;
     this.datacellsCache = {};
     return (
