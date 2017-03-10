@@ -20,3 +20,6 @@ export const ADD_FILTER = 'ADD_FILTER';
 export const DELETE_FILTER = 'DELETE_FILTER';
 
 export const UPDATE_CELL_SIZE = 'UPDATE_CELL_SIZE';
+
+export const ZOOM_IN = 'ZOOM_IN';
+export const ZOOM_OUT = 'ZOOM_OUT';

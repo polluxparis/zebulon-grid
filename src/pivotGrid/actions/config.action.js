@@ -4,7 +4,9 @@ import {
   SET_DATAFIELDS,
   SET_CONFIG_PROPERTY,
   TOGGLE_DATAFIELD,
-  MOVE_FIELD
+  MOVE_FIELD,
+  ZOOM_IN,
+  ZOOM_OUT
 } from '../constants';
 
 export const setFields = configObject => ({
@@ -35,3 +37,6 @@ export const moveField = (fieldId, oldAxis, newAxis, position) => ({
   newAxis,
   position
 });
+
+export const zoomIn = () => ({ type: ZOOM_IN });
+export const zoomOut = () => ({ type: ZOOM_OUT });
