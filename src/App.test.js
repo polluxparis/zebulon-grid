@@ -1,4 +1,4 @@
-it('mocks', () => {
+test('mocks', () => {
   expect(true).toBe(true);
 });
 // import React from 'react';
@@ -29,7 +29,7 @@ it('mocks', () => {
 //
 // const App = DragDropContext(HTML5Backend)(RawApp);
 //
-// it('renders without crashing', () => {
+// test('renders without crashing', () => {
 //   const store = new Store(basicConfig, null, datasource);
 //   const div = document.createElement('div');
 //   ReactDOM.render(<App store={store} />, div);

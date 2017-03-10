@@ -8,14 +8,14 @@ class DimensionHeaders extends PureComponent {
   render() {
     const {
       columnDimensionHeaders,
-      columns,
+      columnFields,
       dataHeadersLocation,
       dimensionPositions,
       getDimensionSize,
       height,
       previewSizes,
       rowDimensionHeaders,
-      rows,
+      rowFields,
       width,
       zoom,
       gridId
@@ -27,9 +27,9 @@ class DimensionHeaders extends PureComponent {
     if (dataHeadersLocation === 'rows') {
       // Dimension headers are on top of the measures column
       fieldWhoseWidthToGet = MEASURE_ID;
-    } else if (rows.fields.length) {
+    } else if (rowFields.length) {
       // Dimension headers are on top of the column of the last field of the row headers
-      fieldWhoseWidthToGet = rows.fields[rows.fields.length - 1].id;
+      fieldWhoseWidthToGet = rowFields[rowFields.length - 1].id;
     } else {
       // Dimension headers are on top of the Total header --> get default width
       fieldWhoseWidthToGet = null;
@@ -51,6 +51,7 @@ class DimensionHeaders extends PureComponent {
             mainDirection="right"
             crossFieldId={fieldWhoseWidthToGet}
             previewSizes={previewSizes}
+            gridId={gridId}
           />
         );
       })
@@ -60,9 +61,9 @@ class DimensionHeaders extends PureComponent {
     if (dataHeadersLocation === 'columns') {
       // Dimension headers are to the left of the measures row
       fieldWhoseHeightToGet = MEASURE_ID;
-    } else if (columns.fields.length) {
+    } else if (columnFields.length) {
       // Dimension headers are to the left of the row of the last field of the column headers
-      fieldWhoseHeightToGet = columns.fields[columns.fields.length - 1].id;
+      fieldWhoseHeightToGet = columnFields[columnFields.length - 1].id;
     } else {
       // Dimension headers are to the left of the Total header --> get default height
       fieldWhoseHeightToGet = null;

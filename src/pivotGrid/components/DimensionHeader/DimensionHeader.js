@@ -49,7 +49,6 @@ const DimensionHeader = (
         position="right"
         size={height}
         id={ids.right}
-        isOnDimensionHeader
         axis={AxisType.ROWS}
         gridId={gridId}
         previewSize={previewSizes.height}
@@ -59,7 +58,6 @@ const DimensionHeader = (
         size={width}
         gridId={gridId}
         id={ids.bottom}
-        isOnDimensionHeader
         axis={AxisType.COLUMNS}
         previewSize={previewSizes.width}
       />

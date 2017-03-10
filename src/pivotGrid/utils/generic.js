@@ -4,7 +4,7 @@
 //  * @return {object}
 //  */
 // export function ns(identifier, parent) {
-//   const parts = identifier.split('.');
+//   const parts = identifier.spltest('.');
 //   let i = 0;
 //   parent = parent || window;
 //   while (i < parts.length) {

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import ArrowKeyStepper from './ArrowKeyStepper';
 
 describe('ArrowKeyStepper', () => {
-  it('renders without crashing', () => {
+  test('renders without crashing', () => {
     shallow(
       <ArrowKeyStepper
         columnCount={10}
@@ -13,7 +13,7 @@ describe('ArrowKeyStepper', () => {
         scrollToColumn={5}
       >
         {() => <div>mock grid</div>}
-      </ArrowKeyStepper>,
+      </ArrowKeyStepper>
     );
   });
 });

@@ -214,7 +214,6 @@ RowHeaders.propTypes = {
   height: PropTypes.number.isRequired,
   previewSizes: PropTypes.objectOf(PropTypes.number).isRequired,
   rowCount: PropTypes.number.isRequired,
-  columnHeadersHeight: PropTypes.number.isRequired,
   scrollTop: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   zoom: PropTypes.number.isRequired

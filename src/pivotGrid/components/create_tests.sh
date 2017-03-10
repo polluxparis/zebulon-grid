@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import $comp from './$comp';
 
 describe('$comp', () => {
-it('renders without crashing', () => {
+test('renders without crashing', () => {
   shallow(<$comp />);
 });
 })

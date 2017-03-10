@@ -26,7 +26,7 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-const data = getMockDatasource(1, 100, 100);
+const data = getMockDatasource(1, 2, 5);
 const customFunctions = hydrateStore(store, basicConfig, data);
 
 ReactDOM.render(

@@ -14,14 +14,14 @@ import DimensionHeaders from '../components/DimensionHeaders';
 
 const mapStateToProps = (state, ownProps) => ({
   columnDimensionHeaders: getColumnUiAxis(state).dimensionHeaders,
-  columns: getColumnAxis(state),
+  columnFields: getColumnAxis(state).fields,
   dataHeadersLocation: state.config.dataHeadersLocation,
   dimensionPositions: getDimensionPositions(state),
   getDimensionSize: getDimensionSize(state),
   height: getHeaderSizes(state).columnHeadersHeight,
   previewSizes: getPreviewSizes(state),
   rowDimensionHeaders: getRowUiAxis(state).dimensionHeaders,
-  rows: getRowAxis(state),
+  rowFields: getRowAxis(state).fields,
   width: getHeaderSizes(state).rowHeadersWidth,
   zoom: state.config.zoom,
   gridId: ownProps.gridId

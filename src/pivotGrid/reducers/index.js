@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 
-import data from './dataReducer';
-import config from './configReducer';
-import fields from './fieldsReducer';
-import datafields from './datafieldsReducer';
-import axis from './axisReducer';
-import sizes from './sizesReducer';
-import filters from './filtersReducer';
+import data from './data.reducer';
+import config from './config.reducer';
+import fields from './fields.reducer';
+import datafields from './datafields.reducer';
+import axis from './axis.reducer';
+import sizes from './sizes.reducer';
+import filters from './filters.reducer';
 
 export default combineReducers({
   data,
@@ -15,5 +15,5 @@ export default combineReducers({
   datafields,
   axis,
   sizes,
-  filters,
+  filters
 });
