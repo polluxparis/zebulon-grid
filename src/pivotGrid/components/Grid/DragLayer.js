@@ -5,7 +5,8 @@ const collectDragLayer = monitor => ({
   item: monitor.getItem(),
   itemType: monitor.getItemType(),
   clientOffset: monitor.getClientOffset(),
-  initialClientOffset: monitor.getInitialClientOffset()
+  initialClientOffset: monitor.getInitialClientOffset(),
+  isDragging: monitor.isDragging()
 });
 
 class CustomDragLayer extends Component {
@@ -81,15 +82,19 @@ class CustomDragLayer extends Component {
         ref={element => {
           this.element = element;
         }}
-        style={{
-          position: 'absolute',
-          pointerEvents: 'none',
-          zIndex: 100,
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%'
-        }}
+        style={
+          this.props.isDragging
+            ? {
+                position: 'absolute',
+                pointerEvents: 'none',
+                zIndex: 100,
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%'
+              }
+            : { display: 'none' }
+        }
       >
         {resizeBar}
       </div>

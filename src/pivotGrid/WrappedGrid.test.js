@@ -70,71 +70,177 @@ describe('WrappedGrid', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find('DataCell').first().text()).toEqual('0');
-      this.grid.handleZoom(true);
-      expect(wrapper.find('DataCell').first().text()).toEqual('100');
+      expect(wrapper.find('DataCell').length).toEqual(36);
+      wrapper.instance().zoomIn();
+      expect(wrapper.find('DataCell').length).toEqual(32);
     });
 
     test('zoom out', () => {
-      this.grid.handleZoom(false);
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(wrapper.find('DataCell').length).toEqual(36);
+      wrapper.instance().zoomOut();
+      expect(wrapper.find('DataCell').length).toEqual(40);
     });
 
     test('sort', () => {
-      this.grid.sort(AxisType.COLUMNS, 'titi');
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(wrapper.find('Header').first().text()).toEqual('titi 0');
+      wrapper.instance().changeSortOrder('titi');
+      expect(wrapper.find('Header').first().text()).toEqual('titi 4');
     });
 
     test('sort nested field', () => {
-      this.grid.sort(AxisType.ROWS, 'tutu');
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2)
+          .filterWhere(wrapper => wrapper.props().header.parent !== null)
+          .first()
+          .text()
+      ).toEqual('0');
+      wrapper.instance().changeSortOrder('tutu');
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2)
+          .filterWhere(wrapper => wrapper.props().header.parent !== null)
+          .first()
+          .text()
+      ).toEqual('1');
     });
 
     test('move field from row to column', () => {
-      this.grid.moveField('tutu', AxisType.ROWS, AxisType.COLUMNS, 1);
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(6);
+      wrapper.instance().moveField('tutu', 'rows', 'columns', 1);
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(2);
     });
 
     test('move field from row to reserve', () => {
-      this.grid.moveField('toto_lb', AxisType.ROWS, AxisType.FIELDS, 0);
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(6);
+      wrapper.instance().moveField('toto', 'rows', 'fields', 0);
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(2);
     });
 
     test('toggle datafield', () => {
-      this.grid.toggleDataField('amt');
-      expect(tree).toMatchSnapshot();
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 1)
+          .filterWhere(
+            wrapper => wrapper.props().header.subheaders === undefined
+          ).length
+      ).toEqual(9);
+      wrapper.instance().toggleDatafield('amt');
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 1)
+          .filterWhere(
+            wrapper => wrapper.props().header.subheaders === undefined
+          ).length
+      ).toEqual(5);
     });
 
     test('resize header', () => {
-      this.grid.updateCellSizes(
-        {
-          id: 'titi 1-/-qty',
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+      );
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 1)
+          .filterWhere(
+            wrapper => wrapper.props().header.subheaders === undefined
+          ).length
+      ).toEqual(9);
+      wrapper.instance().updateCellSize({
+        handle: {
+          id: 'titi 0-/-qty',
           axis: AxisType.COLUMNS,
           leafSubheaders: [],
           position: 'right'
         },
-        { x: 200 },
-        { x: 0 }
-      );
-      expect(tree).toMatchSnapshot();
+        offset: { x: 200 },
+        initialOffset: { x: 0 },
+        defaultCellSizes: { width: 100, height: 30 },
+        sizes: { columns: { leafs: {} } }
+      });
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 1)
+          .filterWhere(
+            wrapper => wrapper.props().header.subheaders === undefined
+          ).length
+      ).toEqual(7);
     });
 
     test('resize header in cross direction', () => {
-      this.grid.updateCellSizes(
-        { id: 'titi', axis: AxisType.COLUMNS, position: 'bottom' },
-        { y: 200 },
-        { y: 0 }
+      const wrapper = mount(
+        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(tree).toMatchSnapshot();
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(6);
+      wrapper.instance().updateCellSize({
+        handle: {
+          id: 'titi',
+          position: 'bottom',
+          axis: AxisType.COLUMNS
+        },
+        offset: { y: 540 },
+        initialOffset: { y: 0 },
+        defaultCellSizes: { width: 100, height: 30 },
+        sizes: { columns: { dimensions: {} } }
+      });
+      expect(
+        wrapper
+          .find('Header')
+          .filterWhere(wrapper => wrapper.props().axis === 2).length
+      ).toEqual(2);
     });
     // Not sure how to make this work, too complicated for too little value
     // describe('data updates', () => {
     //   test('highlight cells', () => {
     //const observableDatasource = getObservableMockDatasource();
-    //     const tree = renderer.create(<WrappedGrid ref={grid => {this.grid = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
+    //     const tree = renderer.create(<WrappedGrid ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
     //     expect(tree).toMatchSnapshot();
     //   });
-    // });*/
+    // });
   });
 
   describe('returns correct markup when config', () => {

@@ -46,13 +46,6 @@ class PivotGrid extends Component {
     super(props);
     this.rowStartIndex = 0;
     this.columnStartIndex = 0;
-    // this.getGridRect = this.getGridRect.bind(this);
-    // this.state = {};
-  }
-
-  componentDidMount() {
-    // this.gridRect = this.getGridRect();
-    // this.setState({ gridRect: this.getGridRect() });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -142,6 +135,7 @@ class PivotGrid extends Component {
                     <ColumnHeaders
                       gridId={gridId}
                       scrollLeft={scrollLeft}
+                      scrollToColumn={scrollToColumn}
                       ref={ref => {
                         this.columnHeaders = ref;
                       }}
@@ -150,6 +144,7 @@ class PivotGrid extends Component {
                   <div style={{ display: 'flex' }}>
                     <RowHeaders
                       scrollTop={scrollTop}
+                      // scrollToRow={scrollToRow}
                       gridId={gridId}
                       ref={ref => {
                         this.rowHeaders = ref;
@@ -207,7 +202,6 @@ PivotGrid.propTypes = {
   }).isRequired,
   dataFieldsCount: PropTypes.number.isRequired,
   drilldown: PropTypes.func.isRequired,
-  // height: PropTypes.number.isRequired,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   layout: PropTypes.shape({
     columnHorizontalCount: PropTypes.number,

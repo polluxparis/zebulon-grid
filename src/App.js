@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import 'react-virtualized/styles.css';
@@ -6,7 +7,10 @@ import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 
-import PivotGrid from './pivotGrid';
+import { createStore } from 'redux';
+import PivotGrid, { reducer, hydrateStore, actions } from './pivotGrid';
+import { getMockDatasource, basicConfig } from './utils/mock';
+
 import './App.css';
 
 let i = 0;
@@ -14,7 +18,18 @@ let i = 0;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: props.data };
+
+    const store = createStore(
+      reducer,
+      /* eslint-disable no-dangling-underscore */
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        window.__REDUX_DEVTOOLS_EXTENSION__()
+      /* eslint-enable */
+    );
+
+    const data = getMockDatasource(1, 20, 10);
+    this.customFunctions = hydrateStore(store, basicConfig, data);
+    this.state = { store };
 
     this.addData = this.addData.bind(this);
     this.moveField = this.moveField.bind(this);
@@ -22,60 +37,65 @@ class App extends Component {
   }
 
   addData() {
-    this.grid.pushData([
-      {
-        toto: '0',
-        toto_lb: 'toto 0',
-        qty: 100,
-        amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
-      }
-    ]);
-    // this.setState({ pushData: [
-    //   // ...this.state.data,
-    //   { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0' },
-    // ],
-    // });
+    this.state.store.dispatch(
+      actions.pushData([
+        {
+          toto: '0',
+          toto_lb: 'toto 0',
+          qty: 100,
+          amt: 100,
+          titi: 'titi 0',
+          tutu: '0'
+        }
+      ])
+    );
   }
 
   moveField() {
     if (i % 2) {
-      this.grid.moveField('tutu', 'columns', 'rows', 1);
+      this.state.store.dispatch(
+        actions.moveField('tutu', 'columns', 'rows', 1)
+      );
     } else {
-      this.grid.moveField('tutu', 'rows', 'columns', 1);
+      this.state.store.dispatch(
+        actions.moveField('tutu', 'rows', 'columns', 1)
+      );
     }
     i += 1;
   }
 
   toggleDatafield() {
-    this.grid.toggleDatafield('amt');
+    this.state.store.dispatch(actions.toggleDatafield('amt'));
   }
 
   render() {
     return (
-      <div>
-        <div style={{ position: 'absolute', top: 0, left: 0 }}>
-          <ResizableBox
-            height={this.props.config.height}
-            width={this.props.config.width}
-          >
-            <AutoSizer>
-              {({ height, width }) => (
-                <PivotGrid
-                  id={0}
-                  customFunctions={this.props.customFunctions}
-                  height={height}
-                  width={width}
-                  drilldown={cell => {
-                    console.log('drilldown', cell);
-                  }}
-                />
-              )}
-            </AutoSizer>
-          </ResizableBox>
+      <Provider store={this.state.store}>
+        <div>
+          <div>
+            <button onClick={this.addData}>Add data</button>
+            <button onClick={this.moveField}>Move field</button>
+            <button onClick={this.toggleDatafield}>Toggle datafield</button>
+          </div>
+          <div>
+            <ResizableBox height={basicConfig.height} width={basicConfig.width}>
+              <AutoSizer>
+                {({ height, width }) => (
+                  <PivotGrid
+                    id={0}
+                    customFunctions={this.customFunctions}
+                    height={height}
+                    width={width}
+                    drilldown={cell => {
+                      console.log('drilldown', cell);
+                    }}
+                  />
+                )}
+              </AutoSizer>
+            </ResizableBox>
+          </div>
         </div>
-      </div>
+      </Provider>
     );
   }
 }

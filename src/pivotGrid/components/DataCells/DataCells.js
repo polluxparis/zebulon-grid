@@ -44,7 +44,6 @@ class DataCells extends PureComponent {
 
   componentDidUpdate() {
     this.isUpdating = false;
-    this.grid.recomputeGridSize();
   }
 
   componentDidUnMount() {
@@ -131,7 +130,7 @@ class DataCells extends PureComponent {
       columnIndex,
       key,
       rowIndex,
-      style: position
+      style
     }
   ) {
     const { selectedCellStart, selectedCellEnd } = this.state;
@@ -174,7 +173,7 @@ class DataCells extends PureComponent {
       <DataCellComponent
         key={key}
         valueHasChanged={valueHasChanged}
-        position={position}
+        style={style}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         cell={cell}

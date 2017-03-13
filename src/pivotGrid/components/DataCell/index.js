@@ -12,7 +12,7 @@ export default class DataCell extends PureComponent {
   handleMouseDown(e) {
     this.props.handleMouseDown(e, [
       this.props.columnIndex,
-      this.props.rowIndex,
+      this.props.rowIndex
     ]);
   }
 
@@ -25,23 +25,23 @@ export default class DataCell extends PureComponent {
   }
 
   render() {
-    const { cell, position, rowIndex, selected, valueHasChanged } = this.props;
+    const { cell, rowIndex, selected, valueHasChanged } = this.props;
     const style = {
       boxSizing: 'border-box',
-      overflow: 'hidden',
+      overflow: 'hidden'
     };
 
     const className = classnames('orb-cell', 'orb-data-cell', {
       'orb-data-cell-even': !(rowIndex % 2),
       'orb-data-cell-uneven': rowIndex % 2,
       'orb-data-cell-highlighted': valueHasChanged,
-      'orb-data-cell-selected': selected,
+      'orb-data-cell-selected': selected
     });
 
     return (
       <div
         className={className}
-        style={{ ...style, ...position }}
+        style={{ ...style, ...this.props.style }}
         onMouseDown={this.handleMouseDown}
         onMouseOver={this.handleMouseOver}
         onDoubleClick={this.handleDoubleClick}

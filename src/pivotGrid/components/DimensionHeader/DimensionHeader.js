@@ -35,11 +35,8 @@ const DimensionHeader = (
         width,
         height,
         zIndex: 3,
-        // border: 'lightgrey 0.1em solid',
         boxSizing: 'border-box',
-        // textAlign: 'left',
         display: 'flex'
-        // backgroundColor: '#fafad2',
       }}
     >
       <span className="orb-dimension-header-inner">
