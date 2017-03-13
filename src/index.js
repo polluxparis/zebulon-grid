@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
+if (process.env.REACT_APP_PIVOTGRID_ENV === 'fps-test') {
   const testCase = createScrollingTestCase(
     document.getElementsByClassName('OrbGrid-data-cells')[0]
   );

@@ -62,7 +62,7 @@ const Header = (
   return (
     <div
       key={`fixed-${axis}-${x}-${y}`}
-      className="orb-cell orb-header orb-column-header"
+      className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
       style={{
         boxSizing: 'border-box',
         overflow: 'hidden',
@@ -118,7 +118,7 @@ const InnerHeader = ({ cell, style }) => {
   };
 
   return (
-    <span className="orb-header-inner" style={computedStyle}>
+    <span className="pivotgrid-header-inner" style={computedStyle}>
       {value}
     </span>
   );

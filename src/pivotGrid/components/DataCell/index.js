@@ -31,11 +31,11 @@ export default class DataCell extends PureComponent {
       overflow: 'hidden'
     };
 
-    const className = classnames('orb-cell', 'orb-data-cell', {
-      'orb-data-cell-even': !(rowIndex % 2),
-      'orb-data-cell-uneven': rowIndex % 2,
-      'orb-data-cell-highlighted': valueHasChanged,
-      'orb-data-cell-selected': selected
+    const className = classnames('pivotgrid-cell', 'pivotgrid-data-cell', {
+      'pivotgrid-data-cell-even': !(rowIndex % 2),
+      'pivotgrid-data-cell-uneven': rowIndex % 2,
+      'pivotgrid-data-cell-highlighted': valueHasChanged,
+      'pivotgrid-data-cell-selected': selected
     });
 
     return (

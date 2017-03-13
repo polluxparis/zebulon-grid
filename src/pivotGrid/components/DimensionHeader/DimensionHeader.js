@@ -27,7 +27,7 @@ const DimensionHeader = (
   return (
     <div
       key={`fixed-dim-${field.id}`}
-      className="orb-cell orb-dimension-header"
+      className="pivotgrid-cell pivotgrid-dimension-header"
       style={{
         position: 'absolute',
         left,
@@ -39,7 +39,7 @@ const DimensionHeader = (
         display: 'flex'
       }}
     >
-      <span className="orb-dimension-header-inner">
+      <span className="pivotgrid-dimension-header-inner">
         {field.caption}
       </span>
       <ResizeHandle

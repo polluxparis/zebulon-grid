@@ -7,6 +7,7 @@ import {
 import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';
 import DataCellComponent from '../DataCell';
+import { AXIS_SEPARATOR } from '../../constants';
 
 class DataCells extends PureComponent {
   constructor(props) {
@@ -160,7 +161,7 @@ class DataCells extends PureComponent {
       columnHeader,
       customFunctions
     );
-    const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
+    const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
     if (this.isUpdating) {
@@ -203,7 +204,7 @@ class DataCells extends PureComponent {
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
-        className="orb-data-cells"
+        className="pivotgrid-data-cells"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}

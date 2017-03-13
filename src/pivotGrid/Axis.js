@@ -15,11 +15,11 @@ export const AxisType = {
 };
 
 /**
- * Creates a new instance of an axe's dimensions list.
+ * Creates a new instance of an axi's dimensions list.
  * @class
- * @memberOf orb
+ * @memberOf pivotgrid
  * @param  {array} store - Parent pivot grid
- * @param  {orb.axe.Type} type - Axis type (rows, columns, data)
+ * @param  {pivotgrid.axe.Type} type - Axis type (rows, columns, data)
  */
 export class Axis {
   /**
@@ -31,7 +31,7 @@ export class Axis {
   constructor(type, fields, data) {
     /**
      * Axis type (rows, columns, data)
-     * @type {orb.axe.Type}
+     * @type {pivotgrid.axe.Type}
      */
     this.type = type;
 
@@ -43,7 +43,7 @@ export class Axis {
 
     /**
      * Root dimension
-     * @type {orb.dimension}
+     * @type {pivotgrid.dimension}
      */
     this.root = new Dimension(
       -1,
@@ -107,9 +107,8 @@ export class Axis {
       return [dim];
     }
     return [].concat(
-      ...Object.keys(dim.subdimvals)
-        .map(dimValue =>
-          this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue]))
+      ...Object.keys(dim.subdimvals).map(dimValue =>
+        this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue]))
     );
   }
 

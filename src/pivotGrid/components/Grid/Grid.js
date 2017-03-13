@@ -129,7 +129,7 @@ class PivotGrid extends Component {
           {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
             <ScrollSync>
               {({ onScroll, scrollLeft, scrollTop }) => (
-                <div className="orb-pivotgrid">
+                <div className="pivotgrid-pivotgrid">
                   <div style={{ display: 'flex' }}>
                     <DimensionHeaders gridId={gridId} />
                     <ColumnHeaders

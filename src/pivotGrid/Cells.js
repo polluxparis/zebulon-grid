@@ -1,5 +1,5 @@
 import { AxisType } from './Axis';
-import { KEY_SEPARATOR, TOTAL_ID } from './constants';
+import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from './constants';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -78,7 +78,7 @@ class CellBase {
 
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
-     * @type {orb.AxisType}
+     * @type {pivotgrid.AxisType}
      */
     this.axetype = options.axetype;
     /**
@@ -129,11 +129,11 @@ class CellBase {
 /**
  * Creates a new instance of a row header.
  * @class
- * @memberOf orb.ui
- * @param  {orb.ui.rowHeader} parent - parent header.
- * @param  {orb.dimension} dim - related dimension values container.
+ * @memberOf pivotgrid.ui
+ * @param  {pivotgrid.ui.rowHeader} parent - parent header.
+ * @param  {pivotgrid.dimension} dim - related dimension values container.
  * @param  {HeaderType} type - header type (INNER, WRAPPER, SUB_TOTAL, GRAND_TOTAL).
- * @param  {orb.ui.rowHeader} totalHeader - sub total or grand total related header.
+ * @param  {pivotgrid.ui.rowHeader} totalHeader - sub total or grand total related header.
  */
 export class Header extends CellBase {
   constructor(
@@ -160,19 +160,21 @@ export class Header extends CellBase {
         value = 'Total';
         hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1;
-        key = `${TOTAL_ID}-//-${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
+        key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
         break;
       case HeaderType.SUB_TOTAL:
         value = dim.caption;
         hspan = isOnRowAxis ? dim.depth : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth;
-        key = parent ? `${parent.key}-/-${value}` : value;
+        key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
         break;
       default:
         value = dim.caption;
         hspan = isOnRowAxis ? 1 : null;
         vspan = isOnRowAxis ? null : 1;
-        key = parent ? `${parent.key}-/-${dim.id}` : String(dim.id);
+        key = parent
+          ? `${parent.key}${KEY_SEPARATOR}${dim.id}`
+          : String(dim.id);
         break;
     }
 
@@ -315,7 +317,7 @@ export class DataHeader extends CellBase {
     }
 
     this.key = parent
-      ? `${parent.key}-/-${datafield.id}`
+      ? `${parent.key}${KEY_SEPARATOR}${datafield.id}`
       : String(datafield.id);
 
     this.caption = this.value.caption;

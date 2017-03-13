@@ -105,7 +105,7 @@ class DimensionHeaders extends PureComponent {
             fontSize: `${zoom * 100}%`,
             overflow: 'hidden'
           }}
-          className="orb-dimension-headers"
+          className="pivotgrid-dimension-headers"
         >
           {headers}
         </div>

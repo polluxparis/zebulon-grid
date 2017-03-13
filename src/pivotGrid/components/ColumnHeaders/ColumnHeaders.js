@@ -182,7 +182,7 @@ class ColumnHeaders extends PureComponent {
       <ReactVirtualizedGrid
         cellRangeRenderer={this.columnHeadersRenderer}
         cellRenderer={function mock() {}}
-        className="orb-column-headers"
+        className="pivotgrid-column-headers"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}

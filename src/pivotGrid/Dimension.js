@@ -2,8 +2,8 @@
  * Creates a new container for a row/column dimension values.<br/>
  * This object will have all informations related to a dimension: ijs values, depth, width and subdimensions.
  * @class
- * @memberOf orb
- * @param  {orb.dimension} parent - parent dimension
+ * @memberOf pivotgrid
+ * @param  {pivotgrid.dimension} parent - parent dimension
  * @param  {array} fields - array describing the fields used for an axe dimenisons
  * @param  {int} fieldindex - index of this dimension field in fields array
  * @param  {Boolean} isRoot - whether or not this is the root dimension for a given axe (row/column)
@@ -11,13 +11,13 @@
 export default class Dimension {
   constructor(id, parent, caption, field, depth, isRoot, isLeaf) {
     /**
-     * unique id within parent orb.axe instance.
+     * unique id within parent pivotgrid.axe instance.
      * @type {Number}
      */
     this.id = id;
     /**
      * parent subdimension
-     * @type {orb.dimension}
+     * @type {pivotgrid.dimension}
      */
     this.parent = parent;
     /**
