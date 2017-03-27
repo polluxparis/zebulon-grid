@@ -1,4 +1,5 @@
 import reducer from './data.reducer';
+import { PUSH_DATA, SET_DATA } from '../constants';
 
 describe('data reducer', () => {
   test('with setData action', () => {
@@ -22,7 +23,7 @@ describe('data reducer', () => {
     ];
     expect(
       reducer(state, {
-        type: 'SET_DATA',
+        type: SET_DATA,
         payload: [
           {
             toto: 0,
@@ -66,7 +67,7 @@ describe('data reducer', () => {
     ];
     expect(
       reducer(state, {
-        type: 'PUSH_DATA',
+        type: PUSH_DATA,
         payload: [
           {
             toto: 0,

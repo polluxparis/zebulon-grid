@@ -1,4 +1,5 @@
 import reducer from './sizes.reducer';
+import { UPDATE_CELL_SIZE } from '../constants';
 
 describe('sizes reducer', () => {
   describe('with updateCellSizes action', () => {
@@ -9,7 +10,7 @@ describe('sizes reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'UPDATE_CELL_SIZE',
+          type: UPDATE_CELL_SIZE,
           id: 'tutu',
           size: 225,
           axis: 'rows',
@@ -27,7 +28,7 @@ describe('sizes reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'UPDATE_CELL_SIZE',
+          type: UPDATE_CELL_SIZE,
           id: 'tutu',
           size: 225,
           axis: 'columns',
@@ -45,7 +46,7 @@ describe('sizes reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'UPDATE_CELL_SIZE',
+          type: UPDATE_CELL_SIZE,
           id: 'tutu',
           size: 225,
           axis: 'rows',
@@ -63,7 +64,7 @@ describe('sizes reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'UPDATE_CELL_SIZE',
+          type: UPDATE_CELL_SIZE,
           id: 'tutu',
           size: 225,
           axis: 'columns',

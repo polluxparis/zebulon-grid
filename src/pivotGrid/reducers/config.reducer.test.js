@@ -1,10 +1,11 @@
 import reducer from './config.reducer';
+import { SET_CONFIG_PROPERTY } from '../constants';
 
 test('setConfigProperty reducer', () => {
   const state = reducer(
     {},
     {
-      type: 'SET_CONFIG_PROPERTY',
+      type: SET_CONFIG_PROPERTY,
       property: 'dataHeadersLocation',
       value: 'columns'
     }

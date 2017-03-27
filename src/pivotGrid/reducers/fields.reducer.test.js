@@ -1,11 +1,12 @@
 import reducer from './fields.reducer';
+import { CHANGE_SORT_ORDER, SET_FIELDS } from '../constants';
 
 describe('fields reducer', () => {
   test('with setFields action', () => {
     const state = reducer(
       {},
       {
-        type: 'SET_FIELDS',
+        type: SET_FIELDS,
         fields: [
           {
             id: 'toto',
@@ -68,7 +69,7 @@ describe('fields reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'CHANGE_SORT_ORDER',
+          type: CHANGE_SORT_ORDER,
           fieldId: 'toto'
         })
       ).toEqual({
@@ -93,7 +94,7 @@ describe('fields reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'CHANGE_SORT_ORDER',
+          type: CHANGE_SORT_ORDER,
           fieldId: 'toto'
         })
       ).toEqual({
@@ -118,7 +119,7 @@ describe('fields reducer', () => {
       };
       expect(
         reducer(state, {
-          type: 'CHANGE_SORT_ORDER',
+          type: CHANGE_SORT_ORDER,
           fieldId: 'toto'
         })
       ).toEqual({

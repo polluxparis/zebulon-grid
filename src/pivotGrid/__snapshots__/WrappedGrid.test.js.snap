@@ -9,17 +9,11 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">
@@ -1929,17 +1923,11 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">
@@ -2752,17 +2740,11 @@ exports[`WrappedGrid returns correct markup when config has no data field 1`] = 
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">
@@ -3886,17 +3868,11 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">
@@ -5038,17 +5014,11 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">
@@ -6452,17 +6422,11 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
   <div
     style={
       Object {
-        "height": "100%",
-        "left": 0,
-        "pointerEvents": "none",
-        "position": "absolute",
-        "top": 0,
-        "width": "100%",
-        "zIndex": 100,
+        "display": "none",
       }
     } />
   <div
-    className=""
+    className={undefined}
     onKeyDown={[Function]}>
     <div
       className="pivotgrid-pivotgrid">

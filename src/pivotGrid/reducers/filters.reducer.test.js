@@ -1,11 +1,12 @@
 import reducer from './filters.reducer';
+import { ADD_FILTER, DELETE_FILTER } from '../constants';
 
 describe('filters reducer', () => {
   test('with ADD_FILTER action', () => {
     const state = {};
     expect(
       reducer(state, {
-        type: 'ADD_FILTER',
+        type: ADD_FILTER,
         field: 'titi',
         filter: { inFilter: true }
       })
@@ -15,7 +16,7 @@ describe('filters reducer', () => {
     const state = { titi: { inFilter: true }, tutu: { inFilter: true } };
     expect(
       reducer(state, {
-        type: 'DELETE_FILTER',
+        type: DELETE_FILTER,
         field: 'titi'
       })
     ).toEqual({ tutu: { inFilter: true } });

@@ -1,11 +1,12 @@
 import reducer from './datafields.reducer';
+import { SET_DATAFIELDS, TOGGLE_DATAFIELD } from '../constants';
 
 describe('datafield reducer', () => {
   test('with setDatafield action', () => {
     const state = reducer(
       {},
       {
-        type: 'SET_DATAFIELDS',
+        type: SET_DATAFIELDS,
         datafields: [
           {
             id: 'qty',
@@ -53,7 +54,7 @@ describe('datafield reducer', () => {
           aggregateFuncName: 'whatever'
         }
       },
-      { type: 'TOGGLE_DATAFIELD', id: 'qty' }
+      { type: TOGGLE_DATAFIELD, id: 'qty' }
     );
     expect(state).toEqual({
       qty: {
