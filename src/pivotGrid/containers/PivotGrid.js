@@ -34,8 +34,8 @@ const mapDispatchToProps = dispatch => ({
     if (
       handle.leafSubheaders &&
       handle.leafSubheaders.length &&
-      (handle.axis === AxisType.COLUMNS && handle.position === 'right' ||
-        handle.axis === AxisType.ROWS && handle.position === 'bottom')
+      ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
+        (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
     ) {
       const fractionalOffset = {
         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,

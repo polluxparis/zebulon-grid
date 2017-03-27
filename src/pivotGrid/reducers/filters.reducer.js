@@ -9,7 +9,9 @@ export default (state = {}, action) => {
     case ADD_FILTER:
       return { ...state, [field]: filter };
     case DELETE_FILTER: {
+      /* eslint-disable no-unused-vars */
       const { [field]: deleted, ...newState } = state;
+      /* eslint-enable */
       return newState;
     }
     default:

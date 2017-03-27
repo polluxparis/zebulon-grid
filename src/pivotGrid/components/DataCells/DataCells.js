@@ -43,8 +43,14 @@ class DataCells extends PureComponent {
     this.isUpdating = true;
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.isUpdating = false;
+    if (
+      prevProps.zoom !== this.props.zoom || prevProps.sizes !== this.props.sizes
+    ) {
+      console.log(this.props.scrollToColumn);
+      this.grid.recomputeGridSize();
+    }
   }
 
   componentDidUnMount() {

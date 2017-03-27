@@ -93,9 +93,10 @@ export function varp(datafield, intersection, data) {
 
 export function toAggregateFunc(func) {
   if (func) {
+    /* eslint-disable no-eval */
     if (typeof func === 'string' && eval(func)) {
-      // eslint-disable-line no-eval
-      return eval(func); // eslint-disable-line no-eval
+      return eval(func);
+      /* eslint-enable */
     } else if (typeof func === 'function') {
       return func;
     }
