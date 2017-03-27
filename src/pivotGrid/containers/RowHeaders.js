@@ -16,7 +16,6 @@ import RowHeaders from '../components/RowHeaders';
 
 const mapStateToProps = (state, ownProps) => ({
   columnCount: getLayout(state).rowHorizontalCount,
-  columnHeadersHeight: getHeaderSizes(state).columnHeadersHeight,
   dimensionPositions: getDimensionPositions(state),
   getColumnWidth: ({ index }) =>
     getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
@@ -28,6 +27,7 @@ const mapStateToProps = (state, ownProps) => ({
   rowCount: getLayout(state).rowVerticalCount,
   rowHeaders: getRowUiAxis(state).headers,
   width: getHeaderSizes(state).rowHeadersWidth,
+  sizesRowsLeafs: state.sizes.rows.leafs,
   zoom: state.config.zoom,
   gridId: ownProps.gridId
 });

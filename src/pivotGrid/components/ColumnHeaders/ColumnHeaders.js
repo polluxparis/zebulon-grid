@@ -15,8 +15,10 @@ class ColumnHeaders extends PureComponent {
     this.columnHeadersRenderer = this.columnHeadersRenderer.bind(this);
   }
 
-  componentDidUpdate() {
-    this.grid.recomputeGridSize();
+  componentDidUpdate(prevProps) {
+    if (prevProps.sizesColumnsLeafs !== this.props.sizesColumnsLeafs) {
+      this.grid.recomputeGridSize();
+    }
   }
 
   columnHeadersRenderer(

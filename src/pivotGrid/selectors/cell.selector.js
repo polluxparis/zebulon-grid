@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { twoArraysIntersect } from '../utils/generic';
-import { getActivatedDataFields } from './fields.selector';
 import { getFilteredData } from './data.selector';
 
 const getIndexesIntersectionFromDimensions = (

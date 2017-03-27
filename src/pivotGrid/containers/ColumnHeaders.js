@@ -26,9 +26,9 @@ const mapStateToProps = (state, ownProps) => ({
   height: getHeaderSizes(state).columnHeadersHeight,
   previewSizes: getPreviewSizes(state),
   rowCount: getLayout(state).columnVerticalCount,
-  rowHeadersWidth: getHeaderSizes(state).rowHeadersWidth,
   width: getColumnHeadersVisibleWidth(state),
   zoom: state.config.zoom,
+  sizesColumnsLeafs: state.sizes.columns.leafs,
   gridId: ownProps.gridId
 });
 
