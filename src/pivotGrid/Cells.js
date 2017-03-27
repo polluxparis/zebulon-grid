@@ -371,7 +371,7 @@ export class DataCell extends CellBase {
       : colinfo.value;
 
     const value = getCellValue(
-      datafield || null,
+      customFunctions.access[datafield.id],
       rowDimension,
       columnDimension,
       customFunctions.aggregation[datafield.id]

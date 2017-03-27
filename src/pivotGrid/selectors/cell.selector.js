@@ -32,18 +32,14 @@ const getIndexesIntersectionFromDimensions = (
   return intersection;
 };
 
-export const getCellValue = createSelector([getFilteredData], data => (
-  datafield,
-  rowDimension,
-  columnDimension,
-  aggregateFunc = () => null
-) => {
-  const intersection = getIndexesIntersectionFromDimensions(
-    rowDimension,
-    columnDimension
-  );
-  return aggregateFunc(datafield.id, intersection, data);
-});
+export const getCellValue = createSelector([getFilteredData], data =>
+  (accessor, rowDimension, columnDimension, aggregateFunc = () => null) => {
+    const intersection = getIndexesIntersectionFromDimensions(
+      rowDimension,
+      columnDimension
+    );
+    return aggregateFunc(accessor, intersection, data);
+  });
 
 const getDataRows = (data, rowDimension, columnDimension) => {
   const intersection = getIndexesIntersectionFromDimensions(
@@ -68,9 +64,8 @@ const getDimensionInfos = dimensionArg => {
   return [{ dimension, cell }].concat(getDimensionInfos(dimensionArg.parent));
 };
 
-export const getCellInfos = createSelector(
-  [getFilteredData],
-  datasource => cell => {
+export const getCellInfos = createSelector([getFilteredData], datasource =>
+  cell => {
     const value = cell.caption;
     const dimensions = getDimensionInfos(cell.rowDimension).concat(
       getDimensionInfos(cell.columnDimension)
@@ -85,5 +80,4 @@ export const getCellInfos = createSelector(
       id: cell.datafield.id
     };
     return { value, dimensions, data, measure };
-  }
-);
+  });

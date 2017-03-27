@@ -1,73 +1,81 @@
-export function forEachIntersection(datafield, intersection, data, callback) {
+export function toAccessorFunction(accessor) {
+  if (typeof accessor === 'string') {
+    return row => row[accessor];
+  }
+  return accessor;
+}
+
+export function forEachIntersection(accessor, intersection, data, callback) {
   if (intersection && intersection.length > 0) {
     for (let i = 0; i < intersection.length; i += 1) {
-      callback(data[intersection[i]][datafield]);
+      // callback(data[intersection[i]][datafield]);
+      callback(accessor(data[intersection[i]]));
     }
   }
 }
 
-export function count(datafield, intersection, data) {
+export function count(accessor, intersection, data) {
   return intersection === 'all' ? data.length : intersection.length;
 }
-export function sum(datafield, intersection, data) {
+export function sum(accessor, intersection, data) {
   let sum = 0;
-  forEachIntersection(datafield, intersection, data, val => {
+  forEachIntersection(accessor, intersection, data, val => {
     sum += val;
   });
   return sum;
 }
-export function min(datafield, intersection, data) {
+export function min(accessor, intersection, data) {
   let min = null;
-  forEachIntersection(datafield, intersection, data, val => {
+  forEachIntersection(accessor, intersection, data, val => {
     if (min == null || val < min) {
       min = val;
     }
   });
   return min;
 }
-export function max(datafield, intersection, data) {
+export function max(accessor, intersection, data) {
   let max = null;
-  forEachIntersection(datafield, intersection, data, val => {
+  forEachIntersection(accessor, intersection, data, val => {
     if (max == null || val > max) {
       max = val;
     }
   });
   return max;
 }
-export function avg(datafield, intersection, data) {
+export function avg(accessor, intersection, data) {
   let avg = 0;
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
-    forEachIntersection(datafield, intersection, data, val => {
+    forEachIntersection(accessor, intersection, data, val => {
       avg += val;
     });
     avg /= len;
   }
   return avg;
 }
-export function prod(datafield, intersection, data) {
+export function prod(accessor, intersection, data) {
   let prod;
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
     prod = 1;
-    forEachIntersection(datafield, intersection, data, val => {
+    forEachIntersection(accessor, intersection, data, val => {
       prod *= val;
     });
   }
   return prod;
 }
 
-export function calcVariance(datafield, intersection, data, population) {
+export function calcVariance(accessor, intersection, data, population) {
   let variance = 0;
   let avg = 0;
   const len = (intersection === 'all' ? data : intersection).length;
   if (len > 0) {
     if (population || len > 1) {
-      forEachIntersection(datafield, intersection, data, val => {
+      forEachIntersection(accessor, intersection, data, val => {
         avg += val;
       });
       avg /= len;
-      forEachIntersection(datafield, intersection, data, val => {
+      forEachIntersection(accessor, intersection, data, val => {
         variance += (val - avg) * (val - avg);
       });
       variance /= population ? len : len - 1;
@@ -78,20 +86,20 @@ export function calcVariance(datafield, intersection, data, population) {
   return variance;
 }
 
-export function stdev(datafield, intersection, data) {
-  return Math.sqrt(calcVariance(datafield, intersection, data, false));
+export function stdev(accessor, intersection, data) {
+  return Math.sqrt(calcVariance(accessor, intersection, data, false));
 }
-export function stdevp(datafield, intersection, data) {
-  return Math.sqrt(calcVariance(datafield, intersection, data, true));
+export function stdevp(accessor, intersection, data) {
+  return Math.sqrt(calcVariance(accessor, intersection, data, true));
 }
-export function _var(datafield, intersection, data) {
-  return calcVariance(datafield, intersection, data, false);
+export function _var(accessor, intersection, data) {
+  return calcVariance(accessor, intersection, data, false);
 }
-export function varp(datafield, intersection, data) {
-  return calcVariance(datafield, intersection, data, true);
+export function varp(accessor, intersection, data) {
+  return calcVariance(accessor, intersection, data, true);
 }
 
-export function toAggregateFunc(func) {
+export function toAggregateFunction(func) {
   if (func) {
     /* eslint-disable no-eval */
     if (typeof func === 'string' && eval(func)) {

@@ -171,7 +171,8 @@ class DataCells extends PureComponent {
     let valueHasChanged = false;
     if (this.isUpdating) {
       const oldcell = this.state.cellsCache[cellKey];
-      if (oldcell !== undefined && cell.value !== oldcell) {
+      // NaN is not equal to NaN... hence the last condition
+      if (oldcell !== undefined && cell.value !== oldcell && !isNaN(oldcell)) {
         valueHasChanged = true;
       }
     }

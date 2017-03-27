@@ -20,7 +20,12 @@ export function isDate(obj) {
  * @return {Boolean}
  */
 export function isString(obj) {
-  return Object.prototype.toString.apply(obj) === '[object String]';
+  return typeof obj === 'string';
+}
+
+export function isStringOrNumber(obj) {
+  const type = typeof obj;
+  return type === 'string' || type === 'number';
 }
 /**
  * Returns whether or not obj is a regular expression object
@@ -119,4 +124,16 @@ export function isInRange(
     inColumns = rowIndexEnd <= rowIndex && rowIndex <= rowIndexStart;
   }
   return inRows && inColumns;
+}
+
+export function isNull(obj) {
+  return obj === null;
+}
+
+export function isUndefined(obj) {
+  return obj === undefined;
+}
+
+export function isNullOrUndefined(obj) {
+  return isUndefined(obj) || isNull(obj);
 }

@@ -133,21 +133,29 @@ export const basicConfig = {
   ],
   datafields: [
     {
+      accessor: 'qty',
       id: 'qty',
       caption: 'Quantity',
-      aggregateFunc: 'sum'
+      aggregation: 'sum'
     },
     {
-      id: 'amt',
+      accessor: 'amt',
       caption: 'Amount',
-      aggregateFunc: 'sum',
-      aggregateFuncName: 'whatever',
-      formatFunc: value => {
+      aggregation: 'sum',
+      aggregationName: 'whatever',
+      format: value => {
         if (value || value === 0) {
           return `${Number(value).toFixed(0)} $`;
         }
         return '';
       }
+    },
+    {
+      id: 'price',
+      caption: 'Price',
+      aggregation: 'avg',
+      accessor: row => row.amt / row.qty,
+      format: value => Number(value).toFixed(2)
     }
   ],
   columns: ['Titi'],

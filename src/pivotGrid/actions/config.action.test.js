@@ -114,14 +114,14 @@ describe('setDatafields creates correct action', () => {
       {
         id: 'qty',
         caption: 'Quantity',
-        aggregateFunc: 'sum'
+        aggregation: 'sum'
       },
       {
         id: 'amt',
         caption: 'Amount',
-        aggregateFunc: 'sum',
-        aggregateFuncName: 'whatever',
-        formatFunc: value => {
+        aggregation: 'sum',
+        aggregationName: 'whatever',
+        render: value => {
           if (value || value === 0) {
             return `${Number(value).toFixed(0)} $`;
           }
@@ -136,13 +136,13 @@ describe('setDatafields creates correct action', () => {
           id: 'qty',
           name: 'qty',
           caption: 'Quantity',
-          aggregateFuncName: 'sum'
+          aggregationName: 'sum'
         },
         {
           id: 'amt',
           name: 'amt',
           caption: 'Amount',
-          aggregateFuncName: 'whatever'
+          aggregationName: 'whatever'
         }
       ]
     });

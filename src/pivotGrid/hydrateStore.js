@@ -7,7 +7,7 @@ import {
   toggleDatafield
 } from './actions';
 import { isPromise, isObservable } from './utils/generic';
-import { toAggregateFunc } from './Aggregation';
+import { toAggregateFunction, toAccessorFunction } from './Aggregation';
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -59,9 +59,10 @@ export default function hydrateStore(store, config, datasource) {
     });
 
   config.data.forEach(fieldCaption => {
-    const fieldId = config.datafields.find(
+    const field = config.datafields.find(
       field => field.caption === fieldCaption
-    ).id;
+    );
+    const fieldId = field.id || field.accessor;
     store.dispatch(toggleDatafield(fieldId));
   });
 
@@ -73,17 +74,24 @@ export default function hydrateStore(store, config, datasource) {
       }),
       {}
     ),
+    access: config.datafields.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.id || field.accessor]: toAccessorFunction(field.accessor)
+      }),
+      {}
+    ),
     format: config.datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id]: field.formatFunc
+        [field.id || field.accessor]: field.format
       }),
       {}
     ),
     aggregation: config.datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id]: toAggregateFunc(field.aggregateFunc)
+        [field.id || field.accessor]: toAggregateFunction(field.aggregation)
       }),
       {}
     )
