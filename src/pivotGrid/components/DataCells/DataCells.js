@@ -47,8 +47,8 @@ class DataCells extends PureComponent {
     this.isUpdating = false;
     if (
       prevProps.zoom !== this.props.zoom ||
-      prevProps.sizes.rows.leafs !== this.props.sizes.rows.leafs ||
-      prevProps.sizes.columns.leafs !== this.props.sizes.columns.leafs
+      prevProps.sizes.leafs.rows !== this.props.sizes.leafs.rows ||
+      prevProps.sizes.leafs.columns !== this.props.sizes.leafs.columns
     ) {
       this.grid.recomputeGridSize();
     }
@@ -161,6 +161,9 @@ class DataCells extends PureComponent {
       );
     }
 
+    // This causes all the data cells to be rendered when new cells are selected via mouse actions
+    // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
+    // bring complexity and this is good enough at the time.
     const cell = new DataCell(
       getCellValue,
       dataHeadersLocation,

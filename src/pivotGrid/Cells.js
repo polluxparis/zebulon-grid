@@ -11,11 +11,11 @@ export const HeaderType = {
   SUB_TOTAL: 7,
   GRAND_TOTAL: 8,
   DIMENSION_HEADER: 9,
-  getHeaderClass(headerType, axetype) {
+  getHeaderClass(headerType, axisType) {
     let cssclass;
-    if (axetype === AxisType.ROWS) {
+    if (axisType === AxisType.ROWS) {
       cssclass = 'header-row';
-    } else if (axetype === AxisType.COLUMNS) {
+    } else if (axisType === AxisType.COLUMNS) {
       cssclass = 'header-col';
     } else {
       cssclass = '';
@@ -80,7 +80,7 @@ class CellBase {
      * axe type (COLUMNS, ROWS, DATA, ...)
      * @type {pivotgrid.AxisType}
      */
-    this.axetype = options.axetype;
+    this.axisType = options.axisType;
     /**
      * cell type (EMPTY, DATA_VALUE, FIELD_BUTTON, INNER, WRAPPER, SUB_TOTAL, GRAND_TOTAL, ...)
      * @type {HeaderType}
@@ -122,7 +122,7 @@ class CellBase {
      */
     this.visible = options.isvisible || (() => true);
 
-    this.key = this.axetype + this.type + this.value;
+    this.key = this.axisType + this.type + this.value;
   }
 }
 
@@ -137,7 +137,7 @@ class CellBase {
  */
 export class Header extends CellBase {
   constructor(
-    axetype,
+    axisType,
     headerTypeP,
     dim,
     parent,
@@ -147,7 +147,7 @@ export class Header extends CellBase {
     subtotalHeader,
     crossAxisFieldsCode = []
   ) {
-    const isOnRowAxis = axetype === AxisType.ROWS;
+    const isOnRowAxis = axisType === AxisType.ROWS;
     const headerType = headerTypeP ||
       (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
     let value;
@@ -179,13 +179,13 @@ export class Header extends CellBase {
     }
 
     const options = {
-      axetype,
+      axisType,
       type: headerType,
       template: isOnRowAxis
         ? 'cell-template-row-header'
         : 'cell-template-column-header',
       value,
-      cssclass: HeaderType.getHeaderClass(headerType, axetype)
+      cssclass: HeaderType.getHeaderClass(headerType, axisType)
     };
 
     super(options);
@@ -300,13 +300,13 @@ export class Header extends CellBase {
 }
 
 export class DataHeader extends CellBase {
-  constructor(axetype, datafield, parent, x, y) {
+  constructor(axisType, datafield, parent, x, y) {
     super({
-      axetype,
+      axisType,
       type: HeaderType.DATA_HEADER,
       template: 'cell-template-dataheader',
       value: datafield,
-      cssclass: HeaderType.getHeaderClass(parent.type, parent.axetype),
+      cssclass: HeaderType.getHeaderClass(parent.type, parent.axisType),
       isvisible: parent.visible
     });
 
@@ -328,13 +328,16 @@ export class DataHeader extends CellBase {
 }
 
 export class DimensionHeader extends CellBase {
-  constructor(axetype, field) {
+  constructor(axisType, field) {
     super({
-      axetype,
+      axisType,
       type: HeaderType.DIMENSION_HEADER,
       template: 'cell-template-dimensionheader',
       value: field,
-      cssclass: HeaderType.getHeaderClass(HeaderType.DIMENSION_HEADER, axetype),
+      cssclass: HeaderType.getHeaderClass(
+        HeaderType.DIMENSION_HEADER,
+        axisType
+      ),
       isvisible: () => true
     });
 
@@ -378,7 +381,7 @@ export class DataCell extends CellBase {
     );
 
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
       value,
@@ -391,6 +394,8 @@ export class DataCell extends CellBase {
     this.rowType = rowType;
     this.colType = colType;
     this.datafield = datafield;
+    this.hspan = 1;
+    this.vspan = 1;
 
     if (this.datafield && customFunctions.format[datafield.id]) {
       this.caption = customFunctions.format[datafield.id](value);
@@ -403,7 +408,7 @@ export class DataCell extends CellBase {
 export class ButtonCell extends CellBase {
   constructor(field) {
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.FIELD_BUTTON,
       template: 'cell-template-fieldbutton',
       value: field,
@@ -415,7 +420,7 @@ export class ButtonCell extends CellBase {
 export class EmptyCell extends CellBase {
   constructor(hspan, vspan) {
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.EMPTY,
       template: 'cell-template-empty',
       value: null,

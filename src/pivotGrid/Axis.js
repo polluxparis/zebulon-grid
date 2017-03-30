@@ -14,6 +14,21 @@ export const AxisType = {
   CHART: 5
 };
 
+export function toAxis(axisType) {
+  switch (axisType) {
+    case AxisType.COLUMNS:
+      return 'columns';
+    case AxisType.ROWS:
+      return 'rows';
+    default:
+      return '__AXIS_TYPE_UNKNOWN__';
+  }
+}
+
+export function toAxisType(axis) {
+  return AxisType[axis.toUpperCase()];
+}
+
 /**
  * Creates a new instance of an axi's dimensions list.
  * @class

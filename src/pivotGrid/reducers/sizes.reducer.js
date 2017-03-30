@@ -2,23 +2,23 @@ import { UPDATE_CELL_SIZE } from '../constants';
 
 export default (
   state = {
-    rows: { leafs: {}, dimensions: {} },
-    columns: { leafs: {}, dimensions: {} },
+    leafs: { rows: {}, columns: {} },
+    dimensions: { rows: {}, columns: {} }
   },
-  action,
+  action
 ) => {
   const { type, axis, direction, size, id } = action;
   switch (type) {
     case UPDATE_CELL_SIZE:
       return {
         ...state,
-        [axis]: {
-          ...state[axis],
-          [direction]: {
-            ...state[axis][direction],
-            [id]: size,
-          },
-        },
+        [direction]: {
+          ...state[direction],
+          [axis]: {
+            ...state[direction][axis],
+            [id]: size
+          }
+        }
       };
     default:
       return state;

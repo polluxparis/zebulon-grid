@@ -5,7 +5,8 @@ import {
   getRowUiAxis,
   getColumnAxis,
   getRowAxis,
-  getHeaderSizes,
+  getColumnHeadersHeight,
+  getRowHeadersWidth,
   getDimensionSize,
   getDimensionPositions,
   getPreviewSizes
@@ -18,11 +19,11 @@ const mapStateToProps = (state, ownProps) => ({
   dataHeadersLocation: state.config.dataHeadersLocation,
   dimensionPositions: getDimensionPositions(state),
   getDimensionSize: getDimensionSize(state),
-  height: getHeaderSizes(state).columnHeadersHeight,
+  height: getColumnHeadersHeight(state),
   previewSizes: getPreviewSizes(state),
   rowDimensionHeaders: getRowUiAxis(state).dimensionHeaders,
   rowFields: getRowAxis(state).fields,
-  width: getHeaderSizes(state).rowHeadersWidth,
+  width: getRowHeadersWidth(state),
   zoom: state.config.zoom,
   gridId: ownProps.gridId
 });

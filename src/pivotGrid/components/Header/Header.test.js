@@ -7,7 +7,7 @@ describe('Header', () => {
     const props = {
       axis: 1,
       header: {
-        axetype: 1,
+        axisType: 1,
         type: 2,
         template: 'cell-template-dataheader',
         value: {
@@ -21,7 +21,7 @@ describe('Header', () => {
         cssclass: 'header header-col',
         key: 'titi 0-/-qty',
         parent: {
-          axetype: 1,
+          axisType: 1,
           type: 5,
           template: 'cell-template-column-header',
           value: 'titi 0',
@@ -104,7 +104,7 @@ describe('Header', () => {
           subheaders: [
             null,
             {
-              axetype: 1,
+              axisType: 1,
               type: 2,
               template: 'cell-template-dataheader',
               value: {

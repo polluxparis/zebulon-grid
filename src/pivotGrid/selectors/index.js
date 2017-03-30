@@ -9,13 +9,17 @@ import {
   getCellSizes,
   getDimensionPositions,
   getDimensionSize,
-  getHeaderSizes,
+  getRowHeadersHeight,
+  getRowHeadersWidth,
+  getColumnHeadersHeight,
+  getColumnHeadersWidth,
   getPreviewSizes,
   getColumnWidth,
   getRowHeight,
   getColumnHeadersVisibleWidth,
   getRowHeadersVisibleHeight,
-  getLastChildSize,
+  getLastChildSizeOnColumns,
+  getLastChildSizeOnRows,
   getDataCellsHeight,
   getDataCellsWidth
 } from './sizes.selector';
@@ -31,11 +35,15 @@ export { getRowAxis };
 export { getActivatedDataFields };
 export { getDimensionPositions };
 export { getDimensionSize };
-export { getHeaderSizes };
+export { getRowHeadersHeight };
+export { getRowHeadersWidth };
+export { getColumnHeadersHeight };
+export { getColumnHeadersWidth };
 export { getPreviewSizes };
 export { getColumnWidth };
 export { getRowHeight };
-export { getLastChildSize };
+export { getLastChildSizeOnColumns };
+export { getLastChildSizeOnRows };
 export { getColumnHeadersVisibleWidth };
 export { getRowHeadersVisibleHeight };
 export { getCellValue, getCellInfos };

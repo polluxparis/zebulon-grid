@@ -28,7 +28,6 @@
     "react-resizable": "^1.6.0",
     "react-scripts": "0.9.0",
     "react-test-renderer": "15.4.2",
-    "reselect-change-memoize": "^1.1.0",
     "rimraf": "^2.5.4",
     "webpack": "^1.14.0"
   },

@@ -8,7 +8,7 @@ describe('DimensionHeaders', () => {
       gridId: 0,
       columnDimensionHeaders: [
         {
-          axetype: 1,
+          axisType: 1,
           type: 9,
           template: 'cell-template-dimensionheader',
           value: {
@@ -41,7 +41,7 @@ describe('DimensionHeaders', () => {
       previewSizes: { height: 586, width: 1084 },
       rowDimensionHeaders: [
         {
-          axetype: 2,
+          axisType: 2,
           type: 9,
           template: 'cell-template-dimensionheader',
           value: {
@@ -56,7 +56,7 @@ describe('DimensionHeaders', () => {
           key: 'toto'
         },
         {
-          axetype: 2,
+          axisType: 2,
           type: 9,
           template: 'cell-template-dimensionheader',
           value: {

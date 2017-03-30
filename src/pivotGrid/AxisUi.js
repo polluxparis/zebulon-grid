@@ -1,18 +1,5 @@
-import { AxisType } from './Axis';
 import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
 import { KEY_SEPARATOR } from './constants';
-
-function getDataFieldsCount(
-  { axisType, dataHeadersLocation, activatedDataFieldsCount }
-) {
-  if (
-    (dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS) ||
-    (dataHeadersLocation === 'rows' && axisType === AxisType.ROWS)
-  ) {
-    return activatedDataFieldsCount;
-  }
-  return 0;
-}
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
@@ -46,15 +33,15 @@ export const keyToIndex = (headers, key) => {
 export default class AxisUi {
   constructor(axis, config, crossAxisFieldsCode) {
     const {
-      dataHeadersLocation,
       activatedDataFieldsCount,
       activatedDataFields
     } = config;
-    this.datafieldsCount = getDataFieldsCount({
-      axisType: axis.type,
-      dataHeadersLocation,
-      activatedDataFieldsCount
-    });
+    this.datafieldsCount = activatedDataFieldsCount;
+    // this.datafieldsCount = getDataFieldsCount({
+    //   axisType: axis.type,
+    //   dataHeadersLocation,
+    //   activatedDataFieldsCount
+    // });
 
     this.hasDataFields = this.datafieldsCount >= 1;
     /**
@@ -82,7 +69,6 @@ export default class AxisUi {
           infos: headers,
           dimension: axis.root,
           axisType: axis.type,
-          dataHeadersLocation,
           activatedDataFields,
           activatedDataFieldsCount
         });
@@ -111,7 +97,6 @@ export default class AxisUi {
           infos: headers,
           parent: grandtotalHeader,
           y: y + 1,
-          dataHeadersLocation,
           activatedDataFields,
           activatedDataFieldsCount
         });
@@ -134,7 +119,6 @@ export default class AxisUi {
       infos,
       dimension,
       axisType,
-      dataHeadersLocation,
       activatedDataFields,
       activatedDataFieldsCount,
       y = 0
@@ -194,7 +178,6 @@ export default class AxisUi {
             dimension: subdim,
             axisType,
             y: y + 1,
-            dataHeadersLocation,
             activatedDataFields,
             activatedDataFieldsCount
           });
@@ -208,7 +191,6 @@ export default class AxisUi {
               infos,
               activatedDataFields,
               activatedDataFieldsCount,
-              dataHeadersLocation,
               parent: subTotalHeader,
               y: y + 1
             });
@@ -220,7 +202,6 @@ export default class AxisUi {
             infos,
             activatedDataFields,
             activatedDataFieldsCount,
-            dataHeadersLocation,
             parent: newHeader,
             y: y + 1
           });
@@ -232,9 +213,9 @@ export default class AxisUi {
 
   addDataHeaders(
     {
+      axisType,
       infos,
       parent,
-      dataHeadersLocation,
       activatedDataFields,
       y
     }
@@ -243,22 +224,12 @@ export default class AxisUi {
       let lastInfosArray = infos[infos.length - 1];
       activatedDataFields.forEach((datafield, index) => {
         lastInfosArray.push(
-          new DataHeader(
-            dataHeadersLocation === 'columns'
-              ? AxisType.COLUMNS
-              : AxisType.ROWS,
-            datafield,
-            parent,
-            (this.x += 1),
-            y
-          )
+          new DataHeader(axisType, datafield, parent, (this.x += 1), y)
         );
         if (index < this.datafieldsCount - 1) {
           infos.push((lastInfosArray = []));
         }
       });
-      // for (let [index, datafield] of activatedDataFields.entries()) {
-      // }
     } else {
       this.x += 1;
     }

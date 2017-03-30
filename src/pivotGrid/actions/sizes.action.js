@@ -29,25 +29,25 @@ export const updateCellSize = (
   if (handle.axis === AxisType.COLUMNS && handle.position === 'right') {
     direction = 'leafs';
     size = getNewCellSize(
-      sizes.columns.leafs[handle.id] || defaultCellSizes.width,
+      sizes.leafs.columns[handle.id] || defaultCellSizes.width,
       offset.x - initialOffset.x
     );
   } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
     direction = 'leafs';
     size = getNewCellSize(
-      sizes.rows.leafs[handle.id] || defaultCellSizes.height,
+      sizes.leafs.rows[handle.id] || defaultCellSizes.height,
       offset.y - initialOffset.y
     );
   } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
     direction = 'dimensions';
     size = getNewCellSize(
-      sizes.columns.dimensions[handle.id] || defaultCellSizes.height,
+      sizes.dimensions.columns[handle.id] || defaultCellSizes.height,
       offset.y - initialOffset.y
     );
   } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
     direction = 'dimensions';
     size = getNewCellSize(
-      sizes.rows.dimensions[handle.id] || defaultCellSizes.width,
+      sizes.dimensions.rows[handle.id] || defaultCellSizes.width,
       offset.x - initialOffset.x
     );
   }

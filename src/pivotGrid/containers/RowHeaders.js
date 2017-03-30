@@ -4,8 +4,8 @@ import { AxisType } from '../Axis';
 import {
   getDimensionPositions,
   getDimensionSize,
-  getHeaderSizes,
-  getLastChildSize,
+  getRowHeadersWidth,
+  getLastChildSizeOnRows,
   getLayout,
   getPreviewSizes,
   getRowHeadersVisibleHeight,
@@ -20,14 +20,14 @@ const mapStateToProps = (state, ownProps) => ({
   getColumnWidth: ({ index }) =>
     getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
   getDimensionSize: getDimensionSize(state),
-  getLastChildSize: getLastChildSize(state),
+  getLastChildSize: getLastChildSizeOnRows(state),
   getRowHeight: getRowHeight(state),
   height: getRowHeadersVisibleHeight(state),
   previewSizes: getPreviewSizes(state),
   rowCount: getLayout(state).rowVerticalCount,
   rowHeaders: getRowUiAxis(state).headers,
-  width: getHeaderSizes(state).rowHeadersWidth,
-  sizesRowsLeafs: state.sizes.rows.leafs,
+  width: getRowHeadersWidth(state),
+  sizesRowsLeafs: state.sizes.leafs.rows,
   zoom: state.config.zoom,
   gridId: ownProps.gridId
 });

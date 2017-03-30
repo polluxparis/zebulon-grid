@@ -52,7 +52,7 @@ describe('dimension sizes are computed correctly', () => {
     expect(actual).toEqual(200);
   });
   test('for columns with custom size', () => {
-    sizes.columns.dimensions.toto = 66;
+    sizes.dimensions.columns.toto = 66;
     const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
       AxisType.COLUMNS,
       'toto'
@@ -60,7 +60,7 @@ describe('dimension sizes are computed correctly', () => {
     expect(actual).toEqual(66);
   });
   test('for rows with custom size', () => {
-    sizes.rows.dimensions.toto = 666;
+    sizes.dimensions.rows.toto = 666;
     const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
       AxisType.ROWS,
       'toto'

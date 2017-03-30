@@ -34,7 +34,7 @@ const Header = (
   let style;
   if (span > 1 && x <= startIndex) {
     let offset;
-    const lastChildSize = getLastChildSize(axis, header);
+    const lastChildSize = getLastChildSize(header);
     if (axis === AxisType.COLUMNS) {
       offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
       style = { position: 'relative', left: offset };

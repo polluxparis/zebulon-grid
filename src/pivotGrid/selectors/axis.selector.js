@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Axis, AxisType } from '../Axis';
+import { Axis, AxisType, toAxisType } from '../Axis';
 import AxisUi from '../AxisUi';
 import { getFilteredData } from './data.selector';
 import {
@@ -24,24 +24,32 @@ const getActivatedDataFieldsCount = createSelector(
   datafields => datafields.length
 );
 
+const getAxisActivatedDatafields = axisType =>
+  createSelector(
+    [getActivatedDataFields, state => state.config.dataHeadersLocation],
+    (datafields, dataHeadersLocation) => {
+      if (toAxisType(dataHeadersLocation) === axisType) {
+        return datafields;
+      }
+      return null;
+    }
+  );
+
 export const getRowUiAxis = createSelector(
   [
     getRowAxis,
-    getActivatedDataFields,
-    getActivatedDataFieldsCount,
-    state => state.config.dataHeadersLocation,
+    getAxisActivatedDatafields(AxisType.ROWS),
     state => state.axis.columns
   ],
-  (
-    rowAxis,
-    activatedDataFields,
-    activatedDataFieldsCount,
-    dataHeadersLocation,
-    crossFieldsCode
-  ) =>
+  (rowAxis, activatedDataFields, crossFieldsCode) =>
     new AxisUi(
       rowAxis,
-      { activatedDataFields, activatedDataFieldsCount, dataHeadersLocation },
+      {
+        activatedDataFields,
+        activatiedDataFieldsCount: activatedDataFields
+          ? activatedDataFields.length
+          : 0
+      },
       crossFieldsCode
     )
 );
@@ -49,17 +57,17 @@ export const getRowUiAxis = createSelector(
 export const getColumnUiAxis = createSelector(
   [
     getColumnAxis,
-    getActivatedDataFields,
-    state => state.config.dataHeadersLocation,
+    getAxisActivatedDatafields(AxisType.COLUMNS),
     state => state.axis.rows
   ],
-  (columnAxis, activatedDataFields, dataHeadersLocation, crossFieldsCode) =>
+  (columnAxis, activatedDataFields, crossFieldsCode) =>
     new AxisUi(
       columnAxis,
       {
         activatedDataFields,
-        activatedDataFieldsCount: activatedDataFields.length,
-        dataHeadersLocation
+        activatedDataFieldsCount: activatedDataFields
+          ? activatedDataFields.length
+          : 0
       },
       crossFieldsCode
     )

@@ -1,10 +1,13 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import { AxisType } from '../../Axis';
 import { MEASURE_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader';
 
-class DimensionHeaders extends PureComponent {
+class DimensionHeaders extends Component {
+  shouldComponentUpdate(nextProps) {
+    return nextProps.dimensionPositions !== this.props.dimensionPositions;
+  }
   render() {
     const {
       columnDimensionHeaders,

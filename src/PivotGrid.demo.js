@@ -14,6 +14,7 @@ import { getMockDatasource, basicConfig } from './utils/mock';
 import './App.css';
 
 let i = 0;
+let j = 0;
 
 class PivotGridDemo extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class PivotGridDemo extends Component {
     this.toggleDatafield = this.toggleDatafield.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
+    this.toggleFilter = this.toggleFilter.bind(this);
   }
 
   addData() {
@@ -77,6 +79,18 @@ class PivotGridDemo extends Component {
   zoomOut() {
     this.state.store.dispatch(actions.zoomOut());
   }
+
+  toggleFilter() {
+    if (j % 2) {
+      this.state.store.dispatch(actions.deleteFilter('titi'));
+    } else {
+      this.state.store.dispatch(
+        actions.addFilter('titi', 'in', null, ['titi 0', 'titi 2'], false)
+      );
+    }
+    j += 1;
+  }
+
   render() {
     return (
       <Provider store={this.state.store}>
@@ -87,6 +101,7 @@ class PivotGridDemo extends Component {
             <button onClick={this.toggleDatafield}>Toggle datafield</button>
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>
+            <button onClick={this.toggleFilter}>Toggle filter</button>
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>
