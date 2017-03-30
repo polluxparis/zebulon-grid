@@ -11,13 +11,14 @@ import App from './App';
 
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
+  // whyDidYouUpdate(React, { exclude: '/^DataCell' });
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
 if (process.env.REACT_APP_PIVOTGRID_ENV === 'fps-test') {
   const testCase = createScrollingTestCase(
-    document.getElementsByClassName('OrbGrid-data-cells')[0]
+    document.getElementsByClassName('pivotgrid-data-cells')[0]
   );
   const testRunner = new TestRunner(testCase, 5);
 

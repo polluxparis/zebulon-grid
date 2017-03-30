@@ -9,12 +9,6 @@ export default class DataCell extends PureComponent {
     this.handleMouseOver = this.handleMouseOver.bind(this);
   }
 
-  shouldComponentUpdate(newProps) {
-    return newProps.cell.caption !== this.props.cell.caption ||
-      newProps.valueHasChanged ||
-      newProps.selected !== this.props.selected;
-  }
-
   handleMouseDown(e) {
     this.props.handleMouseDown(e, [
       this.props.columnIndex,
