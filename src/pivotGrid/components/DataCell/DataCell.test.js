@@ -16,7 +16,7 @@ describe('DataCell', () => {
       rowIndex: 3,
       columnIndex: 3,
       cell: {
-        axetype: null,
+        axisType: null,
         type: 3,
         template: 'cell-template-datavalue',
         value: 111,
