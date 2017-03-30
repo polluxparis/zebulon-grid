@@ -38,7 +38,7 @@ export const Operators = {
       }
       return !term;
     },
-    regexpSupported: true,
+    regexpSupported: true
   },
   NOTMATCH: {
     name: 'Does Not Match',
@@ -50,56 +50,56 @@ export const Operators = {
       }
       return !!term;
     },
-    regexpSupported: true,
+    regexpSupported: true
   },
   EQ: {
     name: '=',
     func(value, term) {
       return value === term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   NEQ: {
     name: '<>',
     func(value, term) {
       return value !== term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   GT: {
     name: '>',
     func(value, term) {
       return value > term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   GTE: {
     name: '>=',
     func(value, term) {
       return value >= term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   LT: {
     name: '<',
     func(value, term) {
       return value < term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   LTE: {
     name: '<=',
     func(value, term) {
       return value <= term;
     },
-    regexpSupported: false,
-  },
+    regexpSupported: false
+  }
 };
 
 export function pass(filter, value) {
   if (Array.isArray(filter.staticValue)) {
     const found = filter.staticValue.includes(value);
-    return filter.excludeStatic && !found || !filter.excludeStatic && found;
+    return (filter.excludeStatic && !found) || (!filter.excludeStatic && found);
   } else if (filter.term) {
     return filter.operator.func(value, filter.term);
   } else if (filter.staticValue === true || filter.staticValue === ALL) {
@@ -122,14 +122,14 @@ export function expressionFilter(
   operator,
   term,
   staticValue,
-  excludeStatic,
+  excludeStatic
 ) {
   const expressionFilter = {
     fieldId,
     regexpMode: false,
     operator: Operators.get(operator),
     staticValue,
-    excludeStatic,
+    excludeStatic
   };
   if (term && operator && operator.regexpSupported) {
     if (isRegExp(term)) {

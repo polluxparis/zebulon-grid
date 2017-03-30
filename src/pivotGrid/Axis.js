@@ -1,4 +1,5 @@
 import Dimension from './Dimension';
+import { isNumber } from './utils/generic';
 
 /**
  * Axis types
@@ -10,15 +11,30 @@ export const AxisType = {
   ROWS: 2,
   DATA: 3,
   FIELDS: 4,
-  CHART: 5,
+  CHART: 5
 };
 
+export function toAxis(axisType) {
+  switch (axisType) {
+    case AxisType.COLUMNS:
+      return 'columns';
+    case AxisType.ROWS:
+      return 'rows';
+    default:
+      return '__AXIS_TYPE_UNKNOWN__';
+  }
+}
+
+export function toAxisType(axis) {
+  return AxisType[axis.toUpperCase()];
+}
+
 /**
- * Creates a new instance of an axe's dimensions list.
+ * Creates a new instance of an axi's dimensions list.
  * @class
- * @memberOf orb
+ * @memberOf pivotgrid
  * @param  {array} store - Parent pivot grid
- * @param  {orb.axe.Type} type - Axis type (rows, columns, data)
+ * @param  {pivotgrid.axe.Type} type - Axis type (rows, columns, data)
  */
 export class Axis {
   /**
@@ -30,7 +46,7 @@ export class Axis {
   constructor(type, fields, data) {
     /**
      * Axis type (rows, columns, data)
-     * @type {orb.axe.Type}
+     * @type {pivotgrid.axe.Type}
      */
     this.type = type;
 
@@ -42,7 +58,7 @@ export class Axis {
 
     /**
      * Root dimension
-     * @type {orb.dimension}
+     * @type {pivotgrid.dimension}
      */
     this.root = new Dimension(
       -1,
@@ -51,7 +67,7 @@ export class Axis {
       null,
       this.fields.length + 1,
       true,
-      false,
+      false
     );
     this.fill(data);
     // initial sort
@@ -68,7 +84,7 @@ export class Axis {
       } else {
         field.sort.order = 'desc';
       }
-    } else if (field.sort.order === null) {
+    } else if (!field.sort.order) {
       // If doNotToggle is true, fields without sort configuration are going to
       // be sorted in ascending order. This ensures that it is correctly recorded.
       field.sort.order = 'asc';
@@ -82,13 +98,19 @@ export class Axis {
       dimensions = this.getDimensionsByDepth(depth + 1);
     }
     dimensions.forEach(dimension => {
-      if (field.sort.customfunc !== null) {
-        dimension.values.sort(field.sort.customfunc);
-      } else {
-        dimension.values.sort();
-      }
-      if (field.sort.order === 'desc') {
-        dimension.values.reverse();
+      if (field.sort.order) {
+        if (field.sort.customfunc) {
+          dimension.values.sort(field.sort.customfunc);
+        } else {
+          if (isNumber(dimension.values[0])) {
+            dimension.values.sort((a, b) => a - b);
+          } else {
+            dimension.values.sort();
+          }
+        }
+        if (field.sort.order === 'desc') {
+          dimension.values.reverse();
+        }
       }
     });
   }
@@ -100,9 +122,8 @@ export class Axis {
       return [dim];
     }
     return [].concat(
-      ...Object.keys(dim.subdimvals)
-        .map(dimValue =>
-          this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])),
+      ...Object.keys(dim.subdimvals).map(dimValue =>
+        this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue]))
     );
   }
 
@@ -146,7 +167,7 @@ export class Axis {
                 field,
                 depth,
                 false,
-                findex === this.fields.length - 1,
+                findex === this.fields.length - 1
               );
               subdimvals[id] = dim;
               dim.rowIndexes = [];

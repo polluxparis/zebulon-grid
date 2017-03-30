@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 import {
-  Grid as ReactVirtualizedGrid,
+  Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
 
 import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';
 import DataCellComponent from '../DataCell';
+import { AXIS_SEPARATOR } from '../../constants';
 
 class DataCells extends PureComponent {
   constructor(props) {
@@ -23,7 +24,7 @@ class DataCells extends PureComponent {
     this.state = {
       cellsCache: {},
       selectedCellStart: null,
-      selectedCellEnd: null,
+      selectedCellEnd: null
     };
   }
 
@@ -42,9 +43,15 @@ class DataCells extends PureComponent {
     this.isUpdating = true;
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.isUpdating = false;
-    this.grid.recomputeGridSize();
+    if (
+      prevProps.zoom !== this.props.zoom ||
+      prevProps.sizes.leafs.rows !== this.props.sizes.leafs.rows ||
+      prevProps.sizes.leafs.columns !== this.props.sizes.leafs.columns
+    ) {
+      this.grid.recomputeGridSize();
+    }
   }
 
   componentDidUnMount() {
@@ -100,7 +107,7 @@ class DataCells extends PureComponent {
       ) {
         this.setState({
           selectedCellStart: [0, 0],
-          selectedCellEnd: [columnHeaders.length, rowHeaders.length],
+          selectedCellEnd: [columnHeaders.length, rowHeaders.length]
         });
       }
       e.preventDefault();
@@ -117,7 +124,7 @@ class DataCells extends PureComponent {
       const { selectedCellStart, selectedCellEnd } = this.state;
       this.props.copy({
         selectedCellStart,
-        selectedCellEnd,
+        selectedCellEnd
       });
     }
   }
@@ -131,14 +138,14 @@ class DataCells extends PureComponent {
       columnIndex,
       key,
       rowIndex,
-      style: position,
-    },
+      style
+    }
   ) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const {
       getCellValue,
       dataHeadersLocation,
-      customFunctions,
+      customFunctions
     } = this.props;
     const { rowHeaders, columnHeaders } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
@@ -150,23 +157,27 @@ class DataCells extends PureComponent {
       selected = isInRange(
         [columnIndex, rowIndex],
         selectedCellStart,
-        selectedCellEnd,
+        selectedCellEnd
       );
     }
 
+    // This causes all the data cells to be rendered when new cells are selected via mouse actions
+    // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
+    // bring complexity and this is good enough at the time.
     const cell = new DataCell(
       getCellValue,
       dataHeadersLocation,
       rowHeader,
       columnHeader,
-      customFunctions,
+      customFunctions
     );
-    const cellKey = `${rowHeader.key}-//-${columnHeader.key}`;
+    const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     this.datacellsCache[cellKey] = cell.value;
     let valueHasChanged = false;
     if (this.isUpdating) {
       const oldcell = this.state.cellsCache[cellKey];
-      if (oldcell !== undefined && cell.value !== oldcell) {
+      // NaN is not equal to NaN... hence the last condition
+      if (oldcell !== undefined && cell.value !== oldcell && !isNaN(oldcell)) {
         valueHasChanged = true;
       }
     }
@@ -174,7 +185,7 @@ class DataCells extends PureComponent {
       <DataCellComponent
         key={key}
         valueHasChanged={valueHasChanged}
-        position={position}
+        style={style}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         cell={cell}
@@ -198,13 +209,13 @@ class DataCells extends PureComponent {
       scrollToColumn,
       scrollToRow,
       onSectionRendered,
-      zoom,
+      zoom
     } = this.props;
     this.datacellsCache = {};
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
-        className="orb-data-cells"
+        className="pivotgrid-data-cells"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}

@@ -1,8 +1,7 @@
-import React, { PureComponent, PropTypes } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 
 /**
- * This HOC decorates a virtualized component and responds to arrow-key events
- by scrolling one row or column at a time.
+ * This HOC decorates a virtualized component and responds to arrow-key events by scrolling one row or column at a time.
  */
 export default class ArrowKeyStepper extends PureComponent {
   constructor(props, context) {
@@ -10,7 +9,7 @@ export default class ArrowKeyStepper extends PureComponent {
 
     this.state = {
       scrollToColumn: props.scrollToColumn,
-      scrollToRow: props.scrollToRow,
+      scrollToRow: props.scrollToRow
     };
 
     this.columnStartIndex = 0;
@@ -22,16 +21,38 @@ export default class ArrowKeyStepper extends PureComponent {
     this.onSectionRendered = this.onSectionRendered.bind(this);
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { scrollToColumn, scrollToRow } = nextProps;
 
-    if (this.props.scrollToColumn !== scrollToColumn) {
-      this.setState({ scrollToColumn });
-    }
+    const {
+      scrollToColumn: prevScrollToColumn,
+      scrollToRow: prevScrollToRow
+    } = this.props;
 
-    if (this.props.scrollToRow !== scrollToRow) {
+    if (
+      prevScrollToColumn !== scrollToColumn && prevScrollToRow !== scrollToRow
+    ) {
+      this.setState({
+        scrollToColumn,
+        scrollToRow
+      });
+    } else if (prevScrollToColumn !== scrollToColumn) {
+      this.setState({ scrollToColumn });
+    } else if (prevScrollToRow !== scrollToRow) {
       this.setState({ scrollToRow });
     }
+  }
+
+  setScrollIndexes(
+    {
+      scrollToColumn,
+      scrollToRow
+    }
+  ) {
+    this.setState({
+      scrollToRow,
+      scrollToColumn
+    });
   }
 
   onKeyDown(event) {
@@ -43,7 +64,7 @@ export default class ArrowKeyStepper extends PureComponent {
 
     const {
       scrollToColumn: scrollToColumnPrevious,
-      scrollToRow: scrollToRowPrevious,
+      scrollToRow: scrollToRowPrevious
     } = this.state;
 
     let { scrollToColumn, scrollToRow } = this.state;
@@ -84,7 +105,7 @@ export default class ArrowKeyStepper extends PureComponent {
           if (this.columnStopIndex + 1 < columnCount) {
             scrollToColumn = Math.min(
               this.columnStartIndex + 1,
-              columnCount - 1,
+              columnCount - 1
             );
           }
         } else if (mode === 'align:bottom-right') {
@@ -119,7 +140,7 @@ export default class ArrowKeyStepper extends PureComponent {
   }
 
   onSectionRendered(
-    { columnStartIndex, columnStopIndex, rowStartIndex, rowStopIndex },
+    { columnStartIndex, columnStopIndex, rowStartIndex, rowStopIndex }
   ) {
     this.columnStartIndex = columnStartIndex;
     this.columnStopIndex = columnStopIndex;
@@ -130,13 +151,12 @@ export default class ArrowKeyStepper extends PureComponent {
   render() {
     const { className, children } = this.props;
     const { scrollToColumn, scrollToRow } = this.state;
-
     return (
       <div className={className} onKeyDown={this.onKeyDown}>
         {children({
           onSectionRendered: this.onSectionRendered,
           scrollToColumn,
-          scrollToRow,
+          scrollToRow
         })}
       </div>
     );
@@ -148,7 +168,7 @@ ArrowKeyStepper.defaultProps = {
   mode: 'edges',
   scrollToColumn: 0,
   scrollToRow: 0,
-  className: '',
+  className: undefined
 };
 
 ArrowKeyStepper.propTypes = {
@@ -160,9 +180,9 @@ ArrowKeyStepper.propTypes = {
     'cells',
     'edges',
     'align:top-left',
-    'align:bottom-right',
+    'align:bottom-right'
   ]),
   rowCount: PropTypes.number.isRequired,
   scrollToColumn: PropTypes.number.isRequired,
-  scrollToRow: PropTypes.number.isRequired,
+  scrollToRow: PropTypes.number.isRequired
 };

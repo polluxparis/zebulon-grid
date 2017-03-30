@@ -6,18 +6,18 @@ const resizeHandleSpec = {
     return {
       id: props.id,
       axis: props.axis,
+      gridId: props.gridId,
       position: props.position,
       leafSubheaders: props.leafSubheaders,
-      previewSize: props.previewSize,
-      previewOffset: props.previewOffset,
+      previewSize: props.previewSize
     };
-  },
+  }
 };
 
 const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging(),
+  isDragging: monitor.isDragging()
 });
 
 const ResizeHandle = ({ position, size, connectDragSource }) => {
@@ -31,7 +31,7 @@ const ResizeHandle = ({ position, size, connectDragSource }) => {
           width: 4,
           height: size,
           cursor: 'col-resize',
-          opacity: 0,
+          opacity: 0
         }}
       />
     );
@@ -44,7 +44,7 @@ const ResizeHandle = ({ position, size, connectDragSource }) => {
           height: 4,
           width: size,
           cursor: 'row-resize',
-          opacity: 0,
+          opacity: 0
         }}
       />
     );
@@ -55,7 +55,7 @@ const ResizeHandle = ({ position, size, connectDragSource }) => {
 };
 
 export default DragSource(
-  'cell-resize-handle',
+  props => `cell-resize-handle--${props.gridId}`,
   resizeHandleSpec,
-  sourceCollect,
+  sourceCollect
 )(ResizeHandle);

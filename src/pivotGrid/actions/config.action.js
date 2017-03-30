@@ -1,43 +1,33 @@
 import { fieldFactory, datafieldFactory } from '../fields';
-// import { AxisType } from '../Axis';
 import {
   SET_FIELDS,
   SET_DATAFIELDS,
   SET_CONFIG_PROPERTY,
   TOGGLE_DATAFIELD,
   MOVE_FIELD,
+  ZOOM_IN,
+  ZOOM_OUT
 } from '../constants';
-
-// const axisTypeToString = (type) => {
-//   switch (type) {
-//     case AxisType.ROWS:
-//       return 'rows';
-//     case AxisType.COLUMNS:
-//       return 'columns';
-//     default:
-//       return 'fields';
-//   }
-// };
 
 export const setFields = configObject => ({
   type: SET_FIELDS,
-  fields: configObject.fields.map(field => fieldFactory(field)),
+  fields: configObject.fields.map(field => fieldFactory(field))
 });
 
 export const setDatafields = configObject => ({
   type: SET_DATAFIELDS,
-  datafields: configObject.datafields.map(field => datafieldFactory(field)),
+  datafields: configObject.datafields.map(field => datafieldFactory(field))
 });
 
 export const setConfigProperty = (configObject, property, defaultValue) => ({
   type: SET_CONFIG_PROPERTY,
   property,
-  value: configObject[property] || defaultValue,
+  value: configObject[property] || defaultValue
 });
 
 export const toggleDatafield = datafieldId => ({
   type: TOGGLE_DATAFIELD,
-  id: datafieldId,
+  id: datafieldId
 });
 
 export const moveField = (fieldId, oldAxis, newAxis, position) => ({
@@ -45,5 +35,8 @@ export const moveField = (fieldId, oldAxis, newAxis, position) => ({
   id: fieldId,
   oldAxis,
   newAxis,
-  position,
+  position
 });
+
+export const zoomIn = () => ({ type: ZOOM_IN });
+export const zoomOut = () => ({ type: ZOOM_OUT });

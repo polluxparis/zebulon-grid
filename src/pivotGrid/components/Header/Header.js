@@ -18,15 +18,15 @@ const Header = (
   {
     axis,
     getLastChildSize,
+    gridId,
     header,
     positionStyle,
     previewSizes,
-    previewOffsets,
     span,
     startIndex,
     scrollLeft,
-    scrollTop,
-  },
+    scrollTop
+  }
 ) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
@@ -34,7 +34,7 @@ const Header = (
   let style;
   if (span > 1 && x <= startIndex) {
     let offset;
-    const lastChildSize = getLastChildSize(axis, header);
+    const lastChildSize = getLastChildSize(header);
     if (axis === AxisType.COLUMNS) {
       offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
       style = { position: 'relative', left: offset };
@@ -62,7 +62,7 @@ const Header = (
   return (
     <div
       key={`fixed-${axis}-${x}-${y}`}
-      className="orb-cell orb-header orb-column-header"
+      className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
       style={{
         boxSizing: 'border-box',
         overflow: 'hidden',
@@ -70,7 +70,7 @@ const Header = (
         // backgroundColor: '#eef8fb',
         zIndex: 1,
         display: 'flex',
-        ...positionStyle,
+        ...positionStyle
       }}
     >
       {innerHeader}
@@ -81,16 +81,16 @@ const Header = (
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.height}
-        previewOffset={previewOffsets.right}
+        gridId={gridId}
       />
       <ResizeHandle
         position="bottom"
         size={width}
         id={axis === AxisType.ROWS ? leafHeaderId : dimensionId}
+        gridId={gridId}
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.width}
-        previewOffset={previewOffsets.bottom}
       />
     </div>
   );
@@ -114,11 +114,11 @@ const InnerHeader = ({ cell, style }) => {
   const computedStyle = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    ...style,
+    ...style
   };
 
   return (
-    <span className="orb-header-inner" style={computedStyle}>
+    <span className="pivotgrid-header-inner" style={computedStyle}>
       {value}
     </span>
   );

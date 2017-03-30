@@ -9,7 +9,7 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
       for (let i = 0; i < nTiti; i += 1) {
         for (let u = 0; u < nTutu; u += 1) {
           obj = {};
-          obj.toto = String(o);
+          obj.toto = o;
           obj.toto_lb = `toto ${String(o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
@@ -133,21 +133,29 @@ export const basicConfig = {
   ],
   datafields: [
     {
+      accessor: 'qty',
       id: 'qty',
       caption: 'Quantity',
-      aggregateFunc: 'sum'
+      aggregation: 'sum'
     },
     {
-      id: 'amt',
+      accessor: 'amt',
       caption: 'Amount',
-      aggregateFunc: 'sum',
-      aggregateFuncName: 'whatever',
-      formatFunc: value => {
+      aggregation: 'sum',
+      aggregationName: 'whatever',
+      format: value => {
         if (value || value === 0) {
           return `${Number(value).toFixed(0)} $`;
         }
         return '';
       }
+    },
+    {
+      id: 'price',
+      caption: 'Price',
+      aggregation: 'avg',
+      accessor: row => row.amt / row.qty,
+      format: value => Number(value).toFixed(2)
     }
   ],
   columns: ['Titi'],

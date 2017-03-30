@@ -4,31 +4,32 @@ import { AxisType } from '../Axis';
 import {
   getDimensionPositions,
   getDimensionSize,
-  getHeaderSizes,
-  getLastChildSize,
+  getRowHeadersWidth,
+  getLastChildSizeOnRows,
   getLayout,
   getPreviewSizes,
   getRowHeadersVisibleHeight,
   getRowHeight,
-  getRowUiAxis,
+  getRowUiAxis
 } from '../selectors';
 import RowHeaders from '../components/RowHeaders';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   columnCount: getLayout(state).rowHorizontalCount,
-  columnHeadersHeight: getHeaderSizes(state).columnHeadersHeight,
   dimensionPositions: getDimensionPositions(state),
   getColumnWidth: ({ index }) =>
     getDimensionSize(state)(AxisType.ROWS, state.axis.rows[index]),
   getDimensionSize: getDimensionSize(state),
-  getLastChildSize: getLastChildSize(state),
+  getLastChildSize: getLastChildSizeOnRows(state),
   getRowHeight: getRowHeight(state),
   height: getRowHeadersVisibleHeight(state),
   previewSizes: getPreviewSizes(state),
   rowCount: getLayout(state).rowVerticalCount,
   rowHeaders: getRowUiAxis(state).headers,
-  width: getHeaderSizes(state).rowHeadersWidth,
+  width: getRowHeadersWidth(state),
+  sizesRowsLeafs: state.sizes.leafs.rows,
   zoom: state.config.zoom,
+  gridId: ownProps.gridId
 });
 
 export default connect(mapStateToProps)(RowHeaders);

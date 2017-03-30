@@ -1,6 +1,6 @@
 import React, { PropTypes, PureComponent } from 'react';
 import {
-  Grid as ReactVirtualizedGrid,
+  Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
 
 import { AxisType } from '../../Axis';
@@ -15,8 +15,10 @@ class RowHeaders extends PureComponent {
     this.rowHeadersRenderer = this.rowHeadersRenderer.bind(this);
   }
 
-  componentDidUpdate() {
-    this.grid.recomputeGridSize();
+  componentDidUpdate(prevProps) {
+    if (prevProps.sizesRowsLeafs !== this.props.sizesRowsLeafs) {
+      this.grid.recomputeGridSize();
+    }
   }
 
   rowHeadersRenderer(
@@ -25,17 +27,17 @@ class RowHeaders extends PureComponent {
       rowStartIndex,
       rowStopIndex,
       scrollTop,
-      verticalOffsetAdjustment,
-    },
+      verticalOffsetAdjustment
+    }
   ) {
     const {
       rowHeaders,
-      columnHeadersHeight,
       columnCount,
       previewSizes,
       getLastChildSize,
       getDimensionSize,
       dimensionPositions,
+      gridId
     } = this.props;
 
     this.firstLeafHeader = rowHeaders[rowStartIndex][
@@ -63,7 +65,7 @@ class RowHeaders extends PureComponent {
       while (header.parent) {
         header = header.parent;
         const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(
-          header.x,
+          header.x
         );
         const span = header.vspan();
         const top = main.offset + verticalOffsetAdjustment;
@@ -75,11 +77,8 @@ class RowHeaders extends PureComponent {
           left,
           top,
           height,
-          width,
+          width
         };
-        const previewOffsets = {};
-        previewOffsets.right = top - scrollTop + columnHeadersHeight;
-        previewOffsets.bottom = left - 0;
         renderedCells.push(
           <HeaderComponent
             key={`header-${header.key}`}
@@ -91,9 +90,9 @@ class RowHeaders extends PureComponent {
             scrollLeft={0}
             scrollTop={scrollTop}
             previewSizes={previewSizes}
-            previewOffsets={previewOffsets}
             getLastChildSize={getLastChildSize}
-          />,
+            gridId={gridId}
+          />
         );
       }
     }
@@ -111,7 +110,7 @@ class RowHeaders extends PureComponent {
           const height = getHeaderSize(
             rowSizeAndPositionManager,
             rowIndex,
-            span,
+            span
           );
           // 3 cases: normal dimension header, measure header or total header
           let width;
@@ -133,11 +132,8 @@ class RowHeaders extends PureComponent {
             left,
             top,
             height,
-            width,
+            width
           };
-          const previewOffsets = {};
-          previewOffsets.right = top - scrollTop + columnHeadersHeight;
-          previewOffsets.bottom = left - 0;
           return (
             <HeaderComponent
               key={`header-${header.key}`}
@@ -149,11 +145,11 @@ class RowHeaders extends PureComponent {
               scrollLeft={0}
               scrollTop={scrollTop}
               previewSizes={previewSizes}
-              previewOffsets={previewOffsets}
               getLastChildSize={getLastChildSize}
+              gridId={gridId}
             />
           );
-        }),
+        })
       );
     }
     return renderedCells;
@@ -168,13 +164,13 @@ class RowHeaders extends PureComponent {
       rowCount,
       scrollTop,
       height,
-      width,
+      width
     } = this.props;
     return (
       <ReactVirtualizedGrid
         cellRangeRenderer={this.rowHeadersRenderer}
         cellRenderer={function mock() {}}
-        className="orb-row-headers"
+        className="pivotgrid-row-headers"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
         height={height}
@@ -191,7 +187,7 @@ class RowHeaders extends PureComponent {
         style={{
           fontSize: `${zoom * 100}%`,
           overflowX: 'hidden',
-          overflowY: 'hidden',
+          overflowY: 'hidden'
         }}
         width={width}
       />
@@ -205,13 +201,13 @@ RowHeaders.propTypes = {
     PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader),
-      ]),
-    ),
+        PropTypes.instanceOf(DataHeader)
+      ])
+    )
   ).isRequired,
   dimensionPositions: PropTypes.shape({
     columns: PropTypes.objectOf(PropTypes.number),
-    rows: PropTypes.objectOf(PropTypes.number),
+    rows: PropTypes.objectOf(PropTypes.number)
   }).isRequired,
   getColumnWidth: PropTypes.func.isRequired,
   getDimensionSize: PropTypes.func.isRequired,
@@ -220,10 +216,9 @@ RowHeaders.propTypes = {
   height: PropTypes.number.isRequired,
   previewSizes: PropTypes.objectOf(PropTypes.number).isRequired,
   rowCount: PropTypes.number.isRequired,
-  columnHeadersHeight: PropTypes.number.isRequired,
   scrollTop: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
-  zoom: PropTypes.number.isRequired,
+  zoom: PropTypes.number.isRequired
 };
 
 export default RowHeaders;

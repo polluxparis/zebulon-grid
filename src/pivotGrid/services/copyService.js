@@ -17,13 +17,13 @@ function getSelectedText(
     rowHeaders,
     columnDimensionHeaders,
     rowDimensionHeaders,
-    customFunctions,
-  },
+    customFunctions
+  }
 ) {
   // Build rows headers array
   const rowsRange = [
     Math.min(selectedCellStart[1], selectedCellEnd[1]),
-    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1,
+    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1
   ];
   const rowHeaderLeafs = rowHeaders
     .slice(...rowsRange)
@@ -41,7 +41,7 @@ function getSelectedText(
   // Build columns headers array
   const columnsRange = [
     Math.min(selectedCellStart[0], selectedCellEnd[0]),
-    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1,
+    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1
   ];
   const columnHeaderLeafs = columnHeaders
     .slice(...columnsRange)
@@ -57,23 +57,24 @@ function getSelectedText(
   });
 
   // Build data array
-  const cells = rowHeaderLeafs.map(rowHeader => columnHeaderLeafs
-    // get getCellValue from the store
-    // maybe better to go without datacell and get caption directly
-    // be careful about rendering function though
-    .map(
-      columnHeader =>
-        new DataCell(
-          getCellValue,
-          true,
-          rowHeader,
-          columnHeader,
-          customFunctions,
-        ).caption,
-    ));
+  const cells = rowHeaderLeafs.map(rowHeader =>
+    columnHeaderLeafs
+      // get getCellValue from the store
+      // maybe better to go without datacell and get caption directly
+      // be careful about rendering function though
+      .map(
+        columnHeader =>
+          new DataCell(
+            getCellValue,
+            true,
+            rowHeader,
+            columnHeader,
+            customFunctions
+          ).value
+      ));
   const rowDimensions = rowDimensionHeaders.map(header => header.value.caption);
   const columnDimensions = columnDimensionHeaders.map(
-    header => header.value.caption,
+    header => header.value.caption
   );
 
   // Format data to text
@@ -103,7 +104,7 @@ function getSelectedText(
     output = columns.reduce(
       (accumulator, column) =>
         `${accumulator}${replaceNullAndUndefined(column[y])}\t`,
-      output,
+      output
     );
     output = output.slice(0, -1);
     output += '\n';
@@ -133,8 +134,8 @@ export default function copy(
     dataHeadersLocation,
     columnDimensionHeaders,
     rowDimensionHeaders,
-    customFunctions,
-  },
+    customFunctions
+  }
 ) {
   try {
     const bodyElement = document.getElementsByTagName('body')[0];
@@ -151,14 +152,14 @@ export default function copy(
       dataHeadersLocation,
       columnDimensionHeaders,
       rowDimensionHeaders,
-      customFunctions,
+      customFunctions
     });
     clipboardTextArea.select();
     window.setTimeout(
       () => {
         bodyElement.removeChild(clipboardTextArea);
       },
-      0,
+      0
     );
   } catch (error) {
     console.error('error during copy', error);

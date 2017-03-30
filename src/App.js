@@ -1,82 +1,37 @@
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import 'react-virtualized/styles.css';
-import 'react-resizable/css/styles.css';
-import { ResizableBox } from 'react-resizable';
-import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-
-import { PivotGrid } from './pivotGrid';
-import './App.css';
-
-let i = 0;
+import PivotGridDemo from './PivotGrid.demo';
+import WrappedGridDemo from './WrappedGrid.demo';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { data: props.data };
-
-    this.addData = this.addData.bind(this);
-    this.moveField = this.moveField.bind(this);
-    this.toggleDatafield = this.toggleDatafield.bind(this);
+  constructor() {
+    super();
+    this.state = { demo: 'pivotGrid' };
+    this.handleChange = this.handleChange.bind(this);
   }
-
-  addData() {
-    this.grid.pushData([
-      {
-        toto: '0',
-        toto_lb: 'toto 0',
-        qty: 100,
-        amt: 100,
-        titi: 'titi 0',
-        tutu: '0',
-      },
-    ]);
-    // this.setState({ pushData: [
-    //   // ...this.state.data,
-    //   { toto: '0', toto_lb: 'toto 0', qty: 100, amt: 100, titi: 'titi 0', tutu: '0' },
-    // ],
-    // });
+  handleChange(e) {
+    this.setState({ demo: e.target.value });
   }
-
-  moveField() {
-    if (i % 2) {
-      this.grid.moveField('tutu', 'columns', 'rows', 1);
-    } else {
-      this.grid.moveField('tutu', 'rows', 'columns', 1);
-    }
-    i += 1;
-  }
-
-  toggleDatafield() {
-    this.grid.toggleDatafield('amt');
-  }
-
   render() {
+    let grid = null;
+    if (this.state.demo === 'pivotGrid') {
+      grid = <PivotGridDemo />;
+    } else if (this.state.demo === 'wrappedGrid') {
+      grid = <WrappedGridDemo />;
+    }
     return (
       <div>
-        {}
-        <ResizableBox
-          height={this.props.config.height}
-          width={this.props.config.width}
-        >
-          <AutoSizer>
-            {({ height, width }) => (
-              <PivotGrid
-                customFunctions={this.props.customFunctions}
-                height={height}
-                width={width}
-                drilldown={cell => {
-                  console.log('drilldown', cell);
-                }}
-              />
-            )}
-          </AutoSizer>
-        </ResizableBox>
-        {}
+        <select onChange={this.handleChange} defaultValue={this.state.demo}>
+          <option value="pivotGrid">
+            Pivot Grid
+          </option>
+          <option value="wrappedGrid">
+            Wrapped Grid
+          </option>
+        </select>
+        {grid}
       </div>
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(App);
+export default App;

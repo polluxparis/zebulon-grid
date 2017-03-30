@@ -1,18 +1,5 @@
-import { AxisType } from './Axis';
 import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
 import { KEY_SEPARATOR } from './constants';
-
-function getDataFieldsCount(
-  { axisType, dataHeadersLocation, activatedDataFieldsCount },
-) {
-  if (
-    dataHeadersLocation === 'columns' && axisType === AxisType.COLUMNS ||
-    dataHeadersLocation === 'rows' && axisType === AxisType.ROWS
-  ) {
-    return activatedDataFieldsCount;
-  }
-  return 0;
-}
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
@@ -40,23 +27,23 @@ export const keyToIndex = (headers, key) => {
 /**
  * Creates a new instance of rows/columns ui properties.
  * @class
- * @memberOf orb.ui
- * @param  {orb.axe} axe - axe containing all dimensions.
+ * @memberOf pivotgrid.ui
+ * @param  {pivotgrid.axe} axe - axe containing all dimensions.
  */
 export default class AxisUi {
   constructor(axis, config, crossAxisFieldsCode) {
     const {
-      dataHeadersLocation,
-      activatedDataFieldsCount,
-      activatedDataFields,
+      activatedDatafieldsCount,
+      activatedDatafields
     } = config;
-    this.datafieldsCount = getDataFieldsCount({
-      axisType: axis.type,
-      dataHeadersLocation,
-      activatedDataFieldsCount,
-    });
+    this.datafieldsCount = activatedDatafieldsCount;
+    // this.datafieldsCount = getDatafieldsCount({
+    //   axisType: axis.type,
+    //   dataHeadersLocation,
+    //   activatedDatafieldsCount
+    // });
 
-    this.hasDataFields = this.datafieldsCount >= 1;
+    this.hasDatafields = this.datafieldsCount >= 1;
     /**
      * Headers render properties
      * @type {Array}
@@ -82,15 +69,14 @@ export default class AxisUi {
           infos: headers,
           dimension: axis.root,
           axisType: axis.type,
-          dataHeadersLocation,
-          activatedDataFields,
-          activatedDataFieldsCount,
+          activatedDatafields,
+          activatedDatafieldsCount
         });
       }
 
       if (headers.length === 0) {
         headers.push([
-          grandtotalHeader = new Header(
+          (grandtotalHeader = new Header(
             axis.type,
             HeaderType.GRAND_TOTAL,
             axis.root,
@@ -99,8 +85,8 @@ export default class AxisUi {
             this.x,
             (y = 0),
             null,
-            crossAxisFieldsCode,
-          ),
+            crossAxisFieldsCode
+          ))
         ]);
       }
 
@@ -111,21 +97,20 @@ export default class AxisUi {
           infos: headers,
           parent: grandtotalHeader,
           y: y + 1,
-          dataHeadersLocation,
-          activatedDataFields,
-          activatedDataFieldsCount,
+          activatedDatafields,
+          activatedDatafieldsCount
         });
       }
     }
     this.headers = headers;
     this.dimensionHeaders = axis.fields.map(
-      field => new DimensionHeader(axis.type, field),
+      field => new DimensionHeader(axis.type, field)
     );
   }
 
   /**
   * Fills the infos array given in argument with the dimension layout infos as row.
-  * @param  {orb.dimension}  dimension - the dimension to get ui info for
+  * @param  {pivotgrid.dimension}  dimension - the dimension to get ui info for
   * @param  {object}  infos - array to fill with ui dimension info
   * @param  {number}  axisType - type of the axe (rows or columns)
   */
@@ -134,11 +119,10 @@ export default class AxisUi {
       infos,
       dimension,
       axisType,
-      dataHeadersLocation,
-      activatedDataFields,
-      activatedDataFieldsCount,
-      y = 0,
-    },
+      activatedDatafields,
+      activatedDatafieldsCount,
+      y = 0
+    }
   ) {
     if (dimension.values.length > 0) {
       const infosMaxIndex = infos.length - 1;
@@ -165,7 +149,7 @@ export default class AxisUi {
             parent,
             this.datafieldsCount,
             this.x,
-            y,
+            y
           );
         } else {
           subTotalHeader = null;
@@ -179,11 +163,11 @@ export default class AxisUi {
           this.datafieldsCount,
           this.x,
           y,
-          subTotalHeader,
+          subTotalHeader
         );
 
         if (valIndex > 0) {
-          infos.push(lastInfosArray = []);
+          infos.push((lastInfosArray = []));
         }
 
         lastInfosArray.push(newHeader);
@@ -194,9 +178,8 @@ export default class AxisUi {
             dimension: subdim,
             axisType,
             y: y + 1,
-            dataHeadersLocation,
-            activatedDataFields,
-            activatedDataFieldsCount,
+            activatedDatafields,
+            activatedDatafieldsCount
           });
           if (subdim.field.subTotal.visible) {
             infos.push([subTotalHeader]);
@@ -206,11 +189,10 @@ export default class AxisUi {
             this.addDataHeaders({
               axisType,
               infos,
-              activatedDataFields,
-              activatedDataFieldsCount,
-              dataHeadersLocation,
+              activatedDatafields,
+              activatedDatafieldsCount,
               parent: subTotalHeader,
-              y: y + 1,
+              y: y + 1
             });
           }
         } else {
@@ -218,11 +200,10 @@ export default class AxisUi {
           this.addDataHeaders({
             axisType,
             infos,
-            activatedDataFields,
-            activatedDataFieldsCount,
-            dataHeadersLocation,
+            activatedDatafields,
+            activatedDatafieldsCount,
             parent: newHeader,
-            y: y + 1,
+            y: y + 1
           });
         }
       }
@@ -232,31 +213,23 @@ export default class AxisUi {
 
   addDataHeaders(
     {
+      axisType,
       infos,
       parent,
-      dataHeadersLocation,
-      activatedDataFields,
-      y,
-    },
+      activatedDatafields,
+      y
+    }
   ) {
-    if (this.hasDataFields) {
+    if (this.hasDatafields) {
       let lastInfosArray = infos[infos.length - 1];
-      activatedDataFields.forEach((datafield, index) => {
-        lastInfosArray.push(new DataHeader(
-          (dataHeadersLocation === 'columns'
-            ? AxisType.COLUMNS
-            : AxisType.ROWS),
-          datafield,
-          parent,
-          (this.x += 1),
-          y,
-        ));
+      activatedDatafields.forEach((datafield, index) => {
+        lastInfosArray.push(
+          new DataHeader(axisType, datafield, parent, (this.x += 1), y)
+        );
         if (index < this.datafieldsCount - 1) {
-          infos.push(lastInfosArray = []);
+          infos.push((lastInfosArray = []));
         }
       });
-      // for (let [index, datafield] of activatedDataFields.entries()) {
-      // }
     } else {
       this.x += 1;
     }

@@ -1,4 +1,4 @@
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { DropTarget } from 'react-dnd';
 
@@ -21,13 +21,13 @@ function getNextKey(current, next) {
   if (current.fields.length > next.fields.length) {
     const nextFieldIds = next.fields.map(field => field.id);
     const missingFieldPosition = current.fields.findIndex(
-      field => !nextFieldIds.includes(field.id),
+      field => !nextFieldIds.includes(field.id)
     );
     nextKey = keys.slice(0, missingFieldPosition).join(KEY_SEPARATOR);
   } else if (current.fields.length < next.fields.length) {
     const previousFieldIds = current.fields.map(field => field.id);
     const newFieldPosition = next.fields.findIndex(
-      field => !previousFieldIds.includes(field.id),
+      field => !previousFieldIds.includes(field.id)
     );
     nextKey = keys.slice(0, newFieldPosition).join(KEY_SEPARATOR);
   } else if (current.dataFieldsCount !== next.dataFieldsCount) {
@@ -41,7 +41,7 @@ function getNextKey(current, next) {
   return nextKey;
 }
 
-class PivotGrid extends PureComponent {
+class PivotGrid extends Component {
   constructor(props) {
     super(props);
     this.rowStartIndex = 0;
@@ -69,7 +69,7 @@ class PivotGrid extends PureComponent {
       const nextFirstHeaderKey = getNextKey(current, next);
       nextColumnStartIndex = keyToIndex(
         nextProps.columnHeaders,
-        nextFirstHeaderKey,
+        nextFirstHeaderKey
       );
     }
     // If keyToIndex does not find the key in the headers, it returns -1
@@ -105,17 +105,19 @@ class PivotGrid extends PureComponent {
       layout,
       customFunctions,
       drilldown,
+      id: gridId
     } = this.props;
 
     const {
       columnHorizontalCount,
-      rowVerticalCount,
+      rowVerticalCount
     } = layout;
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
-      <div style={{ width }}>
-        <DragLayer />
+      // Position must be relative so that the absolutely positioned DragLayer behaves correctly
+      <div style={{ width, position: 'relative' }}>
+        <DragLayer gridId={gridId} />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
           mode="align:top-left"
@@ -126,11 +128,13 @@ class PivotGrid extends PureComponent {
           {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
             <ScrollSync>
               {({ onScroll, scrollLeft, scrollTop }) => (
-                <div className="orb-pivotgrid">
+                <div className="pivotgrid-pivotgrid">
                   <div style={{ display: 'flex' }}>
-                    <DimensionHeaders />
+                    <DimensionHeaders gridId={gridId} />
                     <ColumnHeaders
+                      gridId={gridId}
                       scrollLeft={scrollLeft}
+                      scrollToColumn={scrollToColumn}
                       ref={ref => {
                         this.columnHeaders = ref;
                       }}
@@ -139,6 +143,8 @@ class PivotGrid extends PureComponent {
                   <div style={{ display: 'flex' }}>
                     <RowHeaders
                       scrollTop={scrollTop}
+                      // scrollToRow={scrollToRow}
+                      gridId={gridId}
                       ref={ref => {
                         this.rowHeaders = ref;
                       }}
@@ -146,7 +152,7 @@ class PivotGrid extends PureComponent {
                     <DataCells
                       customFunctions={customFunctions}
                       onSectionRendered={this.handleSectionRendered(
-                        onSectionRendered,
+                        onSectionRendered
                       )}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
@@ -159,7 +165,7 @@ class PivotGrid extends PureComponent {
             </ScrollSync>
           )}
         </ArrowKeyStepper>
-      </div>,
+      </div>
     );
   }
 }
@@ -170,11 +176,11 @@ const gridSpec = {
     const initialOffset = monitor.getInitialClientOffset();
     const offset = monitor.getClientOffset();
     component.props.updateCellSize({ handle, offset, initialOffset });
-  },
+  }
 };
 
 const collect = connect => ({
-  connectDropTarget: connect.dropTarget(),
+  connectDropTarget: connect.dropTarget()
 });
 
 PivotGrid.propTypes = {
@@ -183,36 +189,43 @@ PivotGrid.propTypes = {
     PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader),
-      ]),
-    ),
+        PropTypes.instanceOf(DataHeader)
+      ])
+    )
   ).isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   customFunctions: PropTypes.shape({
     aggregation: PropTypes.object,
     format: PropTypes.object,
-    sort: PropTypes.object,
+    sort: PropTypes.object
   }).isRequired,
   dataFieldsCount: PropTypes.number.isRequired,
   drilldown: PropTypes.func.isRequired,
-  height: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   layout: PropTypes.shape({
     columnHorizontalCount: PropTypes.number,
     columnVerticalCount: PropTypes.number,
     rowHorizontalCount: PropTypes.number,
-    rowVerticalCount: PropTypes.number,
+    rowVerticalCount: PropTypes.number
   }).isRequired,
   rowFields: PropTypes.arrayOf(PropTypes.object).isRequired,
   rowHeaders: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.oneOfType([
         PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader),
-      ]),
-    ),
+        PropTypes.instanceOf(DataHeader)
+      ])
+    )
   ).isRequired,
   setSizes: PropTypes.func.isRequired,
-  width: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired
 };
 
-export default DropTarget('cell-resize-handle', gridSpec, collect)(PivotGrid);
+PivotGrid.defaultProps = { id: 0 };
+
+// Add grid id to the type to ensure only correct drop target is used
+export default DropTarget(
+  props => `cell-resize-handle--${props.id || 0}`,
+  gridSpec,
+  collect
+)(PivotGrid);
