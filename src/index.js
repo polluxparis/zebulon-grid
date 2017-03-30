@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+/* eslint-disable import/no-extraneous-dependencies*/
 import Perf from 'react-addons-perf'; // ES6
 import { TestRunner } from 'fps-measurer';
+/* eslint-enable */
 
 import './pivotGrid/index.css';
 

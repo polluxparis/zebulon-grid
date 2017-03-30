@@ -162,6 +162,8 @@ export default function copy(
       0
     );
   } catch (error) {
+    /* eslint-disable no-console */
     console.error('error during copy', error);
+    /* eslint-enable */
   }
 }

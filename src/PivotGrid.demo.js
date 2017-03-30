@@ -3,9 +3,11 @@ import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import 'react-virtualized/styles.css';
+import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
+/* eslint-disable import/no-extraneous-dependencies*/
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
-import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
+/* eslint-enable */
 
 import { createStore } from 'redux';
 import PivotGrid, { reducer, hydrateStore, actions } from './pivotGrid';
@@ -22,7 +24,7 @@ class PivotGridDemo extends Component {
 
     const store = createStore(
       reducer,
-      /* eslint-disable no-dangling-underscore */
+      /* eslint-disable no-underscore-dangle */
       window.__REDUX_DEVTOOLS_EXTENSION__ &&
         window.__REDUX_DEVTOOLS_EXTENSION__()
       /* eslint-enable */

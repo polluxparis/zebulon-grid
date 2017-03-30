@@ -236,7 +236,7 @@ describe('WrappedGrid', () => {
     // Not sure how to make this work, too complicated for too little value
     // describe('data updates', () => {
     //   test('highlight cells', () => {
-    //const observableDatasource = getObservableMockDatasource();
+    //     const observableDatasource = getObservableMockDatasource();
     //     const tree = renderer.create(<WrappedGrid ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
     //     expect(tree).toMatchSnapshot();
     //   });

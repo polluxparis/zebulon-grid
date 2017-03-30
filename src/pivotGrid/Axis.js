@@ -104,9 +104,8 @@ export class Axis {
         } else {
           if (isNumber(dimension.values[0])) {
             dimension.values.sort((a, b) => a - b);
-          } else {
-            dimension.values.sort();
           }
+          dimension.values.sort();
         }
         if (field.sort.order === 'desc') {
           dimension.values.reverse();

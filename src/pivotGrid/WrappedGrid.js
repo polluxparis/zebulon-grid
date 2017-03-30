@@ -29,7 +29,7 @@ class WrappedGrid extends Component {
 }
 
 Object.keys(actions).forEach(action => {
-  WrappedGrid.prototype[action] = function(...args) {
+  WrappedGrid.prototype[action] = function action(...args) {
     this.store.dispatch(actions[action](...args));
   };
 });

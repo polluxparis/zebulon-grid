@@ -43,18 +43,6 @@ export default class ArrowKeyStepper extends PureComponent {
     }
   }
 
-  setScrollIndexes(
-    {
-      scrollToColumn,
-      scrollToRow
-    }
-  ) {
-    this.setState({
-      scrollToRow,
-      scrollToColumn
-    });
-  }
-
   onKeyDown(event) {
     const { columnCount, disabled, mode, rowCount } = this.props;
 
@@ -148,17 +136,33 @@ export default class ArrowKeyStepper extends PureComponent {
     this.rowStopIndex = rowStopIndex;
   }
 
+  setScrollIndexes(
+    {
+      scrollToColumn,
+      scrollToRow
+    }
+  ) {
+    this.setState({
+      scrollToRow,
+      scrollToColumn
+    });
+  }
+
   render() {
     const { className, children } = this.props;
     const { scrollToColumn, scrollToRow } = this.state;
     return (
-      <div className={className} onKeyDown={this.onKeyDown}>
-        {children({
-          onSectionRendered: this.onSectionRendered,
-          scrollToColumn,
-          scrollToRow
-        })}
-      </div>
+      /* eslint-disable jsx-a11y/no-static-element-interactions */
+      (
+        <div className={className} onKeyDown={this.onKeyDown}>
+          {children({
+            onSectionRendered: this.onSectionRendered,
+            scrollToColumn,
+            scrollToRow
+          })}
+        </div>
+      )
+      /* eslint-enable */
     );
   }
 }

@@ -15,6 +15,8 @@ const mapAxisTypeToLabel = axisType => {
       throw new Error(`Axis type ${axisType} not supported`);
   }
 };
+
+/* eslint-disable import/prefer-default-export */
 export const updateCellSize = (
   {
     handle,
@@ -59,3 +61,4 @@ export const updateCellSize = (
     direction
   };
 };
+/* eslint-enable */

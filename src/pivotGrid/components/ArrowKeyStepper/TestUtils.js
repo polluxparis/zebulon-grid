@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
  * This helper method renders components to a transient node that is destroyed after the test completes.
  * Note that rendering twice within the same test method will update the same element (rather than recreate it).
  */
+/* eslint-disable import/prefer-default-export, react/no-render-return-value */
 export function render(markup) {
   if (!render.mountNode) {
     render.mountNode = document.createElement('div');
@@ -17,6 +18,7 @@ export function render(markup) {
 
   return ReactDOM.render(markup, render.mountNode);
 }
+/* eslint-enable */
 
 /**
  * The render() method auto-unmounts components after each test has completed.

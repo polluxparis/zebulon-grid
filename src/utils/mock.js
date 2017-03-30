@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies*/
 import { Observable } from 'rx-lite';
+/* eslint-enable */
 
 export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   const nTutu = 2;

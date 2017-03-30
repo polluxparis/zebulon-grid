@@ -92,9 +92,13 @@ export function stdev(accessor, intersection, data) {
 export function stdevp(accessor, intersection, data) {
   return Math.sqrt(calcVariance(accessor, intersection, data, true));
 }
+
+/* eslint-disable no-underscore-dangle */
 export function _var(accessor, intersection, data) {
   return calcVariance(accessor, intersection, data, false);
 }
+/* eslint-enable */
+
 export function varp(accessor, intersection, data) {
   return calcVariance(accessor, intersection, data, true);
 }
