@@ -2,3 +2,10 @@ build
 src
 coverage
 public
+.vscode
+.chrome
+specs
+docs
+config
+webpack.config.umd.js
+yarn.lock

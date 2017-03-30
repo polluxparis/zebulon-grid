@@ -9,11 +9,13 @@ import {
   getColumnWidth,
   getRowHeight,
   getCellValue,
- } from '../selectors';
+  getCellInfos
+} from '../selectors';
 import DataCells from '../components/DataCells';
 import copy from '../services/copyService';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { customFunctions } = ownProps;
   const rowUiAxis = getRowUiAxis(state);
   const columnUiAxis = getColumnUiAxis(state);
   const rowDimensionHeaders = rowUiAxis.dimensionHeaders;
@@ -21,29 +23,33 @@ const mapStateToProps = (state) => {
   const rowHeaders = rowUiAxis.headers;
   const columnHeaders = columnUiAxis.headers;
   const dataHeadersLocation = state.config.dataHeadersLocation;
-  return ({
+  return {
     columnCount: getLayout(state).columnHorizontalCount,
     columnHeaders,
-    copy: ({ selectedCellStart, selectedCellEnd }) => copy({
-      columnDimensionHeaders,
-      columnHeaders,
-      dataHeadersLocation,
-      getCellValue: getCellValue(state),
-      rowDimensionHeaders,
-      rowHeaders,
-      selectedCellEnd,
-      selectedCellStart,
-    }),
+    copy: ({ selectedCellStart, selectedCellEnd }) =>
+      copy({
+        columnDimensionHeaders,
+        columnHeaders,
+        dataHeadersLocation,
+        getCellValue: getCellValue(state),
+        rowDimensionHeaders,
+        rowHeaders,
+        selectedCellEnd,
+        selectedCellStart,
+        customFunctions
+      }),
     dataHeadersLocation,
     getCellValue: getCellValue(state),
+    getCellInfos: getCellInfos(state),
     getColumnWidth: getColumnWidth(state),
     getRowHeight: getRowHeight(state),
     height: getDataCellsHeight(state),
     rowCount: getLayout(state).rowVerticalCount,
     rowHeaders,
+    sizes: state.sizes,
     width: getDataCellsWidth(state),
-    zoom: state.config.zoom,
-  });
+    zoom: state.config.zoom
+  };
 };
 
 export default connect(mapStateToProps)(DataCells);

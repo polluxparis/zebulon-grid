@@ -1,5 +1,5 @@
 import { AxisType } from './Axis';
-import { KEY_SEPARATOR } from './constants';
+import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from './constants';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -11,11 +11,11 @@ export const HeaderType = {
   SUB_TOTAL: 7,
   GRAND_TOTAL: 8,
   DIMENSION_HEADER: 9,
-  getHeaderClass(headerType, axetype) {
+  getHeaderClass(headerType, axisType) {
     let cssclass;
-    if (axetype === AxisType.ROWS) {
+    if (axisType === AxisType.ROWS) {
       cssclass = 'header-row';
-    } else if (axetype === AxisType.COLUMNS) {
+    } else if (axisType === AxisType.COLUMNS) {
       cssclass = 'header-col';
     } else {
       cssclass = '';
@@ -65,13 +65,12 @@ export const HeaderType = {
         }
     }
     return cssclass;
-  },
+  }
 };
 
 class CellBase {
-
   constructor(options) {
-    // CellBase is an abstract class
+    // // CellBase is an abstract class
     // Symbol new.target does not pass in Uglify.js
     // if (new.target === CellBase) {
     //   throw new Error('CellBase is an abstract class and cannot be instantiated directly.')
@@ -79,9 +78,9 @@ class CellBase {
 
     /**
      * axe type (COLUMNS, ROWS, DATA, ...)
-     * @type {orb.AxisType}
+     * @type {pivotgrid.AxisType}
      */
-    this.axetype = options.axetype;
+    this.axisType = options.axisType;
     /**
      * cell type (EMPTY, DATA_VALUE, FIELD_BUTTON, INNER, WRAPPER, SUB_TOTAL, GRAND_TOTAL, ...)
      * @type {HeaderType}
@@ -123,24 +122,22 @@ class CellBase {
      */
     this.visible = options.isvisible || (() => true);
 
-    this.key = this.axetype + this.type + this.value;
+    this.key = this.axisType + this.type + this.value;
   }
-
 }
 
 /**
  * Creates a new instance of a row header.
  * @class
- * @memberOf orb.ui
- * @param  {orb.ui.rowHeader} parent - parent header.
- * @param  {orb.dimension} dim - related dimension values container.
+ * @memberOf pivotgrid.ui
+ * @param  {pivotgrid.ui.rowHeader} parent - parent header.
+ * @param  {pivotgrid.dimension} dim - related dimension values container.
  * @param  {HeaderType} type - header type (INNER, WRAPPER, SUB_TOTAL, GRAND_TOTAL).
- * @param  {orb.ui.rowHeader} totalHeader - sub total or grand total related header.
+ * @param  {pivotgrid.ui.rowHeader} totalHeader - sub total or grand total related header.
  */
 export class Header extends CellBase {
-
   constructor(
-    axetype,
+    axisType,
     headerTypeP,
     dim,
     parent,
@@ -148,10 +145,11 @@ export class Header extends CellBase {
     x,
     y,
     subtotalHeader,
-    crossAxisFieldsCode = [],
+    crossAxisFieldsCode = []
   ) {
-    const isOnRowAxis = axetype === AxisType.ROWS;
-    const headerType = headerTypeP || (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
+    const isOnRowAxis = axisType === AxisType.ROWS;
+    const headerType = headerTypeP ||
+      (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
     let value;
     let hspan;
     let vspan;
@@ -162,28 +160,32 @@ export class Header extends CellBase {
         value = 'Total';
         hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1;
-        key = `__total__-//-${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
+        key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
         break;
       case HeaderType.SUB_TOTAL:
         value = dim.caption;
         hspan = isOnRowAxis ? dim.depth : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth;
-        key = parent ? `${parent.key}-/-${value}` : value;
+        key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
         break;
       default:
         value = dim.caption;
         hspan = isOnRowAxis ? 1 : null;
         vspan = isOnRowAxis ? null : 1;
-        key = parent ? `${parent.key}-/-${value}` : value;
+        key = parent
+          ? `${parent.key}${KEY_SEPARATOR}${dim.id}`
+          : String(dim.id);
         break;
     }
 
     const options = {
-      axetype,
+      axisType,
       type: headerType,
-      template: isOnRowAxis ? 'cell-template-row-header' : 'cell-template-column-header',
+      template: isOnRowAxis
+        ? 'cell-template-row-header'
+        : 'cell-template-column-header',
       value,
-      cssclass: HeaderType.getHeaderClass(headerType, axetype),
+      cssclass: HeaderType.getHeaderClass(headerType, axisType)
     };
 
     super(options);
@@ -240,24 +242,25 @@ export class Header extends CellBase {
       }
       return true;
     }
-    const isexpanded = this.dim.isRoot
-    || this.dim.isLeaf
-    || !this.dim.field.subTotal.visible
-    || this.subtotalHeader.expanded;
+    const isexpanded = this.dim.isRoot ||
+      this.dim.isLeaf ||
+      !this.dim.field.subTotal.visible ||
+      this.subtotalHeader.expanded;
     if (!isexpanded) {
       return false;
     }
 
     let par = this.parent;
     while (
-      par != null
-      && (
-        !par.dim.field.subTotal.visible
-        || (par.subtotalHeader != null && par.subtotalHeader.expanded)
-      )) {
+      par != null &&
+      (!par.dim.field.subTotal.visible ||
+        (par.subtotalHeader != null && par.subtotalHeader.expanded))
+    ) {
       par = par.parent;
     }
-    return par == null || par.subtotalHeader == null ? isexpanded : par.subtotalHeader.expanded;
+    return par == null || par.subtotalHeader == null
+      ? isexpanded
+      : par.subtotalHeader.expanded;
   }
 
   calcSpan(ignoreVisibility) {
@@ -273,20 +276,22 @@ export class Header extends CellBase {
             const subheader = this.subheaders[i];
             // if it's not an array
             if (!subheader.dim.isLeaf) {
-              subSpan = this.isOnRowAxis ? subheader.vspan() : subheader.hspan();
+              subSpan = this.isOnRowAxis
+                ? subheader.vspan()
+                : subheader.hspan();
               span += subSpan;
-              if (i === 0 && (subSpan === 0)) {
+              if (i === 0 && subSpan === 0) {
                 addone = true;
               }
             } else {
-              span += (this.datafieldscount || 1);
+              span += this.datafieldscount || 1;
             }
           }
         } else {
-          span += (this.datafieldscount || 1);
+          span += this.datafieldscount || 1;
         }
       } else {
-        return (this.datafieldscount || 1);
+        return this.datafieldscount || 1;
       }
       return span + (addone ? 1 : 0);
     }
@@ -295,15 +300,14 @@ export class Header extends CellBase {
 }
 
 export class DataHeader extends CellBase {
-
-  constructor(axetype, datafield, parent, x, y) {
+  constructor(axisType, datafield, parent, x, y) {
     super({
-      axetype,
+      axisType,
       type: HeaderType.DATA_HEADER,
       template: 'cell-template-dataheader',
       value: datafield,
-      cssclass: HeaderType.getHeaderClass(parent.type, parent.axetype),
-      isvisible: parent.visible,
+      cssclass: HeaderType.getHeaderClass(parent.type, parent.axisType),
+      isvisible: parent.visible
     });
 
     this.parent = parent;
@@ -312,7 +316,9 @@ export class DataHeader extends CellBase {
       this.parent.subheaders.push(this);
     }
 
-    this.key = parent ? `${parent.key}-/-${datafield.name}` : datafield.name;
+    this.key = parent
+      ? `${parent.key}${KEY_SEPARATOR}${datafield.id}`
+      : String(datafield.id);
 
     this.caption = this.value.caption;
 
@@ -322,17 +328,20 @@ export class DataHeader extends CellBase {
 }
 
 export class DimensionHeader extends CellBase {
-  constructor(axetype, field) {
+  constructor(axisType, field) {
     super({
-      axetype,
+      axisType,
       type: HeaderType.DIMENSION_HEADER,
       template: 'cell-template-dimensionheader',
       value: field,
-      cssclass: HeaderType.getHeaderClass(HeaderType.DIMENSION_HEADER, axetype),
-      isvisible: () => true,
+      cssclass: HeaderType.getHeaderClass(
+        HeaderType.DIMENSION_HEADER,
+        axisType
+      ),
+      isvisible: () => true
     });
 
-    this.key = field.name;
+    this.key = String(field.id);
 
     this.hspan = () => 1;
     this.vspan = () => 1;
@@ -340,33 +349,44 @@ export class DimensionHeader extends CellBase {
 }
 
 export class DataCell extends CellBase {
-
-  constructor(getCellValue, dataHeadersLocation, rowinfo, colinfo, customFunctions) {
-    const rowDimension = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.dim : rowinfo.dim;
+  constructor(
+    getCellValue,
+    dataHeadersLocation,
+    rowinfo,
+    colinfo,
+    customFunctions
+  ) {
+    const rowDimension = rowinfo.type === HeaderType.DATA_HEADER
+      ? rowinfo.parent.dim
+      : rowinfo.dim;
     const columnDimension = colinfo.type === HeaderType.DATA_HEADER
-    ? colinfo.parent.dim
-    : colinfo.dim;
-    const rowType = rowinfo.type === HeaderType.DATA_HEADER ? rowinfo.parent.type : rowinfo.type;
-    const colType = colinfo.type === HeaderType.DATA_HEADER ? colinfo.parent.type : colinfo.type;
+      ? colinfo.parent.dim
+      : colinfo.dim;
+    const rowType = rowinfo.type === HeaderType.DATA_HEADER
+      ? rowinfo.parent.type
+      : rowinfo.type;
+    const colType = colinfo.type === HeaderType.DATA_HEADER
+      ? colinfo.parent.type
+      : colinfo.type;
 
     const datafield = dataHeadersLocation === 'rows'
-        ? rowinfo.value
-        : colinfo.value;
+      ? rowinfo.value
+      : colinfo.value;
 
     const value = getCellValue(
-      datafield || null,
+      customFunctions.access[datafield.id],
       rowDimension,
       columnDimension,
-      customFunctions.aggregation[datafield.id],
+      customFunctions.aggregation[datafield.id]
     );
 
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.DATA_VALUE,
       template: 'cell-template-datavalue',
       value,
       cssclass: `cell ${HeaderType.getCellClass(rowType, colType)}`,
-      isvisible: true,
+      isvisible: true
     });
 
     this.rowDimension = rowDimension;
@@ -374,6 +394,8 @@ export class DataCell extends CellBase {
     this.rowType = rowType;
     this.colType = colType;
     this.datafield = datafield;
+    this.hspan = 1;
+    this.vspan = 1;
 
     if (this.datafield && customFunctions.format[datafield.id]) {
       this.caption = customFunctions.format[datafield.id](value);
@@ -384,23 +406,21 @@ export class DataCell extends CellBase {
 }
 
 export class ButtonCell extends CellBase {
-
   constructor(field) {
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.FIELD_BUTTON,
       template: 'cell-template-fieldbutton',
       value: field,
-      cssclass: HeaderType.getHeaderClass(HeaderType.FIELD_BUTTON),
+      cssclass: HeaderType.getHeaderClass(HeaderType.FIELD_BUTTON)
     });
   }
 }
 
 export class EmptyCell extends CellBase {
-
   constructor(hspan, vspan) {
     super({
-      axetype: null,
+      axisType: null,
       type: HeaderType.EMPTY,
       template: 'cell-template-empty',
       value: null,
@@ -410,7 +430,7 @@ export class EmptyCell extends CellBase {
       },
       vspan() {
         return vspan;
-      },
+      }
     });
   }
 }

@@ -32,64 +32,68 @@ export const Operators = {
     name: 'Matches',
     func(value, term) {
       if (value) {
-        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
+        return value
+          .toString()
+          .search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
       }
-      return !(term);
+      return !term;
     },
-    regexpSupported: true,
+    regexpSupported: true
   },
   NOTMATCH: {
     name: 'Does Not Match',
     func(value, term) {
       if (value) {
-        return value.toString().search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
+        return value
+          .toString()
+          .search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
       }
       return !!term;
     },
-    regexpSupported: true,
+    regexpSupported: true
   },
   EQ: {
     name: '=',
     func(value, term) {
       return value === term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   NEQ: {
     name: '<>',
     func(value, term) {
       return value !== term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   GT: {
     name: '>',
     func(value, term) {
       return value > term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   GTE: {
     name: '>=',
     func(value, term) {
       return value >= term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   LT: {
     name: '<',
     func(value, term) {
       return value < term;
     },
-    regexpSupported: false,
+    regexpSupported: false
   },
   LTE: {
     name: '<=',
     func(value, term) {
       return value <= term;
     },
-    regexpSupported: false,
-  },
+    regexpSupported: false
+  }
 };
 
 export function pass(filter, value) {
@@ -106,22 +110,26 @@ export function pass(filter, value) {
   return true;
 }
 
-function isAlwaysTrue() {
-  return !(
-    this.term
-    || Array.isArray(this.staticValue)
-    || this.staticValue === NONE
-    || this.staticValue === false
-  );
-}
+// function isAlwaysTrue() {
+//   return !(this.term ||
+//     Array.isArray(this.staticValue) ||
+//     this.staticValue === NONE ||
+//     this.staticValue === false);
+// }
 
-export function expressionFilter(fieldId, operator, term, staticValue, excludeStatic) {
+export function expressionFilter(
+  fieldId,
+  operator,
+  term,
+  staticValue,
+  excludeStatic
+) {
   const expressionFilter = {
     fieldId,
     regexpMode: false,
     operator: Operators.get(operator),
     staticValue,
-    excludeStatic,
+    excludeStatic
   };
   if (term && operator && operator.regexpSupported) {
     if (isRegExp(term)) {

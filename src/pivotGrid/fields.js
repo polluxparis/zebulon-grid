@@ -1,14 +1,24 @@
-import { isString } from './utils/generic';
+import { isString, isStringOrNumber, isNullOrUndefined } from './utils/generic';
 
 export function fieldFactory(fieldConfig) {
   const {
-    id,
+    id: idConfig,
+    accessor,
     name,
     caption,
-    sort,
+    sort
   } = fieldConfig;
-  if (!id) {
-    console.error('Configuration error: field definition needs an id.', fieldConfig);
+  let id;
+  if (isNullOrUndefined(idConfig)) {
+    id = accessor;
+  } else {
+    id = idConfig;
+  }
+  if (!isStringOrNumber(id)) {
+    throw new Error(
+      'Configuration error: field definition needs an accessor of type string or an id.',
+      fieldConfig
+    );
   }
   const field = { id };
   field.name = name || field.id;
@@ -18,7 +28,7 @@ export function fieldFactory(fieldConfig) {
   if (sort) {
     sortValue = {
       order: sort.order || (sort.customfunc ? 'asc' : null),
-      customfunc: sort.customfunc,
+      customfunc: sort.customfunc
     };
   } else {
     sortValue = { order: null };
@@ -32,29 +42,39 @@ export function fieldFactory(fieldConfig) {
 
 export function datafieldFactory(fieldConfig) {
   const {
-    id,
+    accessor,
+    id: idConfig,
     name,
     caption,
-    aggregateFuncName,
-    aggregateFunc,
+    aggregationName,
+    aggregation
   } = fieldConfig;
-  if (!id) {
-    console.error('Configuration error: datafield definition needs an id.', fieldConfig);
+  let id;
+  if (isNullOrUndefined(idConfig)) {
+    id = accessor;
+  } else {
+    id = idConfig;
   }
-  const datafield = { id };
+  if (!isStringOrNumber(id)) {
+    throw new Error(
+      'Configuration error: datafield definition needs an accessor of type string or an id.',
+      fieldConfig
+    );
+  }
+  const datafield = { id, accessor };
   datafield.name = name || datafield.id;
   datafield.caption = caption || datafield.name;
 
-  if (aggregateFuncName) {
-    datafield.aggregateFuncName = aggregateFuncName;
-  } else if (aggregateFunc) {
-    if (isString(aggregateFunc)) {
-      datafield.aggregateFuncName = aggregateFunc;
+  if (aggregationName) {
+    datafield.aggregationName = aggregationName;
+  } else if (aggregation) {
+    if (isString(aggregation)) {
+      datafield.aggregationName = aggregation;
     } else {
-      datafield.aggregateFuncName = 'custom';
+      datafield.aggregationName = 'custom';
     }
   } else {
-    datafield.aggregateFuncName = null;
+    datafield.aggregationName = null;
   }
   return datafield;
 }

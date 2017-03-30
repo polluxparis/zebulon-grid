@@ -1,43 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
 
 import Perf from 'react-addons-perf'; // ES6
 import { TestRunner } from 'fps-measurer';
 
-// import './orb/index.css';
-
-// import reducer from './orb/reducers';
-// import hydrateStore from './orb/hydrateStore';
+import './pivotGrid/index.css';
 
 import createScrollingTestCase from './fpsTests/tests';
 import App from './App';
 
-// import {
-//   getMockDatasource,
-//   // getObservableMockDatasource,
-//   basicConfig,
-//  } from './utils/mock';
-
 if (process.env.NODE_ENV !== 'production') {
   window.Perf = Perf;
+  // whyDidYouUpdate(React, { exclude: '/^DataCell' });
 }
 
-// const store = createStore(reducer,
-//   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+ReactDOM.render(<App />, document.getElementById('root'));
 
-// const data = getMockDatasource(1, 100, 100);
-// const customFunctions = hydrateStore(store, basicConfig);
-
-ReactDOM.render(
-  // <Provider store={store}>
-    <App />,
-  // </Provider>,
-  document.getElementById('root'));
-
-if (process.env.REACT_APP_ORB_ENV === 'fps-test') {
-  const testCase = createScrollingTestCase(document.getElementsByClassName('OrbGrid-data-cells')[0]);
+if (process.env.REACT_APP_PIVOTGRID_ENV === 'fps-test') {
+  const testCase = createScrollingTestCase(
+    document.getElementsByClassName('pivotgrid-data-cells')[0]
+  );
   const testRunner = new TestRunner(testCase, 5);
 
   const btn = document.createElement('button');

@@ -6,32 +6,35 @@ import ResizeHandle from '../ResizeHandle';
 
 function getLeafSubheaders(header, result) {
   if (header.subheaders && header.subheaders.length) {
-    header.subheaders.forEach(subheader => getLeafSubheaders(subheader, result));
+    header.subheaders.forEach(subheader =>
+      getLeafSubheaders(subheader, result));
     return result;
   }
   result.push(header);
   return result;
 }
 
-const Header = ({
-  axis,
-  getLastChildSize,
-  header,
-  positionStyle,
-  previewSizes,
-  previewOffsets,
-  span,
-  startIndex,
-  scrollLeft,
-  scrollTop,
-}) => {
+const Header = (
+  {
+    axis,
+    getLastChildSize,
+    gridId,
+    header,
+    positionStyle,
+    previewSizes,
+    span,
+    startIndex,
+    scrollLeft,
+    scrollTop
+  }
+) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
   // Handle affix
   let style;
   if (span > 1 && x <= startIndex) {
     let offset;
-    const lastChildSize = getLastChildSize(axis, header);
+    const lastChildSize = getLastChildSize(header);
     if (axis === AxisType.COLUMNS) {
       offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
       style = { position: 'relative', left: offset };
@@ -40,7 +43,9 @@ const Header = ({
       style = { position: 'relative', top: offset };
     }
   }
-  const innerHeader = <InnerHeader key={`${axis}-${x}-${y}`} cell={header} style={style} />;
+  const innerHeader = (
+    <InnerHeader key={`${axis}-${x}-${y}`} cell={header} style={style} />
+  );
   const leafHeaderId = header.key;
   let dimensionId;
   if (!header.dim) {
@@ -57,7 +62,7 @@ const Header = ({
   return (
     <div
       key={`fixed-${axis}-${x}-${y}`}
-      className="orb-cell orb-header orb-column-header"
+      className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
       style={{
         boxSizing: 'border-box',
         overflow: 'hidden',
@@ -65,7 +70,7 @@ const Header = ({
         // backgroundColor: '#eef8fb',
         zIndex: 1,
         display: 'flex',
-        ...positionStyle,
+        ...positionStyle
       }}
     >
       {innerHeader}
@@ -76,16 +81,16 @@ const Header = ({
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.height}
-        previewOffset={previewOffsets.right}
+        gridId={gridId}
       />
       <ResizeHandle
         position="bottom"
         size={width}
         id={axis === AxisType.ROWS ? leafHeaderId : dimensionId}
+        gridId={gridId}
         leafSubheaders={leafSubheaders}
         axis={axis}
         previewSize={previewSizes.width}
-        previewOffset={previewOffsets.bottom}
       />
     </div>
   );
@@ -109,14 +114,11 @@ const InnerHeader = ({ cell, style }) => {
   const computedStyle = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    ...style,
+    ...style
   };
 
   return (
-    <span
-      className="orb-header-inner"
-      style={computedStyle}
-    >
+    <span className="pivotgrid-header-inner" style={computedStyle}>
       {value}
     </span>
   );

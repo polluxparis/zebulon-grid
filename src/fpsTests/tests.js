@@ -1,88 +1,87 @@
 /* eslint-disable */
 
 export default function createScrollingTestCase(component) {
-  const scrollDown = true
-  const scrollRight = true
+  const scrollDown = true;
+  const scrollRight = true;
 
   return function testCase(completedCallback) {
     if (scrollDown) {
-      component.scrollTop = 0
+      component.scrollTop = 0;
     } else {
-      component.scrollTop = component.scrollHeight
+      component.scrollTop = component.scrollHeight;
     }
 
     if (scrollRight) {
-      component.scrollLeft = 0
+      component.scrollLeft = 0;
     } else {
-      component.scrollLeft = component.scrollWidth
+      component.scrollLeft = component.scrollWidth;
     }
 
-    const maxScrollTop = component.scrollHeight
-    const maxScrollLeft = component.scrollWidth
+    const maxScrollTop = component.scrollHeight;
+    const maxScrollLeft = component.scrollWidth;
 
-    let intervalTop = component.scrollHeight / 100
-    let intervalLeft = component.scrollWidth / 100
-    let scrollTop = component.scrollTop
-    let scrollLeft = component.scrollLeft
+    let intervalTop = component.scrollHeight / 100;
+    let intervalLeft = component.scrollWidth / 100;
+    let scrollTop = component.scrollTop;
+    let scrollLeft = component.scrollLeft;
 
     if (scrollDown && scrollRight) {
-      incrementScrollDownRight()
+      incrementScrollDownRight();
     } else {
-      incrementScrollUp()
+      incrementScrollUp();
     }
 
     function incrementScrollDown() {
-      interval *= 1.05
-      scrollTop = Math.min(scrollTop + interval, maxScrollTop)
+      interval *= 1.05;
+      scrollTop = Math.min(scrollTop + interval, maxScrollTop);
 
-      component.scrollTop = scrollTop
+      component.scrollTop = scrollTop;
 
       if (scrollTop < maxScrollTop) {
-        requestAnimationFrame(incrementScrollDown)
+        requestAnimationFrame(incrementScrollDown);
       } else {
-        completedCallback()
+        completedCallback();
       }
     }
 
     function incrementScrollUp() {
-      interval *= 1.05
-      scrollTop = Math.max(scrollTop - interval, 0)
+      interval *= 1.05;
+      scrollTop = Math.max(scrollTop - interval, 0);
 
-      component.scrollTop = scrollTop
+      component.scrollTop = scrollTop;
 
       if (scrollTop > 0) {
-        requestAnimationFrame(incrementScrollUp)
+        requestAnimationFrame(incrementScrollUp);
       } else {
-        completedCallback()
+        completedCallback();
       }
     }
 
     function incrementScrollRight() {
-      interval *= 1.05
-      scrollLeft = Math.min(scrollLeft + interval, maxScrollLeft)
+      interval *= 1.05;
+      scrollLeft = Math.min(scrollLeft + interval, maxScrollLeft);
 
-      component.scrollLeft = scrollLeft
+      component.scrollLeft = scrollLeft;
 
       if (scrollLeft < maxScrollLeft) {
-        requestAnimationFrame(incrementScrollRight)
+        requestAnimationFrame(incrementScrollRight);
       } else {
-        completedCallback()
+        completedCallback();
       }
     }
 
     function incrementScrollDownRight() {
-      intervalTop *= 1.05
-      intervalLeft *= 1.05
-      scrollTop = Math.min(scrollTop + intervalTop, maxScrollTop)
-      component.scrollTop = scrollTop
-      scrollLeft = Math.min(scrollLeft + intervalLeft, maxScrollLeft)
-      component.scrollLeft = scrollLeft
+      intervalTop *= 1.05;
+      intervalLeft *= 1.05;
+      scrollTop = Math.min(scrollTop + intervalTop, maxScrollTop);
+      component.scrollTop = scrollTop;
+      scrollLeft = Math.min(scrollLeft + intervalLeft, maxScrollLeft);
+      component.scrollLeft = scrollLeft;
       if (scrollTop < maxScrollTop && scrollLeft < maxScrollLeft) {
-        requestAnimationFrame(incrementScrollDownRight)
+        requestAnimationFrame(incrementScrollDownRight);
       } else {
-        completedCallback()
+        completedCallback();
       }
     }
-
-  }
+  };
 }

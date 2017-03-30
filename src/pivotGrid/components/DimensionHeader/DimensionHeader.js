@@ -3,16 +3,19 @@ import React from 'react';
 import { AxisType } from '../../Axis';
 import ResizeHandle from '../ResizeHandle';
 
-const DimensionHeader = ({
-  field,
-  left,
-  top,
-  height,
-  width,
-  crossFieldId,
-  mainDirection,
-  previewSizes,
- }) => {
+const DimensionHeader = (
+  {
+    field,
+    left,
+    top,
+    height,
+    width,
+    crossFieldId,
+    mainDirection,
+    previewSizes,
+    gridId
+  }
+) => {
   const ids = {};
   if (mainDirection === 'down') {
     ids.right = field.id;
@@ -24,7 +27,7 @@ const DimensionHeader = ({
   return (
     <div
       key={`fixed-dim-${field.id}`}
-      className="orb-cell orb-dimension-header"
+      className="pivotgrid-cell pivotgrid-dimension-header"
       style={{
         position: 'absolute',
         left,
@@ -32,35 +35,28 @@ const DimensionHeader = ({
         width,
         height,
         zIndex: 3,
-        // border: 'lightgrey 0.1em solid',
         boxSizing: 'border-box',
-        // textAlign: 'left',
-        display: 'flex',
-        // backgroundColor: '#fafad2',
+        display: 'flex'
       }}
     >
-      <span
-        className="orb-dimension-header-inner"
-      >
-        { field.caption }
+      <span className="pivotgrid-dimension-header-inner">
+        {field.caption}
       </span>
       <ResizeHandle
         position="right"
         size={height}
         id={ids.right}
-        isOnDimensionHeader
         axis={AxisType.ROWS}
+        gridId={gridId}
         previewSize={previewSizes.height}
-        previewOffset={top}
       />
       <ResizeHandle
         position="bottom"
         size={width}
+        gridId={gridId}
         id={ids.bottom}
-        isOnDimensionHeader
         axis={AxisType.COLUMNS}
         previewSize={previewSizes.width}
-        previewOffset={left}
       />
     </div>
   );

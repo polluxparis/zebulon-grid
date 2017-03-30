@@ -4,56 +4,101 @@ import { DragLayer } from 'react-dnd';
 const collectDragLayer = monitor => ({
   item: monitor.getItem(),
   itemType: monitor.getItemType(),
-  initialOffset: monitor.getInitialSourceClientOffset(),
-  currentOffset: monitor.getSourceClientOffset(),
-  isDragging: monitor.isDragging(),
+  clientOffset: monitor.getClientOffset(),
+  initialClientOffset: monitor.getInitialClientOffset(),
+  isDragging: monitor.isDragging()
 });
 
-const getItemPosition = ({ initialOffset, currentOffset, item }) => {
-  if (!initialOffset || !currentOffset) {
+class CustomDragLayer extends Component {
+  constructor() {
+    super();
+
+    this.state = {};
+    this.getItemPosition = this.getItemPosition.bind(this);
+  }
+
+  getItemPosition() {
+    const {
+      clientOffset,
+      item
+    } = this.props;
+    if (!clientOffset) {
+      return {
+        display: 'none'
+      };
+    }
+    let x;
+    let y;
+    const gridRect = this.element.getBoundingClientRect();
+    if (item.position === 'right') {
+      y = 0;
+      // Keep hint bar inside the grid
+      x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
+    } else {
+      x = 0;
+      // Keep hint bar inside the grid
+      y = Math.min(Math.max(clientOffset.y - gridRect.top, 0), gridRect.height);
+    }
+
+    // Translate the hint bar in the correct position starting from the top left corner of the grid
+    const transform = `translate(${x}px, ${y}px)`;
     return {
-      display: 'none',
+      transform
     };
   }
-
-  let { x, y } = currentOffset;
-  if (item.position === 'right') {
-    y = initialOffset.y - item.previewOffset;
-  } else {
-    x = initialOffset.x - item.previewOffset;
-  }
-
-  const transform = `translate(${x}px, ${y}px)`;
-  return {
-    transform,
-    WebkitTransform: transform,
-  };
-};
-
-class CustomDragLayer extends Component {
   render() {
     let height;
     let width;
-    if (!this.props.item || this.props.itemType !== 'cell-resize-handle') { return null; }
-    const { position, previewSize } = this.props.item;
-    if (position === 'right') {
-      width = 2;
-      height = previewSize;
+    let resizeBar;
+    if (
+      !this.props.item ||
+      this.props.itemType.substring(0, 18) !== 'cell-resize-handle' ||
+      this.props.item.gridId !== this.props.gridId
+    ) {
+      resizeBar = null;
     } else {
-      width = previewSize;
-      height = 2;
+      const { position, previewSize } = this.props.item;
+      if (position === 'right') {
+        width = 2;
+        height = previewSize;
+      } else {
+        width = previewSize;
+        height = 2;
+      }
+      resizeBar = (
+        <div
+          style={{
+            position: 'absolute',
+            height,
+            width,
+            backgroundColor: 'grey',
+            ...this.getItemPosition()
+          }}
+        />
+      );
     }
-    return (<div
-      style={{
-        position: 'fixed',
-        pointerEvents: 'none',
-        zIndex: 100,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-      }}
-    ><div style={{ height, width, backgroundColor: 'grey', ...getItemPosition(this.props) }} /></div>);
+    return (
+      <div
+        ref={element => {
+          this.element = element;
+        }}
+        style={
+          this.props.isDragging
+            ? {
+                position: 'absolute',
+                pointerEvents: 'none',
+                zIndex: 100,
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%'
+              }
+            : { display: 'none' }
+        }
+      >
+        {resizeBar}
+      </div>
+    );
   }
 }
 

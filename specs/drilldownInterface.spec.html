@@ -1,0 +1,28 @@
+<h2 id="interface-for-drilldown"># Interface for drilldown</h2>
+<h2 id="overview">Overview</h2>
+<p>The drilldown function is a callback passed to the grid to be called when a data cell is double-clicked.</p>
+<p>This spec describes the signature of the callback function.</p>
+<h2 id="drilldown-function">Drilldown function</h2>
+<p>The drilldrown function takes a single argument <em>cellInfos</em>.</p>
+<p><em>cellInfos</em> is an object with the following properties:</p>
+<ul>
+<li>value</li>
+<li>data</li>
+<li>columnDimensions</li>
+<li>rowDimensions</li>
+<li>measure</li>
+</ul>
+<p><em>value</em> is the value of the cell as a string.</p>
+<p><em>data</em> is an array of the data used to calculate the value of the data cell.</p>
+<p><em>columnDimensions</em> and <em>rowDimensions</em> are both arrays of dimensions. Each array contains the dimensions relative to the cell, ordered by proximity to the data cell, meaning that the leaf dimension is the first element of the array.</p>
+<p>Each dimension is an object containing the following properties:</p>
+<ul>
+<li><p>dimension</p></li>
+<li>caption</li>
+<li><p>id</p></li>
+<li><p>cell</p></li>
+<li>caption</li>
+<li><p>id</p></li>
+</ul>
+<p>where for both <em>dimension</em> and <em>cell</em>, <em>caption</em> is the value displayed on the grid and <em>id</em> its id in the data source.</p>
+<p><em>measure</em> is the caption of the measure as a string.</p>
