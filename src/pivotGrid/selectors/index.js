@@ -23,7 +23,7 @@ import {
   getDataCellsHeight,
   getDataCellsWidth
 } from './sizes.selector';
-import { getActivatedDataFields } from './fields.selector';
+import { getActivatedDatafields } from './fields.selector';
 import { getCellValue, getCellInfos } from './cell.selector';
 
 export { getLayout };
@@ -32,7 +32,7 @@ export { getColumnUiAxis };
 export { getRowUiAxis };
 export { getColumnAxis };
 export { getRowAxis };
-export { getActivatedDataFields };
+export { getActivatedDatafields };
 export { getDimensionPositions };
 export { getDimensionSize };
 export { getRowHeadersHeight };

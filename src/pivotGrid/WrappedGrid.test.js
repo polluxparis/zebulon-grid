@@ -195,7 +195,7 @@ describe('WrappedGrid', () => {
         offset: { x: 200 },
         initialOffset: { x: 0 },
         defaultCellSizes: { width: 100, height: 30 },
-        sizes: { columns: { leafs: {} } }
+        sizes: { leafs: { columns: {} } }
       });
       expect(
         wrapper
@@ -225,7 +225,7 @@ describe('WrappedGrid', () => {
         offset: { y: 540 },
         initialOffset: { y: 0 },
         defaultCellSizes: { width: 100, height: 30 },
-        sizes: { columns: { dimensions: {} } }
+        sizes: { dimensions: { columns: {} } }
       });
       expect(
         wrapper

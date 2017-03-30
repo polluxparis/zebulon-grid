@@ -1,11 +1,15 @@
 import {
   getCellSizes,
-  getLastChildSize,
+  getLastChildSizeOnColumns,
+  getLastChildSizeOnRows,
   getDimensionSize,
   getDimensionPositions,
   getColumnWidth,
   getRowHeight,
-  getHeaderSizes,
+  getColumnHeadersHeight,
+  getColumnHeadersWidth,
+  getRowHeadersHeight,
+  getRowHeadersWidth,
   getRowHeadersVisibleHeight,
   getColumnHeadersVisibleWidth,
   getPreviewSizes,
@@ -29,39 +33,33 @@ describe('cell sizes are calculated with zoom equals', () => {
 });
 
 describe('dimension sizes are computed correctly', () => {
-  const sizes = {
-    columns: { dimensions: {} },
-    rows: { dimensions: {} }
-  };
   const cellSizes = {
     height: 30,
     width: 200
   };
   test('for columns with default size', () => {
-    const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, {}, cellSizes)(
       AxisType.COLUMNS,
       'toto'
     );
     expect(actual).toEqual(30);
   });
   test('for rows with default size', () => {
-    const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, {}, cellSizes)(
       AxisType.ROWS,
       'toto'
     );
     expect(actual).toEqual(200);
   });
   test('for columns with custom size', () => {
-    sizes.dimensions.columns.toto = 66;
-    const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, { toto: 66 }, cellSizes)(
       AxisType.COLUMNS,
       'toto'
     );
     expect(actual).toEqual(66);
   });
   test('for rows with custom size', () => {
-    sizes.dimensions.rows.toto = 666;
-    const actual = getDimensionSize.resultFunc(sizes, cellSizes)(
+    const actual = getDimensionSize.resultFunc({ toto: 666 }, {}, cellSizes)(
       AxisType.ROWS,
       'toto'
     );
@@ -78,61 +76,53 @@ describe('last child size is computed correctly', () => {
   };
   test('when no child', () => {
     const sizes = {
-      rows: { leafs: {}, dimensions: {} },
-      columns: { leafs: {}, dimensions: {} }
+      leafs: { rows: {} }
     };
     const header = { key: 'field1a', subheaders: [] };
-    const size = getLastChildSize({ sizes, config });
-    expect(size(AxisType.ROWS, header)).toEqual(30);
+    const size = getLastChildSizeOnRows({ sizes, config });
+    expect(size(header)).toEqual(30);
   });
 
   test('when no child and custom size', () => {
     const sizes = {
-      rows: { leafs: { field1a: 50 }, dimensions: {} },
-      columns: { leafs: {}, dimensions: {} }
+      leafs: { rows: { field1a: 50 } }
     };
     const header = { key: 'field1a', subheaders: [] };
-    const size = getLastChildSize({ sizes, config });
-    expect(size(AxisType.ROWS, header)).toEqual(50);
+    const size = getLastChildSizeOnRows({ sizes, config });
+    expect(size(header)).toEqual(50);
   });
 
   test('with children in rows', () => {
     const sizes = {
-      rows: { leafs: { 'field1a-/-field2a': 80 } },
-      columns: { leafs: {} }
+      leafs: { rows: { 'field1a-/-field2a': 80 } }
     };
     const header = {
       key: 'field1a',
       subheaders: [{ key: 'field1a-/-field2a', subheaders: [] }]
     };
-    const size = getLastChildSize({ sizes, config });
-    expect(size(AxisType.ROWS, header)).toEqual(80);
+    const size = getLastChildSizeOnRows({ sizes, config });
+    expect(size(header)).toEqual(80);
   });
   test('with children in columns', () => {
     const sizes = {
-      columns: { leafs: { 'field1a-/-field2a': 80 } },
-      rows: { leafs: {} }
+      leafs: { columns: { 'field1a-/-field2a': 80 } }
     };
     const header = {
       key: 'field1a',
       subheaders: [{ key: 'field1a-/-field2a', subheaders: [] }]
     };
-    const size = getLastChildSize({ sizes, config });
-    expect(size(AxisType.COLUMNS, header)).toEqual(80);
+    const size = getLastChildSizeOnColumns({ sizes, config });
+    expect(size(header)).toEqual(80);
   });
 });
 
 describe('dimension positions are computed correctly', () => {
   const dataHeadersLocation = 'columns';
-  const sizes = {
-    columns: { dimensions: {} },
-    rows: { dimensions: {} }
-  };
   const cellSizes = {
     height: 30,
     width: 100
   };
-  const getDimensionSizeFunc = getDimensionSize.resultFunc(sizes, cellSizes);
+  const getDimensionSizeFunc = getDimensionSize.resultFunc({}, {}, cellSizes);
   test('with fields on both axis', () => {
     const rowfields = [{ id: 'toto' }, { id: 'tutu' }];
     const columnFields = [{ id: 'titi' }];
@@ -189,21 +179,17 @@ describe('column width is computed correctly', () => {
     headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-qty' }]]
   };
   test('with standard size', () => {
-    const sizes = {
-      columns: { leafs: {} },
-      rows: { leafs: {} }
-    };
-    const actual = getColumnWidth.resultFunc(columnsUi, sizes, cellSizes)({
+    const actual = getColumnWidth.resultFunc(columnsUi, {}, cellSizes)({
       index: 0
     });
     expect(actual).toEqual(200);
   });
   test('with custom size', () => {
-    const sizes = {
-      columns: { leafs: { 'titi 0-/-qty': 180 } },
-      rows: { leafs: {} }
-    };
-    const actual = getColumnWidth.resultFunc(columnsUi, sizes, cellSizes)({
+    const actual = getColumnWidth.resultFunc(
+      columnsUi,
+      { 'titi 0-/-qty': 180 },
+      cellSizes
+    )({
       index: 0
     });
     expect(actual).toEqual(180);
@@ -219,21 +205,17 @@ describe('row height is computed correctly', () => {
     headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-toto 1' }]]
   };
   test('with standard size', () => {
-    const sizes = {
-      columns: { leafs: {} },
-      rows: { leafs: {} }
-    };
-    const actual = getRowHeight.resultFunc(rowsUi, sizes, cellSizes)({
+    const actual = getRowHeight.resultFunc(rowsUi, {}, cellSizes)({
       index: 0
     });
     expect(actual).toEqual(30);
   });
   test('with custom size', () => {
-    const sizes = {
-      rows: { leafs: { 'titi 0-/-toto 1': 60 } },
-      columns: { leafs: {} }
-    };
-    const actual = getRowHeight.resultFunc(rowsUi, sizes, cellSizes)({
+    const actual = getRowHeight.resultFunc(
+      rowsUi,
+      { 'titi 0-/-toto 1': 60 },
+      cellSizes
+    )({
       index: 0
     });
     expect(actual).toEqual(60);
@@ -241,15 +223,11 @@ describe('row height is computed correctly', () => {
 });
 
 describe('headers sizes are computed correctly', () => {
-  const sizes = {
-    rows: { leafs: {}, dimensions: {} },
-    columns: { leafs: {}, dimensions: {} }
-  };
   const cellSizes = {
     height: 30,
     width: 200
   };
-  const getDimensionSizeFunc = getDimensionSize.resultFunc(sizes, cellSizes);
+  const getDimensionSizeFunc = getDimensionSize.resultFunc({}, {}, cellSizes);
   test('with data headers on column axis', () => {
     const rows = ['toto', 'tutu'];
     const columns = ['titi'];
@@ -263,16 +241,28 @@ describe('headers sizes are computed correctly', () => {
     const columnsUi = {
       headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-qty' }]]
     };
-    const actual = getHeaderSizes.resultFunc(
-      dataHeadersLocation,
-      sizes,
-      rows,
-      columns,
-      rowsUi,
-      columnsUi,
-      cellSizes,
-      getDimensionSizeFunc
-    );
+    const actual = {
+      rowHeadersWidth: getRowHeadersWidth.resultFunc(
+        dataHeadersLocation,
+        {},
+        rows,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      columnHeadersHeight: getColumnHeadersHeight.resultFunc(
+        dataHeadersLocation,
+        {},
+        columns,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      columnHeadersWidth: getColumnHeadersWidth.resultFunc(
+        {},
+        columnsUi,
+        cellSizes
+      )
+    };
     const expected = {
       rowHeadersWidth: 400,
       columnHeadersWidth: 200,
@@ -299,16 +289,28 @@ describe('headers sizes are computed correctly', () => {
     const columnsUi = {
       headers: [[{ key: 'titi 0' }]]
     };
-    const actual = getHeaderSizes.resultFunc(
-      dataHeadersLocation,
-      sizes,
-      rows,
-      columns,
-      rowsUi,
-      columnsUi,
-      cellSizes,
-      getDimensionSizeFunc
-    );
+    const actual = {
+      rowHeadersWidth: getRowHeadersWidth.resultFunc(
+        dataHeadersLocation,
+        {},
+        rows,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      columnHeadersHeight: getColumnHeadersHeight.resultFunc(
+        dataHeadersLocation,
+        {},
+        columns,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      columnHeadersWidth: getColumnHeadersWidth.resultFunc(
+        {},
+        columnsUi,
+        cellSizes
+      )
+    };
     const expected = {
       rowHeadersWidth: 600,
       columnHeadersWidth: 200,
@@ -335,16 +337,28 @@ describe('headers sizes are computed correctly', () => {
         ]
       ]
     };
-    const actual = getHeaderSizes.resultFunc(
-      dataHeadersLocation,
-      sizes,
-      rows,
-      columns,
-      rowsUi,
-      columnsUi,
-      cellSizes,
-      getDimensionSizeFunc
-    );
+    const actual = {
+      rowHeadersWidth: getRowHeadersWidth.resultFunc(
+        dataHeadersLocation,
+        {},
+        rows,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      columnHeadersHeight: getColumnHeadersHeight.resultFunc(
+        dataHeadersLocation,
+        {},
+        columns,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      columnHeadersWidth: getColumnHeadersWidth.resultFunc(
+        {},
+        columnsUi,
+        cellSizes
+      )
+    };
     const expected = {
       rowHeadersWidth: 400,
       columnHeadersWidth: 200,
@@ -370,16 +384,28 @@ describe('headers sizes are computed correctly', () => {
     const rowsUi = {
       headers: [[{ key: '__total__-/-toto-/-tutu' }]]
     };
-    const actual = getHeaderSizes.resultFunc(
-      dataHeadersLocation,
-      sizes,
-      rows,
-      columns,
-      rowsUi,
-      columnsUi,
-      cellSizes,
-      getDimensionSizeFunc
-    );
+    const actual = {
+      rowHeadersWidth: getRowHeadersWidth.resultFunc(
+        dataHeadersLocation,
+        {},
+        rows,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      columnHeadersHeight: getColumnHeadersHeight.resultFunc(
+        dataHeadersLocation,
+        {},
+        columns,
+        cellSizes,
+        getDimensionSizeFunc
+      ),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      columnHeadersWidth: getColumnHeadersWidth.resultFunc(
+        {},
+        columnsUi,
+        cellSizes
+      )
+    };
     const expected = {
       rowHeadersWidth: 200,
       columnHeadersWidth: 400,
@@ -393,24 +419,28 @@ describe('headers sizes are computed correctly', () => {
 describe('row headers visible height is computed correctly', () => {
   test('when row headers are bigger than grid height', () => {
     const height = 500;
-    const headerSizes = { columnHeadersHeight: 60, rowHeadersHeight: 6000 };
+    const columnHeadersHeight = 60;
+    const rowHeadersHeight = 6000;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getRowHeadersVisibleHeight.resultFunc(
       height,
-      headerSizes,
+      columnHeadersHeight,
+      rowHeadersHeight,
       hasScrollbar
     );
     expect(actual).toEqual(440);
   });
   test('when row headers are smaller than grid height', () => {
     const height = 500;
-    const headerSizes = { columnHeadersHeight: 60, rowHeadersHeight: 300 };
+    const columnHeadersHeight = 60;
+    const rowHeadersHeight = 300;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getRowHeadersVisibleHeight.resultFunc(
       height,
-      headerSizes,
+      columnHeadersHeight,
+      rowHeadersHeight,
       hasScrollbar
     );
     expect(actual).toEqual(300);
@@ -420,24 +450,28 @@ describe('row headers visible height is computed correctly', () => {
 describe('column headers visible width is computed correctly', () => {
   test('when column headers are bigger than grid width', () => {
     const width = 1000;
-    const headerSizes = { columnHeadersWidth: 6000, rowHeadersWidth: 400 };
+    const columnHeadersWidth = 6000;
+    const rowHeadersWidth = 400;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getColumnHeadersVisibleWidth.resultFunc(
       width,
-      headerSizes,
+      rowHeadersWidth,
+      columnHeadersWidth,
       hasScrollbar
     );
     expect(actual).toEqual(600);
   });
   test('when column headers are smaller than grid width', () => {
     const width = 1000;
-    const headerSizes = { columnHeadersWidth: 500, rowHeadersWidth: 400 };
+    const columnHeadersWidth = 500;
+    const rowHeadersWidth = 400;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getColumnHeadersVisibleWidth.resultFunc(
       width,
-      headerSizes,
+      rowHeadersWidth,
+      columnHeadersWidth,
       hasScrollbar
     );
     expect(actual).toEqual(500);
@@ -448,38 +482,45 @@ describe('preview sizes are computed correctly', () => {
   test('when headers sizes are bigger than grid sizes', () => {
     const width = 1000;
     const height = 600;
-    const headerSizes = {
-      columnHeadersWidth: 6000,
-      rowHeadersWidth: 400,
-      rowHeadersHeight: 6000,
-      columnHeadersHeight: 60
-    };
+
+    const columnHeadersWidth = 6000;
+    const rowHeadersWidth = 400;
+    const rowHeadersHeight = 6000;
+    const columnHeadersHeight = 60;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasVerticalScrollbar = false;
+    const hasHorizontalScrollbar = false;
     const actual = getPreviewSizes.resultFunc(
       height,
       width,
-      hasScrollbar,
-      headerSizes
+      hasVerticalScrollbar,
+      hasHorizontalScrollbar,
+      rowHeadersHeight,
+      rowHeadersWidth,
+      columnHeadersHeight,
+      columnHeadersWidth
     );
     expect(actual).toEqual({ width, height });
   });
   test('when headers sizes are smaller than grid sizes', () => {
     const width = 1000;
     const height = 600;
-    const headerSizes = {
-      columnHeadersWidth: 400,
-      rowHeadersWidth: 200,
-      rowHeadersHeight: 300,
-      columnHeadersHeight: 60
-    };
-    // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+
+    const columnHeadersWidth = 400;
+    const rowHeadersWidth = 200;
+    const rowHeadersHeight = 300;
+    const columnHeadersHeight = 60; // not in DOM so scrollbar size is 0 anyway
+    const hasVerticalScrollbar = false;
+    const hasHorizontalScrollbar = false;
     const actual = getPreviewSizes.resultFunc(
       height,
       width,
-      hasScrollbar,
-      headerSizes
+      hasVerticalScrollbar,
+      hasHorizontalScrollbar,
+      rowHeadersHeight,
+      rowHeadersWidth,
+      columnHeadersHeight,
+      columnHeadersWidth
     );
     expect(actual).toEqual({ width: 600, height: 360 });
   });
@@ -488,24 +529,28 @@ describe('preview sizes are computed correctly', () => {
 describe('data cells width is computed correctly', () => {
   test('when column headers are bigger than grid width', () => {
     const width = 1000;
-    const headerSizes = { columnHeadersWidth: 6000, rowHeadersWidth: 400 };
+    const columnHeadersWidth = 6000;
+    const rowHeadersWidth = 400;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getDataCellsWidth.resultFunc(
       width,
-      headerSizes,
+      columnHeadersWidth,
+      rowHeadersWidth,
       hasScrollbar
     );
     expect(actual).toEqual(600);
   });
   test('when column headers are smaller than grid width', () => {
     const width = 1000;
-    const headerSizes = { columnHeadersWidth: 400, rowHeadersWidth: 400 };
+    const columnHeadersWidth = 400;
+    const rowHeadersWidth = 400;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getDataCellsWidth.resultFunc(
       width,
-      headerSizes,
+      columnHeadersWidth,
+      rowHeadersWidth,
       hasScrollbar
     );
     expect(actual).toEqual(400);
@@ -515,24 +560,28 @@ describe('data cells width is computed correctly', () => {
 describe('data cells height is computed correctly', () => {
   test('when row headers are bigger than grid height', () => {
     const height = 600;
-    const headerSizes = { columnHeadersHeight: 60, rowHeadersHeight: 6000 };
+    const columnHeadersHeight = 60;
+    const rowHeadersHeight = 6000;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getDataCellsHeight.resultFunc(
       height,
-      headerSizes,
+      columnHeadersHeight,
+      rowHeadersHeight,
       hasScrollbar
     );
     expect(actual).toEqual(540);
   });
   test('when row headers are smaller than grid height', () => {
     const height = 600;
-    const headerSizes = { columnHeadersHeight: 60, rowHeadersHeight: 300 };
+    const columnHeadersHeight = 60;
+    const rowHeadersHeight = 300;
     // not in DOM so scrollbar size is 0 anyway
-    const hasScrollbar = { bottom: false, right: false };
+    const hasScrollbar = false;
     const actual = getDataCellsHeight.resultFunc(
       height,
-      headerSizes,
+      columnHeadersHeight,
+      rowHeadersHeight,
       hasScrollbar
     );
     expect(actual).toEqual(300);

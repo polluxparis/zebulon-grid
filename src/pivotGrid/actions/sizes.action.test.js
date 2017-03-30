@@ -8,7 +8,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { x: 230 };
     const initialOffset = { x: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { dimensions: {} } };
+    const sizes = { dimensions: { rows: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -24,7 +24,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { x: 180 };
     const initialOffset = { x: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { dimensions: {} } };
+    const sizes = { dimensions: { rows: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -40,7 +40,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { x: 0 };
     const initialOffset = { x: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { dimensions: {} } };
+    const sizes = { dimensions: { rows: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -56,7 +56,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { x: 230 };
     const initialOffset = { x: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { dimensions: { tutu: 400 } } };
+    const sizes = { dimensions: { rows: { tutu: 400 } } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -76,7 +76,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { y: 230 };
     const initialOffset = { y: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { columns: { dimensions: {} } };
+    const sizes = { dimensions: { columns: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -96,7 +96,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { y: 230 };
     const initialOffset = { y: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { leafs: {} } };
+    const sizes = { leafs: { rows: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -116,7 +116,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { y: 230 };
     const initialOffset = { y: 205 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { rows: { leafs: { '0-/-0': 60 } } };
+    const sizes = { leafs: { rows: { '0-/-0': 60 } } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({
@@ -136,7 +136,7 @@ describe('updateCellSize creates the correct action', () => {
     const offset = { x: 530 };
     const initialOffset = { x: 505 };
     const defaultCellSizes = { height: 30, width: 200 };
-    const sizes = { columns: { leafs: {} } };
+    const sizes = { leafs: { columns: {} } };
     expect(
       updateCellSize({ handle, offset, initialOffset, defaultCellSizes, sizes })
     ).toEqual({

@@ -10,7 +10,7 @@ import {
   getColumnUiAxis,
   getRowUiAxis,
   getColumnAxis,
-  getActivatedDataFields
+  getActivatedDatafields
 } from '../selectors';
 import { updateCellSize, setConfigProperty } from '../actions';
 import { AxisType } from '../Axis';
@@ -24,7 +24,7 @@ const mapStateToProps = state => ({
   rowHeaders: getRowUiAxis(state).headers,
   rowFields: getRowAxis(state).fields,
   columnFields: getColumnAxis(state).fields,
-  dataFieldsCount: getActivatedDataFields(state).length
+  dataFieldsCount: getActivatedDatafields(state).length
 });
 
 const mapDispatchToProps = dispatch => ({

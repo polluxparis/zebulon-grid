@@ -15,10 +15,10 @@ export const getAvailableFields = createSelector(
   (fieldAxis, fields) => fieldAxis.map(id => fields[id])
 );
 
-const getDataFields = state => state.datafields;
+const getDatafields = state => state.datafields;
 
-export const getActivatedDataFields = createSelector(
-  [getDataFields],
+export const getActivatedDatafields = createSelector(
+  [getDatafields],
   datafields =>
     Object.keys(datafields)
       .map(id => datafields[id])

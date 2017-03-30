@@ -1,5 +1,5 @@
 import {
-  getActivatedDataFields,
+  getActivatedDatafields,
   getAvailableFields,
   getRowFields,
   getColumnFields
@@ -39,7 +39,7 @@ describe('activated datafields are computed correctly', () => {
       datafield1: { id: 'datafield1', activated: true },
       datafield2: { id: 'datafield2', activated: false }
     };
-    const actual = getActivatedDataFields({ datafields });
+    const actual = getActivatedDatafields({ datafields });
     expect(actual.length).toEqual(1);
     expect(actual[0]).toEqual(datafields.datafield1);
   });
@@ -48,7 +48,7 @@ describe('activated datafields are computed correctly', () => {
       datafield1: { id: 'datafield1', activated: false },
       datafield2: { id: 'datafield2', activated: false }
     };
-    const actual = getActivatedDataFields({ datafields });
+    const actual = getActivatedDatafields({ datafields });
     expect(actual.length).toEqual(0);
   });
 });

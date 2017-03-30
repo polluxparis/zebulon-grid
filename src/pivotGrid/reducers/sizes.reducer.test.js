@@ -5,8 +5,8 @@ describe('sizes reducer', () => {
   describe('with updateCellSizes action', () => {
     test('for dimension on row axis', () => {
       const state = {
-        rows: { leafs: {}, dimensions: {} },
-        columns: { leafs: {}, dimensions: {} }
+        dimensions: { rows: {}, columns: {} },
+        leafs: { rows: {}, columns: {} }
       };
       expect(
         reducer(state, {
@@ -17,14 +17,14 @@ describe('sizes reducer', () => {
           direction: 'dimensions'
         })
       ).toEqual({
-        rows: { leafs: {}, dimensions: { tutu: 225 } },
-        columns: { leafs: {}, dimensions: {} }
+        dimensions: { columns: {}, rows: { tutu: 225 } },
+        leafs: { columns: {}, rows: {} }
       });
     });
     test('for dimension on column axis', () => {
       const state = {
-        rows: { leafs: {}, dimensions: {} },
-        columns: { leafs: {}, dimensions: {} }
+        dimensions: { rows: {}, columns: {} },
+        leafs: { rows: {}, columns: {} }
       };
       expect(
         reducer(state, {
@@ -35,14 +35,14 @@ describe('sizes reducer', () => {
           direction: 'dimensions'
         })
       ).toEqual({
-        columns: { leafs: {}, dimensions: { tutu: 225 } },
-        rows: { leafs: {}, dimensions: {} }
+        leafs: { columns: {}, rows: {} },
+        dimensions: { rows: {}, columns: { tutu: 225 } }
       });
     });
     test('for leaf header on row axis', () => {
       const state = {
-        rows: { leafs: {}, dimensions: {} },
-        columns: { leafs: {}, dimensions: {} }
+        dimensions: { rows: {}, columns: {} },
+        leafs: { rows: {}, columns: {} }
       };
       expect(
         reducer(state, {
@@ -53,14 +53,14 @@ describe('sizes reducer', () => {
           direction: 'leafs'
         })
       ).toEqual({
-        rows: { dimensions: {}, leafs: { tutu: 225 } },
-        columns: { leafs: {}, dimensions: {} }
+        leafs: { columns: {}, rows: { tutu: 225 } },
+        dimensions: { columns: {}, rows: {} }
       });
     });
     test('for leaf header on column axis', () => {
       const state = {
-        rows: { leafs: {}, dimensions: {} },
-        columns: { leafs: {}, dimensions: {} }
+        dimensions: { rows: {}, columns: {} },
+        leafs: { rows: {}, columns: {} }
       };
       expect(
         reducer(state, {
@@ -71,8 +71,8 @@ describe('sizes reducer', () => {
           direction: 'leafs'
         })
       ).toEqual({
-        columns: { dimensions: {}, leafs: { tutu: 225 } },
-        rows: { leafs: {}, dimensions: {} }
+        dimensions: { columns: {}, rows: {} },
+        leafs: { rows: {}, columns: { tutu: 225 } }
       });
     });
   });

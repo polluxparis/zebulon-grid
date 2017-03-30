@@ -5,6 +5,7 @@ import WrappedGrid from './pivotGrid/WrappedGrid';
 import { getMockDatasource, basicConfig } from './utils/mock';
 
 let i = 0;
+let k = 0;
 class WrappedGridDemo extends Component {
   constructor() {
     super();
@@ -13,6 +14,7 @@ class WrappedGridDemo extends Component {
     this.toggleDatafield = this.toggleDatafield.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
+    this.toggleDatafieldAxis = this.toggleDatafieldAxis.bind(this);
   }
   addData() {
     this.grid.pushData([
@@ -39,6 +41,20 @@ class WrappedGridDemo extends Component {
   toggleDatafield() {
     this.grid.toggleDatafield('amt');
   }
+  toggleDatafieldAxis() {
+    if (k % 2) {
+      this.grid.setConfigProperty(
+        { dataHeadersLocation: 'columns' },
+        'dataHeadersLocation'
+      );
+    } else {
+      this.grid.setConfigProperty(
+        { dataHeadersLocation: 'rows' },
+        'dataHeadersLocation'
+      );
+    }
+    k += 1;
+  }
   zoomIn() {
     this.grid.zoomIn();
   }
@@ -53,6 +69,9 @@ class WrappedGridDemo extends Component {
         <button onClick={this.toggleDatafield}>Toggle datafield</button>
         <button onClick={this.zoomIn}>Zoom in</button>
         <button onClick={this.zoomOut}>Zoom out</button>
+        <button onClick={this.toggleDatafieldAxis}>
+          Toggle datafields axis
+        </button>
 
         <WrappedGrid
           config={basicConfig}

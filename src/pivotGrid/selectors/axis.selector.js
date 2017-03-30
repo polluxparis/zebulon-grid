@@ -5,7 +5,7 @@ import { getFilteredData } from './data.selector';
 import {
   getRowFields,
   getColumnFields,
-  getActivatedDataFields
+  getActivatedDatafields
 } from './fields.selector';
 
 export const getRowAxis = createSelector(
@@ -19,14 +19,14 @@ export const getColumnAxis = createSelector(
     new Axis(AxisType.COLUMNS, columnFields, filteredData)
 );
 
-const getActivatedDataFieldsCount = createSelector(
-  [getActivatedDataFields],
+const getActivatedDatafieldsCount = createSelector(
+  [getActivatedDatafields],
   datafields => datafields.length
 );
 
 const getAxisActivatedDatafields = axisType =>
   createSelector(
-    [getActivatedDataFields, state => state.config.dataHeadersLocation],
+    [getActivatedDatafields, state => state.config.dataHeadersLocation],
     (datafields, dataHeadersLocation) => {
       if (toAxisType(dataHeadersLocation) === axisType) {
         return datafields;
@@ -41,13 +41,13 @@ export const getRowUiAxis = createSelector(
     getAxisActivatedDatafields(AxisType.ROWS),
     state => state.axis.columns
   ],
-  (rowAxis, activatedDataFields, crossFieldsCode) =>
+  (rowAxis, activatedDatafields, crossFieldsCode) =>
     new AxisUi(
       rowAxis,
       {
-        activatedDataFields,
-        activatiedDataFieldsCount: activatedDataFields
-          ? activatedDataFields.length
+        activatedDatafields,
+        activatedDatafieldsCount: activatedDatafields
+          ? activatedDatafields.length
           : 0
       },
       crossFieldsCode
@@ -60,13 +60,13 @@ export const getColumnUiAxis = createSelector(
     getAxisActivatedDatafields(AxisType.COLUMNS),
     state => state.axis.rows
   ],
-  (columnAxis, activatedDataFields, crossFieldsCode) =>
+  (columnAxis, activatedDatafields, crossFieldsCode) =>
     new AxisUi(
       columnAxis,
       {
-        activatedDataFields,
-        activatedDataFieldsCount: activatedDataFields
-          ? activatedDataFields.length
+        activatedDatafields,
+        activatedDatafieldsCount: activatedDatafields
+          ? activatedDatafields.length
           : 0
       },
       crossFieldsCode
@@ -79,16 +79,16 @@ export const getLayout = createSelector(
     getColumnAxis,
     getRowUiAxis,
     getColumnUiAxis,
-    getActivatedDataFieldsCount,
+    getActivatedDatafieldsCount,
     state => state.config.dataHeadersLocation
   ],
-  (rowAxis, columnAxis, rowsUi, columnsUi, activatedDataFieldsCount, dataHeadersLocation) => {
+  (rowAxis, columnAxis, rowsUi, columnsUi, activatedDatafieldsCount, dataHeadersLocation) => {
     const rowHorizontalCount = (rowAxis.fields.length || 1) +
-      (dataHeadersLocation === 'rows' && activatedDataFieldsCount >= 1 ? 1 : 0);
+      (dataHeadersLocation === 'rows' && activatedDatafieldsCount >= 1 ? 1 : 0);
     const rowVerticalCount = rowsUi.headers.length;
     const columnHorizontalCount = columnsUi.headers.length;
     const columnVerticalCount = (columnAxis.fields.length || 1) +
-      (dataHeadersLocation === 'columns' && activatedDataFieldsCount >= 1
+      (dataHeadersLocation === 'columns' && activatedDatafieldsCount >= 1
         ? 1
         : 0);
     return {
