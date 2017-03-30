@@ -52,7 +52,7 @@ describe('cells infos are computed correctly', () => {
       value: '100 $',
       data: [
         {
-          amt: 100,
+          amt: 1100,
           qty: 100,
           titi: 'titi 0',
           toto: 1,

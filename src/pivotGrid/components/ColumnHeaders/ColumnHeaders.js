@@ -16,7 +16,10 @@ class ColumnHeaders extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.sizesColumnsLeafs !== this.props.sizesColumnsLeafs) {
+    if (
+      prevProps.sizesColumnsLeafs !== this.props.sizesColumnsLeafs ||
+      prevProps.zoom !== this.props.zoom
+    ) {
       this.grid.recomputeGridSize();
     }
   }

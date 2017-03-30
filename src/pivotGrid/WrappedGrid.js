@@ -29,9 +29,11 @@ class WrappedGrid extends Component {
 }
 
 Object.keys(actions).forEach(action => {
-  WrappedGrid.prototype[action] = function action(...args) {
+  /* eslint-disable func-names */
+  WrappedGrid.prototype[action] = function(...args) {
     this.store.dispatch(actions[action](...args));
   };
+  /* eslint-enable */
 });
 
 export default WrappedGrid;

@@ -16,7 +16,7 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
           obj.qty = u + 10 * i + 100 * o; // +9999999999.1234567890123456
-          obj.amt = u + 10 * i + 100 * o; // +9999999999.1234567890123456
+          obj.amt = u + 10 * i + 100 * o + 1000; // +9999999999.1234567890123456
           res.push(obj);
         }
       }
@@ -157,12 +157,17 @@ export const basicConfig = {
       caption: 'Price',
       aggregation: 'avg',
       accessor: row => row.amt / row.qty,
-      format: value => Number(value).toFixed(2)
+      format: value => {
+        if (!isNaN(value)) {
+          return `${Number(value).toFixed(2)} $`;
+        }
+        return value;
+      }
     }
   ],
   columns: ['Titi'],
   rows: ['Toto', 'Tutu'],
-  data: ['Quantity', 'Amount'],
+  data: ['Quantity', 'Amount', 'Price'],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {
     // 'Titi': ['titi0']

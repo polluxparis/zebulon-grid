@@ -16,7 +16,10 @@ class RowHeaders extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.sizesRowsLeafs !== this.props.sizesRowsLeafs) {
+    if (
+      prevProps.sizesRowsLeafs !== this.props.sizesRowsLeafs ||
+      prevProps.zoom !== this.props.zoom
+    ) {
       this.grid.recomputeGridSize();
     }
   }

@@ -81,7 +81,7 @@ describe('WrappedGrid', () => {
       );
       expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomOut();
-      expect(wrapper.find('DataCell').length).toEqual(40);
+      expect(wrapper.find('DataCell').length).toEqual(44);
     });
 
     test('sort', () => {
@@ -160,8 +160,11 @@ describe('WrappedGrid', () => {
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
+          )
+          .filterWhere(
+            wrapper => wrapper.props().header.caption === 'Amount'
           ).length
-      ).toEqual(9);
+      ).toEqual(3);
       wrapper.instance().toggleDatafield('amt');
       expect(
         wrapper
@@ -169,8 +172,11 @@ describe('WrappedGrid', () => {
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
+          )
+          .filterWhere(
+            wrapper => wrapper.props().header.caption === 'Amount'
           ).length
-      ).toEqual(5);
+      ).toEqual(0);
     });
 
     test('resize header', () => {
