@@ -30,6 +30,7 @@ import {
   getAvailableFields
 } from './fields.selector';
 import { getCellValue, getCellInfos } from './cell.selector';
+import { getFieldValues } from './data.selector';
 
 export { getLayout };
 export { getCellSizes };
@@ -57,3 +58,4 @@ export { getRowHeadersVisibleHeight };
 export { getCellValue, getCellInfos };
 export { getDataCellsHeight };
 export { getDataCellsWidth };
+export { getFieldValues };
