@@ -88,12 +88,9 @@ class PivotGrid extends Component {
   handleSectionRendered(onSectionRendered) {
     return indexes => {
       const { rowStartIndex, columnStartIndex } = indexes;
-      // When the data cells grid is re rendered, it resets row and column
-      // start indexes, losing the information about the previous position,
-      // this prevents that.
-      // I's a hack until I better understand this behaviour.
-      if (rowStartIndex) this.rowStartIndex = rowStartIndex;
-      if (columnStartIndex) this.columnStartIndex = columnStartIndex;
+      this.rowStartIndex = rowStartIndex;
+      this.columnStartIndex = columnStartIndex;
+
       onSectionRendered(indexes);
     };
   }
