@@ -6,8 +6,8 @@ import {
   moveField,
   toggleDatafield
 } from './actions';
-import { isPromise, isObservable } from './utils/generic';
-import { toAggregateFunction, toAccessorFunction } from './Aggregation';
+import { isPromise, isObservable, toAccessorFunction } from './utils/generic';
+import { toAggregateFunction } from './Aggregation';
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {

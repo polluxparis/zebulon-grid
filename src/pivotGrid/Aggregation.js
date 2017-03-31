@@ -1,10 +1,3 @@
-export function toAccessorFunction(accessor) {
-  if (typeof accessor === 'string') {
-    return row => row[accessor];
-  }
-  return accessor;
-}
-
 export function forEachIntersection(accessor, intersection, data, callback) {
   if (intersection && intersection.length > 0) {
     for (let i = 0; i < intersection.length; i += 1) {

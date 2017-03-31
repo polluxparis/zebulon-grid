@@ -26,9 +26,16 @@ export function fieldFactory(fieldConfig) {
 
   let sortValue;
   if (sort) {
+    let accessor;
+    // If the accessor is the same that the id (the default), no need to write the accessor
+    // This will save memory
+    if (sort.accessor && sort.accessor !== field.id) {
+      accessor = sort.accessor;
+    }
     sortValue = {
-      order: sort.order || (sort.customfunc ? 'asc' : null),
-      customfunc: sort.customfunc
+      order: sort.order || (sort.custom ? 'asc' : null),
+      custom: sort.custom,
+      accessor
     };
   } else {
     sortValue = { order: null };

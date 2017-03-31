@@ -137,3 +137,10 @@ export function isUndefined(obj) {
 export function isNullOrUndefined(obj) {
   return isUndefined(obj) || isNull(obj);
 }
+
+export function toAccessorFunction(accessor) {
+  if (typeof accessor === 'string') {
+    return row => row[accessor];
+  }
+  return accessor;
+}

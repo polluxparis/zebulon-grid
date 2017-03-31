@@ -1,5 +1,5 @@
 import Dimension from './Dimension';
-import { isNumber } from './utils/generic';
+import { toAccessorFunction, isUndefined } from './utils/generic';
 
 /**
  * Axis types
@@ -99,16 +99,24 @@ export class Axis {
     }
     dimensions.forEach(dimension => {
       if (field.sort.order) {
-        if (field.sort.customfunc) {
-          dimension.values.sort(field.sort.customfunc);
-        } else {
-          if (isNumber(dimension.values[0])) {
-            dimension.values.sort((a, b) => a - b);
+        if (dimension.sortingMap.size > 0) {
+          const sorted = [...dimension.sortingMap.keys()];
+          if (field.sort.custom) {
+            sorted.sort(field.sort.custom);
+          } else {
+            sorted.sort();
           }
-          dimension.values.sort();
-        }
-        if (field.sort.order === 'desc') {
-          dimension.values.reverse();
+          dimension.values = sorted.map(sortingValue =>
+            dimension.sortingMap.get(sortingValue));
+        } else {
+          if (field.sort.custom) {
+            dimension.values.sort(field.sort.custom);
+          } else {
+            dimension.values.sort();
+          }
+          if (field.sort.order === 'desc') {
+            dimension.values.reverse();
+          }
         }
       }
     });
@@ -142,6 +150,14 @@ export class Axis {
   fill(data) {
     if (data != null && this.fields.length > 0) {
       if (data != null && Array.isArray(data) && data.length > 0) {
+        // Create sorting accessors
+        const sortingAccessors = [];
+        for (let findex = 0; findex < this.fields.length; findex += 1) {
+          const field = this.fields[findex];
+          if (!isUndefined(field.sort) && !isUndefined(field.sort.accessor)) {
+            sortingAccessors[findex] = toAccessorFunction(field.sort.accessor);
+          }
+        }
         for (
           let rowIndex = 0, dataLength = data.length;
           rowIndex < dataLength;
@@ -159,6 +175,12 @@ export class Axis {
               dim = subdimvals[id];
             } else {
               dim.values.push(id);
+              // Add value to be sorted on to the dimension if necessary
+              let sortingValue = null;
+              if (!isUndefined(sortingAccessors[findex])) {
+                sortingValue = sortingAccessors[findex](row);
+                dim.sortingMap.set(sortingValue, id);
+              }
               dim = new Dimension(
                 id,
                 dim,

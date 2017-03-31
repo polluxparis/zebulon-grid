@@ -89,7 +89,10 @@ export const basicConfig = {
       id: 'toto',
       caption: 'Toto',
       sort: {
-        order: 'asc'
+        // order: 'asc',
+        accessor: 'toto_lb'
+        // accessor: row => row.toto_lb
+        // custom: (a, b) => a - b
       }
     },
     // {

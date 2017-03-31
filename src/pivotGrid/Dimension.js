@@ -60,5 +60,6 @@ export default class Dimension {
      * @type {Object}
      */
     this.rowIndexes = null;
+    this.sortingMap = new Map();
   }
 }
