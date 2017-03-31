@@ -1,6 +1,6 @@
 {
   "name": "zebulon-grid",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": ".",
   "publish-Config": {
     "registry": "http://localhost:4873"
