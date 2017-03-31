@@ -106,8 +106,10 @@ export class Axis {
           } else {
             sorted.sort();
           }
+          /* eslint-disable no-param-reassign */
           dimension.values = sorted.map(sortingValue =>
             dimension.sortingMap.get(sortingValue));
+          /* eslint-enable */
         } else {
           if (field.sort.custom) {
             dimension.values.sort(field.sort.custom);
