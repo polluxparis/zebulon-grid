@@ -27,17 +27,25 @@ export const getDimensionSize = createSelector(
   (rowDimensions, columnDimensions, cellSizes) =>
     (axisType, id) => {
       if (axisType === AxisType.COLUMNS) {
-        return columnDimensions[id] || cellSizes.height;
+        return Object.hasOwnProperty.call(columnDimensions, id)
+          ? columnDimensions[id]
+          : cellSizes.height;
       }
-      return rowDimensions[id] || cellSizes.width;
+      return Object.hasOwnProperty.call(rowDimensions, id)
+        ? rowDimensions[id]
+        : cellSizes.width;
     }
 );
 
 const getLeafHeaderSize = (axis, key, leafSizes, cellSizes) => {
   if (axis === AxisType.COLUMNS) {
-    return leafSizes[key] || cellSizes.width;
+    return Object.hasOwnProperty.call(leafSizes, key)
+      ? leafSizes[key]
+      : cellSizes.width;
   }
-  return leafSizes[key] || cellSizes.height;
+  return Object.hasOwnProperty.call(leafSizes, key)
+    ? leafSizes[key]
+    : cellSizes.height;
 };
 
 export const getLastChildSizeOnColumns = createSelector(
