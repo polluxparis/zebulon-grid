@@ -224,8 +224,9 @@ export default class AxisUi {
       let lastInfosArray = infos[infos.length - 1];
       activatedDatafields.forEach((datafield, index) => {
         lastInfosArray.push(
-          new DataHeader(axisType, datafield, parent, (this.x += 1), y)
+          new DataHeader(axisType, datafield, parent, this.x, y)
         );
+        this.x += 1;
         if (index < this.datafieldsCount - 1) {
           infos.push((lastInfosArray = []));
         }
