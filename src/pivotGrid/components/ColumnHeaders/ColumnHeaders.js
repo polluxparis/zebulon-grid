@@ -243,6 +243,11 @@ class ColumnHeaders extends PureComponent {
         className="pivotgrid-column-headers"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
+        // The position of inner style was set to static in react-virtualized 9.2.3
+        // This broke the grid because the height of the inner container was not reset
+        // when the height prop changed
+        // This is a workaround
+        containerStyle={{ position: 'static' }}
         deferredMeasurementCache={measuredSizesCache}
         height={height}
         overscanColumnCount={0}
