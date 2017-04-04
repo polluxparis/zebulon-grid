@@ -1,22 +1,10 @@
-import { AxisType } from '../Axis';
+import { AxisType, mapAxisTypeToLabel } from '../Axis';
 import { UPDATE_CELL_SIZE } from '../constants';
 
 function getNewCellSize(size, offset) {
   return Math.max(size + offset, 10);
 }
 
-const mapAxisTypeToLabel = axisType => {
-  switch (axisType) {
-    case AxisType.COLUMNS:
-      return 'columns';
-    case AxisType.ROWS:
-      return 'rows';
-    default:
-      throw new Error(`Axis type ${axisType} not supported`);
-  }
-};
-
-/* eslint-disable import/prefer-default-export */
 export const updateCellSize = (
   {
     handle,
@@ -61,4 +49,11 @@ export const updateCellSize = (
     direction
   };
 };
-/* eslint-enable */
+
+export const setCellSize = ({ header, size }) => ({
+  type: UPDATE_CELL_SIZE,
+  id: header.key,
+  size,
+  axis: mapAxisTypeToLabel(header.axisType),
+  direction: 'leafs'
+});

@@ -1490,6 +1490,10 @@ binary-extensions@^1.0.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.7.0.tgz#6c1610db163abfb34edfe42fa423343a1e01185d"
 
+binary-search-bounds@^1.0.0:
+  version "1.0.0"
+  resolved "http://localhost:4873/binary-search-bounds/-/binary-search-bounds-1.0.0.tgz#323ca317e3f2a40f4244c7255f5384a5b207bb69"
+
 bl@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.1.2.tgz#fdca871a99713aa00d19e3bbba41c44787a65398"
@@ -3525,6 +3529,12 @@ interpret@^1.0.0:
   version "1.0.1"
   resolved "http://localhost:4873/interpret/-/interpret-1.0.1.tgz#d579fb7f693b858004947af39fa0db49f795602c"
 
+interval-tree-1d@^1.0.3:
+  version "1.0.3"
+  resolved "http://localhost:4873/interval-tree-1d/-/interval-tree-1d-1.0.3.tgz#8fdbde02b6b2c7dbdead636bcbed8e08710d85c1"
+  dependencies:
+    binary-search-bounds "^1.0.0"
+
 invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.1.tgz#b097010547668c7e337028ebe816ebe36c8a8d54"
@@ -5518,13 +5528,14 @@ react-test-renderer@15.4.2:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-virtualized@9.2.2:
-  version "9.2.2"
-  resolved "http://localhost:4873/react-virtualized/-/react-virtualized-9.2.2.tgz#69bf1baa8f390488a7b3926313585ae3f491e5ac"
+react-virtualized@9.4.2:
+  version "9.4.2"
+  resolved "http://localhost:4873/react-virtualized/-/react-virtualized-9.4.2.tgz#e7578bd2ff5193d20bdb6c0d9085b8555e2aae46"
   dependencies:
     babel-runtime "^6.11.6"
     classnames "^2.2.3"
     dom-helpers "^2.4.0 || ^3.0.0"
+    interval-tree-1d "^1.0.3"
     loose-envify "^1.3.0"
 
 react@15.4.2:

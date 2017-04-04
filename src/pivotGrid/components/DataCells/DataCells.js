@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import {
   Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
+import { CellMeasurer } from 'react-virtualized/dist/commonjs/CellMeasurer';
 
 import { isInRange } from '../../utils/generic';
 import { DataCell } from '../../Cells';
@@ -137,6 +138,7 @@ class DataCells extends PureComponent {
     {
       columnIndex,
       key,
+      parent,
       rowIndex,
       style
     }
@@ -147,7 +149,7 @@ class DataCells extends PureComponent {
       dataHeadersLocation,
       customFunctions
     } = this.props;
-    const { rowHeaders, columnHeaders } = this.props;
+    const { rowHeaders, columnHeaders, measuredSizesCache } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
     const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
     const columnHeaderColumn = columnHeaders[columnIndex];
@@ -182,18 +184,26 @@ class DataCells extends PureComponent {
       }
     }
     return (
-      <DataCellComponent
-        key={key}
-        valueHasChanged={valueHasChanged}
-        style={style}
-        rowIndex={rowIndex}
+      <CellMeasurer
+        cache={measuredSizesCache}
         columnIndex={columnIndex}
-        cell={cell}
-        drilldown={this.handleDrilldown}
-        handleMouseDown={this.handleMouseDown}
-        handleMouseOver={this.handleMouseOver}
-        selected={selected}
-      />
+        key={key}
+        parent={parent}
+        rowIndex={rowIndex}
+      >
+        <DataCellComponent
+          cell={cell}
+          columnIndex={columnIndex}
+          drilldown={this.handleDrilldown}
+          handleMouseDown={this.handleMouseDown}
+          handleMouseOver={this.handleMouseOver}
+          key={key}
+          rowIndex={rowIndex}
+          selected={selected}
+          style={{ ...style, whiteSpace: 'nowrap' }}
+          valueHasChanged={valueHasChanged}
+        />
+      </CellMeasurer>
     );
   }
 
@@ -208,6 +218,7 @@ class DataCells extends PureComponent {
       width,
       scrollToColumn,
       scrollToRow,
+      measuredSizesCache,
       onSectionRendered,
       zoom
     } = this.props;
@@ -218,6 +229,7 @@ class DataCells extends PureComponent {
         className="pivotgrid-data-cells"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
+        deferredMeasurementCache={measuredSizesCache}
         height={height}
         onScroll={onScroll}
         ref={ref => {
