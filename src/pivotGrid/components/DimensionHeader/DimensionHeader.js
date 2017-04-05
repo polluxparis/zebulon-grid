@@ -54,7 +54,10 @@ class DimensionHeader extends Component {
           ...style
         }}
       >
-        <span className="pivotgrid-dimension-header-inner">
+        <span
+          className="pivotgrid-dimension-header-inner"
+          style={{ whiteSpace: 'nowrap' }}
+        >
           {field.caption}
         </span>
         <div
