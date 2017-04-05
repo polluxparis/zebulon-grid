@@ -3,7 +3,6 @@ import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import {
   CellMeasurerCache
 } from 'react-virtualized/dist/commonjs/CellMeasurer';
-
 import { DropTarget } from 'react-dnd';
 
 import ArrowKeyStepper from '../ArrowKeyStepper/ArrowKeyStepper';
@@ -12,9 +11,9 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
-import { Header, DataHeader } from '../../Cells';
+import { Header, DataHeader, getDimensionId } from '../../Cells';
 import { keyToIndex } from '../../AxisUi';
-import { KEY_SEPARATOR } from '../../constants';
+import { KEY_SEPARATOR, MINIMUM_CELL_SIZE } from '../../constants';
 
 function getNextKey(current, next) {
   const firstLeafHeader = current.firstHeaderRow[
@@ -50,31 +49,35 @@ class PivotGrid extends Component {
     super();
     this.rowStartIndex = 0;
     this.columnStartIndex = 0;
-    // Putting default width at 1 allows size cache to work when some columns are sparse
+    // Putting default width at MINIMUM_CELL_SIZE allows size cache to work when some columns are sparse
     // for example in column headers.
     // Since the width of a column is the max of the width of the cell, if a column has no cell
     // in its upper row, this will put the width of the column as the width of the cell as desired.
-    // We choose 1 rather than 0 for performance reasons.
     this.measuredSizeCaches = {
       dimensions: new CellMeasurerCache({
-        defaultWidth: 1,
+        defaultWidth: MINIMUM_CELL_SIZE,
         fixedHeight: true
       }),
       columns: new CellMeasurerCache({
-        defaultWidth: 1,
+        defaultWidth: MINIMUM_CELL_SIZE,
         fixedHeight: true
       }),
       rows: new CellMeasurerCache({
-        defaultWidth: 1,
+        defaultWidth: MINIMUM_CELL_SIZE,
         fixedHeight: true
       }),
       datacells: new CellMeasurerCache({
-        defaultWidth: 1,
+        defaultWidth: MINIMUM_CELL_SIZE,
         fixedHeight: true
       })
     };
 
-    this.handleAutoResizeColumn = this.handleAutoResizeColumn.bind(this);
+    this.handleAutoResizeColumnHeader = this.handleAutoResizeColumnHeader.bind(
+      this
+    );
+    this.handleAutoResizeRowHeaderColumn = this.handleAutoResizeRowHeaderColumn.bind(
+      this
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -114,16 +117,21 @@ class PivotGrid extends Component {
     }
   }
 
-  handleSectionRendered(onSectionRendered) {
-    return indexes => {
-      const { rowStartIndex, columnStartIndex } = indexes;
-      this.rowStartIndex = rowStartIndex;
-      this.columnStartIndex = columnStartIndex;
-      onSectionRendered(indexes);
-    };
+  handleAutoResizeRowHeaderColumn(header) {
+    const headerMeasuredWidth = this.measuredSizeCaches.rows.columnWidth({
+      index: header.y
+    });
+    const dimensionHeadersMeasuredWidth = this.measuredSizeCaches.dimensions.columnWidth(
+      { index: header.y }
+    );
+    this.props.setCellSize({
+      cell: { key: getDimensionId(header), axisType: header.axisType },
+      size: Math.max(headerMeasuredWidth, dimensionHeadersMeasuredWidth),
+      direction: 'dimensions'
+    });
   }
 
-  handleAutoResizeColumn(header) {
+  handleAutoResizeColumnHeader(header) {
     const autoResizeOneColumn = header => {
       const dataCellsMeasuredColumnWidth = this.measuredSizeCaches.datacells.columnWidth(
         {
@@ -135,17 +143,27 @@ class PivotGrid extends Component {
           index: header.x
         }
       );
-      this.props.autoResizeColumn(
-        header,
-        Math.max(dataCellsMeasuredColumnWidth, leafHeaderMeasuredWidth)
-      );
+      this.props.setCellSize({
+        cell: header,
+        size: Math.max(dataCellsMeasuredColumnWidth, leafHeaderMeasuredWidth),
+        direction: 'leafs'
+      });
     };
     if (header.subheaders && header.subheaders.length) {
       header.subheaders.forEach(subheader =>
-        this.handleAutoResizeColumn(subheader));
+        this.handleAutoResizeColumnHeader(subheader));
     } else {
       autoResizeOneColumn(header);
     }
+  }
+
+  handleSectionRendered(onSectionRendered) {
+    return indexes => {
+      const { rowStartIndex, columnStartIndex } = indexes;
+      this.rowStartIndex = rowStartIndex;
+      this.columnStartIndex = columnStartIndex;
+      onSectionRendered(indexes);
+    };
   }
 
   render() {
@@ -180,26 +198,26 @@ class PivotGrid extends Component {
               {({ onScroll, scrollLeft, scrollTop }) => (
                 <div className="pivotgrid-pivotgrid">
                   <div style={{ display: 'flex' }}>
-                    <DimensionHeaders gridId={gridId} />
+                    <DimensionHeaders
+                      gridId={gridId}
+                      measuredSizesCache={this.measuredSizeCaches.dimensions}
+                      autoResizeColumn={this.handleAutoResizeRowHeaderColumn}
+                    />
                     <ColumnHeaders
-                      autoResizeColumn={this.handleAutoResizeColumn}
+                      autoResizeColumn={this.handleAutoResizeColumnHeader}
                       gridId={gridId}
                       measuredSizesCache={this.measuredSizeCaches.columns}
                       scrollLeft={scrollLeft}
                       scrollToColumn={scrollToColumn}
-                      ref={ref => {
-                        this.columnHeaders = ref;
-                      }}
                     />
                   </div>
                   <div style={{ display: 'flex' }}>
                     <RowHeaders
+                      autoResizeColumn={this.handleAutoResizeRowHeaderColumn}
+                      measuredSizesCache={this.measuredSizeCaches.rows}
                       scrollTop={scrollTop}
                       scrollToRow={scrollToRow}
                       gridId={gridId}
-                      ref={ref => {
-                        this.rowHeaders = ref;
-                      }}
                     />
                     <DataCells
                       measuredSizesCache={this.measuredSizeCaches.datacells}

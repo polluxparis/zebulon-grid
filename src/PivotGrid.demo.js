@@ -17,6 +17,7 @@ import './App.css';
 
 let i = 0;
 let j = 0;
+let k = 0;
 
 class PivotGridDemo extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class PivotGridDemo extends Component {
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
     this.toggleFilter = this.toggleFilter.bind(this);
+    this.toggleDatafieldAxis = this.toggleDatafieldAxis.bind(this);
   }
 
   addData() {
@@ -74,6 +76,25 @@ class PivotGridDemo extends Component {
     this.state.store.dispatch(actions.toggleDatafield('amt'));
   }
 
+  toggleDatafieldAxis() {
+    if (k % 2) {
+      this.state.store.dispatch(
+        actions.setConfigProperty(
+          { dataHeadersLocation: 'columns' },
+          'dataHeadersLocation'
+        )
+      );
+    } else {
+      this.state.store.dispatch(
+        actions.setConfigProperty(
+          { dataHeadersLocation: 'rows' },
+          'dataHeadersLocation'
+        )
+      );
+    }
+    k += 1;
+  }
+
   zoomIn() {
     this.state.store.dispatch(actions.zoomIn());
   }
@@ -104,6 +125,9 @@ class PivotGridDemo extends Component {
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>
             <button onClick={this.toggleFilter}>Toggle filter</button>
+            <button onClick={this.toggleDatafieldAxis}>
+              Toggle data fields location
+            </button>
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>

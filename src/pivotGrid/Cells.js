@@ -1,5 +1,10 @@
 import { AxisType } from './Axis';
-import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from './constants';
+import {
+  KEY_SEPARATOR,
+  AXIS_SEPARATOR,
+  TOTAL_ID,
+  MEASURE_ID
+} from './constants';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -68,6 +73,20 @@ export const HeaderType = {
   }
 };
 
+export function getDimensionId(header) {
+  let dimensionId;
+  if (!header.dim) {
+    // Measure header
+    dimensionId = MEASURE_ID;
+  } else if (header.dim.field) {
+    // Normal header
+    dimensionId = header.dim.field.id;
+  } else {
+    // Total header
+    dimensionId = TOTAL_ID;
+  }
+  return dimensionId;
+}
 class CellBase {
   constructor(options) {
     // // CellBase is an abstract class

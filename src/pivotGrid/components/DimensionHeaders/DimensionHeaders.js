@@ -1,21 +1,51 @@
 import React, { Component } from 'react';
+import { CellMeasurer } from 'react-virtualized/dist/commonjs/CellMeasurer';
 
 import { AxisType } from '../../Axis';
 import { MEASURE_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader';
 
 class DimensionHeaders extends Component {
+  constructor() {
+    super();
+    // Start with a render cylce to measure cells
+    this.measureCycle = true;
+  }
+
+  componentDidMount() {
+    this.measureCycle = false;
+    this.forceUpdate();
+  }
+
+  componentWillReceiveProps() {
+    // If new props were received, do another measure cycle
+    this.measureCycle = true;
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.dimensionPositions !== this.props.dimensionPositions;
   }
+
+  componentDidUpdate() {
+    // Rerender component to get correct sizes on cells
+    // Will only run if component has received new props
+    // i.e. update came from the outside, not from forceUpdate
+    if (this.measureCycle === true) {
+      this.measureCycle = false;
+      this.forceUpdate();
+    }
+  }
+
   render() {
     const {
+      autoResizeColumn,
       columnDimensionHeaders,
       columnFields,
       dataHeadersLocation,
       dimensionPositions,
       getDimensionSize,
       height,
+      measuredSizesCache,
       previewSizes,
       rowDimensionHeaders,
       rowFields,
@@ -25,6 +55,14 @@ class DimensionHeaders extends Component {
     } = this.props;
     const headers = [];
 
+    const columnFieldsColumnIndex = rowFields.length +
+      (dataHeadersLocation === 'columns' ? 0 : 1) -
+      1;
+    const rowFieldsRowIndex = columnDimensionHeaders.length -
+      dataHeadersLocation ===
+      'columns'
+      ? 0
+      : 1;
     // Get width for column dimension headers
     let fieldWhoseWidthToGet;
     if (dataHeadersLocation === 'rows') {
@@ -39,23 +77,47 @@ class DimensionHeaders extends Component {
     }
     const headerWidth = getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
     headers.push(
-      ...columnDimensionHeaders.map(dimensionHeader => {
+      ...columnDimensionHeaders.map((dimensionHeader, index) => {
         const field = dimensionHeader.value;
-        const top = dimensionPositions.columns[field.id];
-        const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
+        let style;
+        if (!this.measureCycle) {
+          const top = dimensionPositions.columns[field.id];
+          const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
+          style = {
+            top,
+            left: width - headerWidth,
+            width: headerWidth,
+            height: headerHeight,
+            position: 'absolute'
+          };
+        } else {
+          style = {
+            height: 'auto',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: 'auto'
+          };
+        }
         return (
-          <DimensionHeader
-            key={`dimension-header-${field.id}`}
-            left={width - headerWidth}
-            top={top}
-            width={headerWidth}
-            height={headerHeight}
-            field={field}
-            mainDirection="right"
-            crossFieldId={fieldWhoseWidthToGet}
-            previewSizes={previewSizes}
-            gridId={gridId}
-          />
+          <CellMeasurer
+            cache={measuredSizesCache}
+            columnIndex={columnFieldsColumnIndex}
+            key={field.id}
+            rowIndex={index}
+          >
+            <DimensionHeader
+              key={`dimension-header-${field.id}`}
+              columnIndex={columnFieldsColumnIndex}
+              resizeCell={autoResizeColumn}
+              style={style}
+              field={field}
+              mainDirection="right"
+              crossFieldId={fieldWhoseWidthToGet}
+              previewSizes={previewSizes}
+              gridId={gridId}
+            />
+          </CellMeasurer>
         );
       })
     );
@@ -76,23 +138,48 @@ class DimensionHeaders extends Component {
       fieldWhoseHeightToGet
     );
     headers.push(
-      ...rowDimensionHeaders.map(dimensionHeader => {
+      ...rowDimensionHeaders.map((dimensionHeader, index) => {
         const field = dimensionHeader.value;
-        const left = dimensionPositions.rows[field.id];
-        const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
+        let style;
+        if (!this.measureCycle) {
+          const left = dimensionPositions.rows[field.id];
+          const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
+          style = {
+            top: height - headerHeight,
+            left,
+            height: headerHeight,
+            width: headerWidth,
+            position: 'absolute'
+          };
+        } else {
+          style = {
+            height: 'auto',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: 'auto'
+          };
+        }
+
         return (
-          <DimensionHeader
-            top={height - headerHeight}
-            crossFieldId={fieldWhoseHeightToGet}
-            field={field}
-            height={headerHeight}
-            key={`dimension-header-${field.id}`}
-            left={left}
-            mainDirection="down"
-            previewSizes={previewSizes}
-            width={headerWidth}
-            gridId={gridId}
-          />
+          <CellMeasurer
+            cache={measuredSizesCache}
+            columnIndex={index}
+            key={field.id}
+            rowIndex={rowFieldsRowIndex}
+          >
+            <DimensionHeader
+              crossFieldId={fieldWhoseHeightToGet}
+              columnIndex={index}
+              resizeCell={autoResizeColumn}
+              field={field}
+              key={`dimension-header-${field.id}`}
+              mainDirection="down"
+              previewSizes={previewSizes}
+              style={style}
+              gridId={gridId}
+            />
+          </CellMeasurer>
         );
       })
     );

@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { AxisType } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
 import { isNumber } from '../../utils/generic';
+import { getDimensionId } from '../../Cells';
 
 function getLeafSubheaders(header, result) {
   if (header.subheaders && header.subheaders.length) {
@@ -62,17 +62,7 @@ class Header extends PureComponent {
       <InnerHeader key={`${axis}-${x}-${y}`} cell={header} style={affixStyle} />
     );
     const leafHeaderId = header.key;
-    let dimensionId;
-    if (!header.dim) {
-      // Measure header
-      dimensionId = MEASURE_ID;
-    } else if (header.dim.field) {
-      // Normal header
-      dimensionId = header.dim.field.id;
-    } else {
-      // Total header
-      dimensionId = TOTAL_ID;
-    }
+    const dimensionId = getDimensionId(header);
     const leafSubheaders = header.subheaders
       ? getLeafSubheaders(header, [])
       : [];

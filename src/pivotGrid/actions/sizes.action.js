@@ -1,8 +1,8 @@
 import { AxisType, mapAxisTypeToLabel } from '../Axis';
-import { UPDATE_CELL_SIZE } from '../constants';
+import { UPDATE_CELL_SIZE, MINIMUM_CELL_SIZE } from '../constants';
 
 function getNewCellSize(size, offset) {
-  return Math.max(size + offset, 10);
+  return Math.max(size + offset, MINIMUM_CELL_SIZE);
 }
 
 export const updateCellSize = (
@@ -50,10 +50,10 @@ export const updateCellSize = (
   };
 };
 
-export const setCellSize = ({ header, size }) => ({
+export const setCellSize = ({ cell, size, direction }) => ({
   type: UPDATE_CELL_SIZE,
-  id: header.key,
+  id: cell.key,
   size,
-  axis: mapAxisTypeToLabel(header.axisType),
-  direction: 'leafs'
+  axis: mapAxisTypeToLabel(cell.axisType),
+  direction
 });

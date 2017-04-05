@@ -64,8 +64,8 @@ const mapDispatchToProps = dispatch => ({
       );
     }
   },
-  autoResizeColumn: (header, size) => {
-    dispatch(setCellSize({ header, size }));
+  setCellSize: ({ cell, size, direction }) => {
+    dispatch(setCellSize({ cell, size, direction }));
   },
   setSizes: ({ height, width }) => {
     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
@@ -86,7 +86,7 @@ const mergeProps = (
     columnFields,
     dataFieldsCount
   },
-  { autoResizeColumn, updateCellSize, setSizes },
+  { setCellSize, updateCellSize, setSizes },
   ownProps
 ) => ({
   defaultCellSizes,
@@ -97,7 +97,7 @@ const mergeProps = (
   width,
   layout,
   dataFieldsCount,
-  autoResizeColumn,
+  setCellSize,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,
