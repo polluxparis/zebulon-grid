@@ -22,58 +22,58 @@ export const getDimensionSize = createSelector(
   [
     state => state.sizes.dimensions.rows,
     state => state.sizes.dimensions.columns,
+    state => state.config.zoom,
     getCellSizes
   ],
-  (rowDimensions, columnDimensions, cellSizes) =>
+  (rowDimensions, columnDimensions, zoom, cellSizes) =>
     (axisType, id) => {
       if (axisType === AxisType.COLUMNS) {
         return Object.hasOwnProperty.call(columnDimensions, id)
-          ? columnDimensions[id]
+          ? columnDimensions[id] * zoom
           : cellSizes.height;
       }
       return Object.hasOwnProperty.call(rowDimensions, id)
-        ? rowDimensions[id]
+        ? rowDimensions[id] * zoom
         : cellSizes.width;
     }
 );
 
-const getLeafHeaderSize = (axis, key, leafSizes, cellSizes) => {
-  if (axis === AxisType.COLUMNS) {
-    return Object.hasOwnProperty.call(leafSizes, key)
-      ? leafSizes[key]
-      : cellSizes.width;
-  }
-  return Object.hasOwnProperty.call(leafSizes, key)
-    ? leafSizes[key]
-    : cellSizes.height;
-};
+const getLeafHeaderSize = createSelector(
+  [state => state.config.zoom, getCellSizes],
+  (zoom, cellSizes) =>
+    (axis, key, leafSizes) => {
+      if (axis === AxisType.COLUMNS) {
+        return Object.hasOwnProperty.call(leafSizes, key)
+          ? leafSizes[key] * zoom
+          : cellSizes.width;
+      }
+      return Object.hasOwnProperty.call(leafSizes, key)
+        ? leafSizes[key] * zoom
+        : cellSizes.height;
+    }
+);
 
 export const getLastChildSizeOnColumns = createSelector(
-  [state => state.sizes.leafs.columns, getCellSizes],
-  (sizes, cellSizes) =>
+  [state => state.sizes.leafs.columns, getLeafHeaderSize],
+  (sizes, getLeafHeaderSize) =>
     header => {
       let lastChild = header;
       while (lastChild.subheaders && lastChild.subheaders.length) {
         lastChild = lastChild.subheaders[lastChild.subheaders.length - 1];
       }
-      return getLeafHeaderSize(
-        AxisType.COLUMNS,
-        lastChild.key,
-        sizes,
-        cellSizes
-      );
+      return getLeafHeaderSize(AxisType.COLUMNS, lastChild.key, sizes);
     }
 );
 
 export const getLastChildSizeOnRows = createSelector(
-  [state => state.sizes.leafs.rows, getCellSizes],
-  (sizes, cellSizes) =>
+  [state => state.sizes.leafs.rows, getLeafHeaderSize],
+  (sizes, getLeafHeaderSize) =>
     header => {
       let lastChild = header;
       while (lastChild.subheaders && lastChild.subheaders.length) {
         lastChild = lastChild.subheaders[lastChild.subheaders.length - 1];
       }
-      return getLeafHeaderSize(AxisType.ROWS, lastChild.key, sizes, cellSizes);
+      return getLeafHeaderSize(AxisType.ROWS, lastChild.key, sizes);
     }
 );
 
@@ -125,22 +125,22 @@ export const getDimensionPositions = createSelector(
 );
 
 export const getColumnWidth = createSelector(
-  [getColumnUiAxis, state => state.sizes.leafs.columns, getCellSizes],
-  (columnsUi, sizes, cellSizes) =>
+  [getColumnUiAxis, state => state.sizes.leafs.columns, getLeafHeaderSize],
+  (columnsUi, sizes, getLeafHeaderSize) =>
     ({ index }) => {
       const headers = columnsUi.headers[index];
       const key = headers[headers.length - 1].key;
-      return getLeafHeaderSize(AxisType.COLUMNS, key, sizes, cellSizes);
+      return getLeafHeaderSize(AxisType.COLUMNS, key, sizes);
     }
 );
 
 export const getRowHeight = createSelector(
-  [getRowUiAxis, state => state.sizes.leafs.rows, getCellSizes],
-  (rowsUi, sizes, cellSizes) =>
+  [getRowUiAxis, state => state.sizes.leafs.rows, getLeafHeaderSize],
+  (rowsUi, sizes, getLeafHeaderSize) =>
     ({ index }) => {
       const headers = rowsUi.headers[index];
       const key = headers[headers.length - 1].key;
-      return getLeafHeaderSize(AxisType.ROWS, key, sizes, cellSizes);
+      return getLeafHeaderSize(AxisType.ROWS, key, sizes);
     }
 );
 
@@ -201,24 +201,23 @@ export const getColumnHeadersHeight = createSelector(
 );
 
 export const getRowHeadersHeight = createSelector(
-  [state => state.sizes.leafs.rows, getRowUiAxis, getCellSizes],
-  (sizes, rowsUi, cellSizes) =>
+  [state => state.sizes.leafs.rows, getRowUiAxis, getLeafHeaderSize],
+  (sizes, rowsUi, getLeafHeaderSize) =>
     rowsUi.headers.reduce(
       (height, headers) =>
         height +
         getLeafHeaderSize(
           AxisType.ROWS,
           headers[headers.length - 1].key,
-          sizes,
-          cellSizes
+          sizes
         ),
       0
     )
 );
 
 export const getColumnHeadersWidth = createSelector(
-  [state => state.sizes.leafs.columns, getColumnUiAxis, getCellSizes],
-  (sizes, columnsUi, cellSizes) =>
+  [state => state.sizes.leafs.columns, getColumnUiAxis, getLeafHeaderSize],
+  (sizes, columnsUi, getLeafHeaderSize) =>
     columnsUi.headers.reduce(
       // (width, headers) => width + this.getColumnWidth({ index: headers[0].x }),
       (width, headers) =>
@@ -226,8 +225,7 @@ export const getColumnHeadersWidth = createSelector(
         getLeafHeaderSize(
           AxisType.COLUMNS,
           headers[headers.length - 1].key,
-          sizes,
-          cellSizes
+          sizes
         ),
       0
     )
