@@ -133,7 +133,7 @@ class PivotGridDemo extends Component {
             <button onClick={this.toggleDatafieldAxis}>
               Toggle data fields location
             </button>
-            <button onClick={this.compactGrid}>Compact grid</button>
+            <button onClick={this.compactGrid}>Compact visible cells</button>
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>
