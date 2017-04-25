@@ -17,6 +17,7 @@ import { AxisType } from '../Axis';
 
 const mapStateToProps = state => ({
   width: state.config.width,
+  zoom: state.config.zoom,
   layout: getLayout(state),
   defaultCellSizes: getCellSizes(state),
   sizes: state.sizes,
@@ -29,7 +30,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   updateCellSize: (
-    { handle, offset, initialOffset, sizes, defaultCellSizes }
+    { handle, offset, initialOffset, sizes, defaultCellSizes, zoom }
   ) => {
     if (
       handle.leafSubheaders &&
@@ -48,7 +49,8 @@ const mapDispatchToProps = dispatch => ({
             offset: fractionalOffset,
             initialOffset: { x: 0, y: 0 },
             defaultCellSizes,
-            sizes
+            sizes,
+            zoom
           })
         );
       });
@@ -59,13 +61,14 @@ const mapDispatchToProps = dispatch => ({
           offset,
           initialOffset,
           sizes,
-          defaultCellSizes
+          defaultCellSizes,
+          zoom
         })
       );
     }
   },
-  setCellSize: ({ cell, size, direction }) => {
-    dispatch(setCellSize({ cell, size, direction }));
+  setCellSize: ({ cell, size, direction, zoom }) => {
+    dispatch(setCellSize({ cell, size, direction, zoom }));
   },
   setSizes: ({ height, width }) => {
     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
@@ -84,7 +87,8 @@ const mergeProps = (
     rowHeaders,
     rowFields,
     columnFields,
-    dataFieldsCount
+    dataFieldsCount,
+    zoom
   },
   { setCellSize, updateCellSize, setSizes },
   ownProps
@@ -97,9 +101,17 @@ const mergeProps = (
   width,
   layout,
   dataFieldsCount,
-  setCellSize,
+  setCellSize: ({ cell, size, direction }) =>
+    setCellSize({ cell, size, direction, zoom }),
   updateCellSize: ({ handle, offset, initialOffset }) =>
-    updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
+    updateCellSize({
+      handle,
+      offset,
+      initialOffset,
+      sizes,
+      defaultCellSizes,
+      zoom
+    }),
   setSizes,
   ...ownProps
 });
@@ -107,7 +119,8 @@ const mergeProps = (
 export const PivotGridWithoutDndContext = connect(
   mapStateToProps,
   mapDispatchToProps,
-  mergeProps
+  mergeProps,
+  { withRef: true }
 )(PivotGrid);
 
 export default DragDropContext(HTML5Backend)(PivotGridWithoutDndContext);

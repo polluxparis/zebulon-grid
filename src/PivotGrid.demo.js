@@ -42,6 +42,7 @@ class PivotGridDemo extends Component {
     this.zoomOut = this.zoomOut.bind(this);
     this.toggleFilter = this.toggleFilter.bind(this);
     this.toggleDatafieldAxis = this.toggleDatafieldAxis.bind(this);
+    this.compactGrid = this.compactGrid.bind(this);
   }
 
   addData() {
@@ -114,6 +115,10 @@ class PivotGridDemo extends Component {
     j += 1;
   }
 
+  compactGrid() {
+    this.grid.compactVisibleCells();
+  }
+
   render() {
     return (
       <Provider store={this.state.store}>
@@ -128,6 +133,7 @@ class PivotGridDemo extends Component {
             <button onClick={this.toggleDatafieldAxis}>
               Toggle data fields location
             </button>
+            <button onClick={this.compactGrid}>Compact grid</button>
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>
@@ -135,6 +141,14 @@ class PivotGridDemo extends Component {
                 {({ height, width }) => (
                   <PivotGrid
                     id={0}
+                    ref={ref => {
+                      if (ref) {
+                        this.grid = ref
+                          .getDecoratedComponentInstance()
+                          .getWrappedInstance()
+                          .getDecoratedComponentInstance();
+                      }
+                    }}
                     customFunctions={this.customFunctions}
                     height={height}
                     width={width}

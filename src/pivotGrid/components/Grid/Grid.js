@@ -159,11 +159,32 @@ class PivotGrid extends Component {
 
   handleSectionRendered(onSectionRendered) {
     return indexes => {
-      const { rowStartIndex, columnStartIndex } = indexes;
+      const { rowStartIndex, columnStartIndex, columnStopIndex } = indexes;
       this.rowStartIndex = rowStartIndex;
       this.columnStartIndex = columnStartIndex;
+      this.columnStopIndex = columnStopIndex;
       onSectionRendered(indexes);
     };
+  }
+
+  compactVisibleCells() {
+    const { rowHeaders, columnHeaders } = this.props;
+    // Compact the row header columns
+    rowHeaders[0].forEach(header =>
+    // You only need to call handleAutoResizeRowHeaderColumn on the first row of headers
+      this.handleAutoResizeRowHeaderColumn(header));
+    columnHeaders
+      // Only resize displayed columns
+      .filter(
+        headers =>
+          this.columnStartIndex <= headers[0].x &&
+          this.columnStopIndex >= headers[0].x
+      )
+      .forEach(headersArray => {
+        this.handleAutoResizeColumnHeader(
+          headersArray[headersArray.length - 1]
+        );
+      });
   }
 
   render() {
