@@ -16,9 +16,8 @@ import { keyToIndex } from '../../AxisUi';
 import { KEY_SEPARATOR, MINIMUM_CELL_SIZE } from '../../constants';
 
 function getNextKey(current, next) {
-  const firstLeafHeader = current.firstHeaderRow[
-    current.firstHeaderRow.length - 1
-  ];
+  const firstLeafHeader =
+    current.firstHeaderRow[current.firstHeaderRow.length - 1];
   const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
   let nextKey = '';
   if (current.fields.length > next.fields.length) {
@@ -103,6 +102,24 @@ class PivotGrid extends Component {
         nextProps.columnHeaders,
         nextFirstHeaderKey
       );
+      // Recreate sizes caches when grid updates
+      // They can be obsolete
+      // But keep dimension headers cache since it handles its measure cycle itself
+      this.measuredSizeCaches = {
+        dimensions: this.measuredSizeCaches.dimensions,
+        columns: new CellMeasurerCache({
+          defaultWidth: MINIMUM_CELL_SIZE,
+          fixedHeight: true
+        }),
+        rows: new CellMeasurerCache({
+          defaultWidth: MINIMUM_CELL_SIZE,
+          fixedHeight: true
+        }),
+        datacells: new CellMeasurerCache({
+          defaultWidth: MINIMUM_CELL_SIZE,
+          fixedHeight: true
+        })
+      };
     }
     // If keyToIndex does not find the key in the headers, it returns -1
     // In this case, do nothing
@@ -151,7 +168,8 @@ class PivotGrid extends Component {
     };
     if (header.subheaders && header.subheaders.length) {
       header.subheaders.forEach(subheader =>
-        this.handleAutoResizeColumnHeader(subheader));
+        this.handleAutoResizeColumnHeader(subheader)
+      );
     } else {
       autoResizeOneColumn(header);
     }
@@ -171,8 +189,9 @@ class PivotGrid extends Component {
     const { rowHeaders, columnHeaders } = this.props;
     // Compact the row header columns
     rowHeaders[0].forEach(header =>
-    // You only need to call handleAutoResizeRowHeaderColumn on the first row of headers
-      this.handleAutoResizeRowHeaderColumn(header));
+      // You only need to call handleAutoResizeRowHeaderColumn on the first row of headers
+      this.handleAutoResizeRowHeaderColumn(header)
+    );
     columnHeaders
       // Only resize displayed columns
       .filter(
@@ -197,10 +216,7 @@ class PivotGrid extends Component {
       width
     } = this.props;
 
-    const {
-      columnHorizontalCount,
-      rowVerticalCount
-    } = layout;
+    const { columnHorizontalCount, rowVerticalCount } = layout;
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box

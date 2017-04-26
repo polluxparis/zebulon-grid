@@ -99,26 +99,21 @@ export class Axis {
     }
     dimensions.forEach(dimension => {
       if (field.sort.order) {
-        if (dimension.sortingMap.size > 0) {
-          const sorted = [...dimension.sortingMap.keys()];
+        if (Object.keys(dimension.sortingMap).length > 0) {
+          const sorted = Object.keys(dimension.sortingMap);
           if (field.sort.custom) {
             sorted.sort(field.sort.custom);
           } else {
             sorted.sort();
           }
           /* eslint-disable no-param-reassign */
-          dimension.values = sorted.map(sortingValue =>
-            dimension.sortingMap.get(sortingValue));
-          /* eslint-enable */
-        } else {
-          if (field.sort.custom) {
-            dimension.values.sort(field.sort.custom);
-          } else {
-            dimension.values.sort();
-          }
+          dimension.values = sorted.map(
+            sortingValue => dimension.sortingMap[sortingValue]
+          );
           if (field.sort.order === 'desc') {
             dimension.values.reverse();
           }
+          /* eslint-enable */
         }
       }
     });
@@ -132,7 +127,8 @@ export class Axis {
     }
     return [].concat(
       ...Object.keys(dim.subdimvals).map(dimValue =>
-        this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue]))
+        this.getDimensionsByDepth(depth + 1, dim.subdimvals[dimValue])
+      )
     );
   }
 
@@ -181,7 +177,7 @@ export class Axis {
               let sortingValue = null;
               if (!isUndefined(sortingAccessors[findex])) {
                 sortingValue = sortingAccessors[findex](row);
-                dim.sortingMap.set(sortingValue, id);
+                dim.sortingMap[sortingValue] = id;
               }
               dim = new Dimension(
                 id,

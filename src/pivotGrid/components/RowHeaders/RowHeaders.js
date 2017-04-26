@@ -25,19 +25,17 @@ class RowHeaders extends PureComponent {
     }
   }
 
-  rowHeadersRenderer(
-    {
-      deferredMeasurementCache,
-      isScrolling,
-      parent,
-      rowSizeAndPositionManager,
-      rowStartIndex,
-      rowStopIndex,
-      scrollTop,
-      styleCache,
-      verticalOffsetAdjustment
-    }
-  ) {
+  rowHeadersRenderer({
+    deferredMeasurementCache,
+    isScrolling,
+    parent,
+    rowSizeAndPositionManager,
+    rowStartIndex,
+    rowStopIndex,
+    scrollTop,
+    styleCache,
+    verticalOffsetAdjustment
+  }) {
     const {
       rowHeaders,
       autoResizeColumn,
@@ -51,9 +49,8 @@ class RowHeaders extends PureComponent {
     } = this.props;
 
     const deferredMode = typeof deferredMeasurementCache !== 'undefined';
-    this.firstLeafHeader = rowHeaders[rowStartIndex][
-      rowHeaders[rowStartIndex].length - 1
-    ];
+    this.firstLeafHeader =
+      rowHeaders[rowStartIndex][rowHeaders[rowStartIndex].length - 1];
 
     const renderedCells = [];
 
@@ -132,7 +129,8 @@ class RowHeaders extends PureComponent {
           if (canCacheStyle && styleCache[header.key]) {
             positionStyle = styleCache[header.key];
           } else if (
-            deferredMode && !deferredMeasurementCache.has(header.x, header.y)
+            deferredMode &&
+            !deferredMeasurementCache.has(header.x, header.y)
           ) {
             // Position not-yet-measured cells at top/left 0,0,
             // And give them width/height of 'auto' so they can grow larger than the parent Grid if necessary.

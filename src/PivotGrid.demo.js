@@ -37,6 +37,7 @@ class PivotGridDemo extends Component {
 
     this.addData = this.addData.bind(this);
     this.moveField = this.moveField.bind(this);
+    this.sortField = this.sortField.bind(this);
     this.toggleDatafield = this.toggleDatafield.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
@@ -71,6 +72,10 @@ class PivotGridDemo extends Component {
       );
     }
     i += 1;
+  }
+
+  sortField() {
+    this.state.store.dispatch(actions.changeSortOrder('toto'));
   }
 
   toggleDatafield() {
@@ -126,6 +131,7 @@ class PivotGridDemo extends Component {
           <div>
             <button onClick={this.addData}>Add data</button>
             <button onClick={this.moveField}>Move field</button>
+            <button onClick={this.sortField}>Sort toto field</button>
             <button onClick={this.toggleDatafield}>Toggle datafield</button>
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>

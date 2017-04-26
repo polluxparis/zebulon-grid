@@ -8,6 +8,9 @@ import * as actions from './actions';
 import hydrateStore from './hydrateStore';
 // import './index.css';
 
+// Import polyfills
+import './utils/polyfill';
+
 // export { GridConfiguration };
 // export { ChartConfiguration };
 export default PivotGrid;

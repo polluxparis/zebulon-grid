@@ -55,9 +55,8 @@ class DimensionHeaders extends Component {
     } = this.props;
     const headers = [];
 
-    const columnFieldsColumnIndex = rowFields.length +
-      (dataHeadersLocation === 'columns' ? 0 : 1) -
-      1;
+    const columnFieldsColumnIndex =
+      rowFields.length + (dataHeadersLocation === 'columns' ? 0 : 1) - 1;
     const rowFieldsRowIndex = columnDimensionHeaders.length -
       dataHeadersLocation ===
       'columns'
@@ -80,7 +79,15 @@ class DimensionHeaders extends Component {
       ...columnDimensionHeaders.map((dimensionHeader, index) => {
         const field = dimensionHeader.value;
         let style;
-        if (!this.measureCycle) {
+        if (this.measureCycle) {
+          style = {
+            height: 'auto',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: 'auto'
+          };
+        } else {
           const top = dimensionPositions.columns[field.id];
           const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
           style = {
@@ -89,14 +96,6 @@ class DimensionHeaders extends Component {
             width: headerWidth,
             height: headerHeight,
             position: 'absolute'
-          };
-        } else {
-          style = {
-            height: 'auto',
-            left: 0,
-            position: 'absolute',
-            top: 0,
-            width: 'auto'
           };
         }
         return (
@@ -141,7 +140,15 @@ class DimensionHeaders extends Component {
       ...rowDimensionHeaders.map((dimensionHeader, index) => {
         const field = dimensionHeader.value;
         let style;
-        if (!this.measureCycle) {
+        if (this.measureCycle) {
+          style = {
+            height: 'auto',
+            left: 0,
+            position: 'absolute',
+            top: 0,
+            width: 'auto'
+          };
+        } else {
           const left = dimensionPositions.rows[field.id];
           const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
           style = {
@@ -150,14 +157,6 @@ class DimensionHeaders extends Component {
             height: headerHeight,
             width: headerWidth,
             position: 'absolute'
-          };
-        } else {
-          style = {
-            height: 'auto',
-            left: 0,
-            position: 'absolute',
-            top: 0,
-            width: 'auto'
           };
         }
 

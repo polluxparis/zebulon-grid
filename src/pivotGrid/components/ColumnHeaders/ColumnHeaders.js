@@ -29,19 +29,17 @@ class ColumnHeaders extends PureComponent {
     this.props.autoResizeColumn(header);
   }
 
-  columnHeadersRenderer(
-    {
-      columnSizeAndPositionManager,
-      columnStartIndex,
-      columnStopIndex,
-      deferredMeasurementCache,
-      horizontalOffsetAdjustment,
-      isScrolling,
-      parent,
-      scrollLeft,
-      styleCache
-    }
-  ) {
+  columnHeadersRenderer({
+    columnSizeAndPositionManager,
+    columnStartIndex,
+    columnStopIndex,
+    deferredMeasurementCache,
+    horizontalOffsetAdjustment,
+    isScrolling,
+    parent,
+    scrollLeft,
+    styleCache
+  }) {
     const {
       columnHeaders,
       dimensionPositions,
@@ -150,7 +148,8 @@ class ColumnHeaders extends PureComponent {
           if (canCacheStyle && styleCache[header.key]) {
             positionStyle = styleCache[header.key];
           } else if (
-            deferredMode && !deferredMeasurementCache.has(header.y, header.x)
+            deferredMode &&
+            !deferredMeasurementCache.has(header.y, header.x)
           ) {
             // Position not-yet-measured cells at top/left 0,0,
             // And give them width/height of 'auto' so they can grow larger than the parent Grid if necessary.
