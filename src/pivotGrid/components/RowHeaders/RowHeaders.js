@@ -2,7 +2,6 @@ import React, { PropTypes, PureComponent } from 'react';
 import {
   Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
-import { CellMeasurer } from 'react-virtualized/dist/commonjs/CellMeasurer';
 
 import { AxisType } from '../../Axis';
 import { Header, DataHeader } from '../../Cells';
@@ -26,29 +25,22 @@ class RowHeaders extends PureComponent {
   }
 
   rowHeadersRenderer({
-    deferredMeasurementCache,
-    isScrolling,
-    parent,
     rowSizeAndPositionManager,
     rowStartIndex,
     rowStopIndex,
     scrollTop,
-    styleCache,
     verticalOffsetAdjustment
   }) {
     const {
       rowHeaders,
-      autoResizeColumn,
       columnCount,
       previewSizes,
       getLastChildSize,
       getDimensionSize,
       dimensionPositions,
-      gridId,
-      measuredSizesCache
+      gridId
     } = this.props;
 
-    const deferredMode = typeof deferredMeasurementCache !== 'undefined';
     this.firstLeafHeader =
       rowHeaders[rowStartIndex][rowHeaders[rowStartIndex].length - 1];
 
@@ -88,15 +80,62 @@ class RowHeaders extends PureComponent {
           width
         };
         renderedCells.push(
-          <CellMeasurer
-            cache={measuredSizesCache}
-            columnIndex={header.y}
-            key={header.key}
-            parent={parent}
-            rowIndex={header.x}
-          >
+          <HeaderComponent
+            key={`header-${header.key}`}
+            axis={AxisType.ROWS}
+            header={header}
+            positionStyle={positionStyle}
+            span={span}
+            startIndex={rowStartIndex}
+            scrollLeft={0}
+            scrollTop={scrollTop}
+            previewSizes={previewSizes}
+            getLastChildSize={getLastChildSize}
+            gridId={gridId}
+          />
+        );
+      }
+    }
+
+    for (
+      let rowIndex = rowStartIndex;
+      rowIndex <= correctRowStopIndex;
+      rowIndex += 1
+    ) {
+      const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
+      const top = main.offset + verticalOffsetAdjustment;
+      renderedCells.push(
+        ...rowHeaders[rowIndex].map(header => {
+          const span = header.vspan();
+          const height = getHeaderSize(
+            rowSizeAndPositionManager,
+            rowIndex,
+            span
+          );
+          // 3 cases: normal dimension header, measure header or total header
+          let width;
+          let left = 0;
+          if (!header.dim) {
+            // Measure header
+            width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
+            left += dimensionPositions.rows[MEASURE_ID];
+          } else if (header.dim.field) {
+            // Normal dimension header
+            width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
+            left += dimensionPositions.rows[header.dim.field.id];
+          } else {
+            // Total header
+            width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
+          }
+          const positionStyle = {
+            position: 'absolute',
+            left,
+            top,
+            height,
+            width
+          };
+          return (
             <HeaderComponent
-              resizeCell={autoResizeColumn}
               key={`header-${header.key}`}
               axis={AxisType.ROWS}
               header={header}
@@ -109,94 +148,6 @@ class RowHeaders extends PureComponent {
               getLastChildSize={getLastChildSize}
               gridId={gridId}
             />
-          </CellMeasurer>
-        );
-      }
-    }
-
-    const canCacheStyle = !isScrolling;
-    for (
-      let rowIndex = rowStartIndex;
-      rowIndex <= correctRowStopIndex;
-      rowIndex += 1
-    ) {
-      const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(rowIndex);
-      const top = main.offset + verticalOffsetAdjustment;
-      renderedCells.push(
-        ...rowHeaders[rowIndex].map(header => {
-          const span = header.vspan();
-          let positionStyle;
-          if (canCacheStyle && styleCache[header.key]) {
-            positionStyle = styleCache[header.key];
-          } else if (
-            deferredMode &&
-            !deferredMeasurementCache.has(header.x, header.y)
-          ) {
-            // Position not-yet-measured cells at top/left 0,0,
-            // And give them width/height of 'auto' so they can grow larger than the parent Grid if necessary.
-            // Positioning them further to the right/bottom influences their measured size.
-            positionStyle = {
-              height: 'auto',
-              left: 0,
-              position: 'absolute',
-              top: 0,
-              width: 'auto'
-            };
-          } else {
-            const height = getHeaderSize(
-              rowSizeAndPositionManager,
-              rowIndex,
-              span
-            );
-            // 3 cases: normal dimension header, measure header or total header
-            let width;
-            let left = 0;
-            if (!header.dim) {
-              // Measure header
-              width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
-              left += dimensionPositions.rows[MEASURE_ID];
-            } else if (header.dim.field) {
-              // Normal dimension header
-              width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
-              left += dimensionPositions.rows[header.dim.field.id];
-            } else {
-              // Total header
-              width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
-            }
-            positionStyle = {
-              position: 'absolute',
-              left,
-              top,
-              height,
-              width
-            };
-            /* eslint-disable no-param-reassign */
-            styleCache[header.key] = positionStyle;
-            /* eslint-enable */
-          }
-          return (
-            <CellMeasurer
-              cache={measuredSizesCache}
-              columnIndex={header.y}
-              key={header.key}
-              parent={parent}
-              rowIndex={header.x}
-            >
-              <HeaderComponent
-                resizeCell={autoResizeColumn}
-                key={`header-${header.key}`}
-                axis={AxisType.ROWS}
-                header={header}
-                positionStyle={positionStyle}
-                span={span}
-                startIndex={rowStartIndex}
-                scrollLeft={0}
-                scrollTop={scrollTop}
-                previewSizes={previewSizes}
-                getLastChildSize={getLastChildSize}
-                gridId={gridId}
-              />
-            </CellMeasurer>
           );
         })
       );
@@ -213,7 +164,6 @@ class RowHeaders extends PureComponent {
       rowCount,
       scrollTop,
       height,
-      measuredSizesCache,
       width
     } = this.props;
     return (
@@ -228,7 +178,6 @@ class RowHeaders extends PureComponent {
         // when the height prop changed
         // This is a workaround
         containerStyle={{ position: 'static' }}
-        deferredMeasurementCache={measuredSizesCache}
         height={height}
         overscanRowCount={0}
         ref={ref => {

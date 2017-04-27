@@ -3,8 +3,6 @@ export const TOTAL_ID = '__total__';
 
 export const KEY_SEPARATOR = '-/-';
 
-export const MINIMUM_CELL_SIZE = 10;
-
 // ACTIONS
 
 export const SET_FIELDS = 'PIVOTGRID_SET_FIELDS';

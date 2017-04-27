@@ -15,7 +15,6 @@ import {
 import ColumnHeaders from '../components/ColumnHeaders';
 
 const mapStateToProps = (state, ownProps) => ({
-  autoResizeColumn: ownProps.autoResizeColumn,
   columnCount: getLayout(state).columnHorizontalCount,
   columnHeaders: getColumnUiAxis(state).headers,
   dimensionPositions: getDimensionPositions(state),
@@ -24,13 +23,13 @@ const mapStateToProps = (state, ownProps) => ({
   getLastChildSize: getLastChildSizeOnColumns(state),
   getRowHeight: ({ index }) =>
     getDimensionSize(state)(AxisType.COLUMNS, state.axis.columns[index]),
-  gridId: ownProps.gridId,
   height: getColumnHeadersHeight(state),
   previewSizes: getPreviewSizes(state),
   rowCount: getLayout(state).columnVerticalCount,
-  sizesColumnsLeafs: state.sizes.leafs.columns,
   width: getColumnHeadersVisibleWidth(state),
-  zoom: state.config.zoom
+  zoom: state.config.zoom,
+  sizesColumnsLeafs: state.sizes.leafs.columns,
+  gridId: ownProps.gridId
 });
 
 export default connect(mapStateToProps)(ColumnHeaders);

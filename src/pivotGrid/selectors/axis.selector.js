@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Axis, AxisType, mapAxisLabelToAxisType } from '../Axis';
+import { Axis, AxisType, toAxisType } from '../Axis';
 import AxisUi from '../AxisUi';
 import { getFilteredData } from './data.selector';
 import {
@@ -28,7 +28,7 @@ const getAxisActivatedDatafields = axisType =>
   createSelector(
     [getActivatedDatafields, state => state.config.dataHeadersLocation],
     (datafields, dataHeadersLocation) => {
-      if (mapAxisLabelToAxisType(dataHeadersLocation) === axisType) {
+      if (toAxisType(dataHeadersLocation) === axisType) {
         return datafields;
       }
       return null;

@@ -14,18 +14,18 @@ export const AxisType = {
   CHART: 5
 };
 
-export const mapAxisTypeToLabel = axisType => {
+export function toAxis(axisType) {
   switch (axisType) {
     case AxisType.COLUMNS:
       return 'columns';
     case AxisType.ROWS:
       return 'rows';
     default:
-      throw new Error(`Axis type ${axisType} not supported`);
+      return '__AXIS_TYPE_UNKNOWN__';
   }
-};
+}
 
-export function mapAxisLabelToAxisType(axis) {
+export function toAxisType(axis) {
   return AxisType[axis.toUpperCase()];
 }
 

@@ -20,7 +20,7 @@ const sourceCollect = (connect, monitor) => ({
   isDragging: monitor.isDragging()
 });
 
-const ResizeHandle = ({ position, connectDragSource }) => {
+const ResizeHandle = ({ position, size, connectDragSource }) => {
   let handle;
   if (position === 'right') {
     handle = (
@@ -29,7 +29,7 @@ const ResizeHandle = ({ position, connectDragSource }) => {
           position: 'absolute',
           right: 0,
           width: 4,
-          height: 'inherit',
+          height: size,
           cursor: 'col-resize',
           opacity: 0
         }}
@@ -42,7 +42,7 @@ const ResizeHandle = ({ position, connectDragSource }) => {
           position: 'absolute',
           bottom: 0,
           height: 4,
-          width: 'inherit',
+          width: size,
           cursor: 'row-resize',
           opacity: 0
         }}

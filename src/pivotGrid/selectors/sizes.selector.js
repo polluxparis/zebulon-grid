@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 import { scrollbarSize } from '../utils/domHelpers';
-import { AxisType, mapAxisLabelToAxisType } from '../Axis';
+import { AxisType, toAxisType } from '../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../constants';
 import { getColumnUiAxis, getRowUiAxis } from './axis.selector';
 import { getColumnFields, getRowFields } from './fields.selector';
@@ -83,7 +83,7 @@ const calculateDimensionPositions = (
   hasMeasures,
   getDimensionSize
 ) => {
-  const axisType = mapAxisLabelToAxisType(axis);
+  const axisType = toAxisType(axis);
   const res = {};
   let position = 0;
   // Total header if no fields
