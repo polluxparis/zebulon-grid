@@ -86,7 +86,7 @@ export const basicConfig = {
   fields: [
     {
       name: 'toto_lb',
-      id: 'toto',
+      accessor: 'toto',
       caption: 'Toto',
       sort: {
         // order: 'asc',
@@ -114,11 +114,11 @@ export const basicConfig = {
     //     },
     // },
     {
-      id: 'titi',
+      accessor: 'titi',
       caption: 'Titi'
     },
     {
-      id: 'tutu',
+      accessor: 'tutu',
       caption: 'Tutu'
     }
     // {

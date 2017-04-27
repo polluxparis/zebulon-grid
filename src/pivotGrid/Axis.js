@@ -154,6 +154,9 @@ export class Axis {
           const field = this.fields[findex];
           if (!isUndefined(field.sort) && !isUndefined(field.sort.accessor)) {
             sortingAccessors[findex] = toAccessorFunction(field.sort.accessor);
+          } else {
+            // If no sorting accessor is defined, use the field itself as sort
+            sortingAccessors[findex] = toAccessorFunction(field.accessor);
           }
         }
         for (

@@ -5,8 +5,8 @@ import { AxisType } from '../Axis';
 describe('axis with one field', () => {
   test('works', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2' })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 0 },
@@ -29,8 +29,8 @@ describe('axis with one field', () => {
   });
   test('with descending sorting', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1', sort: { order: 'desc' } }),
-      field2: fieldFactory({ id: 'field2' })
+      field1: fieldFactory({ accessor: 'field1', sort: { order: 'desc' } }),
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 0 },
@@ -54,8 +54,11 @@ describe('axis with one field', () => {
   test('with custom sorting', () => {
     const fields = {
       // Sort by number order and not lexical order
-      field1: fieldFactory({ id: 'field1', sort: { custom: (a, b) => a - b } }),
-      field2: fieldFactory({ id: 'field2' })
+      field1: fieldFactory({
+        accessor: 'field1',
+        sort: { custom: (a, b) => a - b }
+      }),
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 0 },
@@ -80,10 +83,10 @@ describe('axis with one field', () => {
   test('with sorting on another field', () => {
     const fields = {
       field1: fieldFactory({
-        id: 'field1',
+        accessor: 'field1',
         sort: { accessor: 'field2' }
       }),
-      field2: fieldFactory({ id: 'field2' })
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 9 },
@@ -107,11 +110,11 @@ describe('axis with one field', () => {
   test('with sorting on another field and custom function', () => {
     const fields = {
       field1: fieldFactory({
-        id: 'field1',
+        accessor: 'field1',
         // Normal number order and not lexical order
         sort: { accessor: 'field2', custom: (a, b) => a - b }
       }),
-      field2: fieldFactory({ id: 'field2' })
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 10 },
@@ -136,8 +139,8 @@ describe('axis with one field', () => {
 describe('axis with two fields', () => {
   test('works', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2' })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2' })
     };
     const data = [
       { field1: 0, field2: 0 },
@@ -159,8 +162,8 @@ describe('axis with two fields', () => {
 
   test('and nested descending sorting', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2', sort: { order: 'desc' } })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2', sort: { order: 'desc' } })
     };
     const data = [
       { field1: 0, field2: 0 },
@@ -186,11 +189,11 @@ describe('axis with two fields', () => {
 describe('layout is computed correctly', () => {
   test('2 fields on rows, 1 field on columns, 1 datafield', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2' }),
-      field3: fieldFactory({ id: 'field3' })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2' }),
+      field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ id: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
     df1.activated = true;
     const datafields = {
       df1
@@ -222,11 +225,11 @@ describe('layout is computed correctly', () => {
 
   test('2 fields on rows, 1 field on columns, no datafield', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2' }),
-      field3: fieldFactory({ id: 'field3' })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2' }),
+      field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ id: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
     const datafields = {
       df1
     };
@@ -257,11 +260,11 @@ describe('layout is computed correctly', () => {
 
   test('2 fields on rows, 1 field on columns, 1 datafield on rows', () => {
     const fields = {
-      field1: fieldFactory({ id: 'field1' }),
-      field2: fieldFactory({ id: 'field2' }),
-      field3: fieldFactory({ id: 'field3' })
+      field1: fieldFactory({ accessor: 'field1' }),
+      field2: fieldFactory({ accessor: 'field2' }),
+      field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ id: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
     df1.activated = true;
     const datafields = {
       df1

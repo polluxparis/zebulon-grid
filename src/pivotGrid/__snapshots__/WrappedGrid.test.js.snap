@@ -188,6 +188,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 500,
               }
             }>
@@ -470,6 +471,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                 "maxWidth": 300,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 300,
               }
             }>
@@ -1373,6 +1375,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 500,
               }
             }>
@@ -2613,6 +2616,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                 "maxWidth": 300,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 300,
               }
             }>
@@ -2849,6 +2853,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                 "maxWidth": 200,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 200,
               }
             }>
@@ -3174,6 +3179,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                 "maxWidth": 300,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 300,
               }
             }>
@@ -3591,6 +3597,7 @@ exports[`WrappedGrid returns correct markup when config has no data field 1`] = 
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 500,
               }
             }>
@@ -3873,6 +3880,7 @@ exports[`WrappedGrid returns correct markup when config has no data field 1`] = 
                 "maxWidth": 200,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 200,
               }
             }>
@@ -4198,6 +4206,7 @@ exports[`WrappedGrid returns correct markup when config has no data field 1`] = 
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 500,
               }
             }>
@@ -4637,6 +4646,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                 "maxWidth": 1500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 1500,
               }
             }>
@@ -5353,6 +5363,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                 "maxWidth": 100,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 100,
               }
             }>
@@ -5436,6 +5447,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                 "maxWidth": 1500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 1500,
               }
             }>
@@ -5817,6 +5829,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 500,
               }
             }>
@@ -6339,6 +6352,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                 "maxWidth": 200,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 200,
               }
             }>
@@ -6664,6 +6678,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                 "maxWidth": 500,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 500,
               }
             }>
@@ -7225,6 +7240,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                 "maxWidth": 1000,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 1000,
               }
             }>
@@ -7941,6 +7957,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                 "maxWidth": 200,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "static",
                 "width": 200,
               }
             }>
@@ -8266,6 +8283,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                 "maxWidth": 1000,
                 "overflow": "hidden",
                 "pointerEvents": "",
+                "position": "relative",
                 "width": 1000,
               }
             }>

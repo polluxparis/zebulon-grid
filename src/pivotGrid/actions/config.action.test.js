@@ -58,18 +58,18 @@ describe('setFields creates correct action', () => {
     const fields = [
       {
         name: 'toto_lb',
-        id: 'toto',
+        accessor: 'toto',
         caption: 'Toto',
         sort: {
           order: 'asc'
         }
       },
       {
-        id: 'titi',
+        accessor: 'titi',
         caption: 'Titi'
       },
       {
-        id: 'tutu',
+        accessor: 'tutu',
         caption: 'Tutu'
       }
     ];
@@ -78,6 +78,7 @@ describe('setFields creates correct action', () => {
       fields: [
         {
           id: 'toto',
+          accessor: 'toto',
           name: 'toto_lb',
           caption: 'Toto',
           sort: {
@@ -87,6 +88,7 @@ describe('setFields creates correct action', () => {
         },
         {
           id: 'titi',
+          accessor: 'titi',
           name: 'titi',
           caption: 'Titi',
           sort: {
@@ -96,6 +98,7 @@ describe('setFields creates correct action', () => {
         },
         {
           id: 'tutu',
+          accessor: 'tutu',
           name: 'tutu',
           caption: 'Tutu',
           sort: {
@@ -112,12 +115,12 @@ describe('setDatafields creates correct action', () => {
   test('with two datafields', () => {
     const datafields = [
       {
-        id: 'qty',
+        accessor: 'qty',
         caption: 'Quantity',
         aggregation: 'sum'
       },
       {
-        id: 'amt',
+        accessor: 'amt',
         caption: 'Amount',
         aggregation: 'sum',
         aggregationName: 'whatever',
@@ -134,12 +137,14 @@ describe('setDatafields creates correct action', () => {
       datafields: [
         {
           id: 'qty',
+          accessor: 'qty',
           name: 'qty',
           caption: 'Quantity',
           aggregationName: 'sum'
         },
         {
           id: 'amt',
+          accessor: 'amt',
           name: 'amt',
           caption: 'Amount',
           aggregationName: 'whatever'

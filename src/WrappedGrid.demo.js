@@ -11,6 +11,7 @@ class WrappedGridDemo extends Component {
     super();
     this.addData = this.addData.bind(this);
     this.moveField = this.moveField.bind(this);
+    this.sortField = this.sortField.bind(this);
     this.toggleDatafield = this.toggleDatafield.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
@@ -36,6 +37,9 @@ class WrappedGridDemo extends Component {
       this.grid.moveField('tutu', 'rows', 'columns', 1);
     }
     i += 1;
+  }
+  sortField() {
+    this.grid.changeSortOrder('toto');
   }
 
   toggleDatafield() {
@@ -66,6 +70,7 @@ class WrappedGridDemo extends Component {
       <div>
         <button onClick={this.addData}>Add data</button>
         <button onClick={this.moveField}>Move field</button>
+        <button onClick={this.sortField}>Sort toto field</button>
         <button onClick={this.toggleDatafield}>Toggle datafield</button>
         <button onClick={this.zoomIn}>Zoom in</button>
         <button onClick={this.zoomOut}>Zoom out</button>

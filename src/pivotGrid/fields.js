@@ -1,14 +1,14 @@
 import { isString, isStringOrNumber, isNullOrUndefined } from './utils/generic';
 
 export function fieldFactory(fieldConfig) {
-  const {
-    id: idConfig,
-    accessor,
-    name,
-    caption,
-    sort
-  } = fieldConfig;
+  const { id: idConfig, accessor, name, caption, sort } = fieldConfig;
   let id;
+  if (isNullOrUndefined(accessor)) {
+    throw new Error(
+      'Configuration error: field definition needs an accessor.',
+      fieldConfig
+    );
+  }
   if (isNullOrUndefined(idConfig)) {
     id = accessor;
   } else {
@@ -20,7 +20,7 @@ export function fieldFactory(fieldConfig) {
       fieldConfig
     );
   }
-  const field = { id };
+  const field = { id, accessor };
   field.name = name || field.id;
   field.caption = caption || field.name;
 
@@ -57,6 +57,12 @@ export function datafieldFactory(fieldConfig) {
     aggregation
   } = fieldConfig;
   let id;
+  if (isNullOrUndefined(accessor)) {
+    throw new Error(
+      'Configuration error: datafield definition needs an accessor.',
+      fieldConfig
+    );
+  }
   if (isNullOrUndefined(idConfig)) {
     id = accessor;
   } else {

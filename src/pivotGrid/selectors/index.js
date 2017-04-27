@@ -16,6 +16,7 @@ import {
   getPreviewSizes,
   getColumnWidth,
   getRowHeight,
+  getLeafHeaderSize,
   getColumnHeadersVisibleWidth,
   getRowHeadersVisibleHeight,
   getLastChildSizeOnColumns,
@@ -50,6 +51,7 @@ export { getColumnHeadersHeight };
 export { getColumnHeadersWidth };
 export { getPreviewSizes };
 export { getColumnWidth };
+export { getLeafHeaderSize };
 export { getRowHeight };
 export { getLastChildSizeOnColumns };
 export { getLastChildSizeOnRows };

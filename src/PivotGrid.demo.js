@@ -72,7 +72,7 @@ class PivotGridDemo extends Component {
   }
 
   sortField() {
-    this.state.store.dispatch(actions.changeSortOrder('toto'));
+    this.state.store.dispatch(actions.changeSortOrder('titi'));
   }
 
   toggleDatafield() {
@@ -105,7 +105,7 @@ class PivotGridDemo extends Component {
           <div>
             <button onClick={this.addData}>Add data</button>
             <button onClick={this.moveField}>Move field</button>
-            <button onClick={this.sortField}>Sort toto field</button>
+            <button onClick={this.sortField}>Sort titi field</button>
             <button onClick={this.toggleDatafield}>Toggle datafield</button>
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>
