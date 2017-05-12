@@ -19,6 +19,7 @@ class WrappedGridDemo extends Component {
     this.focusCell = this.focusCell.bind(this);
 
     this.state = { focusCell: [] };
+    this.data = getMockDatasource(1, 100, 100);
   }
   addData() {
     this.grid.pushData([
@@ -121,7 +122,7 @@ class WrappedGridDemo extends Component {
 
         <WrappedGrid
           config={basicConfig}
-          data={getMockDatasource(1, 100, 100)}
+          data={this.data}
           focusCells={this.state.focusCells}
           ref={ref => {
             this.grid = ref;

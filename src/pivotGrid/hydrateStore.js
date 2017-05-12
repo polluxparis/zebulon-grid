@@ -8,7 +8,6 @@ import {
 } from './actions';
 import { fieldFactory, datafieldFactory } from './fields';
 import { isPromise, isObservable, toAccessorFunction } from './utils/generic';
-import { toAggregateFunction } from './Aggregation';
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -66,31 +65,31 @@ export default function hydrateStore(store, config, datasource) {
   });
 
   const customFunctions = {
-    sort: config.fields.reduce(
+    sort: fields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: field.sort && field.sort.customfunc
+        [field.id]: field.sort && field.sort.customfunc
       }),
       {}
     ),
-    access: config.datafields.reduce(
+    access: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: toAccessorFunction(field.accessor)
+        [field.id]: toAccessorFunction(field.accessor)
       }),
       {}
     ),
-    format: config.datafields.reduce(
+    format: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: field.format
+        [field.id]: field.format
       }),
       {}
     ),
-    aggregation: config.datafields.reduce(
+    aggregation: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: toAggregateFunction(field.aggregation)
+        [field.id]: field.aggregation
       }),
       {}
     )

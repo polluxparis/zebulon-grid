@@ -1,5 +1,5 @@
 import Dimension from './Dimension';
-import { toAccessorFunction, isUndefined } from './utils/generic';
+import { isUndefined } from './utils/generic';
 
 /**
  * Axis types
@@ -153,10 +153,10 @@ export class Axis {
         for (let findex = 0; findex < this.fields.length; findex += 1) {
           const field = this.fields[findex];
           if (!isUndefined(field.sort) && !isUndefined(field.sort.accessor)) {
-            sortingAccessors[findex] = toAccessorFunction(field.sort.accessor);
+            sortingAccessors[findex] = field.sort.accessor;
           } else {
             // If no sorting accessor is defined, use the field itself as sort
-            sortingAccessors[findex] = toAccessorFunction(field.accessor);
+            sortingAccessors[findex] = field.accessor;
           }
         }
         for (
@@ -170,7 +170,7 @@ export class Axis {
             const depth = this.fields.length - findex;
             const field = this.fields[findex];
             const name = row[field.name];
-            const id = row[field.id];
+            const id = field.accessor(row);
             const subdimvals = dim.subdimvals;
             if (subdimvals[id] !== undefined) {
               dim = subdimvals[id];

@@ -73,12 +73,11 @@ describe('setFields creates correct action', () => {
         caption: 'Tutu'
       }
     ];
-    expect(setFields({ fields })).toEqual({
+    expect(setFields({ fields })).toMatchObject({
       type: SET_FIELDS,
       fields: [
         {
           id: 'toto',
-          accessor: 'toto',
           name: 'toto_lb',
           caption: 'Toto',
           sort: {
@@ -88,7 +87,6 @@ describe('setFields creates correct action', () => {
         },
         {
           id: 'titi',
-          accessor: 'titi',
           name: 'titi',
           caption: 'Titi',
           sort: {
@@ -98,7 +96,6 @@ describe('setFields creates correct action', () => {
         },
         {
           id: 'tutu',
-          accessor: 'tutu',
           name: 'tutu',
           caption: 'Tutu',
           sort: {
@@ -132,19 +129,17 @@ describe('setDatafields creates correct action', () => {
         }
       }
     ];
-    expect(setDatafields({ datafields })).toEqual({
+    expect(setDatafields({ datafields })).toMatchObject({
       type: SET_DATAFIELDS,
       datafields: [
         {
           id: 'qty',
-          accessor: 'qty',
           name: 'qty',
           caption: 'Quantity',
           aggregationName: 'sum'
         },
         {
           id: 'amt',
-          accessor: 'amt',
           name: 'amt',
           caption: 'Amount',
           aggregationName: 'whatever'

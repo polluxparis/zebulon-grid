@@ -1,5 +1,6 @@
 import { getCellInfos, getCellValue } from './cell.selector';
 import { getMockDatasource } from '../../utils/mock';
+import { toAccessorFunction } from '../utils/generic';
 
 describe('cells infos are computed correctly', () => {
   const cell = {

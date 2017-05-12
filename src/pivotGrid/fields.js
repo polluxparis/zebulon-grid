@@ -1,4 +1,10 @@
-import { isString, isStringOrNumber, isNullOrUndefined } from './utils/generic';
+import {
+  isString,
+  isStringOrNumber,
+  isNullOrUndefined,
+  toAccessorFunction
+} from './utils/generic';
+import { toAggregateFunction } from './Aggregation';
 
 export function fieldFactory(fieldConfig) {
   const { id: idConfig, accessor, name, caption, sort } = fieldConfig;
@@ -9,7 +15,7 @@ export function fieldFactory(fieldConfig) {
       fieldConfig
     );
   }
-  if (isNullOrUndefined(idConfig)) {
+  if (isNullOrUndefined(idConfig) && isStringOrNumber(accessor)) {
     id = accessor;
   } else {
     id = idConfig;
@@ -20,7 +26,8 @@ export function fieldFactory(fieldConfig) {
       fieldConfig
     );
   }
-  const field = { id, accessor };
+  const accessorFunction = toAccessorFunction(accessor);
+  const field = { id, accessor: accessorFunction };
   field.name = name || field.id;
   field.caption = caption || field.name;
 
@@ -35,7 +42,7 @@ export function fieldFactory(fieldConfig) {
     sortValue = {
       order: sort.order || (sort.custom ? 'asc' : null),
       custom: sort.custom,
-      accessor
+      accessor: toAccessorFunction(accessor)
     };
   } else {
     sortValue = { order: null };
@@ -54,7 +61,8 @@ export function datafieldFactory(fieldConfig) {
     name,
     caption,
     aggregationName,
-    aggregation
+    aggregation,
+    format
   } = fieldConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
@@ -63,7 +71,7 @@ export function datafieldFactory(fieldConfig) {
       fieldConfig
     );
   }
-  if (isNullOrUndefined(idConfig)) {
+  if (isNullOrUndefined(idConfig) && isStringOrNumber(accessor)) {
     id = accessor;
   } else {
     id = idConfig;
@@ -74,7 +82,8 @@ export function datafieldFactory(fieldConfig) {
       fieldConfig
     );
   }
-  const datafield = { id, accessor };
+  const accessorFunction = toAccessorFunction(accessor);
+  const datafield = { id, accessor: accessorFunction, format };
   datafield.name = name || datafield.id;
   datafield.caption = caption || datafield.name;
 
@@ -89,5 +98,7 @@ export function datafieldFactory(fieldConfig) {
   } else {
     datafield.aggregationName = null;
   }
+  datafield.aggregation = toAggregateFunction(aggregation);
+
   return datafield;
 }

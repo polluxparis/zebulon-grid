@@ -5,7 +5,7 @@ import WrappedGridDemo from './WrappedGrid.demo';
 class App extends Component {
   constructor() {
     super();
-    this.state = { demo: 'wrappedGrid' };
+    this.state = { demo: 'pivotGrid' };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
