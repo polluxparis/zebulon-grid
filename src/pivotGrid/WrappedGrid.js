@@ -22,6 +22,7 @@ class WrappedGrid extends Component {
           customFunctions={this.customFunctions}
           id={this.props.id}
           drilldown={this.props.drilldown}
+          focusCells={this.props.focusCells}
         />
       </Provider>
     );
