@@ -7,27 +7,26 @@ import ResizeHandle from '../ResizeHandle';
 function getLeafSubheaders(header, result) {
   if (header.subheaders && header.subheaders.length) {
     header.subheaders.forEach(subheader =>
-      getLeafSubheaders(subheader, result));
+      getLeafSubheaders(subheader, result)
+    );
     return result;
   }
   result.push(header);
   return result;
 }
 
-const Header = (
-  {
-    axis,
-    getLastChildSize,
-    gridId,
-    header,
-    positionStyle,
-    previewSizes,
-    span,
-    startIndex,
-    scrollLeft,
-    scrollTop
-  }
-) => {
+const Header = ({
+  axis,
+  getLastChildSize,
+  gridId,
+  header,
+  positionStyle,
+  previewSizes,
+  span,
+  startIndex,
+  scrollLeft,
+  scrollTop
+}) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
   // Handle affix
@@ -101,7 +100,7 @@ const InnerHeader = ({ cell, style }) => {
   switch (cell.template) {
     case 'cell-template-row-header':
     case 'cell-template-column-header':
-      value = cell.value;
+      value = cell.caption;
       break;
     case 'cell-template-dataheader':
     case 'cell-template-dimensionheader':

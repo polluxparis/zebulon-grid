@@ -15,7 +15,7 @@ import DataCells from '../components/DataCells';
 import copy from '../services/copyService';
 
 const mapStateToProps = (state, ownProps) => {
-  const { customFunctions } = ownProps;
+  const { customFunctions, focusCellIndexes } = ownProps;
   const rowUiAxis = getRowUiAxis(state);
   const columnUiAxis = getColumnUiAxis(state);
   const rowDimensionHeaders = rowUiAxis.dimensionHeaders;
@@ -39,6 +39,7 @@ const mapStateToProps = (state, ownProps) => {
         customFunctions
       }),
     dataHeadersLocation,
+    focusCellIndexes,
     getCellValue: getCellValue(state),
     getCellInfos: getCellInfos(state),
     getColumnWidth: getColumnWidth(state),

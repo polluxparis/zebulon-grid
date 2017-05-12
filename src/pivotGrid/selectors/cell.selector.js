@@ -31,14 +31,18 @@ const getIndexesIntersectionFromDimensions = (
   return intersection;
 };
 
-export const getCellValue = createSelector([getFilteredData], data =>
-  (accessor, rowDimension, columnDimension, aggregateFunc = () => null) => {
-    const intersection = getIndexesIntersectionFromDimensions(
-      rowDimension,
-      columnDimension
-    );
-    return aggregateFunc(accessor, intersection, data);
-  });
+export const getCellValue = createSelector([getFilteredData], data => (
+  accessor,
+  rowDimension,
+  columnDimension,
+  aggregateFunc = () => null
+) => {
+  const intersection = getIndexesIntersectionFromDimensions(
+    rowDimension,
+    columnDimension
+  );
+  return aggregateFunc(accessor, intersection, data);
+});
 
 const getDataRows = (data, rowDimension, columnDimension) => {
   const intersection = getIndexesIntersectionFromDimensions(
@@ -63,12 +67,25 @@ const getDimensionInfos = dimensionArg => {
   return [{ dimension, cell }].concat(getDimensionInfos(dimensionArg.parent));
 };
 
-export const getCellInfos = createSelector([getFilteredData], datasource =>
-  cell => {
+export const getCellInfos = createSelector(
+  [getFilteredData, state => state.config.dataHeadersLocation],
+  (datasource, dataHeadersLocation) => cell => {
     const value = cell.caption;
-    const dimensions = getDimensionInfos(cell.rowDimension).concat(
-      getDimensionInfos(cell.columnDimension)
-    );
+    const dimensions = getDimensionInfos(cell.rowDimension)
+      .map((dim, index, dimensions) => ({
+        ...dim,
+        axis: 'rows',
+        index: dimensions.length - 1 - index
+      }))
+      .concat(
+        getDimensionInfos(
+          cell.columnDimension
+        ).map((dim, index, dimensions) => ({
+          ...dim,
+          axis: 'columns',
+          index: dimensions.length - 1 - index
+        }))
+      );
     const data = getDataRows(
       datasource,
       cell.rowDimension,
@@ -76,7 +93,9 @@ export const getCellInfos = createSelector([getFilteredData], datasource =>
     );
     const measure = {
       caption: cell.datafield.caption,
-      id: cell.datafield.id
+      id: cell.datafield.id,
+      axis: dataHeadersLocation
     };
     return { value, dimensions, data, measure };
-  });
+  }
+);

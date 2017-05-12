@@ -1,5 +1,5 @@
 import { AxisType } from './Axis';
-import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from './constants';
+import { getKey } from './utils/keys';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -139,7 +139,7 @@ export class Header extends CellBase {
   constructor(
     axisType,
     headerTypeP,
-    dim,
+    dimension,
     parent,
     datafieldscount,
     x,
@@ -148,33 +148,33 @@ export class Header extends CellBase {
     crossAxisFieldsCode = []
   ) {
     const isOnRowAxis = axisType === AxisType.ROWS;
-    const headerType = headerTypeP ||
-      (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
+    const headerType =
+      headerTypeP ||
+      (dimension.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
     let value;
     let hspan;
     let vspan;
-    let key;
 
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
         value = 'Total';
-        hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1;
-        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1;
-        key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
+        hspan = isOnRowAxis ? dimension.depth - 1 || 1 : datafieldscount || 1;
+        vspan = isOnRowAxis ? datafieldscount || 1 : dimension.depth - 1 || 1;
+        // key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
         break;
       case HeaderType.SUB_TOTAL:
-        value = dim.caption;
-        hspan = isOnRowAxis ? dim.depth : datafieldscount || 1;
-        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth;
-        key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
+        value = String(dimension.id);
+        hspan = isOnRowAxis ? dimension.depth : datafieldscount || 1;
+        vspan = isOnRowAxis ? datafieldscount || 1 : dimension.depth;
+        // key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
         break;
       default:
-        value = dim.caption;
+        value = String(dimension.id);
         hspan = isOnRowAxis ? 1 : null;
         vspan = isOnRowAxis ? null : 1;
-        key = parent
-          ? `${parent.key}${KEY_SEPARATOR}${dim.id}`
-          : String(dim.id);
+        // key = parent
+        //   ? `${parent.key}${KEY_SEPARATOR}${dimension.id}`
+        //   : String(dimension.id);
         break;
     }
 
@@ -197,10 +197,10 @@ export class Header extends CellBase {
 
     this.subtotalHeader = subtotalHeader;
     this.parent = parent;
-    this.dim = dim;
+    this.dim = dimension;
     // this.expanded = this.getState()
     // ? this.getState().expanded
-    // : (headerType !== HeaderType.SUB_TOTAL || !dim.field.subTotal.collapsed);
+    // : (headerType !== HeaderType.SUB_TOTAL || !dimension.field.subTotal.collapsed);
     this.subheaders = [];
 
     if (parent != null) {
@@ -209,9 +209,16 @@ export class Header extends CellBase {
 
     this.datafieldscount = datafieldscount;
 
-    this.key = key;
+    this.key = getKey({
+      headerType,
+      parent,
+      crossAxisFieldsCode,
+      value,
+      dimension
+    });
 
-    this.caption = this.value;
+    // Total headers have not dimension caption
+    this.caption = dimension.caption || value;
 
     this.x = x;
     this.y = y;
@@ -242,7 +249,8 @@ export class Header extends CellBase {
       }
       return true;
     }
-    const isexpanded = this.dim.isRoot ||
+    const isexpanded =
+      this.dim.isRoot ||
       this.dim.isLeaf ||
       !this.dim.field.subTotal.visible ||
       this.subtotalHeader.expanded;
@@ -316,9 +324,11 @@ export class DataHeader extends CellBase {
       this.parent.subheaders.push(this);
     }
 
-    this.key = parent
-      ? `${parent.key}${KEY_SEPARATOR}${datafield.id}`
-      : String(datafield.id);
+    this.key = getKey({
+      headerType: HeaderType.DATA_HEADER,
+      parent,
+      datafieldId: datafield.id
+    });
 
     this.caption = this.value.caption;
 

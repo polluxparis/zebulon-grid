@@ -107,9 +107,9 @@ export function twoArraysIntersect(arg0, arg1) {
 }
 
 export function isInRange(
-  [columnIndex, rowIndex],
-  [columnIndexStart, rowIndexStart],
-  [columnIndexEnd, rowIndexEnd]
+  { columnIndex, rowIndex },
+  { columnIndex: columnIndexStart, rowIndex: rowIndexStart },
+  { columnIndex: columnIndexEnd, rowIndex: rowIndexEnd }
 ) {
   let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {

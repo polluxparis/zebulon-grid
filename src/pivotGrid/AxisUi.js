@@ -3,11 +3,14 @@ import { KEY_SEPARATOR } from './constants';
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
-    return headers.find(header => header.value === keys[0]);
+    return headers.find(header => header.key === keys[0]);
   }
-  const parentHeader = headers.find(header => header.value === keys[0]);
+  const parentHeader = headers.find(header => header.key === keys[0]);
   if (!parentHeader) throw new Error('header not found');
-  return findHeader(parentHeader.subheaders, keys.slice(1));
+  return findHeader(parentHeader.subheaders, [
+    [keys[0], keys[1]].join(KEY_SEPARATOR),
+    ...keys.slice(2)
+  ]);
 };
 
 export const keyToIndex = (headers, key) => {
@@ -32,10 +35,7 @@ export const keyToIndex = (headers, key) => {
  */
 export default class AxisUi {
   constructor(axis, config, crossAxisFieldsCode) {
-    const {
-      activatedDatafieldsCount,
-      activatedDatafields
-    } = config;
+    const { activatedDatafieldsCount, activatedDatafields } = config;
     this.datafieldsCount = activatedDatafieldsCount;
     // this.datafieldsCount = getDatafieldsCount({
     //   axisType: axis.type,
@@ -114,16 +114,14 @@ export default class AxisUi {
   * @param  {object}  infos - array to fill with ui dimension info
   * @param  {number}  axisType - type of the axe (rows or columns)
   */
-  getUiInfo(
-    {
-      infos,
-      dimension,
-      axisType,
-      activatedDatafields,
-      activatedDatafieldsCount,
-      y = 0
-    }
-  ) {
+  getUiInfo({
+    infos,
+    dimension,
+    axisType,
+    activatedDatafields,
+    activatedDatafieldsCount,
+    y = 0
+  }) {
     if (dimension.values.length > 0) {
       const infosMaxIndex = infos.length - 1;
       let lastInfosArray = infos[infosMaxIndex];
@@ -211,15 +209,7 @@ export default class AxisUi {
     return y;
   }
 
-  addDataHeaders(
-    {
-      axisType,
-      infos,
-      parent,
-      activatedDatafields,
-      y
-    }
-  ) {
+  addDataHeaders({ axisType, infos, parent, activatedDatafields, y }) {
     if (this.hasDatafields) {
       let lastInfosArray = infos[infos.length - 1];
       activatedDatafields.forEach((datafield, index) => {

@@ -63,23 +63,33 @@ describe('cells infos are computed correctly', () => {
       dimensions: [
         {
           dimension: { caption: 'Tutu', id: 'tutu' },
-          cell: { caption: '0', id: '0' }
+          cell: { caption: '0', id: '0' },
+          axis: 'rows',
+          index: 1
         },
         {
           dimension: { caption: 'Toto', id: 'toto' },
-          cell: { caption: 'toto 1', id: 1 }
+          cell: { caption: 'toto 1', id: 1 },
+          axis: 'rows',
+          index: 0
         },
         {
           dimension: { caption: 'Titi', id: 'titi' },
-          cell: { caption: 'titi 0', id: 'titi 0' }
+          cell: { caption: 'titi 0', id: 'titi 0' },
+          axis: 'columns',
+          index: 0
         }
       ],
       measure: {
         caption: 'Amount',
-        id: 'amt'
+        id: 'amt',
+        axis: 'columns'
       }
     };
-    const cellInfos = getCellInfos({ data: datasource })(cell);
+    const cellInfos = getCellInfos({
+      data: datasource,
+      config: { dataHeadersLocation: 'columns' }
+    })(cell);
     expect(cellInfos).toEqual(expected);
   });
 });

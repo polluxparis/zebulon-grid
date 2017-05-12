@@ -61,11 +61,11 @@ class DataCells extends PureComponent {
     document.removeEventListener('copy', this.handleCopy);
   }
 
-  handleMouseDown(e, [columnIndex, rowIndex]) {
+  handleMouseDown(e, { columnIndex, rowIndex }) {
     if (e.button === 0) {
       this.isMouseDown = true;
-      this.setState({ selectedCellStart: [columnIndex, rowIndex] });
-      this.setState({ selectedCellEnd: [columnIndex, rowIndex] });
+      this.setState({ selectedCellStart: { columnIndex, rowIndex } });
+      this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
     }
   }
 
@@ -73,9 +73,9 @@ class DataCells extends PureComponent {
     this.isMouseDown = false;
   }
 
-  handleMouseOver([columnIndex, rowIndex]) {
+  handleMouseOver({ columnIndex, rowIndex }) {
     if (this.isMouseDown) {
-      this.setState({ selectedCellEnd: [columnIndex, rowIndex] });
+      this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
     }
   }
 
@@ -106,8 +106,11 @@ class DataCells extends PureComponent {
         findDOMNode(this.grid) === e.target
       ) {
         this.setState({
-          selectedCellStart: [0, 0],
-          selectedCellEnd: [columnHeaders.length, rowHeaders.length]
+          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
+          selectedCellEnd: {
+            columnIndex: columnHeaders.length,
+            rowIndex: rowHeaders.length
+          }
         });
       }
       e.preventDefault();
@@ -133,19 +136,13 @@ class DataCells extends PureComponent {
     return this.props.drilldown(this.props.getCellInfos(cell));
   }
 
-  cellRenderer(
-    {
-      columnIndex,
-      key,
-      rowIndex,
-      style
-    }
-  ) {
+  cellRenderer({ columnIndex, key, rowIndex, style }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
     const {
       getCellValue,
       dataHeadersLocation,
-      customFunctions
+      customFunctions,
+      focusCellKeys
     } = this.props;
     const { rowHeaders, columnHeaders } = this.props;
     const rowHeaderRow = rowHeaders[rowIndex];
@@ -155,11 +152,15 @@ class DataCells extends PureComponent {
     let selected = false;
     if (selectedCellStart && selectedCellEnd) {
       selected = isInRange(
-        [columnIndex, rowIndex],
+        { columnIndex, rowIndex },
         selectedCellStart,
         selectedCellEnd
       );
     }
+    const focused = !!focusCellKeys.filter(
+      ({ columns, rows }) =>
+        columns === columnHeader.key && rows === rowHeader.key
+    ).length;
 
     // This causes all the data cells to be rendered when new cells are selected via mouse actions
     // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
@@ -193,6 +194,7 @@ class DataCells extends PureComponent {
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         selected={selected}
+        focused={focused}
       />
     );
   }
