@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { twoArraysIntersect } from '../utils/generic';
 import { getFilteredData } from './data.selector';
+import { ALL } from '../constants';
 
 const getIndexesIntersectionFromDimensions = (
   rowDimension,
@@ -15,8 +16,10 @@ const getIndexesIntersectionFromDimensions = (
     : columnDimension.rowIndexes;
   let intersection;
   if (rowIndexes === null && columnIndexes === null) {
-    // At initialization, both rowIndexes and columnIndexes are null
-    intersection = null;
+    // // At initialization, both rowIndexes and columnIndexes are null
+    // intersection = null;
+    // When no dimension (i.e. Total) on both axis, intersection is ALL
+    intersection = ALL;
   } else if (rowIndexes === null) {
     intersection = columnIndexes;
   } else if (columnIndexes === null) {
@@ -35,13 +38,13 @@ export const getCellValue = createSelector([getFilteredData], data => (
   accessor,
   rowDimension,
   columnDimension,
-  aggregateFunc = () => null
+  aggregation = () => null
 ) => {
   const intersection = getIndexesIntersectionFromDimensions(
     rowDimension,
     columnDimension
   );
-  return aggregateFunc(accessor, intersection, data);
+  return aggregation(accessor, intersection, data);
 });
 
 const getDataRows = (data, rowDimension, columnDimension) => {

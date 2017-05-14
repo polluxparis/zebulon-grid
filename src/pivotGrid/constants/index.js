@@ -1,6 +1,8 @@
 export const MEASURE_ID = '__measures__';
 export const TOTAL_ID = '__total__';
 
+export const ALL = '__all__';
+
 export const KEY_SEPARATOR = '-/-';
 export const AXIS_SEPARATOR = '-//-';
 

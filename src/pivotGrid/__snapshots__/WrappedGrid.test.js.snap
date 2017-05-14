@@ -1395,7 +1395,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              0
+              1
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1413,7 +1413,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              10
+              11
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1431,7 +1431,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              20
+              21
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1449,7 +1449,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              30
+              31
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1467,7 +1467,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              40
+              41
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1575,7 +1575,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              Infinity $
+              1000.00 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1593,7 +1593,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              101.00 $
+              91.82 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1611,7 +1611,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              51.00 $
+              48.57 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1629,7 +1629,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              34.33 $
+              33.23 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1647,7 +1647,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              26.00 $
+              25.37 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1665,7 +1665,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              1
+              2
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1683,7 +1683,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              11
+              12
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1701,7 +1701,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              21
+              22
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1719,7 +1719,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              31
+              32
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1737,7 +1737,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              41
+              42
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1845,7 +1845,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              1001.00 $
+              500.50 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1863,7 +1863,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              91.91 $
+              84.25 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1881,7 +1881,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              48.62 $
+              46.41 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1899,7 +1899,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              33.26 $
+              32.22 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -1917,7 +1917,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              25.39 $
+              24.79 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1935,7 +1935,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              100
+              101
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1953,7 +1953,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              110
+              111
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1971,7 +1971,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              120
+              121
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -1989,7 +1989,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              130
+              131
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2007,7 +2007,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              140
+              141
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2115,7 +2115,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              11.00 $
+              10.89 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2133,7 +2133,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              10.09 $
+              10.00 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2151,7 +2151,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              9.33 $
+              9.26 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2169,7 +2169,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              8.69 $
+              8.63 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2187,7 +2187,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              8.14 $
+              8.09 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2205,7 +2205,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              101
+              102
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2223,7 +2223,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              111
+              112
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2241,7 +2241,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              121
+              122
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2259,7 +2259,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              131
+              132
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2277,7 +2277,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              141
+              142
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -2385,7 +2385,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              10.90 $
+              10.79 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2403,7 +2403,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              10.01 $
+              9.92 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2421,7 +2421,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              9.26 $
+              9.19 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2439,7 +2439,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              8.63 $
+              8.57 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -2457,7 +2457,7 @@ exports[`WrappedGrid returns correct markup when config has data fields on row a
                   "width": 100,
                 }
               }>
-              8.09 $
+              8.04 $
             </div>
           </div>
         </div>
@@ -3199,7 +3199,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              100
+              105
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -3235,7 +3235,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              Infinity $
+              239.80 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -3253,7 +3253,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              105
+              110
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -3289,7 +3289,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              240.04 $
+              137.63 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -3307,7 +3307,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              600
+              605
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -3343,7 +3343,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              9.45 $
+              9.37 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -3361,7 +3361,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              605
+              610
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -3397,7 +3397,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
                   "width": 100,
                 }
               }>
-              9.38 $
+              9.30 $
             </div>
           </div>
         </div>
@@ -5467,7 +5467,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              202
+              206
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5503,7 +5503,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              Infinity $
+              380.55 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5521,7 +5521,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              242
+              246
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5557,7 +5557,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              53.25 $
+              49.00 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5575,7 +5575,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              282
+              286
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5611,7 +5611,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              29.55 $
+              28.36 $
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -5629,7 +5629,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
                   "width": 100,
                 }
               }>
-              322
+              326
             </div>
           </div>
         </div>
@@ -6698,100 +6698,10 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              0
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 100,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 0,
-                  "width": 100,
-                }
-              }>
-              10
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 200,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 0,
-                  "width": 100,
-                }
-              }>
-              20
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 300,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 0,
-                  "width": 100,
-                }
-              }>
-              30
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 400,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 0,
-                  "width": 100,
-                }
-              }>
-              40
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 0,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 30,
-                  "width": 100,
-                }
-              }>
               1
             </div>
             <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
               onDoubleClick={[Function]}
               onMouseDown={[Function]}
               onMouseOver={[Function]}
@@ -6802,14 +6712,14 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "left": 100,
                   "overflow": "hidden",
                   "position": "absolute",
-                  "top": 30,
+                  "top": 0,
                   "width": 100,
                 }
               }>
               11
             </div>
             <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
               onDoubleClick={[Function]}
               onMouseDown={[Function]}
               onMouseOver={[Function]}
@@ -6820,14 +6730,14 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "left": 200,
                   "overflow": "hidden",
                   "position": "absolute",
-                  "top": 30,
+                  "top": 0,
                   "width": 100,
                 }
               }>
               21
             </div>
             <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
               onDoubleClick={[Function]}
               onMouseDown={[Function]}
               onMouseOver={[Function]}
@@ -6838,13 +6748,103 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "left": 300,
                   "overflow": "hidden",
                   "position": "absolute",
-                  "top": 30,
+                  "top": 0,
                   "width": 100,
                 }
               }>
               31
             </div>
             <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 400,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 0,
+                  "width": 100,
+                }
+              }>
+              41
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 0,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 30,
+                  "width": 100,
+                }
+              }>
+              2
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 100,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 30,
+                  "width": 100,
+                }
+              }>
+              12
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 200,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 30,
+                  "width": 100,
+                }
+              }>
+              22
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 300,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 30,
+                  "width": 100,
+                }
+              }>
+              32
+            </div>
+            <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
               onDoubleClick={[Function]}
               onMouseDown={[Function]}
@@ -6860,7 +6860,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              41
+              42
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -6875,102 +6875,102 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "overflow": "hidden",
                   "position": "absolute",
                   "top": 60,
-                  "width": 100,
-                }
-              }>
-              100
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 100,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 60,
-                  "width": 100,
-                }
-              }>
-              110
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 200,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 60,
-                  "width": 100,
-                }
-              }>
-              120
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 300,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 60,
-                  "width": 100,
-                }
-              }>
-              130
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 400,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 60,
-                  "width": 100,
-                }
-              }>
-              140
-            </div>
-            <div
-              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
-              onDoubleClick={[Function]}
-              onMouseDown={[Function]}
-              onMouseOver={[Function]}
-              style={
-                Object {
-                  "boxSizing": "border-box",
-                  "height": 30,
-                  "left": 0,
-                  "overflow": "hidden",
-                  "position": "absolute",
-                  "top": 90,
                   "width": 100,
                 }
               }>
               101
             </div>
             <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 100,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 60,
+                  "width": 100,
+                }
+              }>
+              111
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 200,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 60,
+                  "width": 100,
+                }
+              }>
+              121
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 300,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 60,
+                  "width": 100,
+                }
+              }>
+              131
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 400,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 60,
+                  "width": 100,
+                }
+              }>
+              141
+            </div>
+            <div
+              className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
+              onDoubleClick={[Function]}
+              onMouseDown={[Function]}
+              onMouseOver={[Function]}
+              style={
+                Object {
+                  "boxSizing": "border-box",
+                  "height": 30,
+                  "left": 0,
+                  "overflow": "hidden",
+                  "position": "absolute",
+                  "top": 90,
+                  "width": 100,
+                }
+              }>
+              102
+            </div>
+            <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
               onDoubleClick={[Function]}
               onMouseDown={[Function]}
@@ -6986,7 +6986,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              111
+              112
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -7004,7 +7004,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              121
+              122
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -7022,7 +7022,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              131
+              132
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -7040,7 +7040,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
                   "width": 100,
                 }
               }>
-              141
+              142
             </div>
           </div>
         </div>
@@ -8303,7 +8303,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              0
+              1
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8339,7 +8339,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              10
+              11
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8375,7 +8375,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              20
+              21
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8411,7 +8411,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              30
+              31
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8447,7 +8447,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              40
+              41
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8465,7 +8465,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              1
+              2
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8501,7 +8501,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              11
+              12
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8537,7 +8537,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              21
+              22
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8573,7 +8573,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              31
+              32
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8609,7 +8609,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              41
+              42
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8627,7 +8627,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              100
+              101
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8663,7 +8663,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              110
+              111
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8699,7 +8699,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              120
+              121
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8735,7 +8735,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              130
+              131
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-even"
@@ -8771,7 +8771,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              140
+              141
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8789,7 +8789,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              101
+              102
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8825,7 +8825,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              111
+              112
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8861,7 +8861,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              121
+              122
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8897,7 +8897,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              131
+              132
             </div>
             <div
               className="pivotgrid-cell pivotgrid-data-cell pivotgrid-data-cell-uneven"
@@ -8933,7 +8933,7 @@ exports[`WrappedGrid returns correct markup when config has two data fields 1`] 
                   "width": 100,
                 }
               }>
-              141
+              142
             </div>
           </div>
         </div>

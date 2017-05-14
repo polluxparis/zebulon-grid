@@ -1,10 +1,10 @@
 import { getCellInfos, getCellValue } from './cell.selector';
 import { getMockDatasource } from '../../utils/mock';
-import { toAccessorFunction } from '../utils/generic';
+import { ALL } from '../constants';
 
 describe('cells infos are computed correctly', () => {
   const cell = {
-    caption: '100 $',
+    caption: '1100 $',
     columnDimension: {
       caption: 'titi 0',
       id: 'titi 0',
@@ -50,11 +50,11 @@ describe('cells infos are computed correctly', () => {
 
   test('in normal case', () => {
     const expected = {
-      value: '100 $',
+      value: '1100 $',
       data: [
         {
           amt: 1100,
-          qty: 100,
+          qty: 101,
           titi: 'titi 0',
           toto: 1,
           toto_lb: 'toto 1',
@@ -117,7 +117,7 @@ describe('cell value is computed correctly', () => {
       columnDimension,
       returnIntersection
     );
-    expect(cellValue).toEqual(null);
+    expect(cellValue).toEqual(ALL);
   });
   test('with rowDimension as root', () => {
     const rowDimension = { isRoot: true };

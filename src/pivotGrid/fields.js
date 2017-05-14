@@ -4,14 +4,14 @@ import {
   isNullOrUndefined,
   toAccessorFunction
 } from './utils/generic';
-import { toAggregateFunction } from './Aggregation';
+import * as aggregations from './Aggregation';
 
 export function fieldFactory(fieldConfig) {
   const { id: idConfig, accessor, name, caption, sort } = fieldConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      'Configuration error: field definition needs an accessor.',
+      'Pivot grid configuration error: field definition needs an accessor.',
       fieldConfig
     );
   }
@@ -22,7 +22,7 @@ export function fieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      'Configuration error: field definition needs an accessor of type string or an id.',
+      'Pivot grid configuration error: field definition needs an accessor of type string or an id.',
       fieldConfig
     );
   }
@@ -67,7 +67,7 @@ export function datafieldFactory(fieldConfig) {
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      'Configuration error: datafield definition needs an accessor.',
+      'Pivot grid configuration error: datafield definition needs an accessor.',
       fieldConfig
     );
   }
@@ -78,7 +78,7 @@ export function datafieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      'Configuration error: datafield definition needs an accessor of type string or an id.',
+      'Pivot grid configuration error: datafield definition needs an accessor of type string or an id.',
       fieldConfig
     );
   }
@@ -98,7 +98,15 @@ export function datafieldFactory(fieldConfig) {
   } else {
     datafield.aggregationName = null;
   }
-  datafield.aggregation = toAggregateFunction(aggregation);
+  if (isStringOrNumber(aggregation)) {
+    datafield.aggregation = aggregations[aggregation] || null;
+  } else if (typeof aggregation === 'function') {
+    datafield.aggregation = aggregation;
+  } else {
+    throw new Error(
+      'Pivot grid configuration error: datafield aggregation must be a string referencing an already implemented function (cf documentation) or a function with signature (accessor, intersection, data) => number'
+    );
+  }
 
   return datafield;
 }

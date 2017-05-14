@@ -193,7 +193,7 @@ describe('layout is computed correctly', () => {
       field2: fieldFactory({ accessor: 'field2' }),
       field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregation: 'sum' });
     df1.activated = true;
     const datafields = {
       df1
@@ -229,7 +229,7 @@ describe('layout is computed correctly', () => {
       field2: fieldFactory({ accessor: 'field2' }),
       field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregation: 'sum' });
     const datafields = {
       df1
     };
@@ -264,7 +264,7 @@ describe('layout is computed correctly', () => {
       field2: fieldFactory({ accessor: 'field2' }),
       field3: fieldFactory({ accessor: 'field3' })
     };
-    const df1 = datafieldFactory({ accessor: 'df1', aggregateFunc: 'sum' });
+    const df1 = datafieldFactory({ accessor: 'df1', aggregation: 'sum' });
     df1.activated = true;
     const datafields = {
       df1
