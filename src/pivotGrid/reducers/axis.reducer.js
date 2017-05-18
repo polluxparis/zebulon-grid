@@ -1,7 +1,7 @@
-import { MOVE_FIELD } from '../constants';
+import { MOVE_FIELD, SET_AXIS } from '../constants';
 
 export default (state = { rows: [], columns: [], fields: [] }, action) => {
-  const { type, id, position, oldAxis, newAxis } = action;
+  const { type, id, position, oldAxis, newAxis, axis } = action;
   let newAxisValue;
   let oldAxisValue;
   let oldPosition;
@@ -13,7 +13,7 @@ export default (state = { rows: [], columns: [], fields: [] }, action) => {
         newAxisValue = [
           ...state[newAxis].slice(0, position),
           id,
-          ...state[newAxis].slice(position),
+          ...state[newAxis].slice(position)
         ];
         return { ...state, [oldAxis]: oldAxisValue, [newAxis]: newAxisValue };
       }
@@ -24,7 +24,7 @@ export default (state = { rows: [], columns: [], fields: [] }, action) => {
       newAxisValue = [
         ...state[oldAxis].slice(0, position),
         id,
-        ...state[oldAxis].slice(position),
+        ...state[oldAxis].slice(position)
       ];
       if (oldPosition < position) {
         positionToRemove = oldPosition;
@@ -33,10 +33,11 @@ export default (state = { rows: [], columns: [], fields: [] }, action) => {
       }
       newAxisValue = [
         ...newAxisValue.slice(0, positionToRemove),
-        ...newAxisValue.slice(positionToRemove + 1),
+        ...newAxisValue.slice(positionToRemove + 1)
       ];
       return { ...state, [newAxis]: newAxisValue };
-
+    case SET_AXIS:
+      return { ...state, ...axis };
     default:
       return state;
   }
