@@ -27,10 +27,6 @@ const getIndexesIntersectionFromDimensions = (
   } else {
     intersection = twoArraysIntersect(columnIndexes, rowIndexes);
   }
-  const emptyIntersection = !intersection || intersection.length === 0;
-  if (emptyIntersection) {
-    return null;
-  }
   return intersection;
 };
 

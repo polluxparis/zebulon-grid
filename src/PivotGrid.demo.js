@@ -49,8 +49,8 @@ class PivotGridDemo extends Component {
     this.state.store.dispatch(
       actions.pushData([
         {
-          toto: '0',
-          toto_lb: 'toto 0',
+          toto: '666',
+          toto_lb: '',
           qty: 100,
           amt: 100,
           titi: 'titi 0',

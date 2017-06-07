@@ -218,7 +218,14 @@ export class Header extends CellBase {
     });
 
     // Total headers have not dimension caption
-    this.caption = dimension.caption || value;
+    if (
+      headerType === HeaderType.GRAND_TOTAL ||
+      headerType === HeaderType.SUB_TOTAL
+    ) {
+      this.caption = value;
+    } else {
+      this.caption = dimension.caption;
+    }
 
     this.x = x;
     this.y = y;
