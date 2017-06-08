@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { twoArraysIntersect } from '../utils/generic';
+import { isNullOrUndefined, twoArraysIntersect } from '../utils/generic';
 import { getFilteredData } from './data.selector';
 import { ALL } from '../constants';
 
@@ -40,7 +40,20 @@ export const getCellValue = createSelector([getFilteredData], data => (
     rowDimension,
     columnDimension
   );
-  return aggregation(accessor, intersection, data);
+  // Remove rows for which the accessor gives a null or undefined value
+  // This allows better behaviour for cells which have a null value
+  // for example getting an empty cell instead of zero
+  const intersectionWithNonNullOrUndefinedValue = intersection.filter(
+    i => !isNullOrUndefined(accessor(data[i]))
+  );
+  // If we assume that all our measures are numerical we can be more strict
+  // and keep only rows where the accessor gives a finite number
+  // This removes Javascript operators weird behaviour with non finite number values.
+  // Design decision to be made later.
+  //  const intersectionWithNumericalValue = intersection.filter(
+  //   i => Number.isFinite(accessor(data[i]))
+  // );
+  return aggregation(accessor, intersectionWithNonNullOrUndefinedValue, data);
 });
 
 const getDataRows = (data, rowDimension, columnDimension) => {

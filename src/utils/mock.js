@@ -161,7 +161,7 @@ export const basicConfig = {
       aggregation: 'avg',
       accessor: row => row.amt / row.qty,
       format: value => {
-        if (!isNaN(value)) {
+        if (Number.isFinite(value)) {
           return `${Number(value).toFixed(2)} $`;
         }
         return value;
