@@ -144,3 +144,15 @@ export function toAccessorFunction(accessor) {
   }
   return accessor;
 }
+
+/* eslint-disable no-param-reassign */
+export const range = (a, b) =>
+  Array.from(
+    (function*(x, y) {
+      while (x <= y) {
+        yield x;
+        x += 1;
+      }
+    })(a, b)
+  );
+/* eslint-enable */

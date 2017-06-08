@@ -1,5 +1,6 @@
 import { AxisType } from './Axis';
 import { getKey } from './utils/keys';
+import { isNullOrUndefined } from './utils/generic';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -373,29 +374,47 @@ export class DataCell extends CellBase {
     colinfo,
     customFunctions
   ) {
-    const rowDimension = rowinfo.type === HeaderType.DATA_HEADER
-      ? rowinfo.parent.dim
-      : rowinfo.dim;
-    const columnDimension = colinfo.type === HeaderType.DATA_HEADER
-      ? colinfo.parent.dim
-      : colinfo.dim;
-    const rowType = rowinfo.type === HeaderType.DATA_HEADER
-      ? rowinfo.parent.type
-      : rowinfo.type;
-    const colType = colinfo.type === HeaderType.DATA_HEADER
-      ? colinfo.parent.type
-      : colinfo.type;
+    let rowHeader;
+    let columnHeader;
+    let dataHeader;
+    if (rowinfo.type === HeaderType.DATA_HEADER) {
+      dataHeader = rowinfo;
+      rowHeader = rowinfo.parent;
+      columnHeader = colinfo;
+    } else if (colinfo.type === HeaderType.DATA_HEADER) {
+      dataHeader = colinfo;
+      rowHeader = rowinfo;
+      columnHeader = colinfo.parent;
+    } else {
+      // no data header
+      rowHeader = rowinfo;
+      columnHeader = colinfo;
+    }
+    const rowDimension = rowHeader.dim;
+    const columnDimension = columnHeader.dim;
+    const rowType = rowHeader.type;
+    const colType = columnHeader.type;
 
-    const datafield = dataHeadersLocation === 'rows'
-      ? rowinfo.value
-      : colinfo.value;
-
-    const value = getCellValue(
-      customFunctions.access[datafield.id],
-      rowDimension,
-      columnDimension,
-      customFunctions.aggregation[datafield.id]
-    );
+    let value;
+    let datafield;
+    let caption;
+    if (!isNullOrUndefined(dataHeader)) {
+      datafield = dataHeader.value;
+      value = getCellValue(
+        customFunctions.access[datafield.id] || (() => null),
+        rowDimension,
+        columnDimension,
+        customFunctions.aggregation[datafield.id]
+      );
+      if (!isNullOrUndefined(customFunctions.format[datafield.id])) {
+        caption = customFunctions.format[datafield.id](value);
+      } else {
+        caption = value;
+      }
+    } else {
+      value = null;
+      caption = value;
+    }
 
     super({
       axisType: null,
@@ -413,12 +432,8 @@ export class DataCell extends CellBase {
     this.datafield = datafield;
     this.hspan = 1;
     this.vspan = 1;
-
-    if (this.datafield && customFunctions.format[datafield.id]) {
-      this.caption = customFunctions.format[datafield.id](value);
-    } else {
-      this.caption = this.value;
-    }
+    this.caption = caption;
+    this.value = value;
   }
 }
 

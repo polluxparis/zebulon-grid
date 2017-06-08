@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { isNullOrUndefined, twoArraysIntersect } from '../utils/generic';
+import { isNullOrUndefined, twoArraysIntersect, range } from '../utils/generic';
 import { getFilteredData } from './data.selector';
 import { ALL } from '../constants';
 
@@ -8,24 +8,21 @@ const getIndexesIntersectionFromDimensions = (
   columnDimension
 ) => {
   if (!(rowDimension && columnDimension)) {
-    return null;
+    return [];
   }
-  const rowIndexes = rowDimension.isRoot ? null : rowDimension.rowIndexes;
-  const columnIndexes = columnDimension.isRoot
-    ? null
-    : columnDimension.rowIndexes;
   let intersection;
-  if (rowIndexes === null && columnIndexes === null) {
-    // // At initialization, both rowIndexes and columnIndexes are null
-    // intersection = null;
+  if (rowDimension.isRoot && columnDimension.isRoot) {
     // When no dimension (i.e. Total) on both axis, intersection is ALL
     intersection = ALL;
-  } else if (rowIndexes === null) {
-    intersection = columnIndexes;
-  } else if (columnIndexes === null) {
-    intersection = rowIndexes;
+  } else if (rowDimension.isRoot) {
+    intersection = columnDimension.rowIndexes;
+  } else if (columnDimension.isRoot) {
+    intersection = rowDimension.rowIndexes;
   } else {
-    intersection = twoArraysIntersect(columnIndexes, rowIndexes);
+    intersection = twoArraysIntersect(
+      columnDimension.rowIndexes,
+      rowDimension.rowIndexes
+    );
   }
   return intersection;
 };
@@ -40,17 +37,20 @@ export const getCellValue = createSelector([getFilteredData], data => (
     rowDimension,
     columnDimension
   );
+  const intersectionArray = intersection === ALL
+    ? range(0, data.length - 1)
+    : intersection;
   // Remove rows for which the accessor gives a null or undefined value
   // This allows better behaviour for cells which have a null value
   // for example getting an empty cell instead of zero
-  const intersectionWithNonNullOrUndefinedValue = intersection.filter(
+  const intersectionWithNonNullOrUndefinedValue = intersectionArray.filter(
     i => !isNullOrUndefined(accessor(data[i]))
   );
   // If we assume that all our measures are numerical we can be more strict
   // and keep only rows where the accessor gives a finite number
   // This removes Javascript operators weird behaviour with non finite number values.
   // Design decision to be made later.
-  //  const intersectionWithNumericalValue = intersection.filter(
+  //  const intersectionWithNumericalValue = intersectionArray.filter(
   //   i => Number.isFinite(accessor(data[i]))
   // );
   return aggregation(accessor, intersectionWithNonNullOrUndefinedValue, data);

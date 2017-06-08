@@ -1,6 +1,6 @@
 import { getCellInfos, getCellValue } from './cell.selector';
 import { getMockDatasource } from '../../utils/mock';
-import { ALL } from '../constants';
+import { sum } from '../Aggregation';
 
 describe('cells infos are computed correctly', () => {
   const cell = {
@@ -96,59 +96,54 @@ describe('cells infos are computed correctly', () => {
 });
 
 describe('cell value is computed correctly', () => {
-  const datafield = { id: 'qty' };
-  const returnIntersection = (datafieldId, intersection) => intersection;
+  const accessor = row => row.qty;
+  const data = [{ qty: 1 }, { qty: 2 }, { qty: 3 }, { qty: 4 }];
 
   test('with no rowDimension', () => {
-    const cellValue = getCellValue.resultFunc([])(
-      datafield,
-      null,
-      null,
-      returnIntersection
-    );
+    const cellValue = getCellValue.resultFunc([])(accessor, null, null, sum);
     expect(cellValue).toEqual(null);
   });
   test('with both dimensions as root', () => {
     const rowDimension = { isRoot: true };
     const columnDimension = { isRoot: true };
-    const cellValue = getCellValue.resultFunc([])(
-      datafield,
+    const cellValue = getCellValue.resultFunc(data)(
+      accessor,
       rowDimension,
       columnDimension,
-      returnIntersection
+      sum
     );
-    expect(cellValue).toEqual(ALL);
+    expect(cellValue).toEqual(10);
   });
   test('with rowDimension as root', () => {
     const rowDimension = { isRoot: true };
     const columnDimension = { isRoot: false, rowIndexes: [1, 2, 3] };
-    const cellValue = getCellValue.resultFunc([])(
-      datafield,
+    const cellValue = getCellValue.resultFunc(data)(
+      accessor,
       rowDimension,
       columnDimension,
-      returnIntersection
+      sum
     );
-    expect(cellValue).toEqual([1, 2, 3]);
+    expect(cellValue).toEqual(9);
   });
   test('with columnDimension as root', () => {
     const columnDimension = { isRoot: true };
     const rowDimension = { isRoot: false, rowIndexes: [1, 2, 3] };
-    const cellValue = getCellValue.resultFunc([])(
-      datafield,
+    const cellValue = getCellValue.resultFunc(data)(
+      accessor,
       rowDimension,
       columnDimension,
-      returnIntersection
+      sum
     );
-    expect(cellValue).toEqual([1, 2, 3]);
+    expect(cellValue).toEqual(9);
   });
   test('with rowDimension as root and columnDimension rowIndexes empty', () => {
     const rowDimension = { isRoot: true };
     const columnDimension = { isRoot: false, rowIndexes: [] };
     const cellValue = getCellValue.resultFunc([])(
-      datafield,
+      accessor,
       rowDimension,
       columnDimension,
-      returnIntersection
+      sum
     );
     expect(cellValue).toEqual(null);
   });

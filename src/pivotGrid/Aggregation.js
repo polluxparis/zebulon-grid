@@ -1,19 +1,13 @@
-import { ALL } from './constants';
-
 function forEachIntersection(accessor, intersection, data, callback) {
-  if (intersection === ALL) {
-    for (let i = 0; i < data.length; i += 1) {
-      callback(accessor(data[i]));
-    }
-  } else if (intersection && intersection.length > 0) {
+  if (intersection && intersection.length > 0) {
     for (let i = 0; i < intersection.length; i += 1) {
       callback(accessor(data[intersection[i]]));
     }
   }
 }
 
-export function count(accessor, intersection, data) {
-  return intersection === ALL ? data.length : intersection.length;
+export function count(accessor, intersection) {
+  return intersection.length;
 }
 export function sum(accessor, intersection, data) {
   let sum = null;
@@ -42,7 +36,7 @@ export function max(accessor, intersection, data) {
 }
 export function avg(accessor, intersection, data) {
   let avg = null;
-  const len = (intersection === ALL ? data : intersection).length;
+  const len = intersection.length;
   if (len > 0) {
     forEachIntersection(accessor, intersection, data, val => {
       avg += val;
@@ -53,7 +47,7 @@ export function avg(accessor, intersection, data) {
 }
 export function prod(accessor, intersection, data) {
   let prod = null;
-  const len = (intersection === ALL ? data : intersection).length;
+  const len = intersection.length;
   if (len > 0) {
     prod = 1;
     forEachIntersection(accessor, intersection, data, val => {
@@ -66,7 +60,7 @@ export function prod(accessor, intersection, data) {
 export function calcVariance(accessor, intersection, data, population) {
   let variance = 0;
   let avg = null;
-  const len = (intersection === ALL ? data : intersection).length;
+  const len = intersection.length;
   if (len > 0) {
     if (population || len > 1) {
       forEachIntersection(accessor, intersection, data, val => {
