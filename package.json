@@ -12,7 +12,7 @@
   "devDependencies": {
     "autoprefixer": "6.7.2",
     "babel-cli": "6.23.0",
-    "babel-jest": "^19.0.0",
+    "babel-jest": "^20.0.3",
     "babel-preset-react-app": "3.0.0",
     "cross-env": "3.1.4",
     "enzyme": "^2.8.2",
@@ -24,10 +24,9 @@
     "prettier": "^1.4.4",
     "react-addons-perf": "^15.4.2",
     "react-resizable": "^1.6.0",
-    "react-scripts": "0.9.0",
+    "react-scripts": "^1.0.7",
     "react-test-renderer": "^15.5.4",
-    "rimraf": "^2.5.4",
-    "webpack": "^1.14.0"
+    "rimraf": "^2.5.4"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
@@ -50,11 +49,10 @@
     "eject": "react-scripts eject",
     "prepare": "rimraf lib && npm run compile",
     "build:test": "REACT_APP_PIVOTGRID_ENV=fps-test npm run build",
-    "compile": "npm run lint && npm run compile:js && npm run compile:umd &&npm run compile:css",
+    "compile": "npm run lint && npm run compile:js &&npm run compile:css",
     "lint": "eslint src/**/*.js",
     "compile:js": "rimraf lib/commonjs && cross-env NODE_ENV=production babel src/pivotGrid -d lib/commonjs --presets react-app --ignore test.js",
-    "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css",
-    "compile:umd": "rimraf lib/umd && cross-env NODE_ENV=production webpack --config webpack.config.umd.js --bail"
+    "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "peerDependencies": {},
   "babel": {
