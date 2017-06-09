@@ -48,7 +48,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prepublish": "rimraf lib && npm run compile",
+    "prepare": "rimraf lib && npm run compile",
     "build:test": "REACT_APP_PIVOTGRID_ENV=fps-test npm run build",
     "compile": "npm run lint && npm run compile:js && npm run compile:umd &&npm run compile:css",
     "lint": "eslint src/**/*.js",
