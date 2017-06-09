@@ -58,22 +58,22 @@ describe('setFields creates correct action', () => {
     const fields = [
       {
         name: 'toto_lb',
-        id: 'toto',
+        accessor: 'toto',
         caption: 'Toto',
         sort: {
           order: 'asc'
         }
       },
       {
-        id: 'titi',
+        accessor: 'titi',
         caption: 'Titi'
       },
       {
-        id: 'tutu',
+        accessor: 'tutu',
         caption: 'Tutu'
       }
     ];
-    expect(setFields({ fields })).toEqual({
+    expect(setFields({ fields })).toMatchObject({
       type: SET_FIELDS,
       fields: [
         {
@@ -112,12 +112,12 @@ describe('setDatafields creates correct action', () => {
   test('with two datafields', () => {
     const datafields = [
       {
-        id: 'qty',
+        accessor: 'qty',
         caption: 'Quantity',
         aggregation: 'sum'
       },
       {
-        id: 'amt',
+        accessor: 'amt',
         caption: 'Amount',
         aggregation: 'sum',
         aggregationName: 'whatever',
@@ -129,7 +129,7 @@ describe('setDatafields creates correct action', () => {
         }
       }
     ];
-    expect(setDatafields({ datafields })).toEqual({
+    expect(setDatafields({ datafields })).toMatchObject({
       type: SET_DATAFIELDS,
       datafields: [
         {

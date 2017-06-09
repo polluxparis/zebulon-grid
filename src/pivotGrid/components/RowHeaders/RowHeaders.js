@@ -1,4 +1,5 @@
-import React, { PropTypes, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import {
   Grid as ReactVirtualizedGrid
 } from 'react-virtualized/dist/commonjs/Grid';
@@ -24,15 +25,13 @@ class RowHeaders extends PureComponent {
     }
   }
 
-  rowHeadersRenderer(
-    {
-      rowSizeAndPositionManager,
-      rowStartIndex,
-      rowStopIndex,
-      scrollTop,
-      verticalOffsetAdjustment
-    }
-  ) {
+  rowHeadersRenderer({
+    rowSizeAndPositionManager,
+    rowStartIndex,
+    rowStopIndex,
+    scrollTop,
+    verticalOffsetAdjustment
+  }) {
     const {
       rowHeaders,
       columnCount,
@@ -43,9 +42,8 @@ class RowHeaders extends PureComponent {
       gridId
     } = this.props;
 
-    this.firstLeafHeader = rowHeaders[rowStartIndex][
-      rowHeaders[rowStartIndex].length - 1
-    ];
+    this.firstLeafHeader =
+      rowHeaders[rowStartIndex][rowHeaders[rowStartIndex].length - 1];
 
     const renderedCells = [];
 
@@ -176,6 +174,11 @@ class RowHeaders extends PureComponent {
         className="pivotgrid-row-headers"
         columnCount={columnCount}
         columnWidth={getColumnWidth}
+        // The position of inner style was set to static in react-virtualized 9.2.3
+        // This broke the grid because the height of the inner container was not reset
+        // when the height prop changed
+        // This is a workaround
+        containerStyle={{ position: 'static' }}
         height={height}
         overscanRowCount={0}
         ref={ref => {

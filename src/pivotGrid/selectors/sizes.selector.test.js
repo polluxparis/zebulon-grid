@@ -6,6 +6,7 @@ import {
   getDimensionPositions,
   getColumnWidth,
   getRowHeight,
+  getLeafHeaderSize,
   getColumnHeadersHeight,
   getColumnHeadersWidth,
   getRowHeadersHeight,
@@ -38,32 +39,51 @@ describe('dimension sizes are computed correctly', () => {
     width: 200
   };
   test('for columns with default size', () => {
-    const actual = getDimensionSize.resultFunc({}, {}, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, {}, 1, cellSizes)(
       AxisType.COLUMNS,
       'toto'
     );
     expect(actual).toEqual(30);
   });
   test('for rows with default size', () => {
-    const actual = getDimensionSize.resultFunc({}, {}, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, {}, 1, cellSizes)(
       AxisType.ROWS,
       'toto'
     );
     expect(actual).toEqual(200);
   });
   test('for columns with custom size', () => {
-    const actual = getDimensionSize.resultFunc({}, { toto: 66 }, cellSizes)(
+    const actual = getDimensionSize.resultFunc({}, { toto: 66 }, 1, cellSizes)(
       AxisType.COLUMNS,
       'toto'
     );
     expect(actual).toEqual(66);
   });
   test('for rows with custom size', () => {
-    const actual = getDimensionSize.resultFunc({ toto: 666 }, {}, cellSizes)(
+    const actual = getDimensionSize.resultFunc({ toto: 666 }, {}, 1, cellSizes)(
       AxisType.ROWS,
       'toto'
     );
     expect(actual).toEqual(666);
+  });
+
+  test('for columns with custom size and zoom', () => {
+    const actual = getDimensionSize.resultFunc(
+      {},
+      { toto: 66 },
+      0.5,
+      cellSizes
+    )(AxisType.COLUMNS, 'toto');
+    expect(actual).toEqual(33);
+  });
+  test('for rows with custom size and zoom', () => {
+    const actual = getDimensionSize.resultFunc(
+      { toto: 666 },
+      {},
+      0.5,
+      cellSizes
+    )(AxisType.ROWS, 'toto');
+    expect(actual).toEqual(333);
   });
 });
 
@@ -122,7 +142,12 @@ describe('dimension positions are computed correctly', () => {
     height: 30,
     width: 100
   };
-  const getDimensionSizeFunc = getDimensionSize.resultFunc({}, {}, cellSizes);
+  const getDimensionSizeFunc = getDimensionSize.resultFunc(
+    {},
+    {},
+    1,
+    cellSizes
+  );
   test('with fields on both axis', () => {
     const rowfields = [{ id: 'toto' }, { id: 'tutu' }];
     const columnFields = [{ id: 'titi' }];
@@ -179,7 +204,11 @@ describe('column width is computed correctly', () => {
     headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-qty' }]]
   };
   test('with standard size', () => {
-    const actual = getColumnWidth.resultFunc(columnsUi, {}, cellSizes)({
+    const actual = getColumnWidth.resultFunc(
+      columnsUi,
+      {},
+      getLeafHeaderSize.resultFunc(1, cellSizes)
+    )({
       index: 0
     });
     expect(actual).toEqual(200);
@@ -188,7 +217,7 @@ describe('column width is computed correctly', () => {
     const actual = getColumnWidth.resultFunc(
       columnsUi,
       { 'titi 0-/-qty': 180 },
-      cellSizes
+      getLeafHeaderSize.resultFunc(1, cellSizes)
     )({
       index: 0
     });
@@ -205,7 +234,11 @@ describe('row height is computed correctly', () => {
     headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-toto 1' }]]
   };
   test('with standard size', () => {
-    const actual = getRowHeight.resultFunc(rowsUi, {}, cellSizes)({
+    const actual = getRowHeight.resultFunc(
+      rowsUi,
+      {},
+      getLeafHeaderSize.resultFunc(1, cellSizes)
+    )({
       index: 0
     });
     expect(actual).toEqual(30);
@@ -214,7 +247,7 @@ describe('row height is computed correctly', () => {
     const actual = getRowHeight.resultFunc(
       rowsUi,
       { 'titi 0-/-toto 1': 60 },
-      cellSizes
+      getLeafHeaderSize.resultFunc(1, cellSizes)
     )({
       index: 0
     });
@@ -227,7 +260,12 @@ describe('headers sizes are computed correctly', () => {
     height: 30,
     width: 200
   };
-  const getDimensionSizeFunc = getDimensionSize.resultFunc({}, {}, cellSizes);
+  const getDimensionSizeFunc = getDimensionSize.resultFunc(
+    {},
+    {},
+    1,
+    cellSizes
+  );
   test('with data headers on column axis', () => {
     const rows = ['toto', 'tutu'];
     const columns = ['titi'];
@@ -256,11 +294,15 @@ describe('headers sizes are computed correctly', () => {
         cellSizes,
         getDimensionSizeFunc
       ),
-      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc(
+        {},
+        rowsUi,
+        getLeafHeaderSize.resultFunc(1, cellSizes)
+      ),
       columnHeadersWidth: getColumnHeadersWidth.resultFunc(
         {},
         columnsUi,
-        cellSizes
+        getLeafHeaderSize.resultFunc(1, cellSizes)
       )
     };
     const expected = {
@@ -304,11 +346,15 @@ describe('headers sizes are computed correctly', () => {
         cellSizes,
         getDimensionSizeFunc
       ),
-      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc(
+        {},
+        rowsUi,
+        getLeafHeaderSize.resultFunc(1, cellSizes)
+      ),
       columnHeadersWidth: getColumnHeadersWidth.resultFunc(
         {},
         columnsUi,
-        cellSizes
+        getLeafHeaderSize.resultFunc(1, cellSizes)
       )
     };
     const expected = {
@@ -352,11 +398,15 @@ describe('headers sizes are computed correctly', () => {
         cellSizes,
         getDimensionSizeFunc
       ),
-      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc(
+        {},
+        rowsUi,
+        getLeafHeaderSize.resultFunc(1, cellSizes)
+      ),
       columnHeadersWidth: getColumnHeadersWidth.resultFunc(
         {},
         columnsUi,
-        cellSizes
+        getLeafHeaderSize.resultFunc(1, cellSizes)
       )
     };
     const expected = {
@@ -399,11 +449,15 @@ describe('headers sizes are computed correctly', () => {
         cellSizes,
         getDimensionSizeFunc
       ),
-      rowHeadersHeight: getRowHeadersHeight.resultFunc({}, rowsUi, cellSizes),
+      rowHeadersHeight: getRowHeadersHeight.resultFunc(
+        {},
+        rowsUi,
+        getLeafHeaderSize.resultFunc(1, cellSizes)
+      ),
       columnHeadersWidth: getColumnHeadersWidth.resultFunc(
         {},
         columnsUi,
-        cellSizes
+        getLeafHeaderSize.resultFunc(1, cellSizes)
       )
     };
     const expected = {

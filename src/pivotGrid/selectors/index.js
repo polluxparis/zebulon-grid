@@ -16,6 +16,7 @@ import {
   getPreviewSizes,
   getColumnWidth,
   getRowHeight,
+  getLeafHeaderSize,
   getColumnHeadersVisibleWidth,
   getRowHeadersVisibleHeight,
   getLastChildSizeOnColumns,
@@ -23,8 +24,14 @@ import {
   getDataCellsHeight,
   getDataCellsWidth
 } from './sizes.selector';
-import { getActivatedDatafields } from './fields.selector';
+import {
+  getActivatedDatafields,
+  getRowFields,
+  getColumnFields,
+  getAvailableFields
+} from './fields.selector';
 import { getCellValue, getCellInfos } from './cell.selector';
+import { getFilters, getFieldValues } from './data.selector';
 
 export { getLayout };
 export { getCellSizes };
@@ -33,6 +40,9 @@ export { getRowUiAxis };
 export { getColumnAxis };
 export { getRowAxis };
 export { getActivatedDatafields };
+export { getRowFields };
+export { getColumnFields };
+export { getAvailableFields };
 export { getDimensionPositions };
 export { getDimensionSize };
 export { getRowHeadersHeight };
@@ -41,6 +51,7 @@ export { getColumnHeadersHeight };
 export { getColumnHeadersWidth };
 export { getPreviewSizes };
 export { getColumnWidth };
+export { getLeafHeaderSize };
 export { getRowHeight };
 export { getLastChildSizeOnColumns };
 export { getLastChildSizeOnRows };
@@ -49,3 +60,5 @@ export { getRowHeadersVisibleHeight };
 export { getCellValue, getCellInfos };
 export { getDataCellsHeight };
 export { getDataCellsWidth };
+export { getFieldValues };
+export { getFilters };

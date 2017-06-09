@@ -189,7 +189,7 @@ describe('DataCell', () => {
           id: 'amt',
           name: 'amt',
           caption: 'Amount',
-          aggregateFuncName: 'whatever',
+          aggregationName: 'whatever',
           activated: true
         },
         caption: '111 $'

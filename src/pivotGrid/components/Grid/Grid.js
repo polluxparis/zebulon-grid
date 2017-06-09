@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { DropTarget } from 'react-dnd';
 
@@ -10,42 +11,14 @@ import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { Header, DataHeader } from '../../Cells';
 import { keyToIndex } from '../../AxisUi';
-import { KEY_SEPARATOR } from '../../constants';
-
-function getNextKey(current, next) {
-  const firstLeafHeader = current.firstHeaderRow[
-    current.firstHeaderRow.length - 1
-  ];
-  const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
-  let nextKey = '';
-  if (current.fields.length > next.fields.length) {
-    const nextFieldIds = next.fields.map(field => field.id);
-    const missingFieldPosition = current.fields.findIndex(
-      field => !nextFieldIds.includes(field.id)
-    );
-    nextKey = keys.slice(0, missingFieldPosition).join(KEY_SEPARATOR);
-  } else if (current.fields.length < next.fields.length) {
-    const previousFieldIds = current.fields.map(field => field.id);
-    const newFieldPosition = next.fields.findIndex(
-      field => !previousFieldIds.includes(field.id)
-    );
-    nextKey = keys.slice(0, newFieldPosition).join(KEY_SEPARATOR);
-  } else if (current.dataFieldsCount !== next.dataFieldsCount) {
-    // A data field has been toggled
-    nextKey = keys.slice(0, -1).join(KEY_SEPARATOR);
-  } else {
-    // A filter has been modified
-    // For the moment, do nothing
-    nextKey = '';
-  }
-  return nextKey;
-}
+import { getNextKey, getCellInfosKey } from '../../utils/keys';
 
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
     this.rowStartIndex = 0;
     this.columnStartIndex = 0;
+    this.focusCellKeys = [];
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,24 +26,45 @@ class PivotGrid extends Component {
     let nextColumnStartIndex;
     const current = {};
     const next = {};
-    current.dataFieldsCount = this.props.dataFieldsCount;
-    next.dataFieldsCount = nextProps.dataFieldsCount;
-    if (this.props.rowHeaders.length !== nextProps.rowHeaders.length) {
-      current.fields = this.props.rowFields;
-      next.fields = nextProps.rowFields;
-      current.firstHeaderRow = this.props.rowHeaders[this.rowStartIndex];
-      const nextFirstHeaderKey = getNextKey(current, next);
-      nextRowStartIndex = keyToIndex(nextProps.rowHeaders, nextFirstHeaderKey);
-    }
-    if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
-      current.fields = this.props.columnFields;
-      next.fields = nextProps.columnFields;
-      current.firstHeaderRow = this.props.columnHeaders[this.columnStartIndex];
-      const nextFirstHeaderKey = getNextKey(current, next);
-      nextColumnStartIndex = keyToIndex(
-        nextProps.columnHeaders,
-        nextFirstHeaderKey
+    if (this.props.focusCells !== nextProps.focusCells) {
+      this.focusCellKeys = nextProps.focusCells.map(cell =>
+        getCellInfosKey(cell)
       );
+      if (this.focusCellKeys.length > 0) {
+        nextColumnStartIndex = keyToIndex(
+          nextProps.columnHeaders,
+          this.focusCellKeys[0].columns
+        );
+        nextRowStartIndex = keyToIndex(
+          nextProps.rowHeaders,
+          this.focusCellKeys[0].rows
+        );
+      }
+    } else {
+      current.dataFieldsCount = this.props.dataFieldsCount;
+      next.dataFieldsCount = nextProps.dataFieldsCount;
+      if (this.props.rowHeaders.length !== nextProps.rowHeaders.length) {
+        current.fields = this.props.rowFields;
+        next.fields = nextProps.rowFields;
+        current.firstHeaderRow = this.props.rowHeaders[this.rowStartIndex];
+        const nextFirstHeaderKey = getNextKey(current, next);
+        nextRowStartIndex = keyToIndex(
+          nextProps.rowHeaders,
+          nextFirstHeaderKey
+        );
+      }
+      if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
+        current.fields = this.props.columnFields;
+        next.fields = nextProps.columnFields;
+        current.firstHeaderRow = this.props.columnHeaders[
+          this.columnStartIndex
+        ];
+        const nextFirstHeaderKey = getNextKey(current, next);
+        nextColumnStartIndex = keyToIndex(
+          nextProps.columnHeaders,
+          nextFirstHeaderKey
+        );
+      }
     }
     // If keyToIndex does not find the key in the headers, it returns -1
     // In this case, do nothing
@@ -88,12 +82,9 @@ class PivotGrid extends Component {
   handleSectionRendered(onSectionRendered) {
     return indexes => {
       const { rowStartIndex, columnStartIndex } = indexes;
-      // When the data cells grid is re rendered, it resets row and column
-      // start indexes, losing the information about the previous position,
-      // this prevents that.
-      // I's a hack until I better understand this behaviour.
-      if (rowStartIndex) this.rowStartIndex = rowStartIndex;
-      if (columnStartIndex) this.columnStartIndex = columnStartIndex;
+      this.rowStartIndex = rowStartIndex;
+      this.columnStartIndex = columnStartIndex;
+
       onSectionRendered(indexes);
     };
   }
@@ -108,10 +99,7 @@ class PivotGrid extends Component {
       id: gridId
     } = this.props;
 
-    const {
-      columnHorizontalCount,
-      rowVerticalCount
-    } = layout;
+    const { columnHorizontalCount, rowVerticalCount } = layout;
 
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
@@ -156,6 +144,7 @@ class PivotGrid extends Component {
                       )}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
+                      focusCellKeys={this.focusCellKeys}
                       onScroll={onScroll}
                       drilldown={drilldown}
                     />

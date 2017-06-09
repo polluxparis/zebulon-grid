@@ -1,7 +1,10 @@
 export const MEASURE_ID = '__measures__';
 export const TOTAL_ID = '__total__';
 
+export const ALL = '__all__';
+
 export const KEY_SEPARATOR = '-/-';
+export const AXIS_SEPARATOR = '-//-';
 
 // ACTIONS
 
@@ -10,6 +13,7 @@ export const SET_DATAFIELDS = 'PIVOTGRID_SET_DATAFIELDS';
 export const SET_CONFIG_PROPERTY = 'PIVOTGRID_SET_CONFIG_PROPERTY';
 export const TOGGLE_DATAFIELD = 'PIVOTGRID_TOGGLE_DATAFIELD';
 export const MOVE_FIELD = 'PIVOTGRID_MOVE_FIELD';
+export const SET_AXIS = 'PIVOTGRID_SET_AXIS';
 
 export const PUSH_DATA = 'PIVOTGRID_PUSH_DATA';
 export const SET_DATA = 'PIVOTGRID_SET_DATA';

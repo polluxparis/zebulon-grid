@@ -107,9 +107,9 @@ export function twoArraysIntersect(arg0, arg1) {
 }
 
 export function isInRange(
-  [columnIndex, rowIndex],
-  [columnIndexStart, rowIndexStart],
-  [columnIndexEnd, rowIndexEnd]
+  { columnIndex, rowIndex },
+  { columnIndex: columnIndexStart, rowIndex: rowIndexStart },
+  { columnIndex: columnIndexEnd, rowIndex: rowIndexEnd }
 ) {
   let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {
@@ -137,3 +137,22 @@ export function isUndefined(obj) {
 export function isNullOrUndefined(obj) {
   return isUndefined(obj) || isNull(obj);
 }
+
+export function toAccessorFunction(accessor) {
+  if (typeof accessor === 'string') {
+    return row => row[accessor];
+  }
+  return accessor;
+}
+
+/* eslint-disable no-param-reassign */
+export const range = (a, b) =>
+  Array.from(
+    (function*(x, y) {
+      while (x <= y) {
+        yield x;
+        x += 1;
+      }
+    })(a, b)
+  );
+/* eslint-enable */

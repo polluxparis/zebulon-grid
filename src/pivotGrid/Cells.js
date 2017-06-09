@@ -1,5 +1,6 @@
 import { AxisType } from './Axis';
-import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from './constants';
+import { getKey } from './utils/keys';
+import { isNullOrUndefined } from './utils/generic';
 
 export const HeaderType = {
   EMPTY: 1,
@@ -139,7 +140,7 @@ export class Header extends CellBase {
   constructor(
     axisType,
     headerTypeP,
-    dim,
+    dimension,
     parent,
     datafieldscount,
     x,
@@ -148,33 +149,33 @@ export class Header extends CellBase {
     crossAxisFieldsCode = []
   ) {
     const isOnRowAxis = axisType === AxisType.ROWS;
-    const headerType = headerTypeP ||
-      (dim.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
+    const headerType =
+      headerTypeP ||
+      (dimension.depth === 1 ? HeaderType.INNER : HeaderType.WRAPPER);
     let value;
     let hspan;
     let vspan;
-    let key;
 
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
         value = 'Total';
-        hspan = isOnRowAxis ? dim.depth - 1 || 1 : datafieldscount || 1;
-        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth - 1 || 1;
-        key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
+        hspan = isOnRowAxis ? dimension.depth - 1 || 1 : datafieldscount || 1;
+        vspan = isOnRowAxis ? datafieldscount || 1 : dimension.depth - 1 || 1;
+        // key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
         break;
       case HeaderType.SUB_TOTAL:
-        value = dim.caption;
-        hspan = isOnRowAxis ? dim.depth : datafieldscount || 1;
-        vspan = isOnRowAxis ? datafieldscount || 1 : dim.depth;
-        key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
+        value = String(dimension.id);
+        hspan = isOnRowAxis ? dimension.depth : datafieldscount || 1;
+        vspan = isOnRowAxis ? datafieldscount || 1 : dimension.depth;
+        // key = parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
         break;
       default:
-        value = dim.caption;
+        value = String(dimension.id);
         hspan = isOnRowAxis ? 1 : null;
         vspan = isOnRowAxis ? null : 1;
-        key = parent
-          ? `${parent.key}${KEY_SEPARATOR}${dim.id}`
-          : String(dim.id);
+        // key = parent
+        //   ? `${parent.key}${KEY_SEPARATOR}${dimension.id}`
+        //   : String(dimension.id);
         break;
     }
 
@@ -197,10 +198,10 @@ export class Header extends CellBase {
 
     this.subtotalHeader = subtotalHeader;
     this.parent = parent;
-    this.dim = dim;
+    this.dim = dimension;
     // this.expanded = this.getState()
     // ? this.getState().expanded
-    // : (headerType !== HeaderType.SUB_TOTAL || !dim.field.subTotal.collapsed);
+    // : (headerType !== HeaderType.SUB_TOTAL || !dimension.field.subTotal.collapsed);
     this.subheaders = [];
 
     if (parent != null) {
@@ -209,9 +210,23 @@ export class Header extends CellBase {
 
     this.datafieldscount = datafieldscount;
 
-    this.key = key;
+    this.key = getKey({
+      headerType,
+      parent,
+      crossAxisFieldsCode,
+      value,
+      dimension
+    });
 
-    this.caption = this.value;
+    // Total headers have not dimension caption
+    if (
+      headerType === HeaderType.GRAND_TOTAL ||
+      headerType === HeaderType.SUB_TOTAL
+    ) {
+      this.caption = value;
+    } else {
+      this.caption = dimension.caption;
+    }
 
     this.x = x;
     this.y = y;
@@ -242,7 +257,8 @@ export class Header extends CellBase {
       }
       return true;
     }
-    const isexpanded = this.dim.isRoot ||
+    const isexpanded =
+      this.dim.isRoot ||
       this.dim.isLeaf ||
       !this.dim.field.subTotal.visible ||
       this.subtotalHeader.expanded;
@@ -316,9 +332,11 @@ export class DataHeader extends CellBase {
       this.parent.subheaders.push(this);
     }
 
-    this.key = parent
-      ? `${parent.key}${KEY_SEPARATOR}${datafield.id}`
-      : String(datafield.id);
+    this.key = getKey({
+      headerType: HeaderType.DATA_HEADER,
+      parent,
+      datafieldId: datafield.id
+    });
 
     this.caption = this.value.caption;
 
@@ -356,29 +374,47 @@ export class DataCell extends CellBase {
     colinfo,
     customFunctions
   ) {
-    const rowDimension = rowinfo.type === HeaderType.DATA_HEADER
-      ? rowinfo.parent.dim
-      : rowinfo.dim;
-    const columnDimension = colinfo.type === HeaderType.DATA_HEADER
-      ? colinfo.parent.dim
-      : colinfo.dim;
-    const rowType = rowinfo.type === HeaderType.DATA_HEADER
-      ? rowinfo.parent.type
-      : rowinfo.type;
-    const colType = colinfo.type === HeaderType.DATA_HEADER
-      ? colinfo.parent.type
-      : colinfo.type;
+    let rowHeader;
+    let columnHeader;
+    let dataHeader;
+    if (rowinfo.type === HeaderType.DATA_HEADER) {
+      dataHeader = rowinfo;
+      rowHeader = rowinfo.parent;
+      columnHeader = colinfo;
+    } else if (colinfo.type === HeaderType.DATA_HEADER) {
+      dataHeader = colinfo;
+      rowHeader = rowinfo;
+      columnHeader = colinfo.parent;
+    } else {
+      // no data header
+      rowHeader = rowinfo;
+      columnHeader = colinfo;
+    }
+    const rowDimension = rowHeader.dim;
+    const columnDimension = columnHeader.dim;
+    const rowType = rowHeader.type;
+    const colType = columnHeader.type;
 
-    const datafield = dataHeadersLocation === 'rows'
-      ? rowinfo.value
-      : colinfo.value;
-
-    const value = getCellValue(
-      customFunctions.access[datafield.id],
-      rowDimension,
-      columnDimension,
-      customFunctions.aggregation[datafield.id]
-    );
+    let value;
+    let datafield;
+    let caption;
+    if (!isNullOrUndefined(dataHeader)) {
+      datafield = dataHeader.value;
+      value = getCellValue(
+        customFunctions.access[datafield.id] || (() => null),
+        rowDimension,
+        columnDimension,
+        customFunctions.aggregation[datafield.id]
+      );
+      if (!isNullOrUndefined(customFunctions.format[datafield.id])) {
+        caption = customFunctions.format[datafield.id](value);
+      } else {
+        caption = value;
+      }
+    } else {
+      value = null;
+      caption = value;
+    }
 
     super({
       axisType: null,
@@ -396,12 +432,8 @@ export class DataCell extends CellBase {
     this.datafield = datafield;
     this.hspan = 1;
     this.vspan = 1;
-
-    if (this.datafield && customFunctions.format[datafield.id]) {
-      this.caption = customFunctions.format[datafield.id](value);
-    } else {
-      this.caption = this.value;
-    }
+    this.caption = caption;
+    this.value = value;
   }
 }
 

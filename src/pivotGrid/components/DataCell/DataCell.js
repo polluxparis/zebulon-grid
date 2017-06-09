@@ -10,14 +10,17 @@ export default class DataCell extends PureComponent {
   }
 
   handleMouseDown(e) {
-    this.props.handleMouseDown(e, [
-      this.props.columnIndex,
-      this.props.rowIndex
-    ]);
+    this.props.handleMouseDown(e, {
+      columnIndex: this.props.columnIndex,
+      rowIndex: this.props.rowIndex
+    });
   }
 
   handleMouseOver() {
-    this.props.handleMouseOver([this.props.columnIndex, this.props.rowIndex]);
+    this.props.handleMouseOver({
+      columnIndex: this.props.columnIndex,
+      rowIndex: this.props.rowIndex
+    });
   }
 
   handleDoubleClick() {
@@ -25,7 +28,7 @@ export default class DataCell extends PureComponent {
   }
 
   render() {
-    const { cell, rowIndex, selected, valueHasChanged } = this.props;
+    const { cell, rowIndex, selected, focused, valueHasChanged } = this.props;
     const style = {
       boxSizing: 'border-box',
       overflow: 'hidden'
@@ -35,7 +38,8 @@ export default class DataCell extends PureComponent {
       'pivotgrid-data-cell-even': !(rowIndex % 2),
       'pivotgrid-data-cell-uneven': rowIndex % 2,
       'pivotgrid-data-cell-highlighted': valueHasChanged,
-      'pivotgrid-data-cell-selected': selected
+      'pivotgrid-data-cell-selected': selected,
+      'pivotgrid-data-cell-focused': focused
     });
 
     return (

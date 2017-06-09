@@ -6,8 +6,8 @@ import {
   moveField,
   toggleDatafield
 } from './actions';
-import { isPromise, isObservable } from './utils/generic';
-import { toAggregateFunction, toAccessorFunction } from './Aggregation';
+import { fieldFactory, datafieldFactory } from './fields';
+import { isPromise, isObservable, toAccessorFunction } from './utils/generic';
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -27,6 +27,10 @@ export default function hydrateStore(store, config, datasource) {
 
   store.dispatch(setFields(config));
   store.dispatch(setDatafields(config));
+  const fields = config.fields.map(field => fieldFactory(field));
+  const datafields = config.datafields.map(datafield =>
+    datafieldFactory(datafield)
+  );
 
   store.dispatch(setConfigProperty(config, 'dataHeadersLocation', 'columns'));
   store.dispatch(setConfigProperty(config, 'height', 600));
@@ -36,18 +40,14 @@ export default function hydrateStore(store, config, datasource) {
   store.dispatch(setConfigProperty(config, 'zoom', 1));
 
   config.rows.forEach((fieldCaption, index) => {
-    const fieldId = config.fields.find(
-      field => field.caption === fieldCaption
-    ).id;
+    const fieldId = fields.find(field => field.caption === fieldCaption).id;
     store.dispatch(moveField(fieldId, 'fields', 'rows', index));
   });
   config.columns.forEach((fieldCaption, index) => {
-    const fieldId = config.fields.find(
-      field => field.caption === fieldCaption
-    ).id;
+    const fieldId = fields.find(field => field.caption === fieldCaption).id;
     store.dispatch(moveField(fieldId, 'fields', 'columns', index));
   });
-  Object.values(config.fields)
+  Object.values(fields)
     .filter(field => {
       const state = store.getState();
       const rows = state.axis.rows;
@@ -59,39 +59,37 @@ export default function hydrateStore(store, config, datasource) {
     });
 
   config.data.forEach(fieldCaption => {
-    const field = config.datafields.find(
-      field => field.caption === fieldCaption
-    );
+    const field = datafields.find(field => field.caption === fieldCaption);
     const fieldId = field.id || field.accessor;
     store.dispatch(toggleDatafield(fieldId));
   });
 
   const customFunctions = {
-    sort: config.fields.reduce(
+    sort: fields.reduce(
       (acc, field) => ({
         ...acc,
         [field.id]: field.sort && field.sort.customfunc
       }),
       {}
     ),
-    access: config.datafields.reduce(
+    access: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: toAccessorFunction(field.accessor)
+        [field.id]: toAccessorFunction(field.accessor)
       }),
       {}
     ),
-    format: config.datafields.reduce(
+    format: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: field.format
+        [field.id]: field.format
       }),
       {}
     ),
-    aggregation: config.datafields.reduce(
+    aggregation: datafields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.id || field.accessor]: toAggregateFunction(field.aggregation)
+        [field.id]: field.aggregation
       }),
       {}
     )

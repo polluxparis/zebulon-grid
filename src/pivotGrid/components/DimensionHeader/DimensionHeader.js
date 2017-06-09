@@ -3,19 +3,17 @@ import React from 'react';
 import { AxisType } from '../../Axis';
 import ResizeHandle from '../ResizeHandle';
 
-const DimensionHeader = (
-  {
-    field,
-    left,
-    top,
-    height,
-    width,
-    crossFieldId,
-    mainDirection,
-    previewSizes,
-    gridId
-  }
-) => {
+const DimensionHeader = ({
+  field,
+  left,
+  top,
+  height,
+  width,
+  crossFieldId,
+  mainDirection,
+  previewSizes,
+  gridId
+}) => {
   const ids = {};
   if (mainDirection === 'down') {
     ids.right = field.id;

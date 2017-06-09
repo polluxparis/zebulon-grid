@@ -14,7 +14,7 @@ describe('Header', () => {
           id: 'qty',
           name: 'qty',
           caption: 'Quantity',
-          aggregateFuncName: 'sum',
+          aggregationName: 'sum',
           activated: true
         },
         expanded: true,
@@ -111,7 +111,7 @@ describe('Header', () => {
                 id: 'amt',
                 name: 'amt',
                 caption: 'Amount',
-                aggregateFuncName: 'whatever',
+                aggregationName: 'whatever',
                 activated: true
               },
               expanded: true,

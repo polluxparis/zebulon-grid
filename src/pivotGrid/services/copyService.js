@@ -7,23 +7,21 @@ function replaceNullAndUndefined(val) {
   return val;
 }
 
-function getSelectedText(
-  {
-    selectedCellStart,
-    selectedCellEnd,
-    dataHeadersLocation,
-    getCellValue,
-    columnHeaders,
-    rowHeaders,
-    columnDimensionHeaders,
-    rowDimensionHeaders,
-    customFunctions
-  }
-) {
+function getSelectedText({
+  selectedCellStart,
+  selectedCellEnd,
+  dataHeadersLocation,
+  getCellValue,
+  columnHeaders,
+  rowHeaders,
+  columnDimensionHeaders,
+  rowDimensionHeaders,
+  customFunctions
+}) {
   // Build rows headers array
   const rowsRange = [
-    Math.min(selectedCellStart[1], selectedCellEnd[1]),
-    Math.max(selectedCellStart[1], selectedCellEnd[1]) + 1
+    Math.min(selectedCellStart.rowIndex, selectedCellEnd.rowIndex),
+    Math.max(selectedCellStart.rowIndex, selectedCellEnd.rowIndex) + 1
   ];
   const rowHeaderLeafs = rowHeaders
     .slice(...rowsRange)
@@ -40,8 +38,8 @@ function getSelectedText(
 
   // Build columns headers array
   const columnsRange = [
-    Math.min(selectedCellStart[0], selectedCellEnd[0]),
-    Math.max(selectedCellStart[0], selectedCellEnd[0]) + 1
+    Math.min(selectedCellStart.columnIndex, selectedCellEnd.columnIndex),
+    Math.max(selectedCellStart.columnIndex, selectedCellEnd.columnIndex) + 1
   ];
   const columnHeaderLeafs = columnHeaders
     .slice(...columnsRange)
@@ -71,7 +69,8 @@ function getSelectedText(
             columnHeader,
             customFunctions
           ).value
-      ));
+      )
+  );
   const rowDimensions = rowDimensionHeaders.map(header => header.value.caption);
   const columnDimensions = columnDimensionHeaders.map(
     header => header.value.caption
@@ -124,19 +123,17 @@ function getSelectedText(
   return output;
 }
 
-export default function copy(
-  {
-    selectedCellStart,
-    selectedCellEnd,
-    rowHeaders,
-    columnHeaders,
-    getCellValue,
-    dataHeadersLocation,
-    columnDimensionHeaders,
-    rowDimensionHeaders,
-    customFunctions
-  }
-) {
+export default function copy({
+  selectedCellStart,
+  selectedCellEnd,
+  rowHeaders,
+  columnHeaders,
+  getCellValue,
+  dataHeadersLocation,
+  columnDimensionHeaders,
+  rowDimensionHeaders,
+  customFunctions
+}) {
   try {
     const bodyElement = document.getElementsByTagName('body')[0];
     const clipboardTextArea = document.createElement('textarea');
@@ -155,12 +152,9 @@ export default function copy(
       customFunctions
     });
     clipboardTextArea.select();
-    window.setTimeout(
-      () => {
-        bodyElement.removeChild(clipboardTextArea);
-      },
-      0
-    );
+    window.setTimeout(() => {
+      bodyElement.removeChild(clipboardTextArea);
+    }, 0);
   } catch (error) {
     /* eslint-disable no-console */
     console.error('error during copy', error);

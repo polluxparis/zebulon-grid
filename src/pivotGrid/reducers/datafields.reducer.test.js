@@ -12,13 +12,13 @@ describe('datafield reducer', () => {
             id: 'qty',
             name: 'qty',
             caption: 'Quantity',
-            aggregateFuncName: 'sum'
+            aggregationName: 'sum'
           },
           {
             id: 'amt',
             name: 'amt',
             caption: 'Amount',
-            aggregateFuncName: 'whatever'
+            aggregationName: 'whatever'
           }
         ]
       }
@@ -28,13 +28,13 @@ describe('datafield reducer', () => {
         id: 'qty',
         name: 'qty',
         caption: 'Quantity',
-        aggregateFuncName: 'sum'
+        aggregationName: 'sum'
       },
       amt: {
         id: 'amt',
         name: 'amt',
         caption: 'Amount',
-        aggregateFuncName: 'whatever'
+        aggregationName: 'whatever'
       }
     });
   });
@@ -45,13 +45,13 @@ describe('datafield reducer', () => {
           id: 'qty',
           name: 'qty',
           caption: 'Quantity',
-          aggregateFuncName: 'sum'
+          aggregationName: 'sum'
         },
         amt: {
           id: 'amt',
           name: 'amt',
           caption: 'Amount',
-          aggregateFuncName: 'whatever'
+          aggregationName: 'whatever'
         }
       },
       { type: TOGGLE_DATAFIELD, id: 'qty' }
@@ -61,14 +61,14 @@ describe('datafield reducer', () => {
         id: 'qty',
         name: 'qty',
         caption: 'Quantity',
-        aggregateFuncName: 'sum',
+        aggregationName: 'sum',
         activated: true
       },
       amt: {
         id: 'amt',
         name: 'amt',
         caption: 'Amount',
-        aggregateFuncName: 'whatever'
+        aggregationName: 'whatever'
       }
     });
   });

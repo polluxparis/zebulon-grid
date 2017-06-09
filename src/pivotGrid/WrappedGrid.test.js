@@ -28,7 +28,7 @@ describe('WrappedGrid', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find('DataCell').first().text()).toEqual('0');
+      expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData({
         toto: '0',
         toto_lb: 'toto 0',
@@ -37,14 +37,14 @@ describe('WrappedGrid', () => {
         titi: 'titi 0',
         tutu: '0'
       });
-      expect(wrapper.find('DataCell').first().text()).toEqual('100');
+      expect(wrapper.find('DataCell').first().text()).toEqual('101');
     });
 
     test('push an array of records', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find('DataCell').first().text()).toEqual('0');
+      expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData([
         {
           toto: '0',
@@ -63,7 +63,7 @@ describe('WrappedGrid', () => {
           tutu: '0'
         }
       ]);
-      expect(wrapper.find('DataCell').first().text()).toEqual('100');
+      expect(wrapper.find('DataCell').first().text()).toEqual('101');
     });
 
     test('zoom in', () => {
@@ -161,9 +161,8 @@ describe('WrappedGrid', () => {
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
           )
-          .filterWhere(
-            wrapper => wrapper.props().header.caption === 'Amount'
-          ).length
+          .filterWhere(wrapper => wrapper.props().header.caption === 'Amount')
+          .length
       ).toEqual(3);
       wrapper.instance().toggleDatafield('amt');
       expect(
@@ -173,9 +172,8 @@ describe('WrappedGrid', () => {
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
           )
-          .filterWhere(
-            wrapper => wrapper.props().header.caption === 'Amount'
-          ).length
+          .filterWhere(wrapper => wrapper.props().header.caption === 'Amount')
+          .length
       ).toEqual(0);
     });
 

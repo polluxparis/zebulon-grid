@@ -15,7 +15,7 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
           obj.toto_lb = `toto ${String(o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
-          obj.qty = u + 10 * i + 100 * o; // +9999999999.1234567890123456
+          obj.qty = u + 10 * i + 100 * o + 1; // +9999999999.1234567890123456
           obj.amt = u + 10 * i + 100 * o + 1000; // +9999999999.1234567890123456
           res.push(obj);
         }
@@ -86,10 +86,13 @@ export const basicConfig = {
   fields: [
     {
       name: 'toto_lb',
-      id: 'toto',
+      accessor: 'toto',
       caption: 'Toto',
       sort: {
-        order: 'asc'
+        // order: 'asc',
+        accessor: 'toto_lb'
+        // accessor: row => row.toto_lb
+        // custom: (a, b) => a - b
       }
     },
     // {
@@ -111,11 +114,11 @@ export const basicConfig = {
     //     },
     // },
     {
-      id: 'titi',
+      accessor: 'titi',
       caption: 'Titi'
     },
     {
-      id: 'tutu',
+      accessor: 'tutu',
       caption: 'Tutu'
     }
     // {
@@ -158,7 +161,7 @@ export const basicConfig = {
       aggregation: 'avg',
       accessor: row => row.amt / row.qty,
       format: value => {
-        if (!isNaN(value)) {
+        if (Number.isFinite(value)) {
           return `${Number(value).toFixed(2)} $`;
         }
         return value;

@@ -17,6 +17,7 @@ import './App.css';
 
 let i = 0;
 let j = 0;
+let k = 0;
 
 class PivotGridDemo extends Component {
   constructor(props) {
@@ -32,22 +33,24 @@ class PivotGridDemo extends Component {
 
     const data = getMockDatasource(1, 20, 10);
     this.customFunctions = hydrateStore(store, basicConfig, data);
-    this.state = { store };
+    this.state = { store, focusCells: [] };
 
     this.addData = this.addData.bind(this);
     this.moveField = this.moveField.bind(this);
+    this.sortField = this.sortField.bind(this);
     this.toggleDatafield = this.toggleDatafield.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
     this.toggleFilter = this.toggleFilter.bind(this);
+    this.focusCell = this.focusCell.bind(this);
   }
 
   addData() {
     this.state.store.dispatch(
       actions.pushData([
         {
-          toto: '0',
-          toto_lb: 'toto 0',
+          toto: '666',
+          toto_lb: '',
           qty: 100,
           amt: 100,
           titi: 'titi 0',
@@ -68,6 +71,10 @@ class PivotGridDemo extends Component {
       );
     }
     i += 1;
+  }
+
+  sortField() {
+    this.state.store.dispatch(actions.changeSortOrder('titi'));
   }
 
   toggleDatafield() {
@@ -93,6 +100,43 @@ class PivotGridDemo extends Component {
     j += 1;
   }
 
+  focusCell() {
+    const getCell = id => ({
+      dimensions: [
+        {
+          cell: { caption: '0', id: '0' },
+          dimension: { caption: 'Tutu', id: 'tutu' },
+          axis: 'rows',
+          index: 1
+        },
+        {
+          cell: { caption: `toto ${id}`, id },
+          dimension: { caption: 'Toto', id: 'toto' },
+          axis: 'rows',
+          index: 0
+        },
+        {
+          cell: { caption: 'titi 0', id: 'titi 0' },
+          dimension: { caption: 'Titi', id: 'titi' },
+          axis: 'columns',
+          index: 0
+        }
+      ],
+      measure: {
+        id: 'qty',
+        axis: 'columns'
+      }
+    });
+    k = (k + 1) % 3;
+    if (k === 0) {
+      this.setState({ focusCells: [] });
+    } else {
+      this.setState({
+        focusCells: [...Array(k).keys()].map(id => getCell(id))
+      });
+    }
+  }
+
   render() {
     return (
       <Provider store={this.state.store}>
@@ -100,10 +144,12 @@ class PivotGridDemo extends Component {
           <div>
             <button onClick={this.addData}>Add data</button>
             <button onClick={this.moveField}>Move field</button>
+            <button onClick={this.sortField}>Sort titi field</button>
             <button onClick={this.toggleDatafield}>Toggle datafield</button>
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>
             <button onClick={this.toggleFilter}>Toggle filter</button>
+            <button onClick={this.focusCell}>Focus cells</button>
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>
@@ -112,6 +158,7 @@ class PivotGridDemo extends Component {
                   <PivotGrid
                     id={0}
                     customFunctions={this.customFunctions}
+                    focusCells={this.state.focusCells}
                     height={height}
                     width={width}
                     drilldown={cell => {

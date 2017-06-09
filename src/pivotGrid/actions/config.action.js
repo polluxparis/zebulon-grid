@@ -1,5 +1,6 @@
 import { fieldFactory, datafieldFactory } from '../fields';
 import {
+  SET_AXIS,
   SET_FIELDS,
   SET_DATAFIELDS,
   SET_CONFIG_PROPERTY,
@@ -36,6 +37,11 @@ export const moveField = (fieldId, oldAxis, newAxis, position) => ({
   oldAxis,
   newAxis,
   position
+});
+
+export const setAxis = axis => ({
+  type: SET_AXIS,
+  axis
 });
 
 export const zoomIn = () => ({ type: ZOOM_IN });

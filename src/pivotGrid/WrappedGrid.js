@@ -8,20 +8,36 @@ import hydrateStore from './hydrateStore';
 import * as actions from './actions';
 
 class WrappedGrid extends Component {
-  constructor(props) {
-    super(props);
+  componentWillMount() {
     const { data, config } = this.props;
-    this.store = createStore(reducer);
-    this.customFunctions = hydrateStore(this.store, config, data);
+    const store = createStore(reducer);
+    const customFunctions = hydrateStore(store, config, data);
+    this.setState({ store, customFunctions });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.config !== nextProps.config) {
+      const customFunctions = hydrateStore(
+        this.state.store,
+        nextProps.config,
+        []
+      );
+      this.setState({ customFunctions });
+    }
+    if (this.props.data !== nextProps.data) {
+      this.state.store.dispatch(actions.setData(nextProps.data));
+    }
   }
 
   render() {
+    const { store, customFunctions } = this.state;
     return (
-      <Provider store={this.store}>
+      <Provider store={store}>
         <PivotGrid
-          customFunctions={this.customFunctions}
+          customFunctions={customFunctions}
           id={this.props.id}
           drilldown={this.props.drilldown}
+          focusCells={this.props.focusCells}
         />
       </Provider>
     );
@@ -31,7 +47,7 @@ class WrappedGrid extends Component {
 Object.keys(actions).forEach(action => {
   /* eslint-disable func-names */
   WrappedGrid.prototype[action] = function(...args) {
-    this.store.dispatch(actions[action](...args));
+    this.state.store.dispatch(actions[action](...args));
   };
   /* eslint-enable */
 });
