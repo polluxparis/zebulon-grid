@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { AxisType } from '../../Axis';
-import { MEASURE_ID } from '../../constants';
-import DimensionHeader from '../DimensionHeader';
+import { AxisType } from "../../Axis";
+import { MEASURE_ID } from "../../constants";
+import DimensionHeader from "../DimensionHeader";
 
 class DimensionHeaders extends Component {
   shouldComponentUpdate(nextProps) {
@@ -23,11 +23,11 @@ class DimensionHeaders extends Component {
       zoom,
       gridId
     } = this.props;
-    const headers = [];
+    let headers = [];
 
     // Get width for column dimension headers
     let fieldWhoseWidthToGet;
-    if (dataHeadersLocation === 'rows') {
+    if (dataHeadersLocation === "rows") {
       // Dimension headers are on top of the measures column
       fieldWhoseWidthToGet = MEASURE_ID;
     } else if (rowFields.length) {
@@ -38,8 +38,8 @@ class DimensionHeaders extends Component {
       fieldWhoseWidthToGet = null;
     }
     const headerWidth = getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
-    headers.push(
-      ...columnDimensionHeaders.map(dimensionHeader => {
+    headers = headers.concat(
+      columnDimensionHeaders.map(dimensionHeader => {
         const field = dimensionHeader.value;
         const top = dimensionPositions.columns[field.id];
         const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
@@ -61,7 +61,7 @@ class DimensionHeaders extends Component {
     );
     // Get height for row dimension headers in different cases
     let fieldWhoseHeightToGet;
-    if (dataHeadersLocation === 'columns') {
+    if (dataHeadersLocation === "columns") {
       // Dimension headers are to the left of the measures row
       fieldWhoseHeightToGet = MEASURE_ID;
     } else if (columnFields.length) {
@@ -75,8 +75,8 @@ class DimensionHeaders extends Component {
       AxisType.COLUMNS,
       fieldWhoseHeightToGet
     );
-    headers.push(
-      ...rowDimensionHeaders.map(dimensionHeader => {
+    headers = headers.concat(
+      rowDimensionHeaders.map(dimensionHeader => {
         const field = dimensionHeader.value;
         const left = dimensionPositions.rows[field.id];
         const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
@@ -99,20 +99,18 @@ class DimensionHeaders extends Component {
     return (
       // Putting position as relative here allows its children (the dimension headers)
       // to be absolutely positioned relatively to their parent
-      (
-        <div
-          style={{
-            position: 'relative',
-            height,
-            width,
-            fontSize: `${zoom * 100}%`,
-            overflow: 'hidden'
-          }}
-          className="pivotgrid-dimension-headers"
-        >
-          {headers}
-        </div>
-      )
+      <div
+        style={{
+          position: "relative",
+          height,
+          width,
+          fontSize: `${zoom * 100}%`,
+          overflow: "hidden"
+        }}
+        className="pivotgrid-dimension-headers"
+      >
+        {headers}
+      </div>
     );
   }
 }

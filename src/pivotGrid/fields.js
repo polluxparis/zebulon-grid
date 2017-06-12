@@ -3,15 +3,15 @@ import {
   isStringOrNumber,
   isNullOrUndefined,
   toAccessorFunction
-} from './utils/generic';
-import * as aggregations from './Aggregation';
+} from "./utils/generic";
+import * as aggregations from "./Aggregation";
 
 export function fieldFactory(fieldConfig) {
   const { id: idConfig, accessor, name, caption, sort } = fieldConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      'Pivot grid configuration error: field definition needs an accessor.',
+      "Pivot grid configuration error: field definition needs an accessor.",
       fieldConfig
     );
   }
@@ -22,7 +22,7 @@ export function fieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      'Pivot grid configuration error: field definition needs an accessor of type string or an id.',
+      "Pivot grid configuration error: field definition needs an accessor of type string or an id.",
       fieldConfig
     );
   }
@@ -36,11 +36,11 @@ export function fieldFactory(fieldConfig) {
     let accessor;
     // If the accessor is the same that the id (the default), no need to write the accessor
     // This will save memory
-    if (sort.accessor && sort.accessor !== field.id) {
+    if (!isNullOrUndefined(sort.accessor) && sort.accessor !== field.id) {
       accessor = sort.accessor;
     }
     sortValue = {
-      order: sort.order || (sort.custom ? 'asc' : null),
+      order: sort.order || (sort.custom ? "asc" : null),
       custom: sort.custom,
       accessor: toAccessorFunction(accessor)
     };
@@ -67,7 +67,7 @@ export function datafieldFactory(fieldConfig) {
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      'Pivot grid configuration error: datafield definition needs an accessor.',
+      "Pivot grid configuration error: datafield definition needs an accessor.",
       fieldConfig
     );
   }
@@ -78,7 +78,7 @@ export function datafieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      'Pivot grid configuration error: datafield definition needs an accessor of type string or an id.',
+      "Pivot grid configuration error: datafield definition needs an accessor of type string or an id.",
       fieldConfig
     );
   }
@@ -93,18 +93,18 @@ export function datafieldFactory(fieldConfig) {
     if (isString(aggregation)) {
       datafield.aggregationName = aggregation;
     } else {
-      datafield.aggregationName = 'custom';
+      datafield.aggregationName = "custom";
     }
   } else {
     datafield.aggregationName = null;
   }
   if (isStringOrNumber(aggregation)) {
     datafield.aggregation = aggregations[aggregation] || null;
-  } else if (typeof aggregation === 'function') {
+  } else if (typeof aggregation === "function") {
     datafield.aggregation = aggregation;
   } else {
     throw new Error(
-      'Pivot grid configuration error: datafield aggregation must be a string referencing an already implemented function (cf documentation) or a function with signature (accessor, intersection, data) => number'
+      "Pivot grid configuration error: datafield aggregation must be a string referencing an already implemented function (cf documentation) or a function with signature (accessor, intersection, data) => number"
     );
   }
 

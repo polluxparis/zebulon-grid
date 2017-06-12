@@ -5,9 +5,9 @@ import {
   setConfigProperty,
   moveField,
   toggleDatafield
-} from './actions';
-import { fieldFactory, datafieldFactory } from './fields';
-import { isPromise, isObservable, toAccessorFunction } from './utils/generic';
+} from "./actions";
+import { fieldFactory, datafieldFactory } from "./fields";
+import { isPromise, isObservable } from "./utils/generic";
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -20,7 +20,7 @@ export default function hydrateStore(store, config, datasource) {
     });
   } else {
     throw new Error(
-      'datasource type is not supported, datasource must be an array, a promise or an observable, got ',
+      "datasource type is not supported, datasource must be an array, a promise or an observable, got ",
       datasource
     );
   }
@@ -32,65 +32,50 @@ export default function hydrateStore(store, config, datasource) {
     datafieldFactory(datafield)
   );
 
-  store.dispatch(setConfigProperty(config, 'dataHeadersLocation', 'columns'));
-  store.dispatch(setConfigProperty(config, 'height', 600));
-  store.dispatch(setConfigProperty(config, 'width', 800));
-  store.dispatch(setConfigProperty(config, 'cellHeight', 30));
-  store.dispatch(setConfigProperty(config, 'cellWidth', 100));
-  store.dispatch(setConfigProperty(config, 'zoom', 1));
+  store.dispatch(setConfigProperty(config, "dataHeadersLocation", "columns"));
+  store.dispatch(setConfigProperty(config, "height", 600));
+  store.dispatch(setConfigProperty(config, "width", 800));
+  store.dispatch(setConfigProperty(config, "cellHeight", 30));
+  store.dispatch(setConfigProperty(config, "cellWidth", 100));
+  store.dispatch(setConfigProperty(config, "zoom", 1));
 
+  const fieldIdsPositioned = [];
   config.rows.forEach((fieldCaption, index) => {
     const fieldId = fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, 'fields', 'rows', index));
+    store.dispatch(moveField(fieldId, "fields", "rows", index));
+    fieldIdsPositioned.push(fieldId);
   });
   config.columns.forEach((fieldCaption, index) => {
     const fieldId = fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, 'fields', 'columns', index));
+    store.dispatch(moveField(fieldId, "fields", "columns", index));
+    fieldIdsPositioned.push(fieldId);
   });
   Object.values(fields)
-    .filter(field => {
-      const state = store.getState();
-      const rows = state.axis.rows;
-      const columns = state.axis.columns;
-      return !(rows.includes(field.id) || columns.includes(field.id));
-    })
+    .filter(field => !fieldIdsPositioned.includes(field.id))
     .forEach((field, index) => {
-      store.dispatch(moveField(field.id, 'fields', 'fields', index));
+      store.dispatch(moveField(field.id, "fields", "fields", index));
     });
 
   config.data.forEach(fieldCaption => {
     const field = datafields.find(field => field.caption === fieldCaption);
-    const fieldId = field.id || field.accessor;
-    store.dispatch(toggleDatafield(fieldId));
+    store.dispatch(toggleDatafield(field.id));
   });
 
   const customFunctions = {
     sort: fields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.id]: field.sort && field.sort.customfunc
-      }),
+      (acc, field) => ({ ...acc, [field.id]: field.sort.custom }),
       {}
     ),
     access: datafields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.id]: toAccessorFunction(field.accessor)
-      }),
+      (acc, field) => ({ ...acc, [field.id]: field.accessor }),
       {}
     ),
     format: datafields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.id]: field.format
-      }),
+      (acc, field) => ({ ...acc, [field.id]: field.format }),
       {}
     ),
     aggregation: datafields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.id]: field.aggregation
-      }),
+      (acc, field) => ({ ...acc, [field.id]: field.aggregation }),
       {}
     )
   };

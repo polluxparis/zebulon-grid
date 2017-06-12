@@ -2,9 +2,6 @@
   "name": "zebulon-grid",
   "version": "1.7.0",
   "homepage": ".",
-  "publish-Config": {
-    "registry": "http://localhost:4873"
-  },
   "license": "MIT",
   "description": "Pivot table javascript library",
   "author": "Emile Bres <emile.bres@gmail.com>",
