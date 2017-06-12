@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { AxisType } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../constants';
-import ResizeHandle from '../ResizeHandle';
+import { AxisType } from "../../Axis";
+import { MEASURE_ID, TOTAL_ID } from "../../constants";
+import ResizeHandle from "../ResizeHandle";
 
 function getLeafSubheaders(header, result) {
   if (header.subheaders && header.subheaders.length) {
@@ -29,17 +29,17 @@ const Header = ({
 }) => {
   const { left, top, width, height } = positionStyle;
   const { x, y } = header;
+  let style = { height, width };
   // Handle affix
-  let style;
   if (span > 1 && x <= startIndex) {
     let offset;
     const lastChildSize = getLastChildSize(header);
     if (axis === AxisType.COLUMNS) {
       offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
-      style = { position: 'relative', left: offset };
+      style = { position: "relative", left: offset };
     } else {
       offset = Math.min(scrollTop - top, height - (lastChildSize || 0));
-      style = { position: 'relative', top: offset };
+      style = { position: "relative", top: offset };
     }
   }
   const innerHeader = (
@@ -63,12 +63,12 @@ const Header = ({
       key={`fixed-${axis}-${x}-${y}`}
       className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
       style={{
-        boxSizing: 'border-box',
-        overflow: 'hidden',
+        boxSizing: "border-box",
+        overflow: "hidden",
         // border: 'solid lightgrey thin',
         // backgroundColor: '#eef8fb',
         zIndex: 1,
-        display: 'flex',
+        display: "flex",
         ...positionStyle
       }}
     >
@@ -98,12 +98,12 @@ const Header = ({
 const InnerHeader = ({ cell, style }) => {
   let value;
   switch (cell.template) {
-    case 'cell-template-row-header':
-    case 'cell-template-column-header':
-      value = cell.caption;
+    case "cell-template-row-header":
+    case "cell-template-column-header":
+      value = cell.format(cell.caption);
       break;
-    case 'cell-template-dataheader':
-    case 'cell-template-dimensionheader':
+    case "cell-template-dataheader":
+    case "cell-template-dimensionheader":
       value = cell.value.caption;
       break;
     default:
@@ -111,15 +111,15 @@ const InnerHeader = ({ cell, style }) => {
   }
 
   const computedStyle = {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
+    whiteSpace: "nowrap",
+    overflow: "hidden",
     ...style
   };
 
   return (
-    <span className="pivotgrid-header-inner" style={computedStyle}>
+    <div className="pivotgrid-header-inner" style={computedStyle}>
       {value}
-    </span>
+    </div>
   );
 };
 

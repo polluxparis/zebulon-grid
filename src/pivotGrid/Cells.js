@@ -1,6 +1,6 @@
-import { AxisType } from './Axis';
-import { getKey } from './utils/keys';
-import { isNullOrUndefined } from './utils/generic';
+import { AxisType } from "./Axis";
+import { getKey } from "./utils/keys";
+import { isNullOrUndefined } from "./utils/generic";
 
 export const HeaderType = {
   EMPTY: 1,
@@ -15,17 +15,17 @@ export const HeaderType = {
   getHeaderClass(headerType, axisType) {
     let cssclass;
     if (axisType === AxisType.ROWS) {
-      cssclass = 'header-row';
+      cssclass = "header-row";
     } else if (axisType === AxisType.COLUMNS) {
-      cssclass = 'header-col';
+      cssclass = "header-col";
     } else {
-      cssclass = '';
+      cssclass = "";
     }
     switch (headerType) {
       case HeaderType.EMPTY:
       case HeaderType.FIELD_BUTTON:
       default:
-        cssclass = 'empty';
+        cssclass = "empty";
         break;
       case HeaderType.INNER:
         cssclass = `header ${cssclass}`;
@@ -44,25 +44,25 @@ export const HeaderType = {
     return cssclass;
   },
   getCellClass(rowHeaderType, colHeaderType) {
-    let cssclass = '';
+    let cssclass = "";
     switch (rowHeaderType) {
       case HeaderType.GRAND_TOTAL:
-        cssclass = 'cell-gt';
+        cssclass = "cell-gt";
         break;
       case HeaderType.SUB_TOTAL:
         if (colHeaderType === HeaderType.GRAND_TOTAL) {
-          cssclass = 'cell-gt';
+          cssclass = "cell-gt";
         } else {
-          cssclass = 'cell-st';
+          cssclass = "cell-st";
         }
         break;
       default:
         if (colHeaderType === HeaderType.GRAND_TOTAL) {
-          cssclass = 'cell-gt';
+          cssclass = "cell-gt";
         } else if (colHeaderType === HeaderType.SUB_TOTAL) {
-          cssclass = 'cell-st';
+          cssclass = "cell-st";
         } else {
-          cssclass = '';
+          cssclass = "";
         }
     }
     return cssclass;
@@ -158,7 +158,7 @@ export class Header extends CellBase {
 
     switch (headerType) {
       case HeaderType.GRAND_TOTAL:
-        value = 'Total';
+        value = "Total";
         hspan = isOnRowAxis ? dimension.depth - 1 || 1 : datafieldscount || 1;
         vspan = isOnRowAxis ? datafieldscount || 1 : dimension.depth - 1 || 1;
         // key = `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisFieldsCode.join(KEY_SEPARATOR)}`;
@@ -183,8 +183,8 @@ export class Header extends CellBase {
       axisType,
       type: headerType,
       template: isOnRowAxis
-        ? 'cell-template-row-header'
-        : 'cell-template-column-header',
+        ? "cell-template-row-header"
+        : "cell-template-column-header",
       value,
       cssclass: HeaderType.getHeaderClass(headerType, axisType)
     };
@@ -230,6 +230,8 @@ export class Header extends CellBase {
 
     this.x = x;
     this.y = y;
+
+    this.format = dimension.field.format;
   }
 
   expand() {
@@ -320,7 +322,7 @@ export class DataHeader extends CellBase {
     super({
       axisType,
       type: HeaderType.DATA_HEADER,
-      template: 'cell-template-dataheader',
+      template: "cell-template-dataheader",
       value: datafield,
       cssclass: HeaderType.getHeaderClass(parent.type, parent.axisType),
       isvisible: parent.visible
@@ -350,7 +352,7 @@ export class DimensionHeader extends CellBase {
     super({
       axisType,
       type: HeaderType.DIMENSION_HEADER,
-      template: 'cell-template-dimensionheader',
+      template: "cell-template-dimensionheader",
       value: field,
       cssclass: HeaderType.getHeaderClass(
         HeaderType.DIMENSION_HEADER,
@@ -419,7 +421,7 @@ export class DataCell extends CellBase {
     super({
       axisType: null,
       type: HeaderType.DATA_VALUE,
-      template: 'cell-template-datavalue',
+      template: "cell-template-datavalue",
       value,
       cssclass: `cell ${HeaderType.getCellClass(rowType, colType)}`,
       isvisible: true
@@ -442,7 +444,7 @@ export class ButtonCell extends CellBase {
     super({
       axisType: null,
       type: HeaderType.FIELD_BUTTON,
-      template: 'cell-template-fieldbutton',
+      template: "cell-template-fieldbutton",
       value: field,
       cssclass: HeaderType.getHeaderClass(HeaderType.FIELD_BUTTON)
     });
@@ -454,7 +456,7 @@ export class EmptyCell extends CellBase {
     super({
       axisType: null,
       type: HeaderType.EMPTY,
-      template: 'cell-template-empty',
+      template: "cell-template-empty",
       value: null,
       cssclass: HeaderType.getHeaderClass(HeaderType.EMPTY),
       hspan() {

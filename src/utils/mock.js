@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies*/
-import { Observable } from 'rx-lite';
+import { Observable } from "rx-lite";
 /* eslint-enable */
+import * as formats from "./Format";
 
 export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   const nTutu = 2;
@@ -29,29 +30,29 @@ export function getObservableMockDatasource(interval) {
     getMockDatasource(),
     [
       {
-        toto: '0',
-        toto_lb: 'toto 0',
+        toto: "0",
+        toto_lb: "toto 0",
         qty: 100,
         amt: 100,
-        titi: 'titi 0',
-        tutu: '1'
+        titi: "titi 0",
+        tutu: "1"
       },
       {
-        toto: '0',
-        toto_lb: 'toto 0',
+        toto: "0",
+        toto_lb: "toto 0",
         qty: 100,
         amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
+        titi: "titi 0",
+        tutu: "0"
       }
     ],
-    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' }
+    { toto: "0", toto_lb: "toto 0", qty: 1, amt: 2, titi: "titi 0", tutu: "1" }
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
 export const basicConfig = {
   canMoveFields: true,
-  dataHeadersLocation: 'columns',
+  dataHeadersLocation: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -85,12 +86,12 @@ export const basicConfig = {
   // },
   fields: [
     {
-      name: 'toto_lb',
-      accessor: 'toto',
-      caption: 'Toto',
+      name: "toto_lb",
+      accessor: "toto",
+      caption: "Toto",
       sort: {
         // order: 'asc',
-        accessor: 'toto_lb'
+        accessor: "toto_lb"
         // accessor: row => row.toto_lb
         // custom: (a, b) => a - b
       }
@@ -114,12 +115,13 @@ export const basicConfig = {
     //     },
     // },
     {
-      accessor: 'titi',
-      caption: 'Titi'
+      accessor: "titi",
+      caption: "Titi"
     },
     {
-      accessor: 'tutu',
-      caption: 'Tutu'
+      accessor: "tutu",
+      caption: "Tutu",
+      format: formats.id
     }
     // {
     //     name: '4',
@@ -138,39 +140,35 @@ export const basicConfig = {
   ],
   datafields: [
     {
-      accessor: 'qty',
-      id: 'qty',
-      caption: 'Quantity',
-      aggregation: 'sum'
+      accessor: "qty",
+      id: "qty",
+      caption: "Quantity",
+      format: formats.quantity,
+      aggregation: "sum"
     },
     {
-      accessor: 'amt',
-      caption: 'Amount',
-      aggregation: 'sum',
-      aggregationName: 'whatever',
+      accessor: "amt",
+      caption: "Amount",
+      aggregation: "sum",
+      aggregationName: "whatever",
       format: value => {
         if (value || value === 0) {
           return `${Number(value).toFixed(0)} $`;
         }
-        return '';
+        return "";
       }
     },
     {
-      id: 'price',
-      caption: 'Price',
-      aggregation: 'avg',
+      id: "price",
+      caption: "Price",
+      aggregation: "avg",
       accessor: row => row.amt / row.qty,
-      format: value => {
-        if (Number.isFinite(value)) {
-          return `${Number(value).toFixed(2)} $`;
-        }
-        return value;
-      }
+      format: formats.price
     }
   ],
-  columns: ['Titi'],
-  rows: ['Toto', 'Tutu'],
-  data: ['Quantity', 'Amount', 'Price'],
+  columns: ["Titi"],
+  rows: ["Toto", "Tutu"],
+  data: ["Quantity", "Amount", "Price"],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {
     // 'Titi': ['titi0']

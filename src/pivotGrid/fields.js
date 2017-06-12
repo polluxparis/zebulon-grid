@@ -7,7 +7,7 @@ import {
 import * as aggregations from "./Aggregation";
 
 export function fieldFactory(fieldConfig) {
-  const { id: idConfig, accessor, name, caption, sort } = fieldConfig;
+  const { id: idConfig, accessor, name, caption, sort, format } = fieldConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
@@ -30,6 +30,7 @@ export function fieldFactory(fieldConfig) {
   const field = { id, accessor: accessorFunction };
   field.name = name || field.id;
   field.caption = caption || field.name;
+  field.format = format || (value => value);
 
   let sortValue;
   if (sort) {
