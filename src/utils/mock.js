@@ -151,12 +151,7 @@ export const basicConfig = {
       caption: "Amount",
       aggregation: "sum",
       aggregationName: "whatever",
-      format: value => {
-        if (value || value === 0) {
-          return `${Number(value).toFixed(0)} $`;
-        }
-        return "";
-      }
+      format: formats.amount
     },
     {
       id: "price",

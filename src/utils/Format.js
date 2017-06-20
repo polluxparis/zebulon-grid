@@ -37,3 +37,13 @@ export function quantity(value) {
 	}
 	return value;
 }
+export function amount(value) {
+	if (Number.isFinite(value)) {
+		return (
+			<div style={{ color: "black", textAlign: "right" }}>
+				{Number(value).toFixed(0)}
+			</div>
+		);
+	}
+	return value;
+}
