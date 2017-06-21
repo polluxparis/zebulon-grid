@@ -11,14 +11,14 @@ class DimensionHeaders extends Component {
   render() {
     const {
       columnDimensionHeaders,
-      columnFields,
+      columnDimensions,
       dataHeadersLocation,
       dimensionPositions,
       getDimensionSize,
       height,
       previewSizes,
       rowDimensionHeaders,
-      rowFields,
+      rowDimensions,
       width,
       zoom,
       gridId
@@ -26,33 +26,36 @@ class DimensionHeaders extends Component {
     let headers = [];
 
     // Get width for column dimension headers
-    let fieldWhoseWidthToGet;
+    let dimensionWhoseWidthToGet;
     if (dataHeadersLocation === "rows") {
       // Dimension headers are on top of the measures column
-      fieldWhoseWidthToGet = MEASURE_ID;
-    } else if (rowFields.length) {
-      // Dimension headers are on top of the column of the last field of the row headers
-      fieldWhoseWidthToGet = rowFields[rowFields.length - 1].id;
+      dimensionWhoseWidthToGet = MEASURE_ID;
+    } else if (rowDimensions.length) {
+      // Dimension headers are on top of the column of the last dimension of the row headers
+      dimensionWhoseWidthToGet = rowDimensions[rowDimensions.length - 1].id;
     } else {
       // Dimension headers are on top of the Total header --> get default width
-      fieldWhoseWidthToGet = null;
+      dimensionWhoseWidthToGet = null;
     }
-    const headerWidth = getDimensionSize(AxisType.ROWS, fieldWhoseWidthToGet);
+    const headerWidth = getDimensionSize(
+      AxisType.ROWS,
+      dimensionWhoseWidthToGet
+    );
     headers = headers.concat(
       columnDimensionHeaders.map(dimensionHeader => {
-        const field = dimensionHeader.value;
-        const top = dimensionPositions.columns[field.id];
-        const headerHeight = getDimensionSize(AxisType.COLUMNS, field.id);
+        const dimension = dimensionHeader.value;
+        const top = dimensionPositions.columns[dimension.id];
+        const headerHeight = getDimensionSize(AxisType.COLUMNS, dimension.id);
         return (
           <DimensionHeader
-            key={`dimension-header-${field.id}`}
+            key={`dimension-header-${dimension.id}`}
             left={width - headerWidth}
             top={top}
             width={headerWidth}
             height={headerHeight}
-            field={field}
+            dimension={dimension}
             mainDirection="right"
-            crossFieldId={fieldWhoseWidthToGet}
+            crossDimensionId={dimensionWhoseWidthToGet}
             previewSizes={previewSizes}
             gridId={gridId}
           />
@@ -60,33 +63,34 @@ class DimensionHeaders extends Component {
       })
     );
     // Get height for row dimension headers in different cases
-    let fieldWhoseHeightToGet;
+    let dimensionWhoseHeightToGet;
     if (dataHeadersLocation === "columns") {
       // Dimension headers are to the left of the measures row
-      fieldWhoseHeightToGet = MEASURE_ID;
-    } else if (columnFields.length) {
-      // Dimension headers are to the left of the row of the last field of the column headers
-      fieldWhoseHeightToGet = columnFields[columnFields.length - 1].id;
+      dimensionWhoseHeightToGet = MEASURE_ID;
+    } else if (columnDimensions.length) {
+      // Dimension headers are to the left of the row of the last dimension of the column headers
+      dimensionWhoseHeightToGet =
+        columnDimensions[columnDimensions.length - 1].id;
     } else {
       // Dimension headers are to the left of the Total header --> get default height
-      fieldWhoseHeightToGet = null;
+      dimensionWhoseHeightToGet = null;
     }
     const headerHeight = getDimensionSize(
       AxisType.COLUMNS,
-      fieldWhoseHeightToGet
+      dimensionWhoseHeightToGet
     );
     headers = headers.concat(
       rowDimensionHeaders.map(dimensionHeader => {
-        const field = dimensionHeader.value;
-        const left = dimensionPositions.rows[field.id];
-        const headerWidth = getDimensionSize(AxisType.ROWS, field.id);
+        const dimension = dimensionHeader.value;
+        const left = dimensionPositions.rows[dimension.id];
+        const headerWidth = getDimensionSize(AxisType.ROWS, dimension.id);
         return (
           <DimensionHeader
             top={height - headerHeight}
-            crossFieldId={fieldWhoseHeightToGet}
-            field={field}
+            crossDimensionId={dimensionWhoseHeightToGet}
+            dimension={dimension}
             height={headerHeight}
-            key={`dimension-header-${field.id}`}
+            key={`dimension-header-${dimension.id}`}
             left={left}
             mainDirection="down"
             previewSizes={previewSizes}

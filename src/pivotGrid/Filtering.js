@@ -1,7 +1,7 @@
-import { isRegExp } from './utils/generic';
+import { isRegExp } from "./utils/generic";
 
-export const ALL = '#All#';
-export const NONE = '#None#';
+export const ALL = "#All#";
+export const NONE = "#None#";
 export const BLANK = '#Blank#"';
 
 export const Operators = {
@@ -29,66 +29,70 @@ export const Operators = {
   },
   NONE: null,
   MATCH: {
-    name: 'Matches',
+    name: "Matches",
     func(value, term) {
       if (value) {
-        return value
-          .toString()
-          .search(isRegExp(term) ? term : new RegExp(term, 'i')) >= 0;
+        return (
+          value
+            .toString()
+            .search(isRegExp(term) ? term : new RegExp(term, "i")) >= 0
+        );
       }
       return !term;
     },
     regexpSupported: true
   },
   NOTMATCH: {
-    name: 'Does Not Match',
+    name: "Does Not Match",
     func(value, term) {
       if (value) {
-        return value
-          .toString()
-          .search(isRegExp(term) ? term : new RegExp(term, 'i')) < 0;
+        return (
+          value
+            .toString()
+            .search(isRegExp(term) ? term : new RegExp(term, "i")) < 0
+        );
       }
       return !!term;
     },
     regexpSupported: true
   },
   EQ: {
-    name: '=',
+    name: "=",
     func(value, term) {
       return value === term;
     },
     regexpSupported: false
   },
   NEQ: {
-    name: '<>',
+    name: "<>",
     func(value, term) {
       return value !== term;
     },
     regexpSupported: false
   },
   GT: {
-    name: '>',
+    name: ">",
     func(value, term) {
       return value > term;
     },
     regexpSupported: false
   },
   GTE: {
-    name: '>=',
+    name: ">=",
     func(value, term) {
       return value >= term;
     },
     regexpSupported: false
   },
   LT: {
-    name: '<',
+    name: "<",
     func(value, term) {
       return value < term;
     },
     regexpSupported: false
   },
   LTE: {
-    name: '<=',
+    name: "<=",
     func(value, term) {
       return value <= term;
     },
@@ -118,14 +122,14 @@ export function pass(filter, value) {
 // }
 
 export function expressionFilter(
-  fieldId,
+  dimensionId,
   operator,
   term,
   staticValue,
   excludeStatic
 ) {
   const expressionFilter = {
-    fieldId,
+    dimensionId,
     regexpMode: false,
     operator: Operators.get(operator),
     staticValue,
@@ -135,7 +139,7 @@ export function expressionFilter(
     if (isRegExp(term)) {
       expressionFilter.regexpMode = true;
       if (!term.ignoreCase) {
-        expressionFilter.term = new RegExp(term.source, 'i');
+        expressionFilter.term = new RegExp(term.source, "i");
       }
     }
   }

@@ -1,38 +1,38 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import DimensionHeaders from './DimensionHeaders';
+import React from "react";
+import { shallow } from "enzyme";
+import DimensionHeaders from "./DimensionHeaders";
 
-describe('DimensionHeaders', () => {
-  test('renders without crashing', () => {
+describe("DimensionHeaders", () => {
+  test("renders without crashing", () => {
     const props = {
       gridId: 0,
       columnDimensionHeaders: [
         {
           axisType: 1,
           type: 9,
-          template: 'cell-template-dimensionheader',
+          template: "cell-template-dimensionheader",
           value: {
-            id: 'titi',
-            name: 'titi',
-            caption: 'Titi',
-            sort: { order: 'asc' },
+            id: "titi",
+            name: "titi",
+            caption: "Titi",
+            sort: { order: "asc" },
             subTotal: {}
           },
           expanded: true,
-          cssclass: 'empty',
-          key: 'titi'
+          cssclass: "empty",
+          key: "titi"
         }
       ],
-      columnFields: [
+      columnDimensions: [
         {
-          id: 'titi',
-          name: 'titi',
-          caption: 'Titi',
-          sort: { order: 'asc' },
+          id: "titi",
+          name: "titi",
+          caption: "Titi",
+          sort: { order: "asc" },
           subTotal: {}
         }
       ],
-      dataHeadersLocation: 'columns',
+      dataHeadersLocation: "columns",
       dimensionPositions: {
         columns: { titi: 0, __measures__: 30 },
         rows: { toto: 0, tutu: 100 }
@@ -43,47 +43,47 @@ describe('DimensionHeaders', () => {
         {
           axisType: 2,
           type: 9,
-          template: 'cell-template-dimensionheader',
+          template: "cell-template-dimensionheader",
           value: {
-            id: 'toto',
-            name: 'toto_lb',
-            caption: 'Toto',
-            sort: { order: 'asc' },
+            id: "toto",
+            name: "toto_lb",
+            caption: "Toto",
+            sort: { order: "asc" },
             subTotal: {}
           },
           expanded: true,
-          cssclass: 'empty',
-          key: 'toto'
+          cssclass: "empty",
+          key: "toto"
         },
         {
           axisType: 2,
           type: 9,
-          template: 'cell-template-dimensionheader',
+          template: "cell-template-dimensionheader",
           value: {
-            id: 'tutu',
-            name: 'tutu',
-            caption: 'Tutu',
-            sort: { order: 'asc' },
+            id: "tutu",
+            name: "tutu",
+            caption: "Tutu",
+            sort: { order: "asc" },
             subTotal: {}
           },
           expanded: true,
-          cssclass: 'empty',
-          key: 'tutu'
+          cssclass: "empty",
+          key: "tutu"
         }
       ],
-      rowFields: [
+      rowDimensions: [
         {
-          id: 'toto',
-          name: 'toto_lb',
-          caption: 'Toto',
-          sort: { order: 'asc' },
+          id: "toto",
+          name: "toto_lb",
+          caption: "Toto",
+          sort: { order: "asc" },
           subTotal: {}
         },
         {
-          id: 'tutu',
-          name: 'tutu',
-          caption: 'Tutu',
-          sort: { order: 'asc' },
+          id: "tutu",
+          name: "tutu",
+          caption: "Tutu",
+          sort: { order: "asc" },
           subTotal: {}
         }
       ],

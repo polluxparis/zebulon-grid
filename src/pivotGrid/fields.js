@@ -6,13 +6,20 @@ import {
 } from "./utils/generic";
 import * as aggregations from "./Aggregation";
 
-export function fieldFactory(fieldConfig) {
-  const { id: idConfig, accessor, name, caption, sort, format } = fieldConfig;
+export function dimensionFactory(dimensionConfig) {
+  const {
+    id: idConfig,
+    accessor,
+    label,
+    caption,
+    sort,
+    format
+  } = dimensionConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      "Pivot grid configuration error: field definition needs an accessor.",
-      fieldConfig
+      "Pivot grid configuration error: dimension definition needs an accessor.",
+      dimensionConfig
     );
   }
   if (isNullOrUndefined(idConfig) && isStringOrNumber(accessor)) {
@@ -22,22 +29,22 @@ export function fieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      "Pivot grid configuration error: field definition needs an accessor of type string or an id.",
-      fieldConfig
+      "Pivot grid configuration error: dimension definition needs an accessor of type string or an id.",
+      dimensionConfig
     );
   }
   const accessorFunction = toAccessorFunction(accessor);
-  const field = { id, accessor: accessorFunction };
-  field.name = name || field.id;
-  field.caption = caption || field.name;
-  field.format = format || (value => value);
+  const dimension = { id, accessor: accessorFunction };
+  dimension.labelAccessor = toAccessorFunction(label || dimension.id);
+  dimension.caption = caption;
+  dimension.format = format || (value => value);
 
   let sortValue;
   if (sort) {
     let accessor;
     // If the accessor is the same that the id (the default), no need to write the accessor
     // This will save memory
-    if (!isNullOrUndefined(sort.accessor) && sort.accessor !== field.id) {
+    if (!isNullOrUndefined(sort.accessor) && sort.accessor !== dimension.id) {
       accessor = sort.accessor;
     }
     sortValue = {
@@ -48,14 +55,14 @@ export function fieldFactory(fieldConfig) {
   } else {
     sortValue = { order: null };
   }
-  field.sort = sortValue;
+  dimension.sort = sortValue;
 
-  field.subTotal = {};
+  dimension.subTotal = {};
 
-  return field;
+  return dimension;
 }
 
-export function datafieldFactory(fieldConfig) {
+export function measureFactory(dimensionConfig) {
   const {
     accessor,
     id: idConfig,
@@ -64,12 +71,12 @@ export function datafieldFactory(fieldConfig) {
     aggregationName,
     aggregation,
     format
-  } = fieldConfig;
+  } = dimensionConfig;
   let id;
   if (isNullOrUndefined(accessor)) {
     throw new Error(
-      "Pivot grid configuration error: datafield definition needs an accessor.",
-      fieldConfig
+      "Pivot grid configuration error: measure definition needs an accessor.",
+      dimensionConfig
     );
   }
   if (isNullOrUndefined(idConfig) && isStringOrNumber(accessor)) {
@@ -79,35 +86,35 @@ export function datafieldFactory(fieldConfig) {
   }
   if (!isStringOrNumber(id)) {
     throw new Error(
-      "Pivot grid configuration error: datafield definition needs an accessor of type string or an id.",
-      fieldConfig
+      "Pivot grid configuration error: measure definition needs an accessor of type string or an id.",
+      dimensionConfig
     );
   }
   const accessorFunction = toAccessorFunction(accessor);
-  const datafield = { id, accessor: accessorFunction, format };
-  datafield.name = name || datafield.id;
-  datafield.caption = caption || datafield.name;
+  const measure = { id, accessor: accessorFunction, format };
+  measure.name = name || measure.id;
+  measure.caption = caption || measure.name;
 
   if (aggregationName) {
-    datafield.aggregationName = aggregationName;
+    measure.aggregationName = aggregationName;
   } else if (aggregation) {
     if (isString(aggregation)) {
-      datafield.aggregationName = aggregation;
+      measure.aggregationName = aggregation;
     } else {
-      datafield.aggregationName = "custom";
+      measure.aggregationName = "custom";
     }
   } else {
-    datafield.aggregationName = null;
+    measure.aggregationName = null;
   }
   if (isStringOrNumber(aggregation)) {
-    datafield.aggregation = aggregations[aggregation] || null;
+    measure.aggregation = aggregations[aggregation] || null;
   } else if (typeof aggregation === "function") {
-    datafield.aggregation = aggregation;
+    measure.aggregation = aggregation;
   } else {
     throw new Error(
-      "Pivot grid configuration error: datafield aggregation must be a string referencing an already implemented function (cf documentation) or a function with signature (accessor, intersection, data) => number"
+      "Pivot grid configuration error: measure aggregation must be a string referencing an already implemented function (cf documentation) or a function with signature (accessor, intersection, data) => number"
     );
   }
 
-  return datafield;
+  return measure;
 }

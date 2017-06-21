@@ -1,10 +1,10 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import Grid from './Grid';
+import React from "react";
+import { shallow } from "enzyme";
+import Grid from "./Grid";
 
 const OriginalGrid = Grid.DecoratedComponent;
-describe('Grid', () => {
-  test('renders without crashing', () => {
+describe("Grid", () => {
+  test("renders without crashing", () => {
     shallow(
       <OriginalGrid
         connectDropTarget={i => i}
@@ -12,10 +12,10 @@ describe('Grid', () => {
         layout={{ columnHorizontalCount: 22, rowVerticalCount: 33 }}
         customFunctions={{}}
         drilldown={() => 33}
-        columnFields={[]}
+        columnDimensions={[]}
         columnHeaders={[]}
-        dataFieldsCount={1}
-        rowFields={[]}
+        dataDimensionsCount={1}
+        rowDimensions={[]}
         rowHeaders={[]}
         setSizes={() => {}}
       />

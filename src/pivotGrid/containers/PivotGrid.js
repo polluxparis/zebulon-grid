@@ -1,8 +1,8 @@
-import { connect } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { connect } from "react-redux";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-import PivotGrid from '../components/Grid/Grid';
+import PivotGrid from "../components/Grid/Grid";
 import {
   getLayout,
   getCellSizes,
@@ -10,10 +10,10 @@ import {
   getColumnUiAxis,
   getRowUiAxis,
   getColumnAxis,
-  getActivatedDatafields
-} from '../selectors';
-import { updateCellSize, setConfigProperty } from '../actions';
-import { AxisType } from '../Axis';
+  getActivatedMeasures
+} from "../selectors";
+import { updateCellSize, setConfigProperty } from "../actions";
+import { AxisType } from "../Axis";
 
 const mapStateToProps = state => ({
   width: state.config.width,
@@ -22,20 +22,24 @@ const mapStateToProps = state => ({
   sizes: state.sizes,
   columnHeaders: getColumnUiAxis(state).headers,
   rowHeaders: getRowUiAxis(state).headers,
-  rowFields: getRowAxis(state).fields,
-  columnFields: getColumnAxis(state).fields,
-  dataFieldsCount: getActivatedDatafields(state).length
+  rowDimensions: getRowAxis(state).dimensions,
+  columnDimensions: getColumnAxis(state).dimensions,
+  dataDimensionsCount: getActivatedMeasures(state).length
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateCellSize: (
-    { handle, offset, initialOffset, sizes, defaultCellSizes }
-  ) => {
+  updateCellSize: ({
+    handle,
+    offset,
+    initialOffset,
+    sizes,
+    defaultCellSizes
+  }) => {
     if (
       handle.leafSubheaders &&
       handle.leafSubheaders.length &&
-      ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
-        (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
+      ((handle.axis === AxisType.COLUMNS && handle.position === "right") ||
+        (handle.axis === AxisType.ROWS && handle.position === "bottom"))
     ) {
       const fractionalOffset = {
         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
@@ -65,8 +69,8 @@ const mapDispatchToProps = dispatch => ({
     }
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, 'height'));
-    if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+    if (height) dispatch(setConfigProperty({ height, width }, "height"));
+    if (width) dispatch(setConfigProperty({ height, width }, "width"));
   }
 });
 
@@ -79,20 +83,20 @@ const mergeProps = (
     defaultCellSizes,
     columnHeaders,
     rowHeaders,
-    rowFields,
-    columnFields,
-    dataFieldsCount
+    rowDimensions,
+    columnDimensions,
+    dataDimensionsCount
   },
   { updateCellSize, setSizes },
   ownProps
 ) => ({
-  rowFields,
-  columnFields,
+  rowDimensions,
+  columnDimensions,
   columnHeaders,
   rowHeaders,
   width,
   layout,
-  dataFieldsCount,
+  dataDimensionsCount,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,

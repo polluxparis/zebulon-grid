@@ -1,14 +1,12 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import {
-  Grid as ReactVirtualizedGrid
-} from 'react-virtualized/dist/commonjs/Grid';
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
+import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
 
-import { AxisType } from '../../Axis';
-import { Header, DataHeader } from '../../Cells';
-import { MEASURE_ID, TOTAL_ID } from '../../constants';
-import HeaderComponent from '../Header';
-import getHeaderSize from '../../utils/headerSize';
+import { AxisType } from "../../Axis";
+import { Header, DataHeader } from "../../Cells";
+import { MEASURE_ID, TOTAL_ID } from "../../constants";
+import HeaderComponent from "../Header";
+import getHeaderSize from "../../utils/headerSize";
 
 class RowHeaders extends PureComponent {
   constructor() {
@@ -71,10 +69,10 @@ class RowHeaders extends PureComponent {
         const span = header.vspan();
         const top = main.offset + verticalOffsetAdjustment;
         const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
-        const width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
-        const left = 0 + dimensionPositions.rows[header.dim.field.id];
+        const width = getDimensionSize(AxisType.ROWS, header.dim.dimension.id);
+        const left = 0 + dimensionPositions.rows[header.dim.dimension.id];
         const positionStyle = {
-          position: 'absolute',
+          position: "absolute",
           left,
           top,
           height,
@@ -120,16 +118,16 @@ class RowHeaders extends PureComponent {
             // Measure header
             width = getDimensionSize(AxisType.ROWS, MEASURE_ID);
             left += dimensionPositions.rows[MEASURE_ID];
-          } else if (header.dim.field) {
+          } else if (header.dim.dimension) {
             // Normal dimension header
-            width = getDimensionSize(AxisType.ROWS, header.dim.field.id);
-            left += dimensionPositions.rows[header.dim.field.id];
+            width = getDimensionSize(AxisType.ROWS, header.dim.dimension.id);
+            left += dimensionPositions.rows[header.dim.dimension.id];
           } else {
             // Total header
             width = getDimensionSize(AxisType.ROWS, TOTAL_ID);
           }
           const positionStyle = {
-            position: 'absolute',
+            position: "absolute",
             left,
             top,
             height,
@@ -178,7 +176,7 @@ class RowHeaders extends PureComponent {
         // This broke the grid because the height of the inner container was not reset
         // when the height prop changed
         // This is a workaround
-        containerStyle={{ position: 'static' }}
+        containerStyle={{ position: "static" }}
         height={height}
         overscanRowCount={0}
         ref={ref => {
@@ -192,8 +190,8 @@ class RowHeaders extends PureComponent {
         // because react-virtualized sets them during render
         style={{
           fontSize: `${zoom * 100}%`,
-          overflowX: 'hidden',
-          overflowY: 'hidden'
+          overflowX: "hidden",
+          overflowY: "hidden"
         }}
         width={width}
       />

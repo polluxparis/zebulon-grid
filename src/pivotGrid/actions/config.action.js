@@ -1,23 +1,25 @@
-import { fieldFactory, datafieldFactory } from '../fields';
+import { dimensionFactory, measureFactory } from "../hydrateStore";
 import {
   SET_AXIS,
-  SET_FIELDS,
-  SET_DATAFIELDS,
+  SET_DIMENSIONS,
+  SET_MEASURES,
   SET_CONFIG_PROPERTY,
-  TOGGLE_DATAFIELD,
-  MOVE_FIELD,
+  TOGGLE_MEASURE,
+  MOVE_DIMENSION,
   ZOOM_IN,
   ZOOM_OUT
-} from '../constants';
+} from "../constants";
 
-export const setFields = configObject => ({
-  type: SET_FIELDS,
-  fields: configObject.fields.map(field => fieldFactory(field))
+export const setDimensions = configObject => ({
+  type: SET_DIMENSIONS,
+  dimensions: configObject.dimensions.map(dimension =>
+    dimensionFactory(dimension)
+  )
 });
 
-export const setDatafields = configObject => ({
-  type: SET_DATAFIELDS,
-  datafields: configObject.datafields.map(field => datafieldFactory(field))
+export const setMeasures = configObject => ({
+  type: SET_MEASURES,
+  measures: configObject.measures.map(dimension => measureFactory(dimension))
 });
 
 export const setConfigProperty = (configObject, property, defaultValue) => ({
@@ -26,14 +28,14 @@ export const setConfigProperty = (configObject, property, defaultValue) => ({
   value: configObject[property] || defaultValue
 });
 
-export const toggleDatafield = datafieldId => ({
-  type: TOGGLE_DATAFIELD,
-  id: datafieldId
+export const toggleMeasure = measureId => ({
+  type: TOGGLE_MEASURE,
+  id: measureId
 });
 
-export const moveField = (fieldId, oldAxis, newAxis, position) => ({
-  type: MOVE_FIELD,
-  id: fieldId,
+export const moveDimension = (dimensionId, oldAxis, newAxis, position) => ({
+  type: MOVE_DIMENSION,
+  id: dimensionId,
   oldAxis,
   newAxis,
   position

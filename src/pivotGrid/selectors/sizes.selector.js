@@ -1,10 +1,10 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import { scrollbarSize } from '../utils/domHelpers';
-import { AxisType, toAxisType } from '../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../constants';
-import { getColumnUiAxis, getRowUiAxis } from './axis.selector';
-import { getColumnFields, getRowFields } from './fields.selector';
+import { scrollbarSize } from "../utils/domHelpers";
+import { AxisType, toAxisType } from "../Axis";
+import { MEASURE_ID, TOTAL_ID } from "../constants";
+import { getColumnUiAxis, getRowUiAxis } from "./axis.selector";
+import { getColumnDimensions, getRowDimensions } from "./dimensions.selector";
 
 export const getCellSizes = createSelector(
   [
@@ -75,20 +75,20 @@ export const getLastChildSizeOnRows = createSelector(
 
 const calculateDimensionPositions = (
   axis,
-  fields,
+  dimensions,
   hasMeasures,
   getDimensionSize
 ) => {
   const axisType = toAxisType(axis);
   const res = {};
   let position = 0;
-  // Total header if no fields
-  if (!fields.length) {
+  // Total header if no dimensions
+  if (!dimensions.length) {
     position += getDimensionSize(axisType, TOTAL_ID);
   } else {
-    fields.forEach(field => {
-      res[field.id] = position;
-      position += getDimensionSize(axisType, field.id);
+    dimensions.forEach(dimension => {
+      res[dimension.id] = position;
+      position += getDimensionSize(axisType, dimension.id);
     });
   }
   if (hasMeasures) {
@@ -101,20 +101,20 @@ export const getDimensionPositions = createSelector(
   [
     getDimensionSize,
     state => state.config.dataHeadersLocation,
-    getColumnFields,
-    getRowFields
+    getColumnDimensions,
+    getRowDimensions
   ],
-  (getDimensionSize, dataHeadersLocation, columnFields, rowFields) => ({
+  (getDimensionSize, dataHeadersLocation, columnDimensions, rowDimensions) => ({
     columns: calculateDimensionPositions(
-      'columns',
-      columnFields,
-      dataHeadersLocation === 'columns',
+      "columns",
+      columnDimensions,
+      dataHeadersLocation === "columns",
       getDimensionSize
     ),
     rows: calculateDimensionPositions(
-      'rows',
-      rowFields,
-      dataHeadersLocation === 'rows',
+      "rows",
+      rowDimensions,
+      dataHeadersLocation === "rows",
       getDimensionSize
     )
   })
@@ -147,18 +147,19 @@ export const getRowHeadersWidth = createSelector(
     getDimensionSize
   ],
   (dataHeadersLocation, sizes, rows, cellSizes, getDimensionSize) => {
-    const columnsMeasures = dataHeadersLocation === 'columns';
+    const columnsMeasures = dataHeadersLocation === "columns";
     let rowHeadersWidth = 0;
     // Measures are on the row axis
     if (!columnsMeasures) {
       rowHeadersWidth += sizes[MEASURE_ID] || cellSizes.width;
     }
-    // There are no fields on the row axis
+    // There are no dimensions on the row axis
     if (!rows.length) {
       rowHeadersWidth += getDimensionSize(AxisType.ROWS, TOTAL_ID);
     } else {
       rowHeadersWidth = rows.reduce(
-        (width, field) => width + getDimensionSize(AxisType.ROWS, field),
+        (width, dimension) =>
+          width + getDimensionSize(AxisType.ROWS, dimension),
         rowHeadersWidth
       );
     }
@@ -175,18 +176,19 @@ export const getColumnHeadersHeight = createSelector(
     getDimensionSize
   ],
   (dataHeadersLocation, sizes, columns, cellSizes, getDimensionSize) => {
-    const columnsMeasures = dataHeadersLocation === 'columns';
+    const columnsMeasures = dataHeadersLocation === "columns";
     let columnHeadersHeight = 0;
     // Measures are on the column axis
     if (columnsMeasures) {
       columnHeadersHeight += sizes[MEASURE_ID] || cellSizes.height;
     }
-    // There are no fields on the column axis
+    // There are no dimensions on the column axis
     if (!columns.length) {
       columnHeadersHeight += getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
     } else {
       columnHeadersHeight = columns.reduce(
-        (height, field) => height + getDimensionSize(AxisType.COLUMNS, field),
+        (height, dimension) =>
+          height + getDimensionSize(AxisType.COLUMNS, dimension),
         columnHeadersHeight
       );
     }

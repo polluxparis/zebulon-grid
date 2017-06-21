@@ -51,8 +51,8 @@ export function getObservableMockDatasource(interval) {
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
 export const basicConfig = {
-  canMoveFields: true,
-  dataHeadersLocation: "columns",
+  canMoveDimensions: true,
+  measureHeadersLocation: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -84,24 +84,25 @@ export const basicConfig = {
   //     collapsible: false,
   //   },
   // },
-  fields: [
+  dimensions: [
     {
-      name: "toto_lb",
-      accessor: "toto",
+      id: "toto",
       caption: "Toto",
+      keyAccessor: "toto",
+      labelAccessor: "toto_lb",
       sort: {
         // order: 'asc',
-        accessor: "toto_lb"
+        keyAccessor: "toto_lb"
         // accessor: row => row.toto_lb
         // custom: (a, b) => a - b
       }
     },
     // {
-    //     name: '1',
+    //     label: '1',
     //     caption: 'Product',
     // },
     // {
-    //     name: '2',
+    //     label: '2',
     //     caption: 'Manufacturer',
     //     sort: {
     //         order: 'asc'
@@ -115,16 +116,18 @@ export const basicConfig = {
     //     },
     // },
     {
-      accessor: "titi",
-      caption: "Titi"
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi"
     },
     {
-      accessor: "tutu",
+      id: "tutu",
       caption: "Tutu",
+      keyAccessor: "tutu",
       format: formats.id
     }
     // {
-    //     name: '4',
+    //     label: '4',
     //     caption: 'Category',
     //     sort: {
     //         customfunc: function(a, b) {
@@ -138,32 +141,33 @@ export const basicConfig = {
     //     }
     // },
   ],
-  datafields: [
+  measures: [
     {
-      accessor: "qty",
+      valueAccessor: "qty",
       id: "qty",
       caption: "Quantity",
       format: formats.quantity,
       aggregation: "sum"
     },
     {
-      accessor: "amt",
+      valueAccessor: "amt",
+      id: "amt",
       caption: "Amount",
       aggregation: "sum",
-      aggregationName: "whatever",
+      aggregationCaption: "whatever",
       format: formats.amount
     },
     {
       id: "price",
       caption: "Price",
       aggregation: "avg",
-      accessor: row => row.amt / row.qty,
+      valueAccessor: row => row.amt / row.qty,
       format: formats.price
     }
   ],
-  columns: ["Titi"],
-  rows: ["Toto", "Tutu"],
-  data: ["Quantity", "Amount", "Price"],
+  columns: ["titi"],
+  rows: ["toto", "tutu"],
+  activeMeasures: ["qty", "amt", "price"],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {
     // 'Titi': ['titi0']

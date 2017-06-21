@@ -1,18 +1,18 @@
-import { ADD_FILTER, DELETE_FILTER } from '../constants';
+import { ADD_FILTER, DELETE_FILTER } from "../constants";
 
 export const addFilter = (
-  fieldId,
+  dimensionId,
   operator,
   term,
   staticValue,
-  excludeStatic,
+  excludeStatic
 ) => ({
   type: ADD_FILTER,
-  filter: { fieldId, operator, term, staticValue, excludeStatic },
-  field: fieldId,
+  filter: { dimensionId, operator, term, staticValue, excludeStatic },
+  dimension: dimensionId
 });
 
-export const deleteFilter = fieldId => ({
+export const deleteFilter = dimensionId => ({
   type: DELETE_FILTER,
-  field: fieldId,
+  dimension: dimensionId
 });

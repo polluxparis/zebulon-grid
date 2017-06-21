@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { pass } from '../Filtering';
-import { isDate, isNumber } from '../utils/generic';
+import { createSelector } from "reselect";
+import { pass } from "../Filtering";
+import { isDate, isNumber } from "../utils/generic";
 
 export const getFilters = state => state.filters || {};
 const getData = state => state.data;
@@ -15,12 +15,14 @@ export const getFilteredData = createSelector(
       return data;
     }
     return data.filter(row =>
-      filters.every(filter => pass(filter, row[filter.fieldId])));
+      filters.every(filter => pass(filter, row[filter.dimensionId]))
+    );
   }
 );
 
-export const getFieldValues = createSelector([getData], data =>
-  (field, filterFunc) => {
+export const getDimensionValues = createSelector(
+  [getData],
+  data => (dimension, filterFunc) => {
     const values = [];
     const labels = [];
     let res = [];
@@ -31,14 +33,14 @@ export const getFieldValues = createSelector([getData], data =>
     // Otherwise you lose the filtered values the next time you open a Filter Panel
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
-      const val = row[field.id];
-      const label = row[field.name];
+      const val = row[dimension.id];
+      const label = row[dimension.name];
       labelsMap[val] = label;
       valuesMap[label] = val;
       if (filterFunc !== undefined) {
         if (
           filterFunc === true ||
-          (typeof filterFunc === 'function' && filterFunc(val))
+          (typeof filterFunc === "function" && filterFunc(val))
         ) {
           values.push(val);
           labels.push(label);
@@ -77,7 +79,8 @@ export const getFieldValues = createSelector([getData], data =>
       res = values.map(value => ({ value, label: labelsMap[value] }));
     }
     if (containsBlank) {
-      res.unshift({ value: null, label: '' });
+      res.unshift({ value: null, label: "" });
     }
     return res;
-  });
+  }
+);

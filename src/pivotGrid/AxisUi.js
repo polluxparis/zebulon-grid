@@ -1,12 +1,12 @@
-import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
-import { KEY_SEPARATOR } from './constants';
+import { Header, DataHeader, DimensionHeader, HeaderType } from "./Cells";
+import { KEY_SEPARATOR } from "./constants";
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
     return headers.find(header => header.key === keys[0]);
   }
   const parentHeader = headers.find(header => header.key === keys[0]);
-  if (!parentHeader) throw new Error('header not found');
+  if (!parentHeader) throw new Error("header not found");
   return findHeader(parentHeader.subheaders, [
     [keys[0], keys[1]].join(KEY_SEPARATOR),
     ...keys.slice(2)
@@ -34,16 +34,16 @@ export const keyToIndex = (headers, key) => {
  * @param  {pivotgrid.axe} axe - axe containing all dimensions.
  */
 export default class AxisUi {
-  constructor(axis, config, crossAxisFieldsCode) {
-    const { activatedDatafieldsCount, activatedDatafields } = config;
-    this.datafieldsCount = activatedDatafieldsCount;
-    // this.datafieldsCount = getDatafieldsCount({
+  constructor(axis, config, crossAxisDimensionsCode) {
+    const { activatedMeasuresCount, activatedMeasures } = config;
+    this.measuresCount = activatedMeasuresCount;
+    // this.measuresCount = getMeasuresCount({
     //   axisType: axis.type,
     //   dataHeadersLocation,
-    //   activatedDatafieldsCount
+    //   activatedMeasuresCount
     // });
 
-    this.hasDatafields = this.datafieldsCount >= 1;
+    this.hasMeasures = this.measuresCount >= 1;
     /**
      * Headers render properties
      * @type {Array}
@@ -69,8 +69,8 @@ export default class AxisUi {
           infos: headers,
           dimension: axis.root,
           axisType: axis.type,
-          activatedDatafields,
-          activatedDatafieldsCount
+          activatedMeasures,
+          activatedMeasuresCount
         });
       }
 
@@ -81,30 +81,30 @@ export default class AxisUi {
             HeaderType.GRAND_TOTAL,
             axis.root,
             null,
-            this.datafieldsCount,
+            this.measuresCount,
             this.x,
             (y = 0),
             null,
-            crossAxisFieldsCode
+            crossAxisDimensionsCode
           ))
         ]);
       }
 
       if (grandtotalHeader) {
-        // add grand-total data headers if more than 1 data field and they will be the leaf headers
+        // add grand-total data headers if more than 1 data dimension and they will be the leaf headers
         this.addDataHeaders({
           axisType: axis.type,
           infos: headers,
           parent: grandtotalHeader,
           y: y + 1,
-          activatedDatafields,
-          activatedDatafieldsCount
+          activatedMeasures,
+          activatedMeasuresCount
         });
       }
     }
     this.headers = headers;
-    this.dimensionHeaders = axis.fields.map(
-      field => new DimensionHeader(axis.type, field)
+    this.dimensionHeaders = axis.dimensions.map(
+      dimension => new DimensionHeader(axis.type, dimension)
     );
   }
 
@@ -118,8 +118,8 @@ export default class AxisUi {
     infos,
     dimension,
     axisType,
-    activatedDatafields,
-    activatedDatafieldsCount,
+    activatedMeasures,
+    activatedMeasuresCount,
     y = 0
   }) {
     if (dimension.values.length > 0) {
@@ -138,14 +138,14 @@ export default class AxisUi {
         const subdim = dimension.subdimvals[subvalue];
 
         let subTotalHeader;
-        if (!subdim.isLeaf && subdim.field.subTotal.visible) {
+        if (!subdim.isLeaf && subdim.dimension.subTotal.visible) {
           // x here will probably create bugs. To change when necessary
           subTotalHeader = new Header(
             axisType,
             HeaderType.SUB_TOTAL,
             subdim,
             parent,
-            this.datafieldsCount,
+            this.measuresCount,
             this.x,
             y
           );
@@ -158,7 +158,7 @@ export default class AxisUi {
           null,
           subdim,
           parent,
-          this.datafieldsCount,
+          this.measuresCount,
           this.x,
           y,
           subTotalHeader
@@ -176,30 +176,30 @@ export default class AxisUi {
             dimension: subdim,
             axisType,
             y: y + 1,
-            activatedDatafields,
-            activatedDatafieldsCount
+            activatedMeasures,
+            activatedMeasuresCount
           });
-          if (subdim.field.subTotal.visible) {
+          if (subdim.dimension.subTotal.visible) {
             infos.push([subTotalHeader]);
 
             // add sub-total data headers
-            // if more than 1 data field and they will be the leaf headers
+            // if more than 1 data dimension and they will be the leaf headers
             this.addDataHeaders({
               axisType,
               infos,
-              activatedDatafields,
-              activatedDatafieldsCount,
+              activatedMeasures,
+              activatedMeasuresCount,
               parent: subTotalHeader,
               y: y + 1
             });
           }
         } else {
-          // add data headers if more than 1 data field and they will be the leaf headers
+          // add data headers if more than 1 data dimension and they will be the leaf headers
           this.addDataHeaders({
             axisType,
             infos,
-            activatedDatafields,
-            activatedDatafieldsCount,
+            activatedMeasures,
+            activatedMeasuresCount,
             parent: newHeader,
             y: y + 1
           });
@@ -209,15 +209,15 @@ export default class AxisUi {
     return y;
   }
 
-  addDataHeaders({ axisType, infos, parent, activatedDatafields, y }) {
-    if (this.hasDatafields) {
+  addDataHeaders({ axisType, infos, parent, activatedMeasures, y }) {
+    if (this.hasMeasures) {
       let lastInfosArray = infos[infos.length - 1];
-      activatedDatafields.forEach((datafield, index) => {
+      activatedMeasures.forEach((measure, index) => {
         lastInfosArray.push(
-          new DataHeader(axisType, datafield, parent, this.x, y)
+          new DataHeader(axisType, measure, parent, this.x, y)
         );
         this.x += 1;
-        if (index < this.datafieldsCount - 1) {
+        if (index < this.measuresCount - 1) {
           infos.push((lastInfosArray = []));
         }
       });
@@ -226,7 +226,7 @@ export default class AxisUi {
     }
   }
 
-  // toggleFieldExpansion(field, newState) {
+  // toggleDimensionExpansion(dimension, newState) {
   //   const toToggle = [];
   //   let allExpanded = true;
   //   let hIndex;
@@ -234,7 +234,7 @@ export default class AxisUi {
   //   for (let i = 0; i < this.headers.length; i += 1) {
   //     for (hIndex = 0; hIndex < this.headers[i].length; hIndex += 1) {
   //       const header = this.headers[i][hIndex];
-  //       if (header.type === HeaderType.SUB_TOTAL && (field == null || header.dim.field.name === field.name)) {
+  //       if (header.type === HeaderType.SUB_TOTAL && (dimension == null || header.dim.dimension.name === dimension.name)) {
   //         toToggle.push(header);
   //         allExpanded = allExpanded && header.expanded;
   //       }

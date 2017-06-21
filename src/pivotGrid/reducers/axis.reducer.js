@@ -1,15 +1,15 @@
-import { MOVE_FIELD, SET_AXIS } from '../constants';
+import { MOVE_DIMENSION, SET_AXIS } from "../constants";
 
-export default (state = { rows: [], columns: [], fields: [] }, action) => {
+export default (state = { rows: [], columns: [], dimensions: [] }, action) => {
   const { type, id, position, oldAxis, newAxis, axis } = action;
   let newAxisValue;
   let oldAxisValue;
   let oldPosition;
   let positionToRemove;
   switch (type) {
-    case MOVE_FIELD:
+    case MOVE_DIMENSION:
       if (oldAxis !== newAxis) {
-        oldAxisValue = state[oldAxis].filter(field => field !== id);
+        oldAxisValue = state[oldAxis].filter(dimension => dimension !== id);
         newAxisValue = [
           ...state[newAxis].slice(0, position),
           id,

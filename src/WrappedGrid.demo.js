@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import WrappedGrid from './pivotGrid/WrappedGrid';
+import WrappedGrid from "./pivotGrid/WrappedGrid";
 
-import { getMockDatasource, basicConfig } from './utils/mock';
+import { getMockDatasource, basicConfig } from "./utils/mock";
 
 let i = 0;
 let k = 0;
@@ -10,12 +10,12 @@ class WrappedGridDemo extends Component {
   constructor() {
     super();
     this.addData = this.addData.bind(this);
-    this.moveField = this.moveField.bind(this);
-    this.sortField = this.sortField.bind(this);
-    this.toggleDatafield = this.toggleDatafield.bind(this);
+    this.moveDimension = this.moveDimension.bind(this);
+    this.sortDimension = this.sortDimension.bind(this);
+    this.toggleMeasure = this.toggleMeasure.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.zoomOut = this.zoomOut.bind(this);
-    this.toggleDatafieldAxis = this.toggleDatafieldAxis.bind(this);
+    this.toggleMeasureAxis = this.toggleMeasureAxis.bind(this);
     this.focusCell = this.focusCell.bind(this);
 
     this.state = { focusCell: [] };
@@ -24,41 +24,41 @@ class WrappedGridDemo extends Component {
   addData() {
     this.grid.pushData([
       {
-        toto: '0',
-        toto_lb: 'toto 0',
+        toto: "0",
+        toto_lb: "toto 0",
         qty: 100,
         amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
+        titi: "titi 0",
+        tutu: "0"
       }
     ]);
   }
 
-  moveField() {
+  moveDimension() {
     if (i % 2) {
-      this.grid.moveField('tutu', 'columns', 'rows', 1);
+      this.grid.moveDimension("tutu", "columns", "rows", 1);
     } else {
-      this.grid.moveField('tutu', 'rows', 'columns', 1);
+      this.grid.moveDimension("tutu", "rows", "columns", 1);
     }
     i += 1;
   }
-  sortField() {
-    this.grid.changeSortOrder('toto');
+  sortDimension() {
+    this.grid.changeSortOrder("toto");
   }
 
-  toggleDatafield() {
-    this.grid.toggleDatafield('amt');
+  toggleMeasure() {
+    this.grid.toggleMeasure("amt");
   }
-  toggleDatafieldAxis() {
+  toggleMeasureAxis() {
     if (k % 2) {
       this.grid.setConfigProperty(
-        { dataHeadersLocation: 'columns' },
-        'dataHeadersLocation'
+        { dataHeadersLocation: "columns" },
+        "dataHeadersLocation"
       );
     } else {
       this.grid.setConfigProperty(
-        { dataHeadersLocation: 'rows' },
-        'dataHeadersLocation'
+        { dataHeadersLocation: "rows" },
+        "dataHeadersLocation"
       );
     }
     k += 1;
@@ -73,27 +73,27 @@ class WrappedGridDemo extends Component {
     const getCell = id => ({
       dimensions: [
         {
-          cell: { caption: '0', id: '0' },
-          dimension: { caption: 'Tutu', id: 'tutu' },
-          axis: 'rows',
+          cell: { caption: "0", id: "0" },
+          dimension: { caption: "Tutu", id: "tutu" },
+          axis: "rows",
           index: 1
         },
         {
           cell: { caption: `toto ${id}`, id },
-          dimension: { caption: 'Toto', id: 'toto' },
-          axis: 'rows',
+          dimension: { caption: "Toto", id: "toto" },
+          axis: "rows",
           index: 0
         },
         {
-          cell: { caption: 'titi 0', id: 'titi 0' },
-          dimension: { caption: 'Titi', id: 'titi' },
-          axis: 'columns',
+          cell: { caption: "titi 0", id: "titi 0" },
+          dimension: { caption: "Titi", id: "titi" },
+          axis: "columns",
           index: 0
         }
       ],
       measure: {
-        id: 'qty',
-        axis: 'columns'
+        id: "qty",
+        axis: "columns"
       }
     });
     k = (k + 1) % 3;
@@ -110,14 +110,14 @@ class WrappedGridDemo extends Component {
     return (
       <div>
         <button onClick={this.addData}>Add data</button>
-        <button onClick={this.moveField}>Move field</button>
-        <button onClick={this.sortField}>Sort toto field</button>
-        <button onClick={this.toggleDatafield}>Toggle datafield</button>
+        <button onClick={this.moveDimension}>Move dimension</button>
+        <button onClick={this.sortDimension}>Sort toto dimension</button>
+        <button onClick={this.toggleMeasure}>Toggle measure</button>
         <button onClick={this.zoomIn}>Zoom in</button>
         <button onClick={this.zoomOut}>Zoom out</button>
         <button onClick={this.focusCell}>Focus cells</button>
-        <button onClick={this.toggleDatafieldAxis}>
-          Toggle datafields axis
+        <button onClick={this.toggleMeasureAxis}>
+          Toggle measures axis
         </button>
 
         <WrappedGrid
@@ -128,7 +128,7 @@ class WrappedGridDemo extends Component {
             this.grid = ref;
           }}
           /* eslint-disable no-console */
-          drilldown={cellInfos => console.log('drilldown', cellInfos)}
+          drilldown={cellInfos => console.log("drilldown", cellInfos)}
           /* eslint-enable */
         />
       </div>

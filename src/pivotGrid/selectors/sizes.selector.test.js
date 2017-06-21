@@ -16,128 +16,128 @@ import {
   getPreviewSizes,
   getDataCellsHeight,
   getDataCellsWidth
-} from './sizes.selector';
-import { AxisType } from '../Axis';
+} from "./sizes.selector";
+import { AxisType } from "../Axis";
 
-describe('cell sizes are calculated with zoom equals', () => {
-  test('1', () => {
+describe("cell sizes are calculated with zoom equals", () => {
+  test("1", () => {
     const config = { cellHeight: 30, cellWidth: 100, zoom: 1 };
     const actual = getCellSizes({ config });
     expect(actual).toEqual({ height: 30, width: 100 });
   });
 
-  test('0.5', () => {
+  test("0.5", () => {
     const config = { cellHeight: 30, cellWidth: 100, zoom: 0.5 };
     const actual = getCellSizes({ config });
     expect(actual).toEqual({ height: 15, width: 50 });
   });
 });
 
-describe('dimension sizes are computed correctly', () => {
+describe("dimension sizes are computed correctly", () => {
   const cellSizes = {
     height: 30,
     width: 200
   };
-  test('for columns with default size', () => {
+  test("for columns with default size", () => {
     const actual = getDimensionSize.resultFunc({}, {}, 1, cellSizes)(
       AxisType.COLUMNS,
-      'toto'
+      "toto"
     );
     expect(actual).toEqual(30);
   });
-  test('for rows with default size', () => {
+  test("for rows with default size", () => {
     const actual = getDimensionSize.resultFunc({}, {}, 1, cellSizes)(
       AxisType.ROWS,
-      'toto'
+      "toto"
     );
     expect(actual).toEqual(200);
   });
-  test('for columns with custom size', () => {
+  test("for columns with custom size", () => {
     const actual = getDimensionSize.resultFunc({}, { toto: 66 }, 1, cellSizes)(
       AxisType.COLUMNS,
-      'toto'
+      "toto"
     );
     expect(actual).toEqual(66);
   });
-  test('for rows with custom size', () => {
+  test("for rows with custom size", () => {
     const actual = getDimensionSize.resultFunc({ toto: 666 }, {}, 1, cellSizes)(
       AxisType.ROWS,
-      'toto'
+      "toto"
     );
     expect(actual).toEqual(666);
   });
 
-  test('for columns with custom size and zoom', () => {
+  test("for columns with custom size and zoom", () => {
     const actual = getDimensionSize.resultFunc(
       {},
       { toto: 66 },
       0.5,
       cellSizes
-    )(AxisType.COLUMNS, 'toto');
+    )(AxisType.COLUMNS, "toto");
     expect(actual).toEqual(33);
   });
-  test('for rows with custom size and zoom', () => {
+  test("for rows with custom size and zoom", () => {
     const actual = getDimensionSize.resultFunc(
       { toto: 666 },
       {},
       0.5,
       cellSizes
-    )(AxisType.ROWS, 'toto');
+    )(AxisType.ROWS, "toto");
     expect(actual).toEqual(333);
   });
 });
 
-describe('last child size is computed correctly', () => {
+describe("last child size is computed correctly", () => {
   const config = {
     cellHeight: 30,
     cellWidth: 100,
     zoom: 1,
-    dataHeadersLocation: 'rows'
+    dataHeadersLocation: "rows"
   };
-  test('when no child', () => {
+  test("when no child", () => {
     const sizes = {
       leafs: { rows: {} }
     };
-    const header = { key: 'field1a', subheaders: [] };
+    const header = { key: "dimension1a", subheaders: [] };
     const size = getLastChildSizeOnRows({ sizes, config });
     expect(size(header)).toEqual(30);
   });
 
-  test('when no child and custom size', () => {
+  test("when no child and custom size", () => {
     const sizes = {
-      leafs: { rows: { field1a: 50 } }
+      leafs: { rows: { dimension1a: 50 } }
     };
-    const header = { key: 'field1a', subheaders: [] };
+    const header = { key: "dimension1a", subheaders: [] };
     const size = getLastChildSizeOnRows({ sizes, config });
     expect(size(header)).toEqual(50);
   });
 
-  test('with children in rows', () => {
+  test("with children in rows", () => {
     const sizes = {
-      leafs: { rows: { 'field1a-/-field2a': 80 } }
+      leafs: { rows: { "dimension1a-/-dimension2a": 80 } }
     };
     const header = {
-      key: 'field1a',
-      subheaders: [{ key: 'field1a-/-field2a', subheaders: [] }]
+      key: "dimension1a",
+      subheaders: [{ key: "dimension1a-/-dimension2a", subheaders: [] }]
     };
     const size = getLastChildSizeOnRows({ sizes, config });
     expect(size(header)).toEqual(80);
   });
-  test('with children in columns', () => {
+  test("with children in columns", () => {
     const sizes = {
-      leafs: { columns: { 'field1a-/-field2a': 80 } }
+      leafs: { columns: { "dimension1a-/-dimension2a": 80 } }
     };
     const header = {
-      key: 'field1a',
-      subheaders: [{ key: 'field1a-/-field2a', subheaders: [] }]
+      key: "dimension1a",
+      subheaders: [{ key: "dimension1a-/-dimension2a", subheaders: [] }]
     };
     const size = getLastChildSizeOnColumns({ sizes, config });
     expect(size(header)).toEqual(80);
   });
 });
 
-describe('dimension positions are computed correctly', () => {
-  const dataHeadersLocation = 'columns';
+describe("dimension positions are computed correctly", () => {
+  const dataHeadersLocation = "columns";
   const cellSizes = {
     height: 30,
     width: 100
@@ -148,14 +148,14 @@ describe('dimension positions are computed correctly', () => {
     1,
     cellSizes
   );
-  test('with fields on both axis', () => {
-    const rowfields = [{ id: 'toto' }, { id: 'tutu' }];
-    const columnFields = [{ id: 'titi' }];
+  test("with dimensions on both axis", () => {
+    const rowdimensions = [{ id: "toto" }, { id: "tutu" }];
+    const columnDimensions = [{ id: "titi" }];
     const actual = getDimensionPositions.resultFunc(
       getDimensionSizeFunc,
       dataHeadersLocation,
-      columnFields,
-      rowfields
+      columnDimensions,
+      rowdimensions
     );
     const expected = {
       columns: { titi: 0, __measures__: 30 },
@@ -163,14 +163,14 @@ describe('dimension positions are computed correctly', () => {
     };
     expect(actual).toEqual(expected);
   });
-  test('with no field on row axis', () => {
-    const rowfields = [];
-    const columnFields = [{ id: 'titi' }];
+  test("with no dimension on row axis", () => {
+    const rowdimensions = [];
+    const columnDimensions = [{ id: "titi" }];
     const actual = getDimensionPositions.resultFunc(
       getDimensionSizeFunc,
       dataHeadersLocation,
-      columnFields,
-      rowfields
+      columnDimensions,
+      rowdimensions
     );
     const expected = {
       columns: { titi: 0, __measures__: 30 },
@@ -178,14 +178,14 @@ describe('dimension positions are computed correctly', () => {
     };
     expect(actual).toEqual(expected);
   });
-  test('with no field on column axis', () => {
-    const rowfields = [{ id: 'toto' }, { id: 'tutu' }];
-    const columnFields = [];
+  test("with no dimension on column axis", () => {
+    const rowdimensions = [{ id: "toto" }, { id: "tutu" }];
+    const columnDimensions = [];
     const actual = getDimensionPositions.resultFunc(
       getDimensionSizeFunc,
       dataHeadersLocation,
-      columnFields,
-      rowfields
+      columnDimensions,
+      rowdimensions
     );
     const expected = {
       columns: { __measures__: 30 },
@@ -195,15 +195,15 @@ describe('dimension positions are computed correctly', () => {
   });
 });
 
-describe('column width is computed correctly', () => {
+describe("column width is computed correctly", () => {
   const cellSizes = {
     height: 30,
     width: 200
   };
   const columnsUi = {
-    headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-qty' }]]
+    headers: [[{ key: "titi 0" }, { key: "titi 0-/-qty" }]]
   };
-  test('with standard size', () => {
+  test("with standard size", () => {
     const actual = getColumnWidth.resultFunc(
       columnsUi,
       {},
@@ -213,10 +213,10 @@ describe('column width is computed correctly', () => {
     });
     expect(actual).toEqual(200);
   });
-  test('with custom size', () => {
+  test("with custom size", () => {
     const actual = getColumnWidth.resultFunc(
       columnsUi,
-      { 'titi 0-/-qty': 180 },
+      { "titi 0-/-qty": 180 },
       getLeafHeaderSize.resultFunc(1, cellSizes)
     )({
       index: 0
@@ -225,15 +225,15 @@ describe('column width is computed correctly', () => {
   });
 });
 
-describe('row height is computed correctly', () => {
+describe("row height is computed correctly", () => {
   const cellSizes = {
     height: 30,
     width: 200
   };
   const rowsUi = {
-    headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-toto 1' }]]
+    headers: [[{ key: "titi 0" }, { key: "titi 0-/-toto 1" }]]
   };
-  test('with standard size', () => {
+  test("with standard size", () => {
     const actual = getRowHeight.resultFunc(
       rowsUi,
       {},
@@ -243,10 +243,10 @@ describe('row height is computed correctly', () => {
     });
     expect(actual).toEqual(30);
   });
-  test('with custom size', () => {
+  test("with custom size", () => {
     const actual = getRowHeight.resultFunc(
       rowsUi,
-      { 'titi 0-/-toto 1': 60 },
+      { "titi 0-/-toto 1": 60 },
       getLeafHeaderSize.resultFunc(1, cellSizes)
     )({
       index: 0
@@ -255,7 +255,7 @@ describe('row height is computed correctly', () => {
   });
 });
 
-describe('headers sizes are computed correctly', () => {
+describe("headers sizes are computed correctly", () => {
   const cellSizes = {
     height: 30,
     width: 200
@@ -266,18 +266,18 @@ describe('headers sizes are computed correctly', () => {
     1,
     cellSizes
   );
-  test('with data headers on column axis', () => {
-    const rows = ['toto', 'tutu'];
-    const columns = ['titi'];
-    const dataHeadersLocation = 'columns';
+  test("with data headers on column axis", () => {
+    const rows = ["toto", "tutu"];
+    const columns = ["titi"];
+    const dataHeadersLocation = "columns";
     const rowsUi = {
       headers: [
-        [{ key: 'toto 0' }, { key: 'toto 0-/-tutu 0' }],
-        [{ key: 'toto 0-/-tutu 1' }]
+        [{ key: "toto 0" }, { key: "toto 0-/-tutu 0" }],
+        [{ key: "toto 0-/-tutu 1" }]
       ]
     };
     const columnsUi = {
-      headers: [[{ key: 'titi 0' }, { key: 'titi 0-/-qty' }]]
+      headers: [[{ key: "titi 0" }, { key: "titi 0-/-qty" }]]
     };
     const actual = {
       rowHeadersWidth: getRowHeadersWidth.resultFunc(
@@ -314,22 +314,22 @@ describe('headers sizes are computed correctly', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('with data headers on row axis', () => {
-    const rows = ['toto', 'tutu'];
-    const columns = ['titi'];
-    const dataHeadersLocation = 'rows';
+  test("with data headers on row axis", () => {
+    const rows = ["toto", "tutu"];
+    const columns = ["titi"];
+    const dataHeadersLocation = "rows";
     const rowsUi = {
       headers: [
         [
-          { key: 'toto 0' },
-          { key: 'toto 0-/-tutu 0' },
-          { key: 'toto 0-/-tutu 0-/-qty' }
+          { key: "toto 0" },
+          { key: "toto 0-/-tutu 0" },
+          { key: "toto 0-/-tutu 0-/-qty" }
         ],
-        [{ key: 'toto 0-/-tutu 1' }, { key: 'toto 0-/-tutu 1-/-qty' }]
+        [{ key: "toto 0-/-tutu 1" }, { key: "toto 0-/-tutu 1-/-qty" }]
       ]
     };
     const columnsUi = {
-      headers: [[{ key: 'titi 0' }]]
+      headers: [[{ key: "titi 0" }]]
     };
     const actual = {
       rowHeadersWidth: getRowHeadersWidth.resultFunc(
@@ -365,21 +365,21 @@ describe('headers sizes are computed correctly', () => {
     };
     expect(actual).toEqual(expected);
   });
-  test('with no field on column axis', () => {
-    const rows = ['toto', 'tutu'];
+  test("with no dimension on column axis", () => {
+    const rows = ["toto", "tutu"];
     const columns = [];
-    const dataHeadersLocation = 'columns';
+    const dataHeadersLocation = "columns";
     const rowsUi = {
       headers: [
-        [{ key: 'toto 0' }, { key: 'toto 0-/-tutu 0' }],
-        [{ key: 'toto 0-/-tutu 1' }]
+        [{ key: "toto 0" }, { key: "toto 0-/-tutu 0" }],
+        [{ key: "toto 0-/-tutu 1" }]
       ]
     };
     const columnsUi = {
       headers: [
         [
-          { key: '__total__-//-toto-/-tutu' },
-          { key: '__total__-//-toto-/-tutu-/-qty' }
+          { key: "__total__-//-toto-/-tutu" },
+          { key: "__total__-//-toto-/-tutu-/-qty" }
         ]
       ]
     };
@@ -417,22 +417,22 @@ describe('headers sizes are computed correctly', () => {
     };
     expect(actual).toEqual(expected);
   });
-  test('with no field on row axis', () => {
-    const columns = ['toto', 'tutu'];
+  test("with no dimension on row axis", () => {
+    const columns = ["toto", "tutu"];
     const rows = [];
-    const dataHeadersLocation = 'columns';
+    const dataHeadersLocation = "columns";
     const columnsUi = {
       headers: [
         [
-          { key: 'toto 0' },
-          { key: 'toto 0-/-tutu 0' },
-          { key: 'toto 0-/-tutu 0-/-qty' }
+          { key: "toto 0" },
+          { key: "toto 0-/-tutu 0" },
+          { key: "toto 0-/-tutu 0-/-qty" }
         ],
-        [{ key: 'toto 0-/-tutu 1' }, { key: 'toto 0-/-tutu 0-/-qty' }]
+        [{ key: "toto 0-/-tutu 1" }, { key: "toto 0-/-tutu 0-/-qty" }]
       ]
     };
     const rowsUi = {
-      headers: [[{ key: '__total__-/-toto-/-tutu' }]]
+      headers: [[{ key: "__total__-/-toto-/-tutu" }]]
     };
     const actual = {
       rowHeadersWidth: getRowHeadersWidth.resultFunc(
@@ -470,8 +470,8 @@ describe('headers sizes are computed correctly', () => {
   });
 });
 
-describe('row headers visible height is computed correctly', () => {
-  test('when row headers are bigger than grid height', () => {
+describe("row headers visible height is computed correctly", () => {
+  test("when row headers are bigger than grid height", () => {
     const height = 500;
     const columnHeadersHeight = 60;
     const rowHeadersHeight = 6000;
@@ -485,7 +485,7 @@ describe('row headers visible height is computed correctly', () => {
     );
     expect(actual).toEqual(440);
   });
-  test('when row headers are smaller than grid height', () => {
+  test("when row headers are smaller than grid height", () => {
     const height = 500;
     const columnHeadersHeight = 60;
     const rowHeadersHeight = 300;
@@ -501,8 +501,8 @@ describe('row headers visible height is computed correctly', () => {
   });
 });
 
-describe('column headers visible width is computed correctly', () => {
-  test('when column headers are bigger than grid width', () => {
+describe("column headers visible width is computed correctly", () => {
+  test("when column headers are bigger than grid width", () => {
     const width = 1000;
     const columnHeadersWidth = 6000;
     const rowHeadersWidth = 400;
@@ -516,7 +516,7 @@ describe('column headers visible width is computed correctly', () => {
     );
     expect(actual).toEqual(600);
   });
-  test('when column headers are smaller than grid width', () => {
+  test("when column headers are smaller than grid width", () => {
     const width = 1000;
     const columnHeadersWidth = 500;
     const rowHeadersWidth = 400;
@@ -532,8 +532,8 @@ describe('column headers visible width is computed correctly', () => {
   });
 });
 
-describe('preview sizes are computed correctly', () => {
-  test('when headers sizes are bigger than grid sizes', () => {
+describe("preview sizes are computed correctly", () => {
+  test("when headers sizes are bigger than grid sizes", () => {
     const width = 1000;
     const height = 600;
 
@@ -556,7 +556,7 @@ describe('preview sizes are computed correctly', () => {
     );
     expect(actual).toEqual({ width, height });
   });
-  test('when headers sizes are smaller than grid sizes', () => {
+  test("when headers sizes are smaller than grid sizes", () => {
     const width = 1000;
     const height = 600;
 
@@ -580,8 +580,8 @@ describe('preview sizes are computed correctly', () => {
   });
 });
 
-describe('data cells width is computed correctly', () => {
-  test('when column headers are bigger than grid width', () => {
+describe("data cells width is computed correctly", () => {
+  test("when column headers are bigger than grid width", () => {
     const width = 1000;
     const columnHeadersWidth = 6000;
     const rowHeadersWidth = 400;
@@ -595,7 +595,7 @@ describe('data cells width is computed correctly', () => {
     );
     expect(actual).toEqual(600);
   });
-  test('when column headers are smaller than grid width', () => {
+  test("when column headers are smaller than grid width", () => {
     const width = 1000;
     const columnHeadersWidth = 400;
     const rowHeadersWidth = 400;
@@ -611,8 +611,8 @@ describe('data cells width is computed correctly', () => {
   });
 });
 
-describe('data cells height is computed correctly', () => {
-  test('when row headers are bigger than grid height', () => {
+describe("data cells height is computed correctly", () => {
+  test("when row headers are bigger than grid height", () => {
     const height = 600;
     const columnHeadersHeight = 60;
     const rowHeadersHeight = 6000;
@@ -626,7 +626,7 @@ describe('data cells height is computed correctly', () => {
     );
     expect(actual).toEqual(540);
   });
-  test('when row headers are smaller than grid height', () => {
+  test("when row headers are smaller than grid height", () => {
     const height = 600;
     const columnHeadersHeight = 60;
     const rowHeadersHeight = 300;

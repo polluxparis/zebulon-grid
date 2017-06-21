@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
-import { DropTarget } from 'react-dnd';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { ScrollSync } from "react-virtualized/dist/commonjs/ScrollSync";
+import { DropTarget } from "react-dnd";
 
-import ArrowKeyStepper from '../ArrowKeyStepper/ArrowKeyStepper';
-import DataCells from '../../containers/DataCells';
-import DimensionHeaders from '../../containers/DimensionHeaders';
-import ColumnHeaders from '../../containers/ColumnHeaders';
-import RowHeaders from '../../containers/RowHeaders';
-import DragLayer from './DragLayer';
-import { Header, DataHeader } from '../../Cells';
-import { keyToIndex } from '../../AxisUi';
-import { getNextKey, getCellInfosKey } from '../../utils/keys';
+import ArrowKeyStepper from "../ArrowKeyStepper/ArrowKeyStepper";
+import DataCells from "../../containers/DataCells";
+import DimensionHeaders from "../../containers/DimensionHeaders";
+import ColumnHeaders from "../../containers/ColumnHeaders";
+import RowHeaders from "../../containers/RowHeaders";
+import DragLayer from "./DragLayer";
+import { Header, DataHeader } from "../../Cells";
+import { keyToIndex } from "../../AxisUi";
+import { getNextKey, getCellInfosKey } from "../../utils/keys";
 
 class PivotGrid extends Component {
   constructor(props) {
@@ -41,11 +41,11 @@ class PivotGrid extends Component {
         );
       }
     } else {
-      current.dataFieldsCount = this.props.dataFieldsCount;
-      next.dataFieldsCount = nextProps.dataFieldsCount;
+      current.dataDimensionsCount = this.props.dataDimensionsCount;
+      next.dataDimensionsCount = nextProps.dataDimensionsCount;
       if (this.props.rowHeaders.length !== nextProps.rowHeaders.length) {
-        current.fields = this.props.rowFields;
-        next.fields = nextProps.rowFields;
+        current.dimensions = this.props.rowDimensions;
+        next.dimensions = nextProps.rowDimensions;
         current.firstHeaderRow = this.props.rowHeaders[this.rowStartIndex];
         const nextFirstHeaderKey = getNextKey(current, next);
         nextRowStartIndex = keyToIndex(
@@ -54,8 +54,8 @@ class PivotGrid extends Component {
         );
       }
       if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
-        current.fields = this.props.columnFields;
-        next.fields = nextProps.columnFields;
+        current.dimensions = this.props.columnDimensions;
+        next.dimensions = nextProps.columnDimensions;
         current.firstHeaderRow = this.props.columnHeaders[
           this.columnStartIndex
         ];
@@ -104,7 +104,7 @@ class PivotGrid extends Component {
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
       // Position must be relative so that the absolutely positioned DragLayer behaves correctly
-      <div style={{ width, position: 'relative' }}>
+      <div style={{ width, position: "relative" }}>
         <DragLayer gridId={gridId} />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
@@ -113,11 +113,11 @@ class PivotGrid extends Component {
           scrollToRow={this.rowStartIndex}
           scrollToColumn={this.columnStartIndex}
         >
-          {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
+          {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
             <ScrollSync>
-              {({ onScroll, scrollLeft, scrollTop }) => (
+              {({ onScroll, scrollLeft, scrollTop }) =>
                 <div className="pivotgrid-pivotgrid">
-                  <div style={{ display: 'flex' }}>
+                  <div style={{ display: "flex" }}>
                     <DimensionHeaders gridId={gridId} />
                     <ColumnHeaders
                       gridId={gridId}
@@ -128,7 +128,7 @@ class PivotGrid extends Component {
                       }}
                     />
                   </div>
-                  <div style={{ display: 'flex' }}>
+                  <div style={{ display: "flex" }}>
                     <RowHeaders
                       scrollTop={scrollTop}
                       // scrollToRow={scrollToRow}
@@ -149,10 +149,8 @@ class PivotGrid extends Component {
                       drilldown={drilldown}
                     />
                   </div>
-                </div>
-              )}
-            </ScrollSync>
-          )}
+                </div>}
+            </ScrollSync>}
         </ArrowKeyStepper>
       </div>
     );
@@ -173,7 +171,7 @@ const collect = connect => ({
 });
 
 PivotGrid.propTypes = {
-  columnFields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  columnDimensions: PropTypes.arrayOf(PropTypes.object).isRequired,
   columnHeaders: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.oneOfType([
@@ -188,7 +186,7 @@ PivotGrid.propTypes = {
     format: PropTypes.object,
     sort: PropTypes.object
   }).isRequired,
-  dataFieldsCount: PropTypes.number.isRequired,
+  dataDimensionsCount: PropTypes.number.isRequired,
   drilldown: PropTypes.func.isRequired,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   layout: PropTypes.shape({
@@ -197,7 +195,7 @@ PivotGrid.propTypes = {
     rowHorizontalCount: PropTypes.number,
     rowVerticalCount: PropTypes.number
   }).isRequired,
-  rowFields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  rowDimensions: PropTypes.arrayOf(PropTypes.object).isRequired,
   rowHeaders: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.oneOfType([

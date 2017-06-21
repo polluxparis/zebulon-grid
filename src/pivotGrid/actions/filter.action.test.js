@@ -1,15 +1,15 @@
-import { ADD_FILTER, DELETE_FILTER } from '../constants';
-import { addFilter, deleteFilter } from './filter.action';
+import { ADD_FILTER, DELETE_FILTER } from "../constants";
+import { addFilter, deleteFilter } from "./filter.action";
 
-describe('addFilter creates correct action', () => {
-  test('in normal case', () => {
-    expect(addFilter('toto', 'in', '', [1, 4, 5], false)).toEqual({
+describe("addFilter creates correct action", () => {
+  test("in normal case", () => {
+    expect(addFilter("toto", "in", "", [1, 4, 5], false)).toEqual({
       type: ADD_FILTER,
-      field: 'toto',
+      dimension: "toto",
       filter: {
-        fieldId: 'toto',
-        operator: 'in',
-        term: '',
+        dimensionId: "toto",
+        operator: "in",
+        term: "",
         staticValue: [1, 4, 5],
         excludeStatic: false
       }
@@ -17,11 +17,11 @@ describe('addFilter creates correct action', () => {
   });
 });
 
-describe('deleteFilter creates correct action', () => {
-  test('in normal case', () => {
-    expect(deleteFilter('toto')).toEqual({
+describe("deleteFilter creates correct action", () => {
+  test("in normal case", () => {
+    expect(deleteFilter("toto")).toEqual({
       type: DELETE_FILTER,
-      field: 'toto'
+      dimension: "toto"
     });
   });
 });

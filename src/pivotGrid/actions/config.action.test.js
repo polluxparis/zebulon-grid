@@ -1,103 +1,103 @@
 import {
-  SET_FIELDS,
-  SET_DATAFIELDS,
+  SET_DIMENSIONS,
+  SET_MEASURES,
   SET_CONFIG_PROPERTY,
-  TOGGLE_DATAFIELD,
-  MOVE_FIELD
-} from '../constants';
+  TOGGLE_MEASURE,
+  MOVE_DIMENSION
+} from "../constants";
 import {
   setConfigProperty,
-  toggleDatafield,
-  moveField,
-  setFields,
-  setDatafields
-} from './config.action';
+  toggleMeasure,
+  moveDimension,
+  setDimensions,
+  setMeasures
+} from "./config.action";
 
-describe('setConfigProperty creates an action to set a config property', () => {
-  test('when a property  value is given', () => {
+describe("setConfigProperty creates an action to set a config property", () => {
+  test("when a property  value is given", () => {
     const configObject = { toto: 33 };
-    expect(setConfigProperty(configObject, 'toto', 666)).toEqual({
+    expect(setConfigProperty(configObject, "toto", 666)).toEqual({
       type: SET_CONFIG_PROPERTY,
-      property: 'toto',
+      property: "toto",
       value: 33
     });
   });
-  test('when no property  value is given', () => {
+  test("when no property  value is given", () => {
     const configObject = {};
-    expect(setConfigProperty(configObject, 'toto', 666)).toEqual({
+    expect(setConfigProperty(configObject, "toto", 666)).toEqual({
       type: SET_CONFIG_PROPERTY,
-      property: 'toto',
+      property: "toto",
       value: 666
     });
   });
 });
 
-describe('toggleDatafield create correct action', () => {
-  test('in normal case', () => {
-    expect(toggleDatafield('toto')).toEqual({
-      type: TOGGLE_DATAFIELD,
-      id: 'toto'
+describe("toggleMeasure create correct action", () => {
+  test("in normal case", () => {
+    expect(toggleMeasure("toto")).toEqual({
+      type: TOGGLE_MEASURE,
+      id: "toto"
     });
   });
 });
 
-describe('moveField creates correct action', () => {
-  test('in normal case', () => {
-    expect(moveField('toto', 'fields', 'rows', 0)).toEqual({
-      type: MOVE_FIELD,
-      id: 'toto',
-      oldAxis: 'fields',
-      newAxis: 'rows',
+describe("moveDimension creates correct action", () => {
+  test("in normal case", () => {
+    expect(moveDimension("toto", "dimensions", "rows", 0)).toEqual({
+      type: MOVE_DIMENSION,
+      id: "toto",
+      oldAxis: "dimensions",
+      newAxis: "rows",
       position: 0
     });
   });
 });
 
-describe('setFields creates correct action', () => {
-  test('with three fields', () => {
-    const fields = [
+describe("setDimensions creates correct action", () => {
+  test("with three dimensions", () => {
+    const dimensions = [
       {
-        name: 'toto_lb',
-        accessor: 'toto',
-        caption: 'Toto',
+        name: "toto_lb",
+        accessor: "toto",
+        caption: "Toto",
         sort: {
-          order: 'asc'
+          order: "asc"
         }
       },
       {
-        accessor: 'titi',
-        caption: 'Titi'
+        accessor: "titi",
+        caption: "Titi"
       },
       {
-        accessor: 'tutu',
-        caption: 'Tutu'
+        accessor: "tutu",
+        caption: "Tutu"
       }
     ];
-    expect(setFields({ fields })).toMatchObject({
-      type: SET_FIELDS,
-      fields: [
+    expect(setDimensions({ dimensions })).toMatchObject({
+      type: SET_DIMENSIONS,
+      dimensions: [
         {
-          id: 'toto',
-          name: 'toto_lb',
-          caption: 'Toto',
+          id: "toto",
+          name: "toto_lb",
+          caption: "Toto",
           sort: {
-            order: 'asc'
+            order: "asc"
           },
           subTotal: {}
         },
         {
-          id: 'titi',
-          name: 'titi',
-          caption: 'Titi',
+          id: "titi",
+          name: "titi",
+          caption: "Titi",
           sort: {
             order: null
           },
           subTotal: {}
         },
         {
-          id: 'tutu',
-          name: 'tutu',
-          caption: 'Tutu',
+          id: "tutu",
+          name: "tutu",
+          caption: "Tutu",
           sort: {
             order: null
           },
@@ -108,41 +108,41 @@ describe('setFields creates correct action', () => {
   });
 });
 
-describe('setDatafields creates correct action', () => {
-  test('with two datafields', () => {
-    const datafields = [
+describe("setMeasures creates correct action", () => {
+  test("with two measures", () => {
+    const measures = [
       {
-        accessor: 'qty',
-        caption: 'Quantity',
-        aggregation: 'sum'
+        accessor: "qty",
+        caption: "Quantity",
+        aggregation: "sum"
       },
       {
-        accessor: 'amt',
-        caption: 'Amount',
-        aggregation: 'sum',
-        aggregationName: 'whatever',
+        accessor: "amt",
+        caption: "Amount",
+        aggregation: "sum",
+        aggregationName: "whatever",
         render: value => {
           if (value || value === 0) {
             return `${Number(value).toFixed(0)} $`;
           }
-          return '';
+          return "";
         }
       }
     ];
-    expect(setDatafields({ datafields })).toMatchObject({
-      type: SET_DATAFIELDS,
-      datafields: [
+    expect(setMeasures({ measures })).toMatchObject({
+      type: SET_MEASURES,
+      measures: [
         {
-          id: 'qty',
-          name: 'qty',
-          caption: 'Quantity',
-          aggregationName: 'sum'
+          id: "qty",
+          name: "qty",
+          caption: "Quantity",
+          aggregationName: "sum"
         },
         {
-          id: 'amt',
-          name: 'amt',
-          caption: 'Amount',
-          aggregationName: 'whatever'
+          id: "amt",
+          name: "amt",
+          caption: "Amount",
+          aggregationName: "whatever"
         }
       ]
     });

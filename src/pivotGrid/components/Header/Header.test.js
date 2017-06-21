@@ -1,58 +1,58 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import Header from './Header';
+import React from "react";
+import { shallow } from "enzyme";
+import Header from "./Header";
 
-describe('Header', () => {
-  test('renders without crashing', () => {
+describe("Header", () => {
+  test("renders without crashing", () => {
     const props = {
       axis: 1,
       header: {
         axisType: 1,
         type: 2,
-        template: 'cell-template-dataheader',
+        template: "cell-template-dataheader",
         value: {
-          id: 'qty',
-          name: 'qty',
-          caption: 'Quantity',
-          aggregationName: 'sum',
+          id: "qty",
+          name: "qty",
+          caption: "Quantity",
+          aggregationName: "sum",
           activated: true
         },
         expanded: true,
-        cssclass: 'header header-col',
-        key: 'titi 0-/-qty',
+        cssclass: "header header-col",
+        key: "titi 0-/-qty",
         parent: {
           axisType: 1,
           type: 5,
-          template: 'cell-template-column-header',
-          value: 'titi 0',
+          template: "cell-template-column-header",
+          value: "titi 0",
           expanded: true,
-          cssclass: 'header header-col',
-          key: 'titi 0',
+          cssclass: "header header-col",
+          key: "titi 0",
           isOnRowAxis: false,
           subtotalHeader: null,
           parent: null,
           dim: {
-            id: 'titi 0',
+            id: "titi 0",
             parent: {
               id: -1,
               parent: null,
               caption: null,
               isRoot: true,
               isLeaf: false,
-              field: null,
+              dimension: null,
               depth: 2,
-              values: ['titi 0', 'titi 1', 'titi 2', 'titi 3', 'titi 4'],
+              values: ["titi 0", "titi 1", "titi 2", "titi 3", "titi 4"],
               subdimvals: {
-                'titi 1': {
-                  id: 'titi 1',
-                  caption: 'titi 1',
+                "titi 1": {
+                  id: "titi 1",
+                  caption: "titi 1",
                   isRoot: false,
                   isLeaf: true,
-                  field: {
-                    id: 'titi',
-                    name: 'titi',
-                    caption: 'Titi',
-                    sort: { order: 'asc' },
+                  dimension: {
+                    id: "titi",
+                    name: "titi",
+                    caption: "Titi",
+                    sort: { order: "asc" },
                     subTotal: {}
                   },
                   depth: 1,
@@ -60,9 +60,9 @@ describe('Header', () => {
                   subdimvals: {},
                   rowIndexes: [2, 3, 12, 13]
                 },
-                'titi 2': {
-                  id: 'titi 2',
-                  caption: 'titi 2',
+                "titi 2": {
+                  id: "titi 2",
+                  caption: "titi 2",
                   isRoot: false,
                   isLeaf: true,
                   depth: 1,
@@ -70,9 +70,9 @@ describe('Header', () => {
                   subdimvals: {},
                   rowIndexes: [4, 5, 14, 15]
                 },
-                'titi 3': {
-                  id: 'titi 3',
-                  caption: 'titi 3',
+                "titi 3": {
+                  id: "titi 3",
+                  caption: "titi 3",
                   isRoot: false,
                   isLeaf: true,
                   depth: 1,
@@ -80,9 +80,9 @@ describe('Header', () => {
                   subdimvals: {},
                   rowIndexes: [6, 7, 16, 17]
                 },
-                'titi 4': {
-                  id: 'titi 4',
-                  caption: 'titi 4',
+                "titi 4": {
+                  id: "titi 4",
+                  caption: "titi 4",
                   isRoot: false,
                   isLeaf: true,
                   depth: 1,
@@ -93,7 +93,7 @@ describe('Header', () => {
               },
               rowIndexes: null
             },
-            caption: 'titi 0',
+            caption: "titi 0",
             isRoot: false,
             isLeaf: true,
             depth: 1,
@@ -106,33 +106,33 @@ describe('Header', () => {
             {
               axisType: 1,
               type: 2,
-              template: 'cell-template-dataheader',
+              template: "cell-template-dataheader",
               value: {
-                id: 'amt',
-                name: 'amt',
-                caption: 'Amount',
-                aggregationName: 'whatever',
+                id: "amt",
+                name: "amt",
+                caption: "Amount",
+                aggregationName: "whatever",
                 activated: true
               },
               expanded: true,
-              cssclass: 'header header-col',
-              key: 'titi 0-/-amt',
-              caption: 'Amount',
+              cssclass: "header header-col",
+              key: "titi 0-/-amt",
+              caption: "Amount",
               x: 2,
               y: 1
             }
           ],
-          datafieldscount: 2,
-          caption: 'titi 0',
+          measurescount: 2,
+          caption: "titi 0",
           x: 0,
           y: 0
         },
-        caption: 'Quantity',
+        caption: "Quantity",
         x: 1,
         y: 1
       },
       positionStyle: {
-        position: 'absolute',
+        position: "absolute",
         left: 0,
         top: 30,
         height: 30,

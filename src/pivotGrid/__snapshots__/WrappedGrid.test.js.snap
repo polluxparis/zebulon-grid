@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WrappedGrid returns correct markup when config has data fields on row axis 1`] = `
+exports[`WrappedGrid returns correct markup when config has data dimensions on row axis 1`] = `
 <div
   style={
     Object {
@@ -3659,7 +3659,7 @@ exports[`WrappedGrid returns correct markup when config has no columns 1`] = `
 </div>
 `;
 
-exports[`WrappedGrid returns correct markup when config has no data field 1`] = `
+exports[`WrappedGrid returns correct markup when config has no data dimension 1`] = `
 <div
   style={
     Object {
@@ -6067,7 +6067,7 @@ exports[`WrappedGrid returns correct markup when config has no rows 1`] = `
 </div>
 `;
 
-exports[`WrappedGrid returns correct markup when config has one data field 1`] = `
+exports[`WrappedGrid returns correct markup when config has one data dimension 1`] = `
 <div
   style={
     Object {
@@ -7587,7 +7587,7 @@ exports[`WrappedGrid returns correct markup when config has one data field 1`] =
 </div>
 `;
 
-exports[`WrappedGrid returns correct markup when config has two data fields 1`] = `
+exports[`WrappedGrid returns correct markup when config has two data dimensions 1`] = `
 <div
   style={
     Object {

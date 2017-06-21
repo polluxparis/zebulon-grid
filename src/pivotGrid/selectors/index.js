@@ -4,7 +4,7 @@ import {
   getRowUiAxis,
   getColumnAxis,
   getRowAxis
-} from './axis.selector';
+} from "./axis.selector";
 import {
   getCellSizes,
   getDimensionPositions,
@@ -23,15 +23,15 @@ import {
   getLastChildSizeOnRows,
   getDataCellsHeight,
   getDataCellsWidth
-} from './sizes.selector';
+} from "./sizes.selector";
 import {
-  getActivatedDatafields,
-  getRowFields,
-  getColumnFields,
-  getAvailableFields
-} from './fields.selector';
-import { getCellValue, getCellInfos } from './cell.selector';
-import { getFilters, getFieldValues } from './data.selector';
+  getActivatedMeasures,
+  getRowDimensions,
+  getColumnDimensions,
+  getAvailableDimensions
+} from "./dimensions.selector";
+import { getCellValue, getCellInfos } from "./cell.selector";
+import { getFilters, getDimensionValues } from "./data.selector";
 
 export { getLayout };
 export { getCellSizes };
@@ -39,10 +39,10 @@ export { getColumnUiAxis };
 export { getRowUiAxis };
 export { getColumnAxis };
 export { getRowAxis };
-export { getActivatedDatafields };
-export { getRowFields };
-export { getColumnFields };
-export { getAvailableFields };
+export { getActivatedMeasures };
+export { getRowDimensions };
+export { getColumnDimensions };
+export { getAvailableDimensions };
 export { getDimensionPositions };
 export { getDimensionSize };
 export { getRowHeadersHeight };
@@ -60,5 +60,5 @@ export { getRowHeadersVisibleHeight };
 export { getCellValue, getCellInfos };
 export { getDataCellsHeight };
 export { getDataCellsWidth };
-export { getFieldValues };
+export { getDimensionValues };
 export { getFilters };

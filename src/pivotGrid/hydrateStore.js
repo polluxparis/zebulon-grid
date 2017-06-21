@@ -1,13 +1,20 @@
 import {
   pushData,
-  setFields,
-  setDatafields,
+  setDimensions,
+  setMeasures,
   setConfigProperty,
-  moveField,
-  toggleDatafield
+  moveDimension,
+  toggleMeasure
 } from "./actions";
-import { fieldFactory, datafieldFactory } from "./fields";
-import { isPromise, isObservable } from "./utils/generic";
+import {
+  isPromise,
+  isObservable,
+  //isString,
+  isStringOrNumber,
+  isNullOrUndefined,
+  toAccessorFunction
+} from "./utils/generic";
+import * as aggregations from "./Aggregation";
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -25,59 +32,112 @@ export default function hydrateStore(store, config, datasource) {
     );
   }
 
-  store.dispatch(setFields(config));
-  store.dispatch(setDatafields(config));
-  const fields = config.fields.map(field => fieldFactory(field));
-  const datafields = config.datafields.map(datafield =>
-    datafieldFactory(datafield)
+  store.dispatch(setDimensions(config));
+  store.dispatch(setMeasures(config));
+  const dimensions = config.dimensions.map(dimension =>
+    dimensionFactory(dimension)
   );
+  const measures = config.measures.map(measure => measureFactory(measure));
 
-  store.dispatch(setConfigProperty(config, "dataHeadersLocation", "columns"));
+  store.dispatch(
+    setConfigProperty(config, "measureHeadersLocation", "columns")
+  );
   store.dispatch(setConfigProperty(config, "height", 600));
   store.dispatch(setConfigProperty(config, "width", 800));
   store.dispatch(setConfigProperty(config, "cellHeight", 30));
   store.dispatch(setConfigProperty(config, "cellWidth", 100));
   store.dispatch(setConfigProperty(config, "zoom", 1));
 
-  const fieldIdsPositioned = [];
-  config.rows.forEach((fieldCaption, index) => {
-    const fieldId = fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, "fields", "rows", index));
-    fieldIdsPositioned.push(fieldId);
+  const dimensionIdsPositioned = [];
+  config.rows.forEach((dimensionId, index) => {
+    store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
+    dimensionIdsPositioned.push(dimensionId);
   });
-  config.columns.forEach((fieldCaption, index) => {
-    const fieldId = fields.find(field => field.caption === fieldCaption).id;
-    store.dispatch(moveField(fieldId, "fields", "columns", index));
-    fieldIdsPositioned.push(fieldId);
+  config.columns.forEach((dimensionId, index) => {
+    store.dispatch(moveDimension(dimensionId, "dimensions", "columns", index));
+    dimensionIdsPositioned.push(dimensionId);
   });
-  Object.values(fields)
-    .filter(field => !fieldIdsPositioned.includes(field.id))
-    .forEach((field, index) => {
-      store.dispatch(moveField(field.id, "fields", "fields", index));
+  Object.values(dimensions)
+    .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
+    .forEach((dimension, index) => {
+      store.dispatch(
+        moveDimension(dimension.id, "dimensions", "dimensions", index)
+      );
     });
 
-  config.data.forEach(fieldCaption => {
-    const field = datafields.find(field => field.caption === fieldCaption);
-    store.dispatch(toggleDatafield(field.id));
+  config.activeMeasures.forEach(measureId => {
+    store.dispatch(toggleMeasure(measureId));
   });
 
   const customFunctions = {
-    sort: fields.reduce(
-      (acc, field) => ({ ...acc, [field.id]: field.sort.custom }),
+    sort: dimensions.reduce(
+      (acc, dimension) => ({ ...acc, [dimension.id]: dimension.sort.custom }),
       {}
     ),
-    access: datafields.reduce(
-      (acc, field) => ({ ...acc, [field.id]: field.accessor }),
+    access: measures.reduce(
+      (acc, dimension) => ({ ...acc, [dimension.id]: dimension.accessor }),
       {}
     ),
-    format: datafields.reduce(
-      (acc, field) => ({ ...acc, [field.id]: field.format }),
+    format: measures.reduce(
+      (acc, dimension) => ({ ...acc, [dimension.id]: dimension.format }),
       {}
     ),
-    aggregation: datafields.reduce(
-      (acc, field) => ({ ...acc, [field.id]: field.aggregation }),
+    aggregation: measures.reduce(
+      (acc, dimension) => ({ ...acc, [dimension.id]: dimension.aggregation }),
       {}
     )
   };
   return customFunctions;
+}
+
+// initialisation of dimensions from configuration
+export function dimensionFactory(dimensionConfig) {
+  const {
+    id,
+    caption,
+    keyAccessor,
+    labelAccessor,
+    sort,
+    format,
+    subTotal
+  } = dimensionConfig;
+  const dimSort = !isNullOrUndefined(sort)
+    ? {
+        direction: sort.direction,
+        custom: sort.custom,
+        keyAccessor: toAccessorFunction(
+          sort.keyAccessor || labelAccessor || keyAccessor
+        )
+      }
+    : {};
+  return {
+    id,
+    caption: caption || id,
+    keyAccessor: toAccessorFunction(keyAccessor),
+    labelAccessor: toAccessorFunction(labelAccessor || keyAccessor),
+    format: format || (value => value),
+    sort: dimSort,
+    subTotal
+  };
+}
+// initialisation of measures from configuration
+export function measureFactory(measureConfig) {
+  const {
+    id,
+    caption,
+    valueAccessor,
+    format,
+    aggregation,
+    aggregationCaption
+  } = measureConfig;
+  return {
+    id,
+    caption: caption || id,
+    valueAccessor: toAccessorFunction(valueAccessor),
+    format: format || (value => value),
+    aggregation: isStringOrNumber(aggregation)
+      ? aggregations[aggregation]
+      : aggregation,
+    aggregationCaption
+  };
 }

@@ -50,9 +50,9 @@ const Header = ({
   if (!header.dim) {
     // Measure header
     dimensionId = MEASURE_ID;
-  } else if (header.dim.field) {
+  } else if (header.dim.dimension) {
     // Normal header
-    dimensionId = header.dim.field.id;
+    dimensionId = header.dim.dimension.id;
   } else {
     // Total header
     dimensionId = TOTAL_ID;

@@ -1,35 +1,36 @@
-import { createSelector } from 'reselect';
-import { Axis, AxisType, toAxisType } from '../Axis';
-import AxisUi from '../AxisUi';
-import { getFilteredData } from './data.selector';
+import { createSelector } from "reselect";
+import { Axis, AxisType, toAxisType } from "../Axis";
+import AxisUi from "../AxisUi";
+import { getFilteredData } from "./data.selector";
 import {
-  getRowFields,
-  getColumnFields,
-  getActivatedDatafields
-} from './fields.selector';
+  getRowDimensions,
+  getColumnDimensions,
+  getActivatedMeasures
+} from "./dimensions.selector";
 
 export const getRowAxis = createSelector(
-  [getRowFields, getFilteredData],
-  (rowFields, filteredData) => new Axis(AxisType.ROWS, rowFields, filteredData)
+  [getRowDimensions, getFilteredData],
+  (rowDimensions, filteredData) =>
+    new Axis(AxisType.ROWS, rowDimensions, filteredData)
 );
 
 export const getColumnAxis = createSelector(
-  [getColumnFields, getFilteredData],
-  (columnFields, filteredData) =>
-    new Axis(AxisType.COLUMNS, columnFields, filteredData)
+  [getColumnDimensions, getFilteredData],
+  (columnDimensions, filteredData) =>
+    new Axis(AxisType.COLUMNS, columnDimensions, filteredData)
 );
 
-const getActivatedDatafieldsCount = createSelector(
-  [getActivatedDatafields],
-  datafields => datafields.length
+const getActivatedMeasuresCount = createSelector(
+  [getActivatedMeasures],
+  measures => measures.length
 );
 
-const getAxisActivatedDatafields = axisType =>
+const getAxisActivatedMeasures = axisType =>
   createSelector(
-    [getActivatedDatafields, state => state.config.dataHeadersLocation],
-    (datafields, dataHeadersLocation) => {
+    [getActivatedMeasures, state => state.config.dataHeadersLocation],
+    (measures, dataHeadersLocation) => {
       if (toAxisType(dataHeadersLocation) === axisType) {
-        return datafields;
+        return measures;
       }
       return null;
     }
@@ -38,38 +39,34 @@ const getAxisActivatedDatafields = axisType =>
 export const getRowUiAxis = createSelector(
   [
     getRowAxis,
-    getAxisActivatedDatafields(AxisType.ROWS),
+    getAxisActivatedMeasures(AxisType.ROWS),
     state => state.axis.columns
   ],
-  (rowAxis, activatedDatafields, crossFieldsCode) =>
+  (rowAxis, activatedMeasures, crossDimensionsCode) =>
     new AxisUi(
       rowAxis,
       {
-        activatedDatafields,
-        activatedDatafieldsCount: activatedDatafields
-          ? activatedDatafields.length
-          : 0
+        activatedMeasures,
+        activatedMeasuresCount: activatedMeasures ? activatedMeasures.length : 0
       },
-      crossFieldsCode
+      crossDimensionsCode
     )
 );
 
 export const getColumnUiAxis = createSelector(
   [
     getColumnAxis,
-    getAxisActivatedDatafields(AxisType.COLUMNS),
+    getAxisActivatedMeasures(AxisType.COLUMNS),
     state => state.axis.rows
   ],
-  (columnAxis, activatedDatafields, crossFieldsCode) =>
+  (columnAxis, activatedMeasures, crossDimensionsCode) =>
     new AxisUi(
       columnAxis,
       {
-        activatedDatafields,
-        activatedDatafieldsCount: activatedDatafields
-          ? activatedDatafields.length
-          : 0
+        activatedMeasures,
+        activatedMeasuresCount: activatedMeasures ? activatedMeasures.length : 0
       },
-      crossFieldsCode
+      crossDimensionsCode
     )
 );
 
@@ -79,16 +76,25 @@ export const getLayout = createSelector(
     getColumnAxis,
     getRowUiAxis,
     getColumnUiAxis,
-    getActivatedDatafieldsCount,
+    getActivatedMeasuresCount,
     state => state.config.dataHeadersLocation
   ],
-  (rowAxis, columnAxis, rowsUi, columnsUi, activatedDatafieldsCount, dataHeadersLocation) => {
-    const rowHorizontalCount = (rowAxis.fields.length || 1) +
-      (dataHeadersLocation === 'rows' && activatedDatafieldsCount >= 1 ? 1 : 0);
+  (
+    rowAxis,
+    columnAxis,
+    rowsUi,
+    columnsUi,
+    activatedMeasuresCount,
+    dataHeadersLocation
+  ) => {
+    const rowHorizontalCount =
+      (rowAxis.dimensions.length || 1) +
+      (dataHeadersLocation === "rows" && activatedMeasuresCount >= 1 ? 1 : 0);
     const rowVerticalCount = rowsUi.headers.length;
     const columnHorizontalCount = columnsUi.headers.length;
-    const columnVerticalCount = (columnAxis.fields.length || 1) +
-      (dataHeadersLocation === 'columns' && activatedDatafieldsCount >= 1
+    const columnVerticalCount =
+      (columnAxis.dimensions.length || 1) +
+      (dataHeadersLocation === "columns" && activatedMeasuresCount >= 1
         ? 1
         : 0);
     return {
