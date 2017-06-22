@@ -8,18 +8,6 @@ import {
   getActivatedMeasures
 } from "./dimensions.selector";
 
-export const getRowAxis = createSelector(
-  [getRowDimensions, getFilteredData],
-  (rowDimensions, filteredData) =>
-    new Axis(AxisType.ROWS, rowDimensions, filteredData)
-);
-
-export const getColumnAxis = createSelector(
-  [getColumnDimensions, getFilteredData],
-  (columnDimensions, filteredData) =>
-    new Axis(AxisType.COLUMNS, columnDimensions, filteredData)
-);
-
 const getActivatedMeasuresCount = createSelector(
   [getActivatedMeasures],
   measures => measures.length
@@ -104,4 +92,129 @@ export const getLayout = createSelector(
       columnVerticalCount
     };
   }
+);
+
+///////////////////////////////////////////////////////////////////
+// Axis trees
+//////////////////////////////////////////////////////////////////
+
+// add child node to a node
+function buildNode(id, node, index) {
+  if (node.children[id] !== undefined) {
+    node.children[id].dataIndexes.push(index);
+    return node.children[id];
+  } else {
+    node.children[id] = { id, children: {}, dataIndexes: [index] };
+    return node.children[id];
+  }
+}
+// build one axis (colums or rows) tree
+function buildAxisTree(data, dimensions) {
+  return buildAxisTrees(data, { columns: dimensions, rows: [] }).columns;
+}
+
+// build colums and rows trees
+function buildAxisTrees(data, { columns, rows }) {
+  const rowRoot = { id: null, children: {} };
+  const columnRoot = { id: null, children: {} };
+  // Create sorting accessors
+  data.forEach((row, index) => {
+    let columnNode = columnRoot;
+    let rowNode = rowRoot;
+    columns.forEach(dimension => {
+      columnNode = buildNode(dimension.accessor(row), columnNode, index);
+    });
+    rows.forEach(dimension => {
+      rowNode = buildNode(dimension.accessor(row), rowNode, index);
+    });
+  });
+  return { columns: columnNode, rows: rowNode };
+}
+export const getAxisTrees = createSelector(
+  [getFilteredData, getRowDimensions, getColumnDimensions],
+  (data, columns, rows) => buildAxisTrees(data, { columns, rows })
+);
+export const getColumnAxisTree = createSelector(
+  [getFilteredData, getColumnDimensions],
+  buildAxisTree
+);
+export const getRowAxisTree = createSelector(
+  [getFilteredData, getRowDimensions],
+  buildAxisTree
+);
+
+///////////////////////////////////////////////////////////////////
+// headers
+//////////////////////////////////////////////////////////////////
+function buildHeader(data, node, dimensions, measures, depth) {
+  const { id, children, dataIndexes } = node;
+  const currentDimension = dimensions[depth];
+  const row = data[dataIndexes[0]];
+  const header = {
+    sortKey: currentDimension.sort.keyAccessor(row),
+    id,
+    dataIndexes,
+    type: "dimension",
+    children: Object.keys(node.children).reduce(
+      (acc, nodeId) => ({
+        ...acc,
+        [nodeId]: buildHeader(
+          node.children[nodeId],
+          dimensions,
+          dimensionValues,
+          depth + 1
+        )
+      }),
+      {}
+    )
+  };
+
+  if (header.children.length === 0) {
+    if (measures.length !== 0) {
+      // measure headers
+      measures.forEach((measure, index) => {
+        header.children.push({
+          id: measure.id,
+          type: "measure"
+        });
+      });
+    }
+  } else {
+    // sort children
+    const mapOrder = Object.keys(header.children).map(id => ({
+      id: id,
+      sortKey: header.children[id].sortKey
+    }));
+    const sortFunction = (a, b) => header.sort.custom(a.sortKey, b.sortKey);
+    mapOrder.sort(sortFunction);
+    header.mapOrder = mapOrder.map(obj => obj.id);
+    if (currentDimension.sort.direction === "desc") {
+      header.mapOrder.reverse();
+    }
+    header.hasSubTotal = currentDimension.hasSubTotal;
+  }
+  // x value
+  x += measures.length || 1;
+  return header;
+}
+
+export function buildAxisHeaders(data, axisTree, dimensions, measures) {
+  axisTree.children.map(node =>
+    buildHeader(node, dimensions, measures, data, 0)
+  );
+}
+
+export const getRowHeaders = createSelector(
+  [getFilteredData, getRowAxisTree, getRowDimensions, getActivatedMeasures],
+  buildAxisHeaders
+);
+
+export const getColumnHeaders = createSelector(
+  [
+    getFilteredData,
+    getColumnAxisTree,
+    getColumnDimensions,
+    getActivatedMeasures
+  ],
+  buildAxisHeaders
 );

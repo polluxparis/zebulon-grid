@@ -33,14 +33,73 @@ export const keyToIndex = (headers, key) => {
  * @memberOf pivotgrid.ui
  * @param  {pivotgrid.axe} axe - axe containing all dimensions.
  */
+
+function buildHeader(data, node, dimensions, measures, depth) {
+  const { id, children, dataIndexes } = node;
+  const currentDimension = dimensions[depth];
+  const row = data[dataIndexes[0]];
+  const header = {
+    sortKey: currentDimension.sort.keyAccessor(row),
+    id,
+    dataIndexes,
+    type: "dimension",
+    children: Object.keys(node.children).reduce(
+      (acc, nodeId) => ({
+        ...acc,
+        [nodeId]: buildHeader(
+          node.children[nodeId],
+          dimensions,
+          dimensionValues,
+          depth + 1
+        )
+      }),
+      {}
+    )
+  };
+
+  if (header.children.length === 0) {
+    if (measures.length !== 0) {
+      // measure headers
+      measures.forEach((measure, index) => {
+        header.children.push({
+          id: measure.id,
+          type: "measure"
+        });
+      });
+    }
+  } else {
+    // sort children
+    const mapOrder = Object.keys(header.children).map(id => ({
+      id: id,
+      sortKey: header.children[id].sortKey
+    }));
+    const sortFunction = (a, b) => header.sort.custom(a.sortKey, b.sortKey);
+    mapOrder.sort(sortFunction);
+    header.mapOrder = mapOrder.map(obj => obj.id);
+    if (currentDimension.sort.direction === "desc") {
+      header.mapOrder.reverse();
+    }
+    header.hasSubTotal = currentDimension.hasSubTotal;
+  }
+  // x value
+  x += measures.length || 1;
+  return header;
+}
+
+export function buildAxisHeaders(data, axisTree, dimensions, measures) {
+  axisTree.children.map(node =>
+    buildHeader(node, dimensions, measures, data, 0)
+  );
+}
+
 export default class AxisUi {
   constructor(axis, config, crossAxisDimensionsCode) {
-    const { activatedMeasuresCount, activatedMeasures } = config;
-    this.measuresCount = activatedMeasuresCount;
+    const { activatedMeasures } = config;
+    this.measuresCount = activatedMeasures.length;
     // this.measuresCount = getMeasuresCount({
     //   axisType: axis.type,
     //   dataHeadersLocation,
-    //   activatedMeasuresCount
+    //
     // });
 
     this.hasMeasures = this.measuresCount >= 1;
@@ -69,8 +128,7 @@ export default class AxisUi {
           infos: headers,
           dimension: axis.root,
           axisType: axis.type,
-          activatedMeasures,
-          activatedMeasuresCount
+          activatedMeasures
         });
       }
 
@@ -97,8 +155,7 @@ export default class AxisUi {
           infos: headers,
           parent: grandtotalHeader,
           y: y + 1,
-          activatedMeasures,
-          activatedMeasuresCount
+          activatedMeasures
         });
       }
     }
@@ -114,14 +171,7 @@ export default class AxisUi {
   * @param  {object}  infos - array to fill with ui dimension info
   * @param  {number}  axisType - type of the axe (rows or columns)
   */
-  getUiInfo({
-    infos,
-    dimension,
-    axisType,
-    activatedMeasures,
-    activatedMeasuresCount,
-    y = 0
-  }) {
+  getUiInfo({ infos, dimension, axisType, activatedMeasures, y = 0 }) {
     if (dimension.values.length > 0) {
       const infosMaxIndex = infos.length - 1;
       let lastInfosArray = infos[infosMaxIndex];
@@ -176,8 +226,7 @@ export default class AxisUi {
             dimension: subdim,
             axisType,
             y: y + 1,
-            activatedMeasures,
-            activatedMeasuresCount
+            activatedMeasures
           });
           if (subdim.dimension.subTotal.visible) {
             infos.push([subTotalHeader]);
@@ -188,7 +237,7 @@ export default class AxisUi {
               axisType,
               infos,
               activatedMeasures,
-              activatedMeasuresCount,
+
               parent: subTotalHeader,
               y: y + 1
             });
@@ -199,7 +248,7 @@ export default class AxisUi {
             axisType,
             infos,
             activatedMeasures,
-            activatedMeasuresCount,
+
             parent: newHeader,
             y: y + 1
           });

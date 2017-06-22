@@ -58,82 +58,12 @@ function measureFactory(measureConfig) {
     };
 }
 
-// occurrence of dimensions referencing data rows indexes linked to this value
-class DimensionValue {
-    constructor(id, value, sortingValue) {
-        this.id = id;
-        this.value = value;
-        this.sortingValue = sortingValue;
-        // references to dataset row indexes
-        this.dataIndexes = [];
-    }
-}
-
 class Axis {
     constructor(type, dimensions) {}
     adddimension(dimension, position) {}
     removedimension(dimensionId) {}
 }
-// add child node to a node
-function buildNode(id, node) {
-    if (node.children[id] !== undefined) {
-        return node.children[id];
-    } else {
-        node.children[id] = { id, children: {} };
-        return node.children[id];
-    }
-}
-// build one axis (colums or rows) tree
-function buildAxisTree(data, dimensions) {
-    return buildAxisTrees(data, { columns: dimensions, rows: [] }).columns;
-}
 
-// build colums and rows trees
-function buildAxisTrees(data, { columns, rows }) {
-    const rowRoot = { id: null, children: {} };
-    const columnRoot = { id: null, children: {} };
-    // Create sorting accessors
-    data.forEach((row, index) => {
-        let columnNode = columnRoot;
-        let rowNode = rowRoot;
-        columns.forEach(dimension => {
-            columnNode = buildNode(dimension.accessor(row), columnNode);
-        });
-        rows.forEach(dimension => {
-            rowNode = buildNode(dimension.accessor(row), rowNode);
-        });
-    });
-    return { columns: columnNode, rows: rowNode };
-}
-// build a dictionary dimension:[dimension values]
-function buildDimensionValues(data, dimensions, currentDimensionValues) {
-    let dimensionValues;
-    if (currentDimensionValues === undefined) {
-        dimensionValues = dimensions.reduce(
-            (acc, dimension) => ({
-                ...acc,
-                [dimension.id]: {}
-            }),
-            {}
-        );
-    } else {
-        dimensionValues = currentDimensionValues;
-    }
-    data.forEach((row, index) => {
-        dimensions.forEach(dimension => {
-            const id = dimension.accessor(row);
-            if (dimensionValues[dimension.id][id] === undefined) {
-                dimensionValues[dimension.id][id] = new DimensionValue(
-                    id,
-                    dimension.labelAccessor(row),
-                    dimension.sort.accessor(row)
-                );
-            }
-            dimensionValues[dimension.id][id].dataIndexes.push(index);
-        });
-    });
-    return dimensionValues;
-}
 class Grid {
     constructor(data, dimensions) {
         this.columns = new Axis("column", dimensions);
