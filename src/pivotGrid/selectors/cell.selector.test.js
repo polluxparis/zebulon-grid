@@ -89,7 +89,7 @@ describe("cells infos are computed correctly", () => {
     };
     const cellInfos = getCellInfos({
       data: datasource,
-      config: { dataHeadersLocation: "columns" }
+      config: { measureHeadersAxis: "columns" }
     })(cell);
     expect(cellInfos).toEqual(expected);
   });

@@ -1,11 +1,9 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
-import {
-  Grid as ReactVirtualizedGrid
-} from 'react-virtualized/dist/commonjs/Grid';
+import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 
-import { isInRange } from '../../utils/generic';
-import { DataCell } from '../../Cells';
+import { isInRange, isUndefined } from '../../utils/generic';
+import { DataCell, HeaderType } from '../../Cells';
 import DataCellComponent from '../DataCell';
 import { AXIS_SEPARATOR } from '../../constants';
 
@@ -22,7 +20,7 @@ class DataCells extends PureComponent {
     this.handleDrilldown = this.handleDrilldown.bind(this);
 
     this.state = {
-      cellsCache: {},
+      valuesCache: {},
       selectedCellStart: null,
       selectedCellEnd: null
     };
@@ -36,7 +34,7 @@ class DataCells extends PureComponent {
   }
 
   componentWillReceiveProps() {
-    this.setState({ cellsCache: this.datacellsCache });
+    this.setState({ valuesCache: this.valuesCache });
   }
 
   componentWillUpdate() {
@@ -47,8 +45,8 @@ class DataCells extends PureComponent {
     this.isUpdating = false;
     if (
       prevProps.zoom !== this.props.zoom ||
-      prevProps.sizes.leafs.rows !== this.props.sizes.leafs.rows ||
-      prevProps.sizes.leafs.columns !== this.props.sizes.leafs.columns
+      prevProps.sizes.heights !== this.props.sizes.heights ||
+      prevProps.sizes.widths !== this.props.sizes.widths
     ) {
       this.grid.recomputeGridSize();
     }
@@ -138,17 +136,22 @@ class DataCells extends PureComponent {
 
   cellRenderer({ columnIndex, key, rowIndex, style }) {
     const { selectedCellStart, selectedCellEnd } = this.state;
-    const {
-      getCellValue,
-      dataHeadersLocation,
-      customFunctions,
-      focusCellKeys
-    } = this.props;
-    const { rowHeaders, columnHeaders } = this.props;
-    const rowHeaderRow = rowHeaders[rowIndex];
-    const rowHeader = rowHeaderRow[rowHeaderRow.length - 1];
-    const columnHeaderColumn = columnHeaders[columnIndex];
-    const columnHeader = columnHeaderColumn[columnHeaderColumn.length - 1];
+    const { getCellValue, customFunctions, focusCellKeys } = this.props;
+    const { rowLeaves, columnLeaves, measures } = this.props;
+    const rowHeader = rowLeaves[rowIndex];
+    const columnHeader = columnLeaves[columnIndex];
+
+    let measure;
+    if (rowHeader.type === HeaderType.MEASURE) {
+      measure = measures[rowHeader.id];
+    } else {
+      measure = measures[columnHeader.id];
+    }
+    // empty measure
+    if (isUndefined(measure)) {
+      measure = { format: v => v, valueAccessor: () => null };
+    }
+
     let selected = false;
     if (selectedCellStart && selectedCellEnd) {
       selected = isInRange(
@@ -165,23 +168,29 @@ class DataCells extends PureComponent {
     // This causes all the data cells to be rendered when new cells are selected via mouse actions
     // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
     // bring complexity and this is good enough at the time.
-    const cell = new DataCell(
-      getCellValue,
-      dataHeadersLocation,
-      rowHeader,
-      columnHeader,
-      customFunctions
+    // const cell = new DataCell(
+    //   getCellValue,
+    //   rowHeader,
+    //   columnHeader,
+    //   customFunctions
+    // );
+    const value = getCellValue(
+      measure.valueAccessor,
+      rowHeader.dataIndexes,
+      columnHeader.dataIndexes,
+      customFunctions.aggregation[measure.id]
     );
     const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
-    this.datacellsCache[cellKey] = cell.value;
+    this.valuesCache[cellKey] = value;
     let valueHasChanged = false;
     if (this.isUpdating) {
-      const oldcell = this.state.cellsCache[cellKey];
+      const oldValue = this.state.valuesCache[cellKey];
       // NaN is not equal to NaN... hence the last condition
-      if (oldcell !== undefined && cell.value !== oldcell && !isNaN(oldcell)) {
+      if (oldValue !== undefined && value !== oldValue && !isNaN(oldValue)) {
         valueHasChanged = true;
       }
     }
+    const caption = measure.format(value);
     return (
       <DataCellComponent
         key={key}
@@ -189,7 +198,7 @@ class DataCells extends PureComponent {
         style={style}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
-        cell={cell}
+        caption={caption}
         drilldown={this.handleDrilldown}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
@@ -204,28 +213,28 @@ class DataCells extends PureComponent {
       getColumnWidth,
       getRowHeight,
       onScroll,
-      columnCount,
-      rowCount,
       height,
       width,
       scrollToColumn,
       scrollToRow,
       onSectionRendered,
-      zoom
+      zoom,
+      columnLeaves,
+      rowLeaves
     } = this.props;
-    this.datacellsCache = {};
+    this.valuesCache = {};
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
         className="pivotgrid-data-cells"
-        columnCount={columnCount}
+        columnCount={columnLeaves.length}
         columnWidth={getColumnWidth}
         height={height}
         onScroll={onScroll}
         ref={ref => {
           this.grid = ref;
         }}
-        rowCount={rowCount}
+        rowCount={rowLeaves.length}
         rowHeight={getRowHeight}
         scrollToAlignment="start"
         onSectionRendered={onSectionRendered}

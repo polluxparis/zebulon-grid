@@ -12,7 +12,7 @@ describe('RowHeaders', () => {
         width={300}
         getColumnWidth={() => 200}
         getRowHeight={() => 30}
-        getDimensionSize={() => 60}
+        getCrossSize={() => 60}
         getLastChildSize={() => 30}
         rowHeaders={[]}
         dimensionPositions={{ columns: {}, rows: {} }}

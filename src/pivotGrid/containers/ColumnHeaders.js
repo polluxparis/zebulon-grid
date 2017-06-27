@@ -2,34 +2,52 @@ import { connect } from 'react-redux';
 
 import { AxisType } from '../Axis';
 import {
-  getColumnUiAxis,
-  getColumnWidth,
-  getColumnHeadersHeight,
+  getColumnHeaders,
+  getCellWidthByKeySelector,
+  getCellHeightByKeySelector,
+  getColumnHeight,
+  rowDimensionsSelector,
+  columnHeadersWidthSelector,
   getLastChildSizeOnColumns,
-  getDimensionSize,
-  getDimensionPositions,
+  // getCrossSize,
+  crossPositionsSelector,
   getLayout,
-  getColumnHeadersVisibleWidth,
-  getPreviewSizes
+  columnsVisibleWidthSelector,
+  getPreviewSizes,
+  getColumnLeaves,
+  getAxisActivatedMeasures,
+  getFilteredData,
+  columnDimensionsSelector
 } from '../selectors';
-import ColumnHeaders from '../components/ColumnHeaders';
+import Headers from '../components/Headers';
 
-const mapStateToProps = (state, ownProps) => ({
-  columnCount: getLayout(state).columnHorizontalCount,
-  columnHeaders: getColumnUiAxis(state).headers,
-  dimensionPositions: getDimensionPositions(state),
-  getColumnWidth: getColumnWidth(state),
-  getDimensionSize: getDimensionSize(state),
-  getLastChildSize: getLastChildSizeOnColumns(state),
-  getRowHeight: ({ index }) =>
-    getDimensionSize(state)(AxisType.COLUMNS, state.axis.columns[index]),
-  height: getColumnHeadersHeight(state),
-  previewSizes: getPreviewSizes(state),
-  rowCount: getLayout(state).columnVerticalCount,
-  width: getColumnHeadersVisibleWidth(state),
-  zoom: state.config.zoom,
-  sizesColumnsLeafs: state.sizes.leafs.columns,
-  gridId: ownProps.gridId
-});
+const mapStateToProps = (state, ownProps) => {
+  const rowDimensions = rowDimensionsSelector(state);
+  const leaves = getColumnLeaves(state);
+  return {
+    axisType: AxisType.COLUMNS,
+    data: getFilteredData(state),
+    dimensions: columnDimensionsSelector(state),
+    measures: getAxisActivatedMeasures(AxisType.COLUMNS)(state),
+    columnCount: getLayout(state).columnHorizontalCount,
+    headers: getColumnHeaders(state),
+    leaves,
+    crossPositions: crossPositionsSelector(state),
+    getColumnWidth: ({ index }) =>
+      getCellWidthByKeySelector(state)(leaves[index].key),
+    // getCrossSize: getCrossSize(state),
+    // getLastChildSize: getLastChildSizeOnColumns(state),
+    getRowHeight: ({ index }) =>
+      getCellHeightByKeySelector(state)(rowDimensions[index].id),
+    height: columnHeadersWidthSelector(state),
+    width: columnsVisibleWidthSelector(state),
+    previewSizes: getPreviewSizes(state),
+    rowCount: getLayout(state).columnVerticalCount,
 
-export default connect(mapStateToProps)(ColumnHeaders);
+    zoom: state.config.zoom,
+    sizes: state.sizes.widths,
+    gridId: ownProps.gridId
+  };
+};
+
+export default connect(mapStateToProps)(Headers);

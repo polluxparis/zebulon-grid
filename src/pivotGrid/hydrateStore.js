@@ -5,7 +5,7 @@ import {
   setConfigProperty,
   moveDimension,
   toggleMeasure
-} from "./actions";
+} from './actions';
 import {
   isPromise,
   isObservable,
@@ -13,8 +13,9 @@ import {
   isStringOrNumber,
   isNullOrUndefined,
   toAccessorFunction
-} from "./utils/generic";
-import * as aggregations from "./Aggregation";
+} from './utils/generic';
+import { MEASURE_ID } from './constants';
+import * as aggregations from './Aggregation';
 
 export default function hydrateStore(store, config, datasource) {
   if (Array.isArray(datasource)) {
@@ -27,41 +28,51 @@ export default function hydrateStore(store, config, datasource) {
     });
   } else {
     throw new Error(
-      "datasource type is not supported, datasource must be an array, a promise or an observable, got ",
+      'datasource type is not supported, datasource must be an array, a promise or an observable, got ',
       datasource
     );
   }
+  config.dimensions.push({ id: MEASURE_ID, caption: '' });
+  store.dispatch(setDimensions(config));
 
   store.dispatch(setDimensions(config));
+
   store.dispatch(setMeasures(config));
   const dimensions = config.dimensions.map(dimension =>
     dimensionFactory(dimension)
   );
   const measures = config.measures.map(measure => measureFactory(measure));
 
-  store.dispatch(
-    setConfigProperty(config, "measureHeadersLocation", "columns")
-  );
-  store.dispatch(setConfigProperty(config, "height", 600));
-  store.dispatch(setConfigProperty(config, "width", 800));
-  store.dispatch(setConfigProperty(config, "cellHeight", 30));
-  store.dispatch(setConfigProperty(config, "cellWidth", 100));
-  store.dispatch(setConfigProperty(config, "zoom", 1));
+  store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'columns'));
+  store.dispatch(setConfigProperty(config, 'height', 600));
+  store.dispatch(setConfigProperty(config, 'width', 800));
+  store.dispatch(setConfigProperty(config, 'cellHeight', 30));
+  store.dispatch(setConfigProperty(config, 'cellWidth', 100));
+  store.dispatch(setConfigProperty(config, 'zoom', 1));
 
-  const dimensionIdsPositioned = [];
+  const dimensionIdsPositioned = [MEASURE_ID];
   config.rows.forEach((dimensionId, index) => {
-    store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
+    store.dispatch(moveDimension(dimensionId, 'dimensions', 'rows', index));
     dimensionIdsPositioned.push(dimensionId);
   });
   config.columns.forEach((dimensionId, index) => {
-    store.dispatch(moveDimension(dimensionId, "dimensions", "columns", index));
+    store.dispatch(moveDimension(dimensionId, 'dimensions', 'columns', index));
     dimensionIdsPositioned.push(dimensionId);
   });
+  if (config.measureHeadersAxis === 'columns') {
+    store.dispatch(
+      moveDimension(MEASURE_ID, 'dimensions', 'columns', config.columns.length)
+    );
+  } else {
+    store.dispatch(
+      moveDimension(MEASURE_ID, 'dimensions', 'rows', config.rows.length)
+    );
+  }
   Object.values(dimensions)
     .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
     .forEach((dimension, index) => {
       store.dispatch(
-        moveDimension(dimension.id, "dimensions", "dimensions", index)
+        moveDimension(dimension.id, 'dimensions', 'dimensions', index)
       );
     });
 
@@ -109,7 +120,9 @@ export function dimensionFactory(dimensionConfig) {
           sort.keyAccessor || labelAccessor || keyAccessor
         )
       }
-    : {};
+    : {
+        keyAccessor: toAccessorFunction(labelAccessor || keyAccessor)
+      };
   return {
     id,
     caption: caption || id,

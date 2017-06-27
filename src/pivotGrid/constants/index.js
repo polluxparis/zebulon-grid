@@ -6,6 +6,9 @@ export const ALL = "__all__";
 export const KEY_SEPARATOR = "-/-";
 export const AXIS_SEPARATOR = "-//-";
 
+export const ROOT_ID = "__ROOT_ID__";
+export const EMPTY_ID = "__EMPTY_ID__";
+
 // ACTIONS
 
 export const SET_DIMENSIONS = "PIVOTGRID_SET_DIMENSIONS";

@@ -1,337 +1,214 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-import { scrollbarSize } from "../utils/domHelpers";
-import { AxisType, toAxisType } from "../Axis";
-import { MEASURE_ID, TOTAL_ID } from "../constants";
-import { getColumnUiAxis, getRowUiAxis } from "./axis.selector";
-import { getColumnDimensions, getRowDimensions } from "./dimensions.selector";
+import { scrollbarSize } from '../utils/domHelpers';
+import { getLeaves } from '../utils/generic';
+import { AxisType, toAxisType } from '../Axis';
+import { MEASURE_ID, TOTAL_ID } from '../constants';
+import { getColumnLeaves, getRowLeaves } from './axis.selector';
+import {
+  columnDimensionsSelector,
+  rowDimensionsSelector
+} from './dimensions.selector';
 
-export const getCellSizes = createSelector(
+export const defaultCellSizesSelector = createSelector(
   [
     state => state.config.cellHeight,
     state => state.config.cellWidth,
     state => state.config.zoom
   ],
   (cellHeight, cellWidth, zoom) => ({
-    height: zoom * cellHeight,
-    width: zoom * cellWidth
+    height: zoom * (cellHeight || 30),
+    width: zoom * (cellWidth || 100),
+    zoom
   })
 );
 
-export const getDimensionSize = createSelector(
-  [
-    state => state.sizes.dimensions.rows,
-    state => state.sizes.dimensions.columns,
-    state => state.config.zoom,
-    getCellSizes
-  ],
-  (rowDimensions, columnDimensions, zoom, cellSizes) => (axisType, id) => {
-    if (axisType === AxisType.COLUMNS) {
-      return Object.hasOwnProperty.call(columnDimensions, id)
-        ? columnDimensions[id] * zoom
-        : cellSizes.height;
-    }
-    return Object.hasOwnProperty.call(rowDimensions, id)
-      ? rowDimensions[id] * zoom
-      : cellSizes.width;
+export const getCellHeightByKeySelector = createSelector(
+  [defaultCellSizesSelector, state => state.sizes.heights],
+  (defaultSizes, heights) => key => {
+    return defaultSizes.zoom * heights[key] || defaultSizes.height;
   }
 );
 
-export const getLeafHeaderSize = createSelector(
-  [state => state.config.zoom, getCellSizes],
-  (zoom, cellSizes) => (axis, key, leafSizes) => {
-    if (axis === AxisType.COLUMNS) {
-      return Object.hasOwnProperty.call(leafSizes, key)
-        ? leafSizes[key] * zoom
-        : cellSizes.width;
-    }
-    return Object.hasOwnProperty.call(leafSizes, key)
-      ? leafSizes[key] * zoom
-      : cellSizes.height;
-  }
-);
-
-export const getLastChildSizeOnColumns = createSelector(
-  [state => state.sizes.leafs.columns, getLeafHeaderSize],
-  (sizes, getLeafHeaderSize) => header => {
-    let lastChild = header;
-    while (lastChild.subheaders && lastChild.subheaders.length) {
-      lastChild = lastChild.subheaders[lastChild.subheaders.length - 1];
-    }
-    return getLeafHeaderSize(AxisType.COLUMNS, lastChild.key, sizes);
-  }
-);
-
-export const getLastChildSizeOnRows = createSelector(
-  [state => state.sizes.leafs.rows, getLeafHeaderSize],
-  (sizes, getLeafHeaderSize) => header => {
-    let lastChild = header;
-    while (lastChild.subheaders && lastChild.subheaders.length) {
-      lastChild = lastChild.subheaders[lastChild.subheaders.length - 1];
-    }
-    return getLeafHeaderSize(AxisType.ROWS, lastChild.key, sizes);
-  }
-);
-
-const calculateDimensionPositions = (
-  axis,
-  dimensions,
-  hasMeasures,
-  getDimensionSize
-) => {
-  const axisType = toAxisType(axis);
-  const res = {};
-  let position = 0;
-  // Total header if no dimensions
-  if (!dimensions.length) {
-    position += getDimensionSize(axisType, TOTAL_ID);
-  } else {
-    dimensions.forEach(dimension => {
-      res[dimension.id] = position;
-      position += getDimensionSize(axisType, dimension.id);
-    });
-  }
-  if (hasMeasures) {
-    res[MEASURE_ID] = position;
-  }
-  return res;
-};
-
-export const getDimensionPositions = createSelector(
-  [
-    getDimensionSize,
-    state => state.config.dataHeadersLocation,
-    getColumnDimensions,
-    getRowDimensions
-  ],
-  (getDimensionSize, dataHeadersLocation, columnDimensions, rowDimensions) => ({
-    columns: calculateDimensionPositions(
-      "columns",
-      columnDimensions,
-      dataHeadersLocation === "columns",
-      getDimensionSize
-    ),
-    rows: calculateDimensionPositions(
-      "rows",
-      rowDimensions,
-      dataHeadersLocation === "rows",
-      getDimensionSize
-    )
-  })
-);
-
-export const getColumnWidth = createSelector(
-  [getColumnUiAxis, state => state.sizes.leafs.columns, getLeafHeaderSize],
-  (columnsUi, sizes, getLeafHeaderSize) => ({ index }) => {
-    const headers = columnsUi.headers[index];
-    const key = headers[headers.length - 1].key;
-    return getLeafHeaderSize(AxisType.COLUMNS, key, sizes);
+export const getCellWidthByKeySelector = createSelector(
+  [defaultCellSizesSelector, state => state.sizes.widths],
+  (defaultSizes, widths) => key => {
+    return defaultSizes.zoom * widths[key] || defaultSizes.width;
   }
 );
 
 export const getRowHeight = createSelector(
-  [getRowUiAxis, state => state.sizes.leafs.rows, getLeafHeaderSize],
-  (rowsUi, sizes, getLeafHeaderSize) => ({ index }) => {
-    const headers = rowsUi.headers[index];
-    const key = headers[headers.length - 1].key;
-    return getLeafHeaderSize(AxisType.ROWS, key, sizes);
-  }
+  [getCellHeightByKeySelector, getRowLeaves],
+  (getCellHeightByKeySelector, rowLeaves) => ({ index }) =>
+    getCellHeightByKeySelector(rowLeaves[index].key)
 );
 
-export const getRowHeadersWidth = createSelector(
+export const getColumnWidth = createSelector(
+  [getCellWidthByKeySelector, getColumnLeaves],
+  (getCellWidthByKeySelector, columnLeaves) => ({ index }) =>
+    getCellWidthByKeySelector(columnLeaves[index].key)
+);
+
+const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
+  const res = {};
+  let position = 0;
+  // Total header if no dimensions
+  // if (!dimensions.length) {
+  //   position += getCrossSize(axisType, TOTAL_ID);
+  // } else {
+  dimensions.forEach(dimension => {
+    const size = getCellSizeByKey(dimension.id);
+    res[dimension.id] = { position, size };
+    position += size;
+  });
+  return res;
+};
+//
+export const crossPositionsSelector = createSelector(
   [
-    state => state.config.dataHeadersLocation,
-    state => state.sizes.dimensions.rows,
-    state => state.axis.rows,
-    getCellSizes,
-    getDimensionSize
+    getCellWidthByKeySelector,
+    getCellHeightByKeySelector,
+    columnDimensionsSelector,
+    rowDimensionsSelector
   ],
-  (dataHeadersLocation, sizes, rows, cellSizes, getDimensionSize) => {
-    const columnsMeasures = dataHeadersLocation === "columns";
-    let rowHeadersWidth = 0;
-    // Measures are on the row axis
-    if (!columnsMeasures) {
-      rowHeadersWidth += sizes[MEASURE_ID] || cellSizes.width;
-    }
-    // There are no dimensions on the row axis
-    if (!rows.length) {
-      rowHeadersWidth += getDimensionSize(AxisType.ROWS, TOTAL_ID);
-    } else {
-      rowHeadersWidth = rows.reduce(
-        (width, dimension) =>
-          width + getDimensionSize(AxisType.ROWS, dimension),
-        rowHeadersWidth
-      );
-    }
-    return rowHeadersWidth;
-  }
+  (getCellWidthByKey, getCellHeightByKey, columnDimensions, rowDimensions) => ({
+    [AxisType.COLUMNS]: calculateCrossPositions(
+      columnDimensions,
+      getCellWidthByKey
+    ),
+    [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellHeightByKey)
+  })
 );
-
-export const getColumnHeadersHeight = createSelector(
-  [
-    state => state.config.dataHeadersLocation,
-    state => state.sizes.dimensions.columns,
-    state => state.axis.columns,
-    getCellSizes,
-    getDimensionSize
-  ],
-  (dataHeadersLocation, sizes, columns, cellSizes, getDimensionSize) => {
-    const columnsMeasures = dataHeadersLocation === "columns";
-    let columnHeadersHeight = 0;
-    // Measures are on the column axis
-    if (columnsMeasures) {
-      columnHeadersHeight += sizes[MEASURE_ID] || cellSizes.height;
-    }
-    // There are no dimensions on the column axis
-    if (!columns.length) {
-      columnHeadersHeight += getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
-    } else {
-      columnHeadersHeight = columns.reduce(
-        (height, dimension) =>
-          height + getDimensionSize(AxisType.COLUMNS, dimension),
-        columnHeadersHeight
-      );
-    }
-    return columnHeadersHeight;
-  }
+//--------------------------------------------------------
+export const rowsHeightSelector = createSelector(
+  [getRowLeaves, getCellHeightByKeySelector],
+  (rowLeaves, getCellHeightByKey) =>
+    rowLeaves.reduce((height, leaf) => height + getCellHeightByKey(leaf.key), 0)
 );
-
-export const getRowHeadersHeight = createSelector(
-  [state => state.sizes.leafs.rows, getRowUiAxis, getLeafHeaderSize],
-  (sizes, rowsUi, getLeafHeaderSize) =>
-    rowsUi.headers.reduce(
-      (height, headers) =>
-        height +
-        getLeafHeaderSize(
-          AxisType.ROWS,
-          headers[headers.length - 1].key,
-          sizes
-        ),
+export const columnsWidthSelector = createSelector(
+  [getRowLeaves, getCellWidthByKeySelector],
+  (columnLeaves, getCellWidthByKey) =>
+    columnLeaves.reduce((width, leaf) => width + getCellWidthByKey(leaf.key), 0)
+);
+export const rowHeadersWidthSelector = createSelector(
+  [rowDimensionsSelector, getCellWidthByKeySelector],
+  (rowDimensions, getCellWidthByKey) =>
+    rowDimensions.reduce(
+      (width, dimension) => width + getCellWidthByKey(dimension.id),
       0
     )
 );
-
-export const getColumnHeadersWidth = createSelector(
-  [state => state.sizes.leafs.columns, getColumnUiAxis, getLeafHeaderSize],
-  (sizes, columnsUi, getLeafHeaderSize) =>
-    columnsUi.headers.reduce(
-      // (width, headers) => width + this.getColumnWidth({ index: headers[0].x }),
-      (width, headers) =>
-        width +
-        getLeafHeaderSize(
-          AxisType.COLUMNS,
-          headers[headers.length - 1].key,
-          sizes
-        ),
+export const columnHeadersWidthSelector = createSelector(
+  [columnDimensionsSelector, getCellHeightByKeySelector],
+  (columnDimensions, getCellHeightByKey) =>
+    columnDimensions.reduce(
+      (height, dimension) => height + getCellHeightByKey(dimension.id),
       0
     )
 );
-
 const hasHorizontalScrollbar = createSelector(
   [
     state => state.config.width,
     state => state.config.height,
-    getColumnHeadersWidth,
-    getRowHeadersWidth
+    columnsWidthSelector,
+    rowHeadersWidthSelector
   ],
-  (width, height, columnHeadersWidth, rowHeadersWidth) =>
-    width < columnHeadersWidth + rowHeadersWidth + scrollbarSize()
+  (width, height, columnsWidth, rowHeadersWidth) =>
+    width < columnsWidth + rowHeadersWidth + scrollbarSize()
 );
 const hasVerticalScrollbar = createSelector(
   [
     state => state.config.width,
     state => state.config.height,
-    getColumnHeadersHeight,
-    getRowHeadersHeight
+    columnHeadersWidthSelector,
+    rowsHeightSelector
   ],
-  (width, height, columnHeadersHeight, rowHeadersHeight) =>
-    height < columnHeadersHeight + rowHeadersHeight + scrollbarSize()
+  (width, height, columnHeadersHeight, rowsHeight) =>
+    height < columnHeadersHeight + rowsHeight + scrollbarSize()
 );
 
-export const getRowHeadersVisibleHeight = createSelector(
+export const rowsVisibleHeightSelector = createSelector(
   [
     state => state.config.height,
-    getColumnHeadersHeight,
-    getRowHeadersHeight,
+    columnHeadersWidthSelector,
+    rowsHeightSelector,
     hasHorizontalScrollbar
   ],
-  (height, columnHeadersHeight, rowHeadersHeight, hasScrollbar) =>
+  (height, columnHeadersHeight, rowsHeight, hasScrollbar) =>
     Math.min(
       height - columnHeadersHeight - (hasScrollbar ? scrollbarSize() : 0),
-      rowHeadersHeight
+      rowsHeight
     )
 );
-
-export const getColumnHeadersVisibleWidth = createSelector(
+export const columnsVisibleWidthSelector = createSelector(
   [
     state => state.config.width,
-    getRowHeadersWidth,
-    getColumnHeadersWidth,
+    columnsWidthSelector,
+    rowHeadersWidthSelector,
     hasVerticalScrollbar
   ],
-  (width, rowHeadersWidth, columnHeadersWidth, hasScrollbar) =>
+  (width, columnsWidth, rowsWidth, hasScrollbar) =>
     Math.min(
-      width - rowHeadersWidth - (hasScrollbar ? scrollbarSize() : 0),
-      columnHeadersWidth
+      width - rowsWidth - (hasScrollbar ? scrollbarSize() : 0),
+      columnsWidth
     )
 );
-
 export const getPreviewSizes = createSelector(
   [
     state => state.config.height,
     state => state.config.width,
     hasVerticalScrollbar,
     hasHorizontalScrollbar,
-    getRowHeadersHeight,
-    getRowHeadersWidth,
-    getColumnHeadersHeight,
-    getColumnHeadersWidth
+    rowsHeightSelector,
+    rowHeadersWidthSelector,
+    columnsWidthSelector,
+    columnHeadersWidthSelector
   ],
   (
     height,
     width,
     hasVerticalScrollbar,
     hasHorizontalScrollbar,
-    rowHeadersHeight,
+    rowsHeight,
     rowHeadersWidth,
-    columnHeadersHeight,
-    columnHeadersWidth
+    columnsWidth,
+    columnHeadersHeight
   ) => ({
     height: Math.min(
       height - (hasHorizontalScrollbar ? scrollbarSize() : 0),
-      rowHeadersHeight + columnHeadersHeight
+      rowsHeight + columnHeadersHeight
     ),
     width: Math.min(
       width - (hasVerticalScrollbar ? scrollbarSize() : 0),
-      columnHeadersWidth + rowHeadersWidth
+      columnsWidth + rowHeadersWidth
     )
   })
 );
 
-export const getDataCellsHeight = createSelector(
+export const dataCellsHeightSelector = createSelector(
   [
     state => state.config.height,
-    getColumnHeadersHeight,
-    getRowHeadersHeight,
+    columnHeadersWidthSelector,
+    rowsHeightSelector,
     hasHorizontalScrollbar
   ],
-  (height, columnHeadersHeight, rowHeadersHeight, hasScrollbar) =>
+  (height, columnHeadersHeight, rowsHeight, hasScrollbar) =>
     Math.min(
       height - columnHeadersHeight,
-      rowHeadersHeight + (hasScrollbar ? scrollbarSize() : 0)
+      rowsHeight + (hasScrollbar ? scrollbarSize() : 0)
     )
 );
 
-export const getDataCellsWidth = createSelector(
+export const dataCellsWidthSelector = createSelector(
   [
     state => state.config.width,
-    getColumnHeadersWidth,
-    getRowHeadersWidth,
+    columnsWidthSelector,
+    rowHeadersWidthSelector,
     hasVerticalScrollbar
   ],
-  (width, columnHeadersWidth, rowHeadersWidth, hasScrollbar) =>
+  (width, columnsWidth, rowHeadersWidth, hasScrollbar) =>
     Math.min(
       width - rowHeadersWidth,
-      columnHeadersWidth + (hasScrollbar ? scrollbarSize() : 0)
+      columnsWidth + (hasScrollbar ? scrollbarSize() : 0)
     )
 );

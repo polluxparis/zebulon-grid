@@ -295,7 +295,7 @@ describe("WrappedGrid", () => {
       expect(tree).toMatchSnapshot();
     });
     test("has data dimensions on row axis", () => {
-      const config = { ...basicConfig, dataHeadersLocation: "rows" };
+      const config = { ...basicConfig, measureHeadersAxis: "rows" };
       const tree = renderer
         .create(
           <WrappedGrid data={data} drilldown={() => 33} config={config} />

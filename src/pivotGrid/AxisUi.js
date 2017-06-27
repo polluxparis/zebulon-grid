@@ -27,284 +27,219 @@ export const keyToIndex = (headers, key) => {
   }
 };
 
-/**
- * Creates a new instance of rows/columns ui properties.
- * @class
- * @memberOf pivotgrid.ui
- * @param  {pivotgrid.axe} axe - axe containing all dimensions.
- */
+// export default class AxisUi {
+//   constructor(axis, config, crossAxisDimensionsCode) {
+//     const { activatedMeasures } = config;
+//     this.measuresCount = activatedMeasures.length;
+//     // this.measuresCount = getMeasuresCount({
+//     //   axisType: axis.type,
+//     //   measureHeadersAxis,
+//     //
+//     // });
 
-function buildHeader(data, node, dimensions, measures, depth) {
-  const { id, children, dataIndexes } = node;
-  const currentDimension = dimensions[depth];
-  const row = data[dataIndexes[0]];
-  const header = {
-    sortKey: currentDimension.sort.keyAccessor(row),
-    id,
-    dataIndexes,
-    type: "dimension",
-    children: Object.keys(node.children).reduce(
-      (acc, nodeId) => ({
-        ...acc,
-        [nodeId]: buildHeader(
-          node.children[nodeId],
-          dimensions,
-          dimensionValues,
-          depth + 1
-        )
-      }),
-      {}
-    )
-  };
+//     this.hasMeasures = this.measuresCount >= 1;
+//     /**
+//      * Headers render properties
+//      * @type {Array}
+//      */
+//     this.headers = [];
 
-  if (header.children.length === 0) {
-    if (measures.length !== 0) {
-      // measure headers
-      measures.forEach((measure, index) => {
-        header.children.push({
-          id: measure.id,
-          type: "measure"
-        });
-      });
-    }
-  } else {
-    // sort children
-    const mapOrder = Object.keys(header.children).map(id => ({
-      id: id,
-      sortKey: header.children[id].sortKey
-    }));
-    const sortFunction = (a, b) => header.sort.custom(a.sortKey, b.sortKey);
-    mapOrder.sort(sortFunction);
-    header.mapOrder = mapOrder.map(obj => obj.id);
-    if (currentDimension.sort.direction === "desc") {
-      header.mapOrder.reverse();
-    }
-    header.hasSubTotal = currentDimension.hasSubTotal;
-  }
-  // x value
-  x += measures.length || 1;
-  return header;
-}
+//     /**
+//      * Dimension headers render properties
+//      * @type {Array}
+//      */
+//     this.dimensionHeaders = [];
 
-export function buildAxisHeaders(data, axisTree, dimensions, measures) {
-  axisTree.children.map(node =>
-    buildHeader(node, dimensions, measures, data, 0)
-  );
-}
+//     this.x = 0;
+//     const headers = [];
+//     let grandtotalHeader;
+//     let y;
 
-export default class AxisUi {
-  constructor(axis, config, crossAxisDimensionsCode) {
-    const { activatedMeasures } = config;
-    this.measuresCount = activatedMeasures.length;
-    // this.measuresCount = getMeasuresCount({
-    //   axisType: axis.type,
-    //   dataHeadersLocation,
-    //
-    // });
+//     if (axis != null) {
+//       if (axis.root.values.length > 0) {
+//         headers.push([]);
+//         // Fill Rows layout infos
+//         y = this.getUiInfo({
+//           infos: headers,
+//           dimension: axis.root,
+//           axisType: axis.type,
+//           activatedMeasures
+//         });
+//       }
 
-    this.hasMeasures = this.measuresCount >= 1;
-    /**
-     * Headers render properties
-     * @type {Array}
-     */
-    this.headers = [];
+//       if (headers.length === 0) {
+//         headers.push([
+//           (grandtotalHeader = new Header(
+//             axis.type,
+//             HeaderType.GRAND_TOTAL,
+//             axis.root,
+//             null,
+//             this.measuresCount,
+//             this.x,
+//             (y = 0),
+//             null,
+//             crossAxisDimensionsCode
+//           ))
+//         ]);
+//       }
 
-    /**
-     * Dimension headers render properties
-     * @type {Array}
-     */
-    this.dimensionHeaders = [];
+//       if (grandtotalHeader) {
+//         // add grand-total data headers if more than 1 data dimension and they will be the leaf headers
+//         this.addDataHeaders({
+//           axisType: axis.type,
+//           infos: headers,
+//           parent: grandtotalHeader,
+//           y: y + 1,
+//           activatedMeasures
+//         });
+//       }
+//     }
+//     this.headers = headers;
+//     this.dimensionHeaders = axis.dimensions.map(
+//       dimension => new DimensionHeader(axis.type, dimension)
+//     );
+//   }
 
-    this.x = 0;
-    const headers = [];
-    let grandtotalHeader;
-    let y;
+//   /**
+//   * Fills the infos array given in argument with the dimension layout infos as row.
+//   * @param  {pivotgrid.dimension}  dimension - the dimension to get ui info for
+//   * @param  {object}  infos - array to fill with ui dimension info
+//   * @param  {number}  axisType - type of the axe (rows or columns)
+//   */
+//   getUiInfo({ infos, dimension, axisType, activatedMeasures, y = 0 }) {
+//     if (dimension.values.length > 0) {
+//       const infosMaxIndex = infos.length - 1;
+//       let lastInfosArray = infos[infosMaxIndex];
+//       const parent = lastInfosArray.length > 0
+//         ? lastInfosArray[lastInfosArray.length - 1]
+//         : null;
 
-    if (axis != null) {
-      if (axis.root.values.length > 0) {
-        headers.push([]);
-        // Fill Rows layout infos
-        y = this.getUiInfo({
-          infos: headers,
-          dimension: axis.root,
-          axisType: axis.type,
-          activatedMeasures
-        });
-      }
+//       for (
+//         let valIndex = 0;
+//         valIndex < dimension.values.length;
+//         valIndex += 1
+//       ) {
+//         const subvalue = dimension.values[valIndex];
+//         const subdim = dimension.subdimvals[subvalue];
 
-      if (headers.length === 0) {
-        headers.push([
-          (grandtotalHeader = new Header(
-            axis.type,
-            HeaderType.GRAND_TOTAL,
-            axis.root,
-            null,
-            this.measuresCount,
-            this.x,
-            (y = 0),
-            null,
-            crossAxisDimensionsCode
-          ))
-        ]);
-      }
+//         let subTotalHeader;
+//         if (!subdim.isLeaf && subdim.dimension.subTotal.visible) {
+//           // x here will probably create bugs. To change when necessary
+//           subTotalHeader = new Header(
+//             axisType,
+//             HeaderType.SUB_TOTAL,
+//             subdim,
+//             parent,
+//             this.measuresCount,
+//             this.x,
+//             y
+//           );
+//         } else {
+//           subTotalHeader = null;
+//         }
 
-      if (grandtotalHeader) {
-        // add grand-total data headers if more than 1 data dimension and they will be the leaf headers
-        this.addDataHeaders({
-          axisType: axis.type,
-          infos: headers,
-          parent: grandtotalHeader,
-          y: y + 1,
-          activatedMeasures
-        });
-      }
-    }
-    this.headers = headers;
-    this.dimensionHeaders = axis.dimensions.map(
-      dimension => new DimensionHeader(axis.type, dimension)
-    );
-  }
+//         const newHeader = new Header(
+//           axisType,
+//           null,
+//           subdim,
+//           parent,
+//           this.measuresCount,
+//           this.x,
+//           y,
+//           subTotalHeader
+//         );
 
-  /**
-  * Fills the infos array given in argument with the dimension layout infos as row.
-  * @param  {pivotgrid.dimension}  dimension - the dimension to get ui info for
-  * @param  {object}  infos - array to fill with ui dimension info
-  * @param  {number}  axisType - type of the axe (rows or columns)
-  */
-  getUiInfo({ infos, dimension, axisType, activatedMeasures, y = 0 }) {
-    if (dimension.values.length > 0) {
-      const infosMaxIndex = infos.length - 1;
-      let lastInfosArray = infos[infosMaxIndex];
-      const parent = lastInfosArray.length > 0
-        ? lastInfosArray[lastInfosArray.length - 1]
-        : null;
+//         if (valIndex > 0) {
+//           infos.push((lastInfosArray = []));
+//         }
 
-      for (
-        let valIndex = 0;
-        valIndex < dimension.values.length;
-        valIndex += 1
-      ) {
-        const subvalue = dimension.values[valIndex];
-        const subdim = dimension.subdimvals[subvalue];
+//         lastInfosArray.push(newHeader);
 
-        let subTotalHeader;
-        if (!subdim.isLeaf && subdim.dimension.subTotal.visible) {
-          // x here will probably create bugs. To change when necessary
-          subTotalHeader = new Header(
-            axisType,
-            HeaderType.SUB_TOTAL,
-            subdim,
-            parent,
-            this.measuresCount,
-            this.x,
-            y
-          );
-        } else {
-          subTotalHeader = null;
-        }
+//         if (!subdim.isLeaf) {
+//           this.getUiInfo({
+//             infos,
+//             dimension: subdim,
+//             axisType,
+//             y: y + 1,
+//             activatedMeasures
+//           });
+//           if (subdim.dimension.subTotal.visible) {
+//             infos.push([subTotalHeader]);
 
-        const newHeader = new Header(
-          axisType,
-          null,
-          subdim,
-          parent,
-          this.measuresCount,
-          this.x,
-          y,
-          subTotalHeader
-        );
+//             // add sub-total data headers
+//             // if more than 1 data dimension and they will be the leaf headers
+//             this.addDataHeaders({
+//               axisType,
+//               infos,
+//               activatedMeasures,
 
-        if (valIndex > 0) {
-          infos.push((lastInfosArray = []));
-        }
+//               parent: subTotalHeader,
+//               y: y + 1
+//             });
+//           }
+//         } else {
+//           // add data headers if more than 1 data dimension and they will be the leaf headers
+//           this.addDataHeaders({
+//             axisType,
+//             infos,
+//             activatedMeasures,
 
-        lastInfosArray.push(newHeader);
+//             parent: newHeader,
+//             y: y + 1
+//           });
+//         }
+//       }
+//     }
+//     return y;
+//   }
 
-        if (!subdim.isLeaf) {
-          this.getUiInfo({
-            infos,
-            dimension: subdim,
-            axisType,
-            y: y + 1,
-            activatedMeasures
-          });
-          if (subdim.dimension.subTotal.visible) {
-            infos.push([subTotalHeader]);
+//   addDataHeaders({ axisType, infos, parent, activatedMeasures, y }) {
+//     if (this.hasMeasures) {
+//       let lastInfosArray = infos[infos.length - 1];
+//       activatedMeasures.forEach((measure, index) => {
+//         lastInfosArray.push(
+//           new DataHeader(axisType, measure, parent, this.x, y)
+//         );
+//         this.x += 1;
+//         if (index < this.measuresCount - 1) {
+//           infos.push((lastInfosArray = []));
+//         }
+//       });
+//     } else {
+//       this.x += 1;
+//     }
+//   }
 
-            // add sub-total data headers
-            // if more than 1 data dimension and they will be the leaf headers
-            this.addDataHeaders({
-              axisType,
-              infos,
-              activatedMeasures,
-
-              parent: subTotalHeader,
-              y: y + 1
-            });
-          }
-        } else {
-          // add data headers if more than 1 data dimension and they will be the leaf headers
-          this.addDataHeaders({
-            axisType,
-            infos,
-            activatedMeasures,
-
-            parent: newHeader,
-            y: y + 1
-          });
-        }
-      }
-    }
-    return y;
-  }
-
-  addDataHeaders({ axisType, infos, parent, activatedMeasures, y }) {
-    if (this.hasMeasures) {
-      let lastInfosArray = infos[infos.length - 1];
-      activatedMeasures.forEach((measure, index) => {
-        lastInfosArray.push(
-          new DataHeader(axisType, measure, parent, this.x, y)
-        );
-        this.x += 1;
-        if (index < this.measuresCount - 1) {
-          infos.push((lastInfosArray = []));
-        }
-      });
-    } else {
-      this.x += 1;
-    }
-  }
-
-  // toggleDimensionExpansion(dimension, newState) {
-  //   const toToggle = [];
-  //   let allExpanded = true;
-  //   let hIndex;
-  //
-  //   for (let i = 0; i < this.headers.length; i += 1) {
-  //     for (hIndex = 0; hIndex < this.headers[i].length; hIndex += 1) {
-  //       const header = this.headers[i][hIndex];
-  //       if (header.type === HeaderType.SUB_TOTAL && (dimension == null || header.dim.dimension.name === dimension.name)) {
-  //         toToggle.push(header);
-  //         allExpanded = allExpanded && header.expanded;
-  //       }
-  //     }
-  //   }
-  //
-  //   if (newState !== undefined) {
-  //     allExpanded = !newState;
-  //   }
-  //
-  //   if (toToggle.length > 0) {
-  //     for (hIndex = 0; hIndex < toToggle.length; hIndex += 1) {
-  //       if (allExpanded) {
-  //         toToggle[hIndex].collapse();
-  //       } else {
-  //         toToggle[hIndex].expand();
-  //       }
-  //     }
-  //     return true;
-  //   }
-  //
-  //   return false;
-  // }
-}
+//   // toggleDimensionExpansion(dimension, newState) {
+//   //   const toToggle = [];
+//   //   let allExpanded = true;
+//   //   let hIndex;
+//   //
+//   //   for (let i = 0; i < this.headers.length; i += 1) {
+//   //     for (hIndex = 0; hIndex < this.headers[i].length; hIndex += 1) {
+//   //       const header = this.headers[i][hIndex];
+//   //       if (header.type === HeaderType.SUB_TOTAL && (dimension == null || header.dim.dimension.name === dimension.name)) {
+//   //         toToggle.push(header);
+//   //         allExpanded = allExpanded && header.expanded;
+//   //       }
+//   //     }
+//   //   }
+//   //
+//   //   if (newState !== undefined) {
+//   //     allExpanded = !newState;
+//   //   }
+//   //
+//   //   if (toToggle.length > 0) {
+//   //     for (hIndex = 0; hIndex < toToggle.length; hIndex += 1) {
+//   //       if (allExpanded) {
+//   //         toToggle[hIndex].collapse();
+//   //       } else {
+//   //         toToggle[hIndex].expand();
+//   //       }
+//   //     }
+//   //     return true;
+//   //   }
+//   //
+//   //   return false;
+//   // }
+// }

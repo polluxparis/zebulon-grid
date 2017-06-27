@@ -1,30 +1,31 @@
-import { connect } from "react-redux";
-import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
+import { connect } from 'react-redux';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-import PivotGrid from "../components/Grid/Grid";
+import PivotGrid from '../components/Grid/Grid';
 import {
   getLayout,
+  defaultCellSizesSelector,
   getCellSizes,
-  getRowAxis,
-  getColumnUiAxis,
-  getRowUiAxis,
-  getColumnAxis,
-  getActivatedMeasures
-} from "../selectors";
-import { updateCellSize, setConfigProperty } from "../actions";
-import { AxisType } from "../Axis";
+  rowDimensionsSelector,
+  getColumnHeaders,
+  getRowHeaders,
+  columnDimensionsSelector,
+  activatedMeasuresSelector
+} from '../selectors';
+import { updateCellSize, setConfigProperty } from '../actions';
+import { AxisType } from '../Axis';
 
 const mapStateToProps = state => ({
   width: state.config.width,
   layout: getLayout(state),
-  defaultCellSizes: getCellSizes(state),
+  defaultCellSizes: defaultCellSizesSelector(state),
   sizes: state.sizes,
-  columnHeaders: getColumnUiAxis(state).headers,
-  rowHeaders: getRowUiAxis(state).headers,
-  rowDimensions: getRowAxis(state).dimensions,
-  columnDimensions: getColumnAxis(state).dimensions,
-  dataDimensionsCount: getActivatedMeasures(state).length
+  columnHeaders: getColumnHeaders(state),
+  rowHeaders: getRowHeaders(state),
+  rowDimensions: rowDimensionsSelector(state),
+  columnDimensions: columnDimensionsSelector(state),
+  dataDimensionsCount: activatedMeasuresSelector(state).length
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -38,8 +39,8 @@ const mapDispatchToProps = dispatch => ({
     if (
       handle.leafSubheaders &&
       handle.leafSubheaders.length &&
-      ((handle.axis === AxisType.COLUMNS && handle.position === "right") ||
-        (handle.axis === AxisType.ROWS && handle.position === "bottom"))
+      ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
+        (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
     ) {
       const fractionalOffset = {
         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
@@ -69,8 +70,8 @@ const mapDispatchToProps = dispatch => ({
     }
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, "height"));
-    if (width) dispatch(setConfigProperty({ height, width }, "width"));
+    if (height) dispatch(setConfigProperty({ height, width }, 'height'));
+    if (width) dispatch(setConfigProperty({ height, width }, 'width'));
   }
 });
 

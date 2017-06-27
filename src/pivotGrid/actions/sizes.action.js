@@ -17,40 +17,38 @@ const mapAxisTypeToLabel = axisType => {
 };
 
 /* eslint-disable import/prefer-default-export */
-export const updateCellSize = (
-  {
-    handle,
-    offset,
-    initialOffset,
-    defaultCellSizes,
-    sizes
-  }
-) => {
+export const updateCellSize = ({
+  handle,
+  offset,
+  initialOffset,
+  defaultCellSizes,
+  sizes
+}) => {
   let size;
   let direction;
   if (handle.axis === AxisType.COLUMNS && handle.position === 'right') {
-    direction = 'leafs';
+    direction = 'widths';
     size = getNewCellSize(
-      sizes.leafs.columns[handle.id] || defaultCellSizes.width,
+      sizes.widths[handle.id] || defaultCellSizes.width,
       offset.x - initialOffset.x
     );
-  } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
-    direction = 'leafs';
-    size = getNewCellSize(
-      sizes.leafs.rows[handle.id] || defaultCellSizes.height,
-      offset.y - initialOffset.y
-    );
   } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
-    direction = 'dimensions';
+    direction = 'heights';
     size = getNewCellSize(
-      sizes.dimensions.columns[handle.id] || defaultCellSizes.height,
+      sizes.heights[handle.id] || defaultCellSizes.height,
       offset.y - initialOffset.y
     );
   } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
-    direction = 'dimensions';
+    direction = 'widths';
     size = getNewCellSize(
-      sizes.dimensions.rows[handle.id] || defaultCellSizes.width,
+      sizes.widths[handle.id] || defaultCellSizes.width,
       offset.x - initialOffset.x
+    );
+  } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
+    direction = 'heights';
+    size = getNewCellSize(
+      sizes.heights[handle.id] || defaultCellSizes.height,
+      offset.y - initialOffset.y
     );
   }
   return {

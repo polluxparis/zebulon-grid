@@ -218,7 +218,7 @@ describe("layout is computed correctly", () => {
       cellHeight: 30,
       cellWidth: 100,
       zoom: 1,
-      dataHeadersLocation: "columns"
+      measureHeadersAxis: "columns"
     };
     const {
       rowHorizontalCount,
@@ -256,7 +256,7 @@ describe("layout is computed correctly", () => {
       cellHeight: 30,
       cellWidth: 100,
       zoom: 1,
-      dataHeadersLocation: "columns"
+      measureHeadersAxis: "columns"
     };
     const {
       rowHorizontalCount,
@@ -295,7 +295,7 @@ describe("layout is computed correctly", () => {
       cellHeight: 30,
       cellWidth: 100,
       zoom: 1,
-      dataHeadersLocation: "rows"
+      measureHeadersAxis: "rows"
     };
     const {
       rowHorizontalCount,

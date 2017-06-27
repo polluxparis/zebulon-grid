@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import { AxisType } from "../../Axis";
-import ResizeHandle from "../ResizeHandle";
+import { AxisType } from '../../Axis';
+import ResizeHandle from '../ResizeHandle';
 
 const DimensionHeader = ({
-  dimension,
+  dimensionId,
+  caption,
   left,
   top,
   height,
@@ -15,30 +16,30 @@ const DimensionHeader = ({
   gridId
 }) => {
   const ids = {};
-  if (mainDirection === "down") {
-    ids.right = dimension.id;
+  if (mainDirection === 'down') {
+    ids.right = dimensionId;
     ids.bottom = crossDimensionId;
   } else {
-    ids.bottom = dimension.id;
+    ids.bottom = dimensionId;
     ids.right = crossDimensionId;
   }
   return (
     <div
-      key={`fixed-dim-${dimension.id}`}
+      key={`fixed-dim-${dimensionId}`}
       className="pivotgrid-cell pivotgrid-dimension-header"
       style={{
-        position: "absolute",
+        position: 'absolute',
         left,
         top,
         width,
         height,
         zIndex: 3,
-        boxSizing: "border-box",
-        display: "flex"
+        boxSizing: 'border-box',
+        display: 'flex'
       }}
     >
       <span className="pivotgrid-dimension-header-inner">
-        {dimension.caption}
+        {caption}
       </span>
       <ResizeHandle
         position="right"

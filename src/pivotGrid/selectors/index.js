@@ -1,64 +1,85 @@
 import {
   getLayout,
-  getColumnUiAxis,
-  getRowUiAxis,
-  getColumnAxis,
-  getRowAxis
-} from "./axis.selector";
+  getColumnHeaders,
+  getRowHeaders,
+  getColumnLeaves,
+  getRowLeaves,
+  getColumnDimensionHeaders,
+  getRowDimensionHeaders,
+  getAxisActivatedMeasures
+} from './axis.selector';
 import {
+  defaultCellSizesSelector,
   getCellSizes,
-  getDimensionPositions,
-  getDimensionSize,
-  getRowHeadersHeight,
-  getRowHeadersWidth,
-  getColumnHeadersHeight,
-  getColumnHeadersWidth,
+  crossPositionsSelector,
+  getCrossSize,
+  getHeaderSize,
+  rowsHeightSelector,
+  rowHeadersWidthSelector,
+  columnHeadersWidthSelector,
+  columnsWidthSelector,
   getPreviewSizes,
-  getColumnWidth,
-  getRowHeight,
+  getCellHeightByKeySelector,
+  getCellWidthByKeySelector,
+  getColumnHeaderHeight,
+  getRowHeaderWidth,
   getLeafHeaderSize,
-  getColumnHeadersVisibleWidth,
-  getRowHeadersVisibleHeight,
+  columnsVisibleWidthSelector,
+  rowsVisibleHeightSelector,
   getLastChildSizeOnColumns,
   getLastChildSizeOnRows,
-  getDataCellsHeight,
-  getDataCellsWidth
-} from "./sizes.selector";
+  dataCellsHeightSelector,
+  dataCellsWidthSelector
+} from './sizes.selector';
 import {
-  getActivatedMeasures,
-  getRowDimensions,
-  getColumnDimensions,
-  getAvailableDimensions
-} from "./dimensions.selector";
-import { getCellValue, getCellInfos } from "./cell.selector";
-import { getFilters, getDimensionValues } from "./data.selector";
+  activatedMeasuresSelector,
+  rowDimensionsSelector,
+  columnDimensionsSelector,
+  availableDimensionsSelector
+} from './dimensions.selector';
+import {
+  getCellValue,
+  getCellInfos,
+  getCellDimensionInfos
+} from './cell.selector';
+import {
+  getFilters,
+  getDimensionValues,
+  getFilteredData
+} from './data.selector';
 
 export { getLayout };
+export { defaultCellSizesSelector };
 export { getCellSizes };
-export { getColumnUiAxis };
-export { getRowUiAxis };
-export { getColumnAxis };
-export { getRowAxis };
-export { getActivatedMeasures };
-export { getRowDimensions };
-export { getColumnDimensions };
-export { getAvailableDimensions };
-export { getDimensionPositions };
-export { getDimensionSize };
-export { getRowHeadersHeight };
-export { getRowHeadersWidth };
-export { getColumnHeadersHeight };
-export { getColumnHeadersWidth };
+export { getColumnHeaders };
+export { getRowHeaders };
+export { getColumnLeaves };
+export { getRowLeaves };
+export { getColumnDimensionHeaders };
+export { getRowDimensionHeaders };
+export { activatedMeasuresSelector };
+export { getAxisActivatedMeasures };
+export { rowDimensionsSelector };
+export { columnDimensionsSelector };
+export { availableDimensionsSelector };
+export { crossPositionsSelector };
+export { getHeaderSize };
+export { rowsHeightSelector };
+export { rowHeadersWidthSelector };
+export { columnHeadersWidthSelector };
 export { getPreviewSizes };
-export { getColumnWidth };
 export { getLeafHeaderSize };
-export { getRowHeight };
 export { getLastChildSizeOnColumns };
 export { getLastChildSizeOnRows };
-export { getColumnHeadersVisibleWidth };
-export { getRowHeadersVisibleHeight };
+export { columnsVisibleWidthSelector };
+export { rowsVisibleHeightSelector };
 export { getCellValue, getCellInfos };
-export { getDataCellsHeight };
-export { getDataCellsWidth };
+export { dataCellsHeightSelector };
+export { dataCellsWidthSelector };
 export { getDimensionValues };
 export { getFilters };
+export { getFilteredData };
+export { getCellDimensionInfos };
+export { getCellHeightByKeySelector };
+export { getCellWidthByKeySelector };
+export { getRowHeaderWidth };

@@ -24,11 +24,20 @@ export default class DataCell extends PureComponent {
   }
 
   handleDoubleClick() {
-    this.props.drilldown(this.props.cell);
+    this.props.drilldown({
+      columnIndex: this.props.columnIndex,
+      rowIndex: this.props.rowIndex
+    });
   }
 
   render() {
-    const { cell, rowIndex, selected, focused, valueHasChanged } = this.props;
+    const {
+      caption,
+      rowIndex,
+      selected,
+      focused,
+      valueHasChanged
+    } = this.props;
     const style = {
       boxSizing: 'border-box',
       overflow: 'hidden'
@@ -50,7 +59,7 @@ export default class DataCell extends PureComponent {
         onMouseOver={this.handleMouseOver}
         onDoubleClick={this.handleDoubleClick}
       >
-        {cell.caption}
+        {caption}
       </div>
     );
   }

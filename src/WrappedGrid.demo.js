@@ -52,13 +52,13 @@ class WrappedGridDemo extends Component {
   toggleMeasureAxis() {
     if (k % 2) {
       this.grid.setConfigProperty(
-        { dataHeadersLocation: "columns" },
-        "dataHeadersLocation"
+        { measureHeadersAxis: "columns" },
+        "measureHeadersAxis"
       );
     } else {
       this.grid.setConfigProperty(
-        { dataHeadersLocation: "rows" },
-        "dataHeadersLocation"
+        { measureHeadersAxis: "rows" },
+        "measureHeadersAxis"
       );
     }
     k += 1;

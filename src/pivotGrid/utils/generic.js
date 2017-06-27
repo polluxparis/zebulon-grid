@@ -4,7 +4,7 @@
  * @return {Boolean}
  */
 export function isNumber(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Number]';
+  return Object.prototype.toString.apply(obj) === "[object Number]";
 }
 /**
  * Returns whether or not obj is a Date object.
@@ -12,7 +12,7 @@ export function isNumber(obj) {
  * @return {Boolean}
  */
 export function isDate(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Date]';
+  return Object.prototype.toString.apply(obj) === "[object Date]";
 }
 /**
  * Returns whether or not obj is a string
@@ -20,12 +20,12 @@ export function isDate(obj) {
  * @return {Boolean}
  */
 export function isString(obj) {
-  return typeof obj === 'string';
+  return typeof obj === "string";
 }
 
 export function isStringOrNumber(obj) {
   const type = typeof obj;
-  return type === 'string' || type === 'number';
+  return type === "string" || type === "number";
 }
 /**
  * Returns whether or not obj is a regular expression object
@@ -33,7 +33,7 @@ export function isStringOrNumber(obj) {
  * @return {Boolean}
  */
 export function isRegExp(obj) {
-  return Object.prototype.toString.apply(obj) === '[object RegExp]';
+  return Object.prototype.toString.apply(obj) === "[object RegExp]";
 }
 /**
  * Returns whether or not obj is a function object
@@ -41,7 +41,7 @@ export function isRegExp(obj) {
  * @return {Boolean}
  */
 export function isFunction(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Function]';
+  return Object.prototype.toString.apply(obj) === "[object Function]";
 }
 
 /**
@@ -66,7 +66,7 @@ export function isObservable(obj) {
  * Escapes all RegExp special characters.
  */
 export function escapeRegex(re) {
-  return re.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return re.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 /**
  * Returns the first element in the array that satisfies the given predicate
@@ -139,7 +139,7 @@ export function isNullOrUndefined(obj) {
 }
 
 export function toAccessorFunction(accessor) {
-  if (typeof accessor === 'string') {
+  if (typeof accessor === "string") {
     return row => row[accessor];
   }
   return accessor;
@@ -156,3 +156,24 @@ export const range = (a, b) =>
     })(a, b)
   );
 /* eslint-enable */
+
+export function getLeaves(header) {
+  if (header.orderedChildrenIds.length === 0) {
+    return [header];
+  }
+  return [].concat(
+    ...header.orderedChildrenIds.map(headerId =>
+      getLeaves(header.children[headerId])
+    )
+  );
+}
+
+export function countHeadersDepth(header) {
+  let depth = 0;
+  let currentHeader = header;
+  while (currentHeader.orderedChildrenIds.length > 0) {
+    depth += 1;
+    currentHeader = currentHeader.children[currentHeader.orderedChildrenIds[0]];
+  }
+  return depth;
+}

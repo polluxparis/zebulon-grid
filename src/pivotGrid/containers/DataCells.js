@@ -1,54 +1,61 @@
 import { connect } from 'react-redux';
 
 import {
-  getDataCellsWidth,
-  getDataCellsHeight,
-  getRowUiAxis,
+  dataCellsWidthSelector,
+  dataCellsHeightSelector,
+  getRowLeaves,
   getLayout,
-  getColumnUiAxis,
-  getColumnWidth,
-  getRowHeight,
+  getColumnLeaves,
+  getCellWidthByKeySelector,
+  getCellHeightByKeySelector,
   getCellValue,
-  getCellInfos
+  getCellInfos,
+  activatedMeasuresSelector,
+  rowDimensionsSelector,
+  columnDimensionsSelector,
+  getCellDimensionInfos
 } from '../selectors';
 import DataCells from '../components/DataCells';
 import copy from '../services/copyService';
+// import getCellDimensionInfos from '../selectors/cell.selector';
 
 const mapStateToProps = (state, ownProps) => {
   const { customFunctions, focusCellIndexes } = ownProps;
-  const rowUiAxis = getRowUiAxis(state);
-  const columnUiAxis = getColumnUiAxis(state);
-  const rowDimensionHeaders = rowUiAxis.dimensionHeaders;
-  const columnDimensionHeaders = columnUiAxis.dimensionHeaders;
-  const rowHeaders = rowUiAxis.headers;
-  const columnHeaders = columnUiAxis.headers;
-  const dataHeadersLocation = state.config.dataHeadersLocation;
+  const rowLeaves = getRowLeaves(state);
+  const columnLeaves = getColumnLeaves(state);
+  const rowDimensions = rowDimensionsSelector(state);
+  const columnDimensions = columnDimensionsSelector(state);
+  const measures = activatedMeasuresSelector(state);
+  // const rowDimensionHeaders = rowHeaders.dimensionHeaders;
+  // const columnDimensionHeaders = columnHeaders.dimensionHeaders;
   return {
     columnCount: getLayout(state).columnHorizontalCount,
-    columnHeaders,
+    columnLeaves,
     copy: ({ selectedCellStart, selectedCellEnd }) =>
       copy({
-        columnDimensionHeaders,
-        columnHeaders,
-        dataHeadersLocation,
-        getCellValue: getCellValue(state),
-        rowDimensionHeaders,
-        rowHeaders,
-        selectedCellEnd,
         selectedCellStart,
-        customFunctions
+        selectedCellEnd,
+        columnLeaves,
+        rowLeaves,
+        rowDimensions,
+        columnDimensions,
+        measures,
+        getCellValue: getCellValue(state),
+        getCellDimensionInfos: getCellDimensionInfos(state)
       }),
-    dataHeadersLocation,
     focusCellIndexes,
     getCellValue: getCellValue(state),
     getCellInfos: getCellInfos(state),
-    getColumnWidth: getColumnWidth(state),
-    getRowHeight: getRowHeight(state),
-    height: getDataCellsHeight(state),
+    getColumnWidth: ({ index }) =>
+      getCellWidthByKeySelector(state)(columnLeaves[index].key),
+    getRowHeight: ({ index }) =>
+      getCellHeightByKeySelector(state)(rowLeaves[index].key),
+    height: dataCellsHeightSelector(state),
     rowCount: getLayout(state).rowVerticalCount,
-    rowHeaders,
+    measures,
+    rowLeaves,
     sizes: state.sizes,
-    width: getDataCellsWidth(state),
+    width: dataCellsWidthSelector(state),
     zoom: state.config.zoom
   };
 };

@@ -2,8 +2,8 @@ import { UPDATE_CELL_SIZE } from '../constants';
 
 export default (
   state = {
-    leafs: { rows: {}, columns: {} },
-    dimensions: { rows: {}, columns: {} }
+    heights: { '11-/-0': 20 },
+    widths: { 'titi 0-/-qty': 50 }
   },
   action
 ) => {
@@ -14,10 +14,10 @@ export default (
         ...state,
         [direction]: {
           ...state[direction],
-          [axis]: {
-            ...state[direction][axis],
-            [id]: size
-          }
+          // [axis]: {
+          //   ...state[direction][axis],
+          [id]: size
+          // }
         }
       };
     default:

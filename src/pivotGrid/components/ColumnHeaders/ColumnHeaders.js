@@ -1,12 +1,12 @@
-import PropTypes from "prop-types";
-import React, { PureComponent } from "react";
-import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 
-import { AxisType } from "../../Axis";
-import { Header, DataHeader } from "../../Cells";
-import { MEASURE_ID, TOTAL_ID } from "../../constants";
-import HeaderComponent from "../Header";
-import getHeaderSize from "../../utils/headerSize";
+import { AxisType } from '../../Axis';
+import { Header, DataHeader } from '../../Cells';
+import { MEASURE_ID, TOTAL_ID } from '../../constants';
+import HeaderComponent from '../Header';
+import getHeaderSize from '../../utils/headerSize';
 
 class ColumnHeaders extends PureComponent {
   constructor() {
@@ -33,7 +33,7 @@ class ColumnHeaders extends PureComponent {
     const {
       columnHeaders,
       dimensionPositions,
-      getDimensionSize,
+      getCrossSize,
       getLastChildSize,
       gridId,
       previewSizes,
@@ -77,15 +77,15 @@ class ColumnHeaders extends PureComponent {
         if (header.dim.dimension) {
           // Normal header
           top = dimensionPositions.columns[header.dim.dimension.id];
-          height = getDimensionSize(AxisType.COLUMNS, header.dim.dimension.id);
+          height = getCrossSize(AxisType.COLUMNS, header.dim.dimension.id);
         } else {
           // Total header
           // Important when the size of the grid is smaller than the width of the measure cells
           top = 0;
-          height = getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
+          height = getCrossSize(AxisType.COLUMNS, TOTAL_ID);
         }
         const positionStyle = {
-          position: "absolute",
+          position: 'absolute',
           left,
           top,
           height,
@@ -131,21 +131,18 @@ class ColumnHeaders extends PureComponent {
           let height;
           if (!header.dim) {
             // Measure header
-            height = getDimensionSize(AxisType.COLUMNS, MEASURE_ID);
+            height = getCrossSize(AxisType.COLUMNS, MEASURE_ID);
             top += dimensionPositions.columns[MEASURE_ID];
           } else if (header.dim.dimension) {
             // Normal dimension header
-            height = getDimensionSize(
-              AxisType.COLUMNS,
-              header.dim.dimension.id
-            );
+            height = getCrossSize(AxisType.COLUMNS, header.dim.dimension.id);
             top += dimensionPositions.columns[header.dim.dimension.id];
           } else {
             // Total header
-            height = getDimensionSize(AxisType.COLUMNS, TOTAL_ID);
+            height = getCrossSize(AxisType.COLUMNS, TOTAL_ID);
           }
           const positionStyle = {
-            position: "absolute",
+            position: 'absolute',
             left,
             top,
             height,
@@ -194,7 +191,7 @@ class ColumnHeaders extends PureComponent {
         // This broke the grid because the height of the inner container was not reset
         // when the height prop changed
         // This is a workaround
-        containerStyle={{ position: "static" }}
+        containerStyle={{ position: 'static' }}
         height={height}
         overscanColumnCount={0}
         ref={ref => {
@@ -208,8 +205,8 @@ class ColumnHeaders extends PureComponent {
         // because react-virtualized sets them during render
         style={{
           fontSize: `${zoom * 100}%`,
-          overflowX: "hidden",
-          overflowY: "hidden"
+          overflowX: 'hidden',
+          overflowY: 'hidden'
         }}
         width={width}
       />
@@ -232,7 +229,7 @@ ColumnHeaders.propTypes = {
     rows: PropTypes.objectOf(PropTypes.number)
   }).isRequired,
   getColumnWidth: PropTypes.func.isRequired,
-  getDimensionSize: PropTypes.func.isRequired,
+  getCrossSize: PropTypes.func.isRequired,
   getLastChildSize: PropTypes.func.isRequired,
   getRowHeight: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,

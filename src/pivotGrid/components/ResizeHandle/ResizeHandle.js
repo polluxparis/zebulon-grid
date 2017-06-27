@@ -8,7 +8,7 @@ const resizeHandleSpec = {
       axis: props.axis,
       gridId: props.gridId,
       position: props.position,
-      leafSubheaders: props.leafSubheaders,
+      // leafSubheaders: props.leafSubheaders,
       previewSize: props.previewSize
     };
   }

@@ -1,27 +1,30 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
-import { getFilteredData } from "./data.selector";
+import { getFilteredData } from './data.selector';
+import { EMPTY_ID } from '../constants';
 
-export const getRowDimensions = createSelector(
+export const rowDimensionsSelector = createSelector(
 	[state => state.axis.rows, state => state.dimensions],
 	(rowAxis, dimensions) => rowAxis.map(id => dimensions[id])
 );
 
-export const getColumnDimensions = createSelector(
+export const columnDimensionsSelector = createSelector(
 	[state => state.axis.columns, state => state.dimensions],
 	(columnAxis, dimensions) => columnAxis.map(id => dimensions[id])
 );
 
-export const getAvailableDimensions = createSelector(
+export const availableDimensionsSelector = createSelector(
 	[state => state.axis.dimensions, state => state.dimensions],
 	(dimensionAxis, dimensions) => dimensionAxis.map(id => dimensions[id])
 );
 
-const getMeasures = state => state.measures;
+const measuresSelector = state => state.measures;
 
-export const getActivatedMeasures = createSelector([getMeasures], measures =>
-	Object.keys(measures)
-		.map(id => measures[id])
-		.filter(dimension => dimension.activated)
+export const activatedMeasuresSelector = createSelector(
+	[measuresSelector],
+	measures =>
+		Object.keys(measures)
+			.map(id => measures[id])
+			.filter(measure => measure.activated)
+			.reduce((acc, mea) => ({ ...acc, [mea.id]: mea }), {})
 );
-

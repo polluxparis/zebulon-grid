@@ -1,17 +1,17 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { ScrollSync } from "react-virtualized/dist/commonjs/ScrollSync";
-import { DropTarget } from "react-dnd";
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
+import { DropTarget } from 'react-dnd';
 
-import ArrowKeyStepper from "../ArrowKeyStepper/ArrowKeyStepper";
-import DataCells from "../../containers/DataCells";
-import DimensionHeaders from "../../containers/DimensionHeaders";
-import ColumnHeaders from "../../containers/ColumnHeaders";
-import RowHeaders from "../../containers/RowHeaders";
-import DragLayer from "./DragLayer";
-import { Header, DataHeader } from "../../Cells";
-import { keyToIndex } from "../../AxisUi";
-import { getNextKey, getCellInfosKey } from "../../utils/keys";
+import ArrowKeyStepper from '../ArrowKeyStepper/ArrowKeyStepper';
+import DataCells from '../../containers/DataCells';
+import DimensionHeaders from '../../containers/DimensionHeaders';
+import ColumnHeaders from '../../containers/ColumnHeaders';
+import RowHeaders from '../../containers/RowHeaders';
+import DragLayer from './DragLayer';
+import { Header, DataHeader } from '../../Cells';
+import { keyToIndex } from '../../AxisUi';
+import { getNextKey, getCellInfosKey } from '../../utils/keys';
 
 class PivotGrid extends Component {
   constructor(props) {
@@ -104,7 +104,7 @@ class PivotGrid extends Component {
     return connectDropTarget(
       // Width has to be set in order to render correctly in a resizable box
       // Position must be relative so that the absolutely positioned DragLayer behaves correctly
-      <div style={{ width, position: "relative" }}>
+      <div style={{ width, position: 'relative' }}>
         <DragLayer gridId={gridId} />
         <ArrowKeyStepper
           columnCount={columnHorizontalCount}
@@ -117,20 +117,22 @@ class PivotGrid extends Component {
             <ScrollSync>
               {({ onScroll, scrollLeft, scrollTop }) =>
                 <div className="pivotgrid-pivotgrid">
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: 'flex' }}>
                     <DimensionHeaders gridId={gridId} />
                     <ColumnHeaders
                       gridId={gridId}
                       scrollLeft={scrollLeft}
-                      scrollToColumn={scrollToColumn}
+                      scrollTop={0}
+                      // scrollToColumn={scrollToColumn}
                       ref={ref => {
                         this.columnHeaders = ref;
                       }}
                     />
                   </div>
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: 'flex' }}>
                     <RowHeaders
                       scrollTop={scrollTop}
+                      scrollLeft={0}
                       // scrollToRow={scrollToRow}
                       gridId={gridId}
                       ref={ref => {
