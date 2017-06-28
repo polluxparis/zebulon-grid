@@ -1,4 +1,4 @@
-import { isUndefined } from "./utils/generic";
+import { isUndefined } from './utils/generic';
 
 /**
  * Axis types
@@ -7,7 +7,8 @@ import { isUndefined } from "./utils/generic";
  */
 export const AxisType = {
   COLUMNS: 1,
-  ROWS: 2
+  ROWS: 2,
+  MEASURE: 3
   // DATA: 3,
   // FIELDS: 4,
   // CHART: 5
@@ -16,11 +17,11 @@ export const AxisType = {
 export function toAxis(axisType) {
   switch (axisType) {
     case AxisType.COLUMNS:
-      return "columns";
+      return 'columns';
     case AxisType.ROWS:
-      return "rows";
+      return 'rows';
     default:
-      return "__AXIS_TYPE_UNKNOWN__";
+      return '__AXIS_TYPE_UNKNOWN__';
   }
 }
 

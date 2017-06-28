@@ -1,11 +1,11 @@
-import { createSelector } from "reselect";
-import { pass } from "../Filtering";
-import { isDate, isNumber } from "../utils/generic";
+import { createSelector } from 'reselect';
+import { pass } from '../Filtering';
+import { isDate, isNumber } from '../utils/generic';
 
 export const getFilters = state => state.filters || {};
 const getData = state => state.data;
 
-export const getFilteredData = createSelector(
+export const filteredDataSelector = createSelector(
   [getData, getFilters],
   (data, filtersObject) => {
     const filters = [
@@ -40,7 +40,7 @@ export const getDimensionValues = createSelector(
       if (filterFunc !== undefined) {
         if (
           filterFunc === true ||
-          (typeof filterFunc === "function" && filterFunc(val))
+          (typeof filterFunc === 'function' && filterFunc(val))
         ) {
           values.push(val);
           labels.push(label);
@@ -79,7 +79,7 @@ export const getDimensionValues = createSelector(
       res = values.map(value => ({ value, label: labelsMap[value] }));
     }
     if (containsBlank) {
-      res.unshift({ value: null, label: "" });
+      res.unshift({ value: null, label: '' });
     }
     return res;
   }

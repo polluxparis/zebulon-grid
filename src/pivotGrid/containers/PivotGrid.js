@@ -8,8 +8,8 @@ import {
   defaultCellSizesSelector,
   getCellSizes,
   rowDimensionsSelector,
-  getColumnHeaders,
-  getRowHeaders,
+  columnHeadersSelector,
+  rowHeadersSelector,
   columnDimensionsSelector,
   activatedMeasuresSelector
 } from '../selectors';
@@ -21,8 +21,8 @@ const mapStateToProps = state => ({
   layout: getLayout(state),
   defaultCellSizes: defaultCellSizesSelector(state),
   sizes: state.sizes,
-  columnHeaders: getColumnHeaders(state),
-  rowHeaders: getRowHeaders(state),
+  columnHeaders: columnHeadersSelector(state),
+  rowHeaders: rowHeadersSelector(state),
   rowDimensions: rowDimensionsSelector(state),
   columnDimensions: columnDimensionsSelector(state),
   dataDimensionsCount: activatedMeasuresSelector(state).length

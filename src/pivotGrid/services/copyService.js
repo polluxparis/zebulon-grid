@@ -29,8 +29,8 @@ function getSelectedText({
   getCellDimensionInfos
   // measureHeadersAxis,
 }) {
-  const mc = measureHeadersAxis === 'column';
-  const mr = measureHeadersAxis === 'row';
+  const mc = measureHeadersAxis === 'columns';
+  const mr = measureHeadersAxis === 'rows';
   // Build rows headers array
   const rowsRange = [
     Math.min(selectedCellStart.rowIndex, selectedCellEnd.rowIndex),
@@ -55,7 +55,7 @@ function getSelectedText({
   // Build data array
   let measure;
   const cells = selectedRowLeaves.map(rowLeaf => {
-    if (measureHeadersAxis === 'row') {
+    if (measureHeadersAxis === 'rows') {
       measure = measures[rowLeaf.id];
     }
     return (
@@ -64,7 +64,7 @@ function getSelectedText({
         // maybe better to go without datacell and get caption directly
         // be careful about rendering function though
         .map(columnLeaf => {
-          if (measureHeadersAxis === 'column') {
+          if (measureHeadersAxis === 'columns') {
             measure = measures[columnLeaf.id];
           }
           return getCellValue(
@@ -139,8 +139,8 @@ export default function copy({
     const clipboardTextArea = document.createElement('textarea');
     const measureHeadersAxis = columnDimensions[columnDimensions.length - 1]
       .id === MEASURE_ID
-      ? 'column'
-      : 'row';
+      ? 'columns'
+      : 'rows';
     clipboardTextArea.style.position = 'absolute';
     clipboardTextArea.style.left = '-10000px';
     bodyElement.appendChild(clipboardTextArea);

@@ -4,7 +4,7 @@ import { scrollbarSize } from '../utils/domHelpers';
 import { getLeaves } from '../utils/generic';
 import { AxisType, toAxisType } from '../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../constants';
-import { getColumnLeaves, getRowLeaves } from './axis.selector';
+import { getColumnLeaves, rowLeavesSelector } from './axis.selector';
 import {
   columnDimensionsSelector,
   rowDimensionsSelector
@@ -38,7 +38,7 @@ export const getCellWidthByKeySelector = createSelector(
 );
 
 export const getRowHeight = createSelector(
-  [getCellHeightByKeySelector, getRowLeaves],
+  [getCellHeightByKeySelector, rowLeavesSelector],
   (getCellHeightByKeySelector, rowLeaves) => ({ index }) =>
     getCellHeightByKeySelector(rowLeaves[index].key)
 );
@@ -74,19 +74,19 @@ export const crossPositionsSelector = createSelector(
   (getCellWidthByKey, getCellHeightByKey, columnDimensions, rowDimensions) => ({
     [AxisType.COLUMNS]: calculateCrossPositions(
       columnDimensions,
-      getCellWidthByKey
+      getCellHeightByKey
     ),
-    [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellHeightByKey)
+    [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellWidthByKey)
   })
 );
 //--------------------------------------------------------
 export const rowsHeightSelector = createSelector(
-  [getRowLeaves, getCellHeightByKeySelector],
+  [rowLeavesSelector, getCellHeightByKeySelector],
   (rowLeaves, getCellHeightByKey) =>
     rowLeaves.reduce((height, leaf) => height + getCellHeightByKey(leaf.key), 0)
 );
 export const columnsWidthSelector = createSelector(
-  [getRowLeaves, getCellWidthByKeySelector],
+  [rowLeavesSelector, getCellWidthByKeySelector],
   (columnLeaves, getCellWidthByKey) =>
     columnLeaves.reduce((width, leaf) => width + getCellWidthByKey(leaf.key), 0)
 );

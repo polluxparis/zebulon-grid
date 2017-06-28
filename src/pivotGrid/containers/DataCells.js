@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import {
   dataCellsWidthSelector,
   dataCellsHeightSelector,
-  getRowLeaves,
+  rowLeavesSelector,
   getLayout,
   getColumnLeaves,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
-  getCellValue,
+  getCellValueSelector,
   getCellInfos,
   activatedMeasuresSelector,
   rowDimensionsSelector,
@@ -21,11 +21,12 @@ import copy from '../services/copyService';
 
 const mapStateToProps = (state, ownProps) => {
   const { customFunctions, focusCellIndexes } = ownProps;
-  const rowLeaves = getRowLeaves(state);
+  const rowLeaves = rowLeavesSelector(state);
   const columnLeaves = getColumnLeaves(state);
   const rowDimensions = rowDimensionsSelector(state);
   const columnDimensions = columnDimensionsSelector(state);
   const measures = activatedMeasuresSelector(state);
+  const getCellValue = getCellValueSelector(state);
   // const rowDimensionHeaders = rowHeaders.dimensionHeaders;
   // const columnDimensionHeaders = columnHeaders.dimensionHeaders;
   return {
@@ -40,11 +41,11 @@ const mapStateToProps = (state, ownProps) => {
         rowDimensions,
         columnDimensions,
         measures,
-        getCellValue: getCellValue(state),
+        getCellValue,
         getCellDimensionInfos: getCellDimensionInfos(state)
       }),
     focusCellIndexes,
-    getCellValue: getCellValue(state),
+    getCellValue,
     getCellInfos: getCellInfos(state),
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(columnLeaves[index].key),

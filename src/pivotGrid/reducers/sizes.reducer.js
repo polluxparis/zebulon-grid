@@ -2,8 +2,8 @@ import { UPDATE_CELL_SIZE } from '../constants';
 
 export default (
   state = {
-    heights: { '11-/-0': 20 },
-    widths: { 'titi 0-/-qty': 50 }
+    heights: {},
+    widths: {}
   },
   action
 ) => {

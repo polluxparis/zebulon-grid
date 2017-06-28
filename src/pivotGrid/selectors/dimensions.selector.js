@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { getFilteredData } from './data.selector';
+import { filteredDataSelector } from './data.selector';
 import { EMPTY_ID } from '../constants';
 
 export const rowDimensionsSelector = createSelector(

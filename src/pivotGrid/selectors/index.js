@@ -1,9 +1,9 @@
 import {
   getLayout,
-  getColumnHeaders,
-  getRowHeaders,
+  columnHeadersSelector,
+  rowHeadersSelector,
   getColumnLeaves,
-  getRowLeaves,
+  rowLeavesSelector,
   getColumnDimensionHeaders,
   getRowDimensionHeaders,
   getAxisActivatedMeasures
@@ -38,23 +38,23 @@ import {
   availableDimensionsSelector
 } from './dimensions.selector';
 import {
-  getCellValue,
+  getCellValueSelector,
   getCellInfos,
   getCellDimensionInfos
 } from './cell.selector';
 import {
   getFilters,
   getDimensionValues,
-  getFilteredData
+  filteredDataSelector
 } from './data.selector';
 
 export { getLayout };
 export { defaultCellSizesSelector };
 export { getCellSizes };
-export { getColumnHeaders };
-export { getRowHeaders };
+export { columnHeadersSelector };
+export { rowHeadersSelector };
 export { getColumnLeaves };
-export { getRowLeaves };
+export { rowLeavesSelector };
 export { getColumnDimensionHeaders };
 export { getRowDimensionHeaders };
 export { activatedMeasuresSelector };
@@ -73,12 +73,12 @@ export { getLastChildSizeOnColumns };
 export { getLastChildSizeOnRows };
 export { columnsVisibleWidthSelector };
 export { rowsVisibleHeightSelector };
-export { getCellValue, getCellInfos };
+export { getCellValueSelector, getCellInfos };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
 export { getDimensionValues };
 export { getFilters };
-export { getFilteredData };
+export { filteredDataSelector };
 export { getCellDimensionInfos };
 export { getCellHeightByKeySelector };
 export { getCellWidthByKeySelector };

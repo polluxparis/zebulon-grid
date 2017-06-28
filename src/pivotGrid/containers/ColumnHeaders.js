@@ -2,50 +2,49 @@ import { connect } from 'react-redux';
 
 import { AxisType } from '../Axis';
 import {
-  getColumnHeaders,
+  columnHeadersSelector,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
   getColumnHeight,
-  rowDimensionsSelector,
+  columnDimensionsSelector,
   columnHeadersWidthSelector,
   getLastChildSizeOnColumns,
   // getCrossSize,
-  crossPositionsSelector,
+  // crossPositionsSelector,
   getLayout,
   columnsVisibleWidthSelector,
   getPreviewSizes,
   getColumnLeaves,
   getAxisActivatedMeasures,
-  getFilteredData,
-  columnDimensionsSelector
+  filteredDataSelector
 } from '../selectors';
 import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
-  const rowDimensions = rowDimensionsSelector(state);
+  const columnDimensions = columnDimensionsSelector(state);
   const leaves = getColumnLeaves(state);
   return {
     axisType: AxisType.COLUMNS,
-    data: getFilteredData(state),
+    data: filteredDataSelector(state),
     dimensions: columnDimensionsSelector(state),
     measures: getAxisActivatedMeasures(AxisType.COLUMNS)(state),
     columnCount: getLayout(state).columnHorizontalCount,
-    headers: getColumnHeaders(state),
+    headers: columnHeadersSelector(state),
     leaves,
-    crossPositions: crossPositionsSelector(state),
+    // crossPositions: crossPositionsSelector(state),
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
     // getCrossSize: getCrossSize(state),
     // getLastChildSize: getLastChildSizeOnColumns(state),
     getRowHeight: ({ index }) =>
-      getCellHeightByKeySelector(state)(rowDimensions[index].id),
+      getCellHeightByKeySelector(state)(columnDimensions[index].id),
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).columnVerticalCount,
 
     zoom: state.config.zoom,
-    sizes: state.sizes.widths,
+    sizes: state.sizes,
     gridId: ownProps.gridId
   };
 };

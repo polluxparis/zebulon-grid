@@ -5,14 +5,14 @@ import {
   range,
   countHeadersDepth
 } from '../utils/generic';
-import { getFilteredData } from './data.selector';
+import { filteredDataSelector } from './data.selector';
 import { HeaderType } from '../Cells';
 import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
   columnDimensionsSelector
 } from './dimensions.selector';
-import { getRowLeaves, getColumnLeaves } from './axis.selector';
+import { rowLeavesSelector, getColumnLeaves } from './axis.selector';
 import { ALL, ROOT_ID, MEASURE_ID } from '../constants';
 import { Axis, AxisType, toAxisType } from '../Axis';
 const getIndexesIntersectionFromDimensions = (
@@ -70,8 +70,8 @@ const cellValue = (
   );
 };
 
-export const getCellValue = createSelector(
-  [getFilteredData],
+export const getCellValueSelector = createSelector(
+  [filteredDataSelector],
   data => (
     valueAccessor,
     rowDataIndexes,
@@ -145,7 +145,7 @@ const cellDimensionInfos = (
   return dimensions.reverse();
 };
 export const getCellDimensionInfos = createSelector(
-  [getFilteredData],
+  [filteredDataSelector],
   data => (axisDimensions, hasMeasure, leaf, measures, dimensions) => {
     return cellDimensionInfos(
       data,
@@ -160,8 +160,8 @@ export const getCellDimensionInfos = createSelector(
 
 export const getCellInfos = createSelector(
   [
-    getFilteredData,
-    getRowLeaves,
+    filteredDataSelector,
+    rowLeavesSelector,
     getColumnLeaves,
     activatedMeasuresSelector,
     rowDimensionsSelector,

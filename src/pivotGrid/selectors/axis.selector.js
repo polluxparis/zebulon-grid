@@ -1,12 +1,17 @@
 import { createSelector } from 'reselect';
 import { Axis, AxisType, toAxisType } from '../Axis';
-import { getFilteredData } from './data.selector';
+import { filteredDataSelector } from './data.selector';
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
   activatedMeasuresSelector
 } from './dimensions.selector';
-import { getLeaves, countHeadersDepth, isNull } from '../utils/generic';
+import {
+  getLeaves,
+  countHeadersDepth,
+  isNull,
+  isNullOrUndefined
+} from '../utils/generic';
 import { ROOT_ID, EMPTY_ID, MEASURE_ID } from '../constants';
 import { HeaderType } from '../Cells';
 
@@ -67,14 +72,14 @@ function buildAxisTrees(data, { columns, rows }) {
   return { columns: columnRoot, rows: rowRoot };
 }
 export const getAxisTrees = createSelector(
-  [getFilteredData, rowDimensionsSelector, columnDimensionsSelector],
+  [filteredDataSelector, rowDimensionsSelector, columnDimensionsSelector],
   (data, rows, columns) => buildAxisTrees(data, { columns, rows })
 );
-export const getColumnAxisTree = createSelector(
+export const columnAxisTreeSelector = createSelector(
   [getAxisTrees],
   axisTrees => axisTrees.columns
 );
-export const getRowAxisTree = createSelector(
+export const rowAxisTreeSelector = createSelector(
   [getAxisTrees],
   axisTrees => axisTrees.rows
 );
@@ -83,7 +88,15 @@ export const getRowAxisTree = createSelector(
 // headers
 //////////////////////////////////////////////////////////////////
 // a=[{a:3,b:"toto 10"},{a:10,b:"toto 3"},{a:11,b:"toto 1"},{a:2,b:"toto 4"}]
-function buildHeader(data, node, dimensions, measures, depth, parent) {
+function buildHeaders(
+  data,
+  node,
+  dimensions,
+  measures,
+  depth,
+  parent,
+  areCollapsed
+) {
   const { id, children, dataIndexes } = node;
   let header;
   // Root node
@@ -92,40 +105,54 @@ function buildHeader(data, node, dimensions, measures, depth, parent) {
   } else {
     const currentDimension = dimensions[depth];
     const row = data[dataIndexes[0]];
+    const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
     header = {
       sortKey: currentDimension.sort.keyAccessor(row),
       id: currentDimension.keyAccessor(row),
       type: HeaderType.DIMENSION,
       parent,
-      key: parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id),
+      key,
       dataIndexes,
-      orderedChildrenIds: []
+      orderedChildrenIds: [],
+      // isDimensionCollapsed: currentDimension.isCollapsed || false,
+      collapsedLevel: areCollapsed[key] ? depth : null,
+      span: 1
+      // hasCollapsedParent: parent.isCollapsed || parent.hasCollapsedParent
     };
     header.hasSubTotal = currentDimension.hasSubTotal;
   }
-  header.children = Object.keys(node.children).reduce(
-    (acc, nodeId) => ({
-      ...acc,
-      [nodeId]: buildHeader(
-        data,
-        node.children[nodeId],
-        dimensions,
-        measures,
-        depth + 1,
-        header
-      )
-    }),
-    {}
-  );
-
-  if (Object.keys(header.children).length > 0) {
-    // sort children
-    const orderedChildrenMap = Object.keys(header.children).map(id => ({
-      id: header.children[id].id,
-      sortKey: header.children[id].sortKey
-    }));
+  if (isNullOrUndefined(header.collapsedLevel)) {
+    header.children = Object.keys(node.children).reduce(
+      (acc, nodeId) => ({
+        ...acc,
+        [nodeId]: buildHeaders(
+          data,
+          node.children[nodeId],
+          dimensions,
+          measures,
+          depth + 1,
+          header,
+          areCollapsed
+        )
+      }),
+      {}
+    );
+  } else {
+    header.children = {};
+  }
+  const childrenKeys = Object.keys(header.children);
+  if (childrenKeys.length > 0) {
+    // sort children and count span
+    header.span = 0;
+    const orderedChildrenMap = childrenKeys.map(id => {
+      header.span += header.children[id].span;
+      return {
+        id: header.children[id].id,
+        sortKey: header.children[id].sortKey
+      };
+    });
     if (
-      orderedChildrenMap.length > 0 &&
+      // orderedChildrenMap.length > 0 &&
       header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
     ) {
       const childrenDimension = dimensions[depth + 1];
@@ -155,8 +182,10 @@ function buildHeader(data, node, dimensions, measures, depth, parent) {
             parent: header,
             dataIndexes: header.dataIndexes,
             key: `${header.key}-/-${id}`,
-            orderedChildrenIds: []
+            orderedChildrenIds: [],
+            span: 1
           };
+          header.span = measureIds.length;
           header.orderedChildrenIds.push(id);
         });
       } else {
@@ -166,7 +195,8 @@ function buildHeader(data, node, dimensions, measures, depth, parent) {
           key: `${header.key}-/-${EMPTY_ID}`,
           parent: header,
           dataIndexes: header.dataIndexes,
-          orderedChildrenIds: []
+          orderedChildrenIds: [],
+          span: 1
         };
         header.orderedChildrenIds.push(EMPTY_ID);
       }
@@ -175,35 +205,57 @@ function buildHeader(data, node, dimensions, measures, depth, parent) {
   return header;
 }
 
-export function buildAxisHeaders(data, axisTree, dimensions, measures) {
-  return buildHeader(data, axisTree, dimensions, measures, -1, null);
+export function buildAxisHeaders(
+  data,
+  axisTree,
+  dimensions,
+  measures,
+  areCollapsed
+) {
+  return buildHeaders(
+    data,
+    axisTree,
+    dimensions,
+    measures,
+    -1,
+    null,
+    areCollapsed
+  );
 }
 
-export const getRowHeaders = createSelector(
+export const rowHeadersSelector = createSelector(
   [
-    getFilteredData,
-    getRowAxisTree,
+    filteredDataSelector,
+    rowAxisTreeSelector,
     rowDimensionsSelector,
-    getAxisActivatedMeasures(AxisType.ROWS)
+    getAxisActivatedMeasures(AxisType.ROWS),
+    state => state.collapses.rows
   ],
   buildAxisHeaders
 );
 
-export const getColumnHeaders = createSelector(
+export const columnHeadersSelector = createSelector(
   [
-    getFilteredData,
-    getColumnAxisTree,
+    filteredDataSelector,
+    columnAxisTreeSelector,
     columnDimensionsSelector,
-    getAxisActivatedMeasures(AxisType.COLUMNS)
+    getAxisActivatedMeasures(AxisType.COLUMNS),
+    state => state.collapses.columns
   ],
   buildAxisHeaders
 );
 
-export const getRowLeaves = createSelector([getRowHeaders], getLeaves);
-export const getColumnLeaves = createSelector([getColumnHeaders], getLeaves);
+export const rowLeavesSelector = createSelector(
+  [rowHeadersSelector],
+  getLeaves
+);
+export const getColumnLeaves = createSelector(
+  [columnHeadersSelector],
+  getLeaves
+);
 
 export const getLayout = createSelector(
-  [getRowHeaders, getColumnHeaders],
+  [rowHeadersSelector, columnHeadersSelector],
   (rowHeaders, columnHeaders) => {
     return {
       rowHorizontalCount: countHeadersDepth(rowHeaders),

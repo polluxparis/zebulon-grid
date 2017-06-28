@@ -7,7 +7,7 @@ import { Header, DataHeader, HeaderType } from '../../Cells';
 import { MEASURE_ID, TOTAL_ID, ROOT_ID, KEY_SEPARATOR } from '../../constants';
 import HeaderComponent from '../Header';
 import getHeaderSize from '../../utils/headerSize';
-
+import { isNullOrUndefined, isNull } from '../../utils/generic';
 function toComponent(
   header,
   caption,
@@ -16,7 +16,7 @@ function toComponent(
   scrollTop,
   scrollLeft,
   previewSizes,
-  getLastChildSize,
+  // getLastChildSize,
   span,
   positionStyle,
   dimensionKey,
@@ -34,7 +34,7 @@ function toComponent(
       scrollLeft={scrollLeft}
       scrollTop={scrollTop}
       previewSizes={previewSizes}
-      getLastChildSize={getLastChildSize}
+      // getLastChildSize={getLastChildSize}
       dimensionKey={dimensionKey}
       gridId={gridId}
     />
@@ -74,9 +74,11 @@ class Headers extends PureComponent {
       rowCount,
       columnCount,
       previewSizes,
-      getLastChildSize,
-      getCrossSize,
-      crossPositions,
+      // getLastChildSize,
+      // getCrossSize,
+      // crossPositions,
+      getColumnWidth,
+      getRowHeight,
       gridId,
       dimensions,
       measures,
@@ -112,60 +114,49 @@ class Headers extends PureComponent {
     // This ensures that we don't render inexistent headers.
     const correctStopIndex = Math.min(stopIndex, leaves.length - 1);
 
-    // Render fixed left columns
-
-    // // Render big cells on the left of current cells if necessary
-    // // The check on the presence of the header is necessary
-    // // because it can be out of bounds when the headers array is modified
-    // if (
-    //   headers[rowStartIndex] &&
-    //   headers[rowStartIndex].length < columnCount
-    // ) {
-    //   let header = headers[rowStartIndex][0];
-    //   while (header.parent) {
-    //     header = header.parent;
-    //     const main = rowSizeAndPositionManager.getSizeAndPositionOfCell(
-    //       header.x
-    //     );
-    //     const span = header.vspan();
-    //     const top = main.offset + verticalOffsetAdjustment;
-    //     const height = getHeaderSize(rowSizeAndPositionManager, header.x, span);
-    //     const width = getCrossSize(AxisType.ROWS, header.dim.dimension.id);
-    //     const left = 0 + dimensionPositions.rows[header.dim.dimension.id];
-    //     const positionStyle = {
-    //       position: "absolute",
-    //       left,
-    //       top,
-    //       height,
-    //       width
-    //     };
-    //     renderedCells.push(
-    //       <HeaderComponent
-    //         key={`header-${header.key}`}
-    //         axis={AxisType.ROWS}
-    //         header={header}
-    //         positionStyle={positionStyle}
-    //         span={span}
-    //         startIndex={rowStartIndex}
-    //         scrollLeft={0}
-    //         scrollTop={scrollTop}
-    //         previewSizes={previewSizes}
-    //         getLastChildSize={getLastChildSize}
-    //         gridId={gridId}
-    //       />
-    //     );
-    //   }
-    // }
-
     // row headers
     // loop on leaves + leave parents
     const renderedHeaderKeys = {};
     let header;
     let dimensionIndex;
+    // collapse expand management
+    let collapsedSize = 0;
+    const collapsedSizes = [];
+    const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
+    for (
+      let index = dimensions.length - 1 - !isNull(measures);
+      index >= 0;
+      index -= 1
+    ) {
+      collapsedSizes.push(collapsedSize);
+      collapsedSize += getSize({
+        index: [index]
+      });
+      collapsedSizes.reverse();
+      // if()
+    }
+    // const collapsedSizes = dimensions
+    //   .reverse()
+    //   .map((dimension, index) => {
+    //     if (dimension.id === MEASURE_ID) {
+    //       return collapsedSize;
+    //     }
+    //     const getSize = axisType === AxisType.ROWS
+    //       ? getColumnWidth
+    //       : getRowHeight;
+    //     return (collapsedSize += getSize({
+    //       index: [dimensions.length - 1 - index]
+    //     }));
+    //   })
+    // .reverse();
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
       dimensionIndex = dimensions.length - 1;
       while (header.id !== ROOT_ID && !renderedHeaderKeys[header.key]) {
+        dimensionIndex = isNullOrUndefined(header.collapsedLevel) ||
+          header.type === HeaderType.MEASURE
+          ? dimensionIndex
+          : header.collapsedLevel;
         renderedHeaderKeys[header.key] = true;
         const dimension = dimensions[dimensionIndex];
 
@@ -181,8 +172,8 @@ class Headers extends PureComponent {
         const main = sizeAndPositionManager.getSizeAndPositionOfCell(index);
         const mainOffset = main.offset + offsetAdjustment;
 
-        // const span = header.vspan();
-        const span = header.orderedChildrenIds.length || 1;
+        const span = header.span;
+        // const span = header.orderedChildrenIds.length || 1;
         const mainSize = getHeaderSize(sizeAndPositionManager, index, span);
         // 3 cases: normal dimension header, measure header or total header
         // let left = 0;
@@ -197,6 +188,9 @@ class Headers extends PureComponent {
         const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
           dimensionIndex
         );
+        collapsedSize = isNullOrUndefined(header.collapsedLevel)
+          ? 0
+          : collapsedSizes[dimensionIndex];
         // const crossPosition = crossPositions[axisType][dimension.id];
         // } else {
         //   // Total header
@@ -209,14 +203,14 @@ class Headers extends PureComponent {
             left: cross.offset,
             top: mainOffset,
             height: mainSize,
-            width: cross.size
+            width: cross.size + collapsedSize
           };
         } else {
           positionStyle = {
             position: 'absolute',
             left: mainOffset,
             top: cross.offset,
-            height: cross.size,
+            height: cross.size + collapsedSize,
             width: mainSize
           };
         }
@@ -230,13 +224,14 @@ class Headers extends PureComponent {
             scrollTop,
             scrollLeft,
             previewSizes,
-            getLastChildSize,
+            // getLastChildSize,
             span,
             positionStyle,
             dimension.id,
             gridId
           )
         );
+
         header = header.parent;
         dimensionIndex -= 1;
       }
@@ -305,8 +300,8 @@ Headers.propTypes = {
     rows: PropTypes.objectOf(PropTypes.number)
   }).isRequired,
   getColumnWidth: PropTypes.func.isRequired,
-  getCrossSize: PropTypes.func.isRequired,
-  getLastChildSize: PropTypes.func.isRequired,
+  // getCrossSize: PropTypes.func.isRequired,
+  // getLastChildSize: PropTypes.func.isRequired,
   getRowHeight: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
   previewSizes: PropTypes.objectOf(PropTypes.number).isRequired,

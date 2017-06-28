@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies*/
-import { Observable } from "rx-lite";
+import { Observable } from 'rx-lite';
 /* eslint-enable */
-import * as formats from "./Format";
+import * as formats from './Format';
 
 export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   const nTutu = 2;
@@ -30,29 +30,29 @@ export function getObservableMockDatasource(interval) {
     getMockDatasource(),
     [
       {
-        toto: "0",
-        toto_lb: "toto 0",
+        toto: '0',
+        toto_lb: 'toto 0',
         qty: 100,
         amt: 100,
-        titi: "titi 0",
-        tutu: "1"
+        titi: 'titi 0',
+        tutu: '1'
       },
       {
-        toto: "0",
-        toto_lb: "toto 0",
+        toto: '0',
+        toto_lb: 'toto 0',
         qty: 100,
         amt: 100,
-        titi: "titi 0",
-        tutu: "0"
+        titi: 'titi 0',
+        tutu: '0'
       }
     ],
-    { toto: "0", toto_lb: "toto 0", qty: 1, amt: 2, titi: "titi 0", tutu: "1" }
+    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' }
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
 export const basicConfig = {
   canMoveDimensions: true,
-  measureHeadersAxis: "columns",
+  measureHeadersAxis: 'columns',
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -86,13 +86,13 @@ export const basicConfig = {
   // },
   dimensions: [
     {
-      id: "toto",
-      caption: "Toto",
-      keyAccessor: "toto",
-      labelAccessor: "toto_lb",
+      id: 'toto',
+      caption: 'Toto',
+      keyAccessor: 'toto',
+      labelAccessor: 'toto_lb',
       sort: {
         // order: 'asc',
-        keyAccessor: "toto_lb"
+        keyAccessor: 'toto_lb'
         // accessor: row => row.toto_lb
         // custom: (a, b) => a - b
       }
@@ -116,14 +116,14 @@ export const basicConfig = {
     //     },
     // },
     {
-      id: "titi",
-      caption: "Titi",
-      keyAccessor: "titi"
+      id: 'titi',
+      caption: 'Titi',
+      keyAccessor: 'titi'
     },
     {
-      id: "tutu",
-      caption: "Tutu",
-      keyAccessor: "tutu",
+      id: 'tutu',
+      caption: 'Tutu',
+      keyAccessor: 'tutu',
       format: formats.id
     }
     // {
@@ -143,31 +143,31 @@ export const basicConfig = {
   ],
   measures: [
     {
-      valueAccessor: "qty",
-      id: "qty",
-      caption: "Quantity",
+      valueAccessor: 'qty',
+      id: 'qty',
+      caption: 'Quantity',
       format: formats.quantity,
-      aggregation: "sum"
+      aggregation: 'sum'
     },
     {
-      valueAccessor: "amt",
-      id: "amt",
-      caption: "Amount",
-      aggregation: "sum",
-      aggregationCaption: "whatever",
+      valueAccessor: 'amt',
+      id: 'amt',
+      caption: 'Amount',
+      aggregation: 'sum',
+      aggregationCaption: 'whatever',
       format: formats.amount
     },
     {
-      id: "price",
-      caption: "Price",
-      aggregation: "avg",
+      id: 'price',
+      caption: 'Price',
+      aggregation: 'avg',
       valueAccessor: row => row.amt / row.qty,
       format: formats.price
     }
   ],
-  columns: ["titi"],
-  rows: ["toto", "tutu"],
-  activeMeasures: ["qty", "amt", "price"],
+  columns: ['titi'],
+  rows: ['toto', 'tutu'],
+  activeMeasures: ['qty', 'amt', 'price'],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {
     // 'Titi': ['titi0']

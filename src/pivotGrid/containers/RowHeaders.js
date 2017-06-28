@@ -2,46 +2,46 @@ import { connect } from 'react-redux';
 
 import { AxisType } from '../Axis';
 import {
-  crossPositionsSelector,
-  getLastChildSizeOnRows,
+  // crossPositionsSelector,
+  // getLastChildSizeOnRows,
   getLayout,
   getPreviewSizes,
   getRowHeadersVisibleHeight,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
-  getRowHeaders,
-  getRowLeaves,
+  rowHeadersSelector,
+  rowLeavesSelector,
   getAxisActivatedMeasures,
-  getFilteredData,
+  filteredDataSelector,
   rowDimensionsSelector,
-  columnDimensionsSelector,
   rowsVisibleHeightSelector,
   rowHeadersWidthSelector
 } from '../selectors';
 import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
-  const columnDimensions = columnDimensionsSelector(state);
-  const leaves = getRowLeaves(state);
+  const rowDimensions = rowDimensionsSelector(state);
+  const leaves = rowLeavesSelector(state);
   return {
     axisType: AxisType.ROWS,
-    data: getFilteredData(state),
+    data: filteredDataSelector(state),
     dimensions: rowDimensionsSelector(state),
     measures: getAxisActivatedMeasures(AxisType.ROWS)(state),
     columnCount: getLayout(state).rowHorizontalCount,
-    crossPositions: crossPositionsSelector(state),
+    // crossPositions: crossPositionsSelector(state),
     getColumnWidth: ({ index }) =>
-      getCellWidthByKeySelector(state)(columnDimensions[index].id),
+      getCellWidthByKeySelector(state)(rowDimensions[index].id),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(leaves[index].key),
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).rowVerticalCount,
-    headers: getRowHeaders(state),
+    headers: rowHeadersSelector(state),
     leaves,
-
-    sizes: state.sizes.height,
+    // getIsCollapsed: ({ index }) =>
+    //   getIsCollapsedRowByKeySelector(state)(leaves[index].key),
+    sizes: state.sizes,
     zoom: state.config.zoom,
     gridId: ownProps.gridId
   };
