@@ -20,6 +20,9 @@ function toComponent(
   span,
   positionStyle,
   dimensionKey,
+  isLastDimension,
+  isAffixManaged,
+  toggleCollapse,
   gridId
 ) {
   return (
@@ -36,7 +39,10 @@ function toComponent(
       previewSizes={previewSizes}
       // getLastChildSize={getLastChildSize}
       dimensionKey={dimensionKey}
+      isLastDimension={isLastDimension}
+      isAffixManaged={isAffixManaged}
       gridId={gridId}
+      toggleCollapse={toggleCollapse}
     />
   );
 }
@@ -74,7 +80,7 @@ class Headers extends PureComponent {
       rowCount,
       columnCount,
       previewSizes,
-      // getLastChildSize,
+      getLastChildSize,
       // getCrossSize,
       // crossPositions,
       getColumnWidth,
@@ -83,7 +89,8 @@ class Headers extends PureComponent {
       dimensions,
       measures,
       data,
-      axisType
+      axisType,
+      toggleCollapse
     } = this.props;
 
     // this.firstLeafHeader =
@@ -123,17 +130,14 @@ class Headers extends PureComponent {
     let collapsedSize = 0;
     const collapsedSizes = [];
     const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
-    for (
-      let index = dimensions.length - 1 - !isNull(measures);
-      index >= 0;
-      index -= 1
-    ) {
+    const lastNotMeasureDimensionIndex =
+      dimensions.length - 1 - !isNull(measures);
+    for (let index = lastNotMeasureDimensionIndex; index >= 0; index -= 1) {
       collapsedSizes.push(collapsedSize);
       collapsedSize += getSize({
         index: [index]
       });
       collapsedSizes.reverse();
-      // if()
     }
     // const collapsedSizes = dimensions
     //   .reverse()
@@ -151,14 +155,12 @@ class Headers extends PureComponent {
     // .reverse();
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
-      dimensionIndex = dimensions.length - 1;
       while (header.id !== ROOT_ID && !renderedHeaderKeys[header.key]) {
-        dimensionIndex = isNullOrUndefined(header.collapsedLevel) ||
-          header.type === HeaderType.MEASURE
-          ? dimensionIndex
-          : header.collapsedLevel;
+        if (header.isCollapsed) {
+          header.depth = header.depth;
+        }
         renderedHeaderKeys[header.key] = true;
-        const dimension = dimensions[dimensionIndex];
+        const dimension = dimensions[header.depth];
 
         let caption;
         if (header.type === HeaderType.DIMENSION) {
@@ -186,16 +188,15 @@ class Headers extends PureComponent {
         //
         // const crossSize = getCrossSize(axisType, dimension.id);
         const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
-          dimensionIndex
+          header.depth
         );
-        collapsedSize = isNullOrUndefined(header.collapsedLevel)
-          ? 0
-          : collapsedSizes[dimensionIndex];
+        collapsedSize = !header.isCollapsed ? 0 : collapsedSizes[header.depth];
         // const crossPosition = crossPositions[axisType][dimension.id];
         // } else {
         //   // Total header
         //   width = getCrossSize(AxisType.ROWS, TOTAL_ID);
         // }
+
         let positionStyle;
         if (axisType === AxisType.ROWS) {
           positionStyle = {
@@ -224,18 +225,21 @@ class Headers extends PureComponent {
             scrollTop,
             scrollLeft,
             previewSizes,
-            // getLastChildSize,
+            getLastChildSize,
             span,
             positionStyle,
             dimension.id,
+            header.depth === lastNotMeasureDimensionIndex,
+            index === startIndex,
+            toggleCollapse,
             gridId
           )
         );
 
         header = header.parent;
-        dimensionIndex -= 1;
       }
     }
+
     return renderedCells;
   }
 
@@ -249,7 +253,8 @@ class Headers extends PureComponent {
       scrollTop,
       scrollLeft,
       height,
-      width
+      width,
+      getLastChildSize
     } = this.props;
     return (
       <ReactVirtualizedGrid

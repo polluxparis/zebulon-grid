@@ -60,7 +60,7 @@ class DimensionHeaders extends Component {
             dimensionId={dimension.id}
             caption={dimension.caption}
             mainDirection="right"
-            // crossDimensionId={dimensionWhoseWidthToGet}
+            crossDimensionId={lastCrossDimensionId}
             previewSizes={previewSizes}
             gridId={gridId}
           />
@@ -84,7 +84,7 @@ class DimensionHeaders extends Component {
             dimensionId={dimension.id}
             caption={dimension.caption}
             mainDirection="down"
-            // crossDimensionId={dimensionWhoseWidthToGet}
+            crossDimensionId={lastCrossDimensionId}
             previewSizes={previewSizes}
             gridId={gridId}
           />

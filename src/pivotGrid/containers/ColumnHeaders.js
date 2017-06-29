@@ -18,6 +18,7 @@ import {
   getAxisActivatedMeasures,
   filteredDataSelector
 } from '../selectors';
+import { toggleCollapse } from '../actions';
 import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
@@ -42,11 +43,15 @@ const mapStateToProps = (state, ownProps) => {
     width: columnsVisibleWidthSelector(state),
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).columnVerticalCount,
-
     zoom: state.config.zoom,
     sizes: state.sizes,
     gridId: ownProps.gridId
   };
 };
 
-export default connect(mapStateToProps)(Headers);
+const mapDispatchToProps = dispatch => ({
+  toggleCollapse: key => {
+    dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
+  }
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Headers);

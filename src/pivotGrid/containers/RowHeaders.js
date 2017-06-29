@@ -18,6 +18,7 @@ import {
   rowHeadersWidthSelector
 } from '../selectors';
 import Headers from '../components/Headers';
+import { toggleCollapse } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   const rowDimensions = rowDimensionsSelector(state);
@@ -38,6 +39,8 @@ const mapStateToProps = (state, ownProps) => {
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).rowVerticalCount,
     headers: rowHeadersSelector(state),
+    getLastChildSize: header =>
+      getCellHeightByKeySelector(state)(leaves[index].key),
     leaves,
     // getIsCollapsed: ({ index }) =>
     //   getIsCollapsedRowByKeySelector(state)(leaves[index].key),
@@ -47,4 +50,9 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(Headers);
+const mapDispatchToProps = dispatch => ({
+  toggleCollapse: key => {
+    dispatch(toggleCollapse({ axisType: AxisType.ROWS, key }));
+  }
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Headers);

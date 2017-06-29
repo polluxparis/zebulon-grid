@@ -20,6 +20,8 @@ export function toAxis(axisType) {
       return 'columns';
     case AxisType.ROWS:
       return 'rows';
+    case AxisType.MEASURES:
+      return 'measures';
     default:
       return '__AXIS_TYPE_UNKNOWN__';
   }

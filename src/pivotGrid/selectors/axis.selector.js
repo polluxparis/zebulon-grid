@@ -114,14 +114,14 @@ function buildHeaders(
       key,
       dataIndexes,
       orderedChildrenIds: [],
-      // isDimensionCollapsed: currentDimension.isCollapsed || false,
-      collapsedLevel: areCollapsed[key] ? depth : null,
+      isCollapsed: areCollapsed[key],
+      depth,
       span: 1
       // hasCollapsedParent: parent.isCollapsed || parent.hasCollapsedParent
     };
     header.hasSubTotal = currentDimension.hasSubTotal;
   }
-  if (isNullOrUndefined(header.collapsedLevel)) {
+  if (!header.isCollapsed) {
     header.children = Object.keys(node.children).reduce(
       (acc, nodeId) => ({
         ...acc,
@@ -183,7 +183,8 @@ function buildHeaders(
             dataIndexes: header.dataIndexes,
             key: `${header.key}-/-${id}`,
             orderedChildrenIds: [],
-            span: 1
+            span: 1,
+            depth: depth + 1
           };
           header.span = measureIds.length;
           header.orderedChildrenIds.push(id);
@@ -196,7 +197,8 @@ function buildHeaders(
           parent: header,
           dataIndexes: header.dataIndexes,
           orderedChildrenIds: [],
-          span: 1
+          span: 1,
+          depth: depth + 1
         };
         header.orderedChildrenIds.push(EMPTY_ID);
       }
@@ -255,13 +257,18 @@ export const getColumnLeaves = createSelector(
 );
 
 export const getLayout = createSelector(
-  [rowHeadersSelector, columnHeadersSelector],
-  (rowHeaders, columnHeaders) => {
+  [
+    rowHeadersSelector,
+    columnHeadersSelector,
+    rowDimensionsSelector,
+    columnDimensionsSelector
+  ],
+  (rowHeaders, columnHeaders, rowDimensions, columnDimensions) => {
     return {
-      rowHorizontalCount: countHeadersDepth(rowHeaders),
+      rowHorizontalCount: rowDimensions.length,
       rowVerticalCount: getLeaves(rowHeaders).length,
       columnHorizontalCount: getLeaves(columnHeaders).length,
-      columnVerticalCount: countHeadersDepth(columnHeaders)
+      columnVerticalCount: columnDimensions.length
     };
   }
 );
