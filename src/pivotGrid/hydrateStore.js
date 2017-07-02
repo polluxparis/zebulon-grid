@@ -43,7 +43,7 @@ export default function hydrateStore(store, config, datasource) {
   );
   const measures = config.measures.map(measure => measureFactory(measure));
 
-  store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'rows'));
+  store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'columns'));
   store.dispatch(setConfigProperty(config, 'height', 600));
   store.dispatch(setConfigProperty(config, 'width', 800));
   store.dispatch(setConfigProperty(config, 'cellHeight', 30));

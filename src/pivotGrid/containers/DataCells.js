@@ -5,7 +5,7 @@ import {
   dataCellsHeightSelector,
   rowLeavesSelector,
   getLayout,
-  getColumnLeaves,
+  columnLeavesSelector,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
   getCellValueSelector,
@@ -22,7 +22,7 @@ import copy from '../services/copyService';
 const mapStateToProps = (state, ownProps) => {
   const { customFunctions, focusCellIndexes } = ownProps;
   const rowLeaves = rowLeavesSelector(state);
-  const columnLeaves = getColumnLeaves(state);
+  const columnLeaves = columnLeavesSelector(state);
   const rowDimensions = rowDimensionsSelector(state);
   const columnDimensions = columnDimensionsSelector(state);
   const measures = activatedMeasuresSelector(state);

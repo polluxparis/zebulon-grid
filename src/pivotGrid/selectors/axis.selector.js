@@ -15,12 +15,12 @@ import {
 import { ROOT_ID, EMPTY_ID, MEASURE_ID } from '../constants';
 import { HeaderType } from '../Cells';
 
-const activatedMeasuresSelectorCount = createSelector(
-  [activatedMeasuresSelector],
-  measures => measures.length
-);
+// const activatedMeasuresSelectorCount = createSelector(
+//   [activatedMeasuresSelector],
+//   measures => measures.length
+// );
 
-export const getAxisActivatedMeasures = axisType =>
+export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
     [activatedMeasuresSelector, state => state.config.measureHeadersAxis],
     (measures, measureHeadersAxis) => {
@@ -114,7 +114,7 @@ function buildHeaders(
       key,
       dataIndexes,
       orderedChildrenIds: [],
-      isCollapsed: areCollapsed[key],
+      isCollapsed: areCollapsed[key] || 0,
       depth,
       span: 1
       // hasCollapsedParent: parent.isCollapsed || parent.hasCollapsedParent
@@ -183,8 +183,9 @@ function buildHeaders(
             dataIndexes: header.dataIndexes,
             key: `${header.key}-/-${id}`,
             orderedChildrenIds: [],
+            isCollapsed: header.isCollapsed,
             span: 1,
-            depth: depth + 1
+            depth: dimensions.length - 1
           };
           header.span = measureIds.length;
           header.orderedChildrenIds.push(id);
@@ -196,9 +197,10 @@ function buildHeaders(
           key: `${header.key}-/-${EMPTY_ID}`,
           parent: header,
           dataIndexes: header.dataIndexes,
+          isCollapsed: header.isCollapsed,
           orderedChildrenIds: [],
           span: 1,
-          depth: depth + 1
+          depth: dimensions.length - 1
         };
         header.orderedChildrenIds.push(EMPTY_ID);
       }
@@ -225,12 +227,17 @@ export function buildAxisHeaders(
   );
 }
 
+// export const sortedRowHeadersSelector = createSelector([rowHeadersSelector, rowDimensionsSelector], (headers, dimensions) =>
+//   headers.sortedChildrenIds.reverse();
+//   return {...headers}
+//   )
+
 export const rowHeadersSelector = createSelector(
   [
     filteredDataSelector,
     rowAxisTreeSelector,
     rowDimensionsSelector,
-    getAxisActivatedMeasures(AxisType.ROWS),
+    getAxisActivatedMeasuresSelector(AxisType.ROWS),
     state => state.collapses.rows
   ],
   buildAxisHeaders
@@ -241,7 +248,7 @@ export const columnHeadersSelector = createSelector(
     filteredDataSelector,
     columnAxisTreeSelector,
     columnDimensionsSelector,
-    getAxisActivatedMeasures(AxisType.COLUMNS),
+    getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
     state => state.collapses.columns
   ],
   buildAxisHeaders
@@ -249,9 +256,12 @@ export const columnHeadersSelector = createSelector(
 
 export const rowLeavesSelector = createSelector(
   [rowHeadersSelector],
-  getLeaves
+  header => {
+    console.log(header);
+    return getLeaves(header);
+  }
 );
-export const getColumnLeaves = createSelector(
+export const columnLeavesSelector = createSelector(
   [columnHeadersSelector],
   getLeaves
 );

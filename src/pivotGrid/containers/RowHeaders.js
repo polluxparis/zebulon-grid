@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { AxisType } from '../Axis';
 import {
   // crossPositionsSelector,
-  // getLastChildSizeOnRows,
+  getLastChildHeight,
   getLayout,
   getPreviewSizes,
   getRowHeadersVisibleHeight,
@@ -11,7 +11,7 @@ import {
   getCellHeightByKeySelector,
   rowHeadersSelector,
   rowLeavesSelector,
-  getAxisActivatedMeasures,
+  getAxisActivatedMeasuresSelector,
   filteredDataSelector,
   rowDimensionsSelector,
   rowsVisibleHeightSelector,
@@ -27,7 +27,7 @@ const mapStateToProps = (state, ownProps) => {
     axisType: AxisType.ROWS,
     data: filteredDataSelector(state),
     dimensions: rowDimensionsSelector(state),
-    measures: getAxisActivatedMeasures(AxisType.ROWS)(state),
+    measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     columnCount: getLayout(state).rowHorizontalCount,
     // crossPositions: crossPositionsSelector(state),
     getColumnWidth: ({ index }) =>
@@ -39,8 +39,7 @@ const mapStateToProps = (state, ownProps) => {
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).rowVerticalCount,
     headers: rowHeadersSelector(state),
-    getLastChildSize: header =>
-      getCellHeightByKeySelector(state)(leaves[index].key),
+    getLastChildSize: header => getLastChildHeight(state)(header),
     leaves,
     // getIsCollapsed: ({ index }) =>
     //   getIsCollapsedRowByKeySelector(state)(leaves[index].key),
@@ -56,3 +55,4 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Headers);
+

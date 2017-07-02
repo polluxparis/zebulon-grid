@@ -2,18 +2,18 @@ import {
   getLayout,
   columnHeadersSelector,
   rowHeadersSelector,
-  getColumnLeaves,
+  columnLeavesSelector,
   rowLeavesSelector,
   getColumnDimensionHeaders,
   getRowDimensionHeaders,
-  getAxisActivatedMeasures
+  getAxisActivatedMeasuresSelector
 } from './axis.selector';
 import {
   defaultCellSizesSelector,
-  getCellSizes,
+  // getCellSizes,
   crossPositionsSelector,
-  getCrossSize,
-  getHeaderSize,
+  // getCrossSize,
+  // getHeaderSize,
   rowsHeightSelector,
   rowHeadersWidthSelector,
   columnHeadersWidthSelector,
@@ -26,8 +26,8 @@ import {
   getLeafHeaderSize,
   columnsVisibleWidthSelector,
   rowsVisibleHeightSelector,
-  getLastChildSizeOnColumns,
-  getLastChildSizeOnRows,
+  getLastChildWidth,
+  getLastChildHeight,
   dataCellsHeightSelector,
   dataCellsWidthSelector
 } from './sizes.selector';
@@ -50,27 +50,27 @@ import {
 
 export { getLayout };
 export { defaultCellSizesSelector };
-export { getCellSizes };
+// export { getCellSizes };
 export { columnHeadersSelector };
 export { rowHeadersSelector };
-export { getColumnLeaves };
+export { columnLeavesSelector };
 export { rowLeavesSelector };
 export { getColumnDimensionHeaders };
 export { getRowDimensionHeaders };
 export { activatedMeasuresSelector };
-export { getAxisActivatedMeasures };
+export { getAxisActivatedMeasuresSelector };
 export { rowDimensionsSelector };
 export { columnDimensionsSelector };
 export { availableDimensionsSelector };
 export { crossPositionsSelector };
-export { getHeaderSize };
+// export { getHeaderSize };
 export { rowsHeightSelector };
 export { rowHeadersWidthSelector };
 export { columnHeadersWidthSelector };
 export { getPreviewSizes };
 export { getLeafHeaderSize };
-export { getLastChildSizeOnColumns };
-export { getLastChildSizeOnRows };
+export { getLastChildWidth };
+export { getLastChildHeight };
 export { columnsVisibleWidthSelector };
 export { rowsVisibleHeightSelector };
 export { getCellValueSelector, getCellInfos };

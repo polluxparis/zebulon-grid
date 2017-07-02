@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { AxisType } from '../../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
-
+import { HeaderType } from '../../Cells';
 const rightArrow =
   'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAIElEQVQ4jWNgGAX4QB0UU2zAMDCEIgMGTjOyAaOAAAAA6dUK1fxYl1IAAAAASUVORK5CYII=)';
 const downArrow =
@@ -19,16 +19,16 @@ const downArrow =
 //   result.push(header);
 //   return result;
 // }
-const lastKey = header => {
-  let key = header.key;
-  if (header.children !== undefined) {
-    const childrenKeys = Object.keys(header.children);
-    if (childrenKeys.length > 0) {
-      key = lastKey(header.children[childrenKeys[childrenKeys.length - 1]]);
-    }
-  }
-  return key;
-};
+// const lastKey = header => {
+//   let key = header.key;
+//   if (header.children !== undefined) {
+//     const childrenKeys = Object.keys(header.children);
+//     if (childrenKeys.length > 0) {
+//       key = lastKey(header.children[childrenKeys[childrenKeys.length - 1]]);
+//     }
+//   }
+//   return key;
+// };
 
 class Header extends Component {
   constructor() {
@@ -55,15 +55,14 @@ class Header extends Component {
       startIndex,
       scrollLeft,
       scrollTop,
-      isLastDimension,
+      isNotCollapsible,
       isAffixManaged,
       toggleCollapse
     } = this.props;
     const { left, top, width, height } = positionStyle;
-    const { x, y } = header;
     let style = { height, width };
     // Handle affix
-    // if (span > 1 && x <= startIndex) {
+    // stop offset  when size = size of the last child
     if (isAffixManaged) {
       let offset;
       const lastChildSize = getLastChildSize(header);
@@ -79,17 +78,7 @@ class Header extends Component {
         style.height -= offset;
       }
     }
-    // if (span > 1 && x <= startIndex) {
-    //   let offset;
-    //   const lastChildSize = getLastChildSize(header);
-    //   if (axis === AxisType.COLUMNS) {
-    //     offset = Math.min(scrollLeft - left, width - (lastChildSize || 0));
-    //     style = { position: 'relative', left: offset };
-    //   } else {
-    //     offset = Math.min(scrollTop - top, height - (lastChildSize || 0));
-    //     style = { position: 'relative', top: offset };
-    //   }
-    // }
+
     const computedStyle = {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -98,7 +87,8 @@ class Header extends Component {
     };
 
     let collapsedIcon;
-    if (header.span > 1 && !isLastDimension) {
+
+    if (!header.isCollapsed && !isNotCollapsible) {
       collapsedIcon = (
         <div
           style={{
@@ -112,7 +102,7 @@ class Header extends Component {
           onClick={this.handleClick}
         />
       );
-    } else if (header.span === 1 && header.isCollapsed) {
+    } else if (header.isCollapsed && !isNotCollapsible) {
       collapsedIcon = (
         <div
           style={{
@@ -145,12 +135,14 @@ class Header extends Component {
     //   dimensionId = TOTAL_ID;
     // }
     //const leafSubheaders = header.subheaders ? getLeafSubheaders(header, []) : [];
-    const key = lastKey(header);
-    const rightKey = axis === AxisType.COLUMNS ? key : dimensionKey;
-    const bottomKey = axis === AxisType.ROWS ? key : dimensionKey;
+    // const key = lastKey(header);
+    const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionKey;
+    const bottomKey = axis === AxisType.ROWS ? header.keykey : dimensionKey;
+    const rightHeader = axis === AxisType.COLUMNS ? header : null;
+    const bottomHeader = axis === AxisType.ROWS ? header : null;
+    // key={`fixed-${axis}-${x}-${y}`}
     return (
       <div
-        key={`fixed-${axis}-${x}-${y}`}
         className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
         style={{
           boxSizing: 'border-box',
@@ -169,6 +161,7 @@ class Header extends Component {
           id={rightKey}
           // lastKey={leafSubheaders}
           axis={axis}
+          header={rightHeader}
           previewSize={previewSizes.height}
           gridId={gridId}
         />
@@ -179,6 +172,7 @@ class Header extends Component {
           gridId={gridId}
           // leafSubheaders={leafSubheaders}
           axis={axis}
+          header={bottomHeader}
           previewSize={previewSizes.width}
         />
       </div>

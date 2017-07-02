@@ -16,11 +16,11 @@ function toComponent(
   scrollTop,
   scrollLeft,
   previewSizes,
-  // getLastChildSize,
+  getLastChildSize,
   span,
   positionStyle,
   dimensionKey,
-  isLastDimension,
+  isNotCollapsible,
   isAffixManaged,
   toggleCollapse,
   gridId
@@ -37,9 +37,9 @@ function toComponent(
       scrollLeft={scrollLeft}
       scrollTop={scrollTop}
       previewSizes={previewSizes}
-      // getLastChildSize={getLastChildSize}
+      getLastChildSize={getLastChildSize}
       dimensionKey={dimensionKey}
-      isLastDimension={isLastDimension}
+      isNotCollapsible={isNotCollapsible}
       isAffixManaged={isAffixManaged}
       gridId={gridId}
       toggleCollapse={toggleCollapse}
@@ -128,6 +128,7 @@ class Headers extends PureComponent {
     let dimensionIndex;
     // collapse expand management
     let collapsedSize = 0;
+    let collapsedOffset = 0;
     const collapsedSizes = [];
     const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
     const lastNotMeasureDimensionIndex =
@@ -190,7 +191,17 @@ class Headers extends PureComponent {
         const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
           header.depth
         );
-        collapsedSize = !header.isCollapsed ? 0 : collapsedSizes[header.depth];
+        collapsedSize = 0;
+        // collapsedOffset = 0;
+        if (header.isCollapsed && collapsedSizes.length > 0) {
+          if (header.type !== HeaderType.MEASURE) {
+            //   collapsedOffset = collapsedSizes[0];
+            // } else {
+            collapsedSize = collapsedSizes[header.depth];
+          }
+        }
+
+        // collapsedSize = !header.isCollapsed ? 0 : collapsedSizes[header.depth];
         // const crossPosition = crossPositions[axisType][dimension.id];
         // } else {
         //   // Total header
@@ -215,7 +226,11 @@ class Headers extends PureComponent {
             width: mainSize
           };
         }
-
+        const isNotCollapsible =
+          header.type === HeaderType.MEASURE ||
+          header.depth >= lastNotMeasureDimensionIndex ||
+          (!header.isCollapsed &&
+            span === (isNull(measures) ? 1 : measures.length - 1 || 1));
         renderedCells.push(
           toComponent(
             header,
@@ -229,8 +244,8 @@ class Headers extends PureComponent {
             span,
             positionStyle,
             dimension.id,
-            header.depth === lastNotMeasureDimensionIndex,
-            index === startIndex,
+            isNotCollapsible,
+            index === startIndex && header.depth < lastNotMeasureDimensionIndex,
             toggleCollapse,
             gridId
           )
@@ -253,8 +268,7 @@ class Headers extends PureComponent {
       scrollTop,
       scrollLeft,
       height,
-      width,
-      getLastChildSize
+      width
     } = this.props;
     return (
       <ReactVirtualizedGrid

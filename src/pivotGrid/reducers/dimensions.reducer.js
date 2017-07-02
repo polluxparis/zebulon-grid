@@ -1,4 +1,4 @@
-import { SET_DIMENSIONS, CHANGE_SORT_ORDER } from "../constants";
+import { SET_DIMENSIONS, CHANGE_SORT_ORDER } from '../constants';
 
 export default (state = {}, action) => {
   const { type, dimensions, dimensionId } = action;
@@ -11,10 +11,10 @@ export default (state = {}, action) => {
       );
     case CHANGE_SORT_ORDER:
       sort = state[dimensionId].sort;
-      if (sort.order === "asc") {
-        sort.order = "desc";
+      if (sort.direction === 'asc') {
+        sort.direction = 'desc';
       } else {
-        sort.order = "asc";
+        sort.direction = 'asc';
       }
       return { ...state, [dimensionId]: { ...state[dimensionId], sort } };
     default:

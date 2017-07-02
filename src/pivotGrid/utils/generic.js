@@ -53,6 +53,14 @@ export function isFunction(obj) {
 export function isPromise(obj) {
   return Promise.resolve(obj) === obj;
 }
+/**
+ * Returns whether an object is empty
+ * @param  {object}  obj
+ * @return {Boolean}
+ */
+export function isEmpty(obj) {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
 
 /**
  * Returns whether or not obj is an observable
@@ -179,17 +187,6 @@ export function getLeaves(header) {
     )
   );
 }
-// export function getNotCollapsedLeaves(leaves) {
-//   const leaf = getNotCollapsedLeaf(header);
-//   if (le.orderedChildrenIds.length === 0) {
-//     return [header];
-//   }
-//   return [].concat(
-//     ...header.orderedChildrenIds.map(headerId =>
-//       getLeaves(header.children[headerId])
-//     )
-//   );
-// }
 
 export function countHeadersDepth(header) {
   let depth = 0;

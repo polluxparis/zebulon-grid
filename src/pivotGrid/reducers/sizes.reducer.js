@@ -7,16 +7,14 @@ export default (
   },
   action
 ) => {
-  const { type, axis, direction, size, id } = action;
+  const { type, direction, sizes } = action;
   switch (type) {
     case UPDATE_CELL_SIZE:
       return {
         ...state,
         [direction]: {
           ...state[direction],
-          // [axis]: {
-          //   ...state[direction][axis],
-          [id]: size
+          ...sizes
           // }
         }
       };

@@ -12,7 +12,7 @@ import {
   rowDimensionsSelector,
   columnDimensionsSelector
 } from './dimensions.selector';
-import { rowLeavesSelector, getColumnLeaves } from './axis.selector';
+import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
 import { ALL, ROOT_ID, MEASURE_ID } from '../constants';
 import { Axis, AxisType, toAxisType } from '../Axis';
 const getIndexesIntersectionFromDimensions = (
@@ -162,7 +162,7 @@ export const getCellInfos = createSelector(
   [
     filteredDataSelector,
     rowLeavesSelector,
-    getColumnLeaves,
+    columnLeavesSelector,
     activatedMeasuresSelector,
     rowDimensionsSelector,
     columnDimensionsSelector

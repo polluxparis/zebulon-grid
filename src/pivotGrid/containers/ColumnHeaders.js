@@ -8,14 +8,13 @@ import {
   getColumnHeight,
   columnDimensionsSelector,
   columnHeadersWidthSelector,
-  getLastChildSizeOnColumns,
-  // getCrossSize,
+  getLastChildWidth,
   // crossPositionsSelector,
   getLayout,
   columnsVisibleWidthSelector,
   getPreviewSizes,
-  getColumnLeaves,
-  getAxisActivatedMeasures,
+  columnLeavesSelector,
+  getAxisActivatedMeasuresSelector,
   filteredDataSelector
 } from '../selectors';
 import { toggleCollapse } from '../actions';
@@ -23,12 +22,12 @@ import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnDimensionsSelector(state);
-  const leaves = getColumnLeaves(state);
+  const leaves = columnLeavesSelector(state);
   return {
     axisType: AxisType.COLUMNS,
     data: filteredDataSelector(state),
     dimensions: columnDimensionsSelector(state),
-    measures: getAxisActivatedMeasures(AxisType.COLUMNS)(state),
+    measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     columnCount: getLayout(state).columnHorizontalCount,
     headers: columnHeadersSelector(state),
     leaves,
@@ -36,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
     // getCrossSize: getCrossSize(state),
-    // getLastChildSize: getLastChildSizeOnColumns(state),
+    getLastChildSize: header => getLastChildWidth(state)(header),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(columnDimensions[index].id),
     height: columnHeadersWidthSelector(state),

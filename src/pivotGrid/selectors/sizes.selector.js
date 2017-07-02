@@ -4,7 +4,7 @@ import { scrollbarSize } from '../utils/domHelpers';
 import { getLeaves } from '../utils/generic';
 import { AxisType, toAxisType } from '../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../constants';
-import { getColumnLeaves, rowLeavesSelector } from './axis.selector';
+import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
 import {
   columnDimensionsSelector,
   rowDimensionsSelector
@@ -44,7 +44,7 @@ export const getRowHeight = createSelector(
 );
 
 export const getColumnWidth = createSelector(
-  [getCellWidthByKeySelector, getColumnLeaves],
+  [getCellWidthByKeySelector, columnLeavesSelector],
   (getCellWidthByKeySelector, columnLeaves) => ({ index }) =>
     getCellWidthByKeySelector(columnLeaves[index].key)
 );
@@ -86,7 +86,7 @@ export const rowsHeightSelector = createSelector(
     rowLeaves.reduce((height, leaf) => height + getCellHeightByKey(leaf.key), 0)
 );
 export const columnsWidthSelector = createSelector(
-  [rowLeavesSelector, getCellWidthByKeySelector],
+  [columnLeavesSelector, getCellWidthByKeySelector],
   (columnLeaves, getCellWidthByKey) =>
     columnLeaves.reduce((width, leaf) => width + getCellWidthByKey(leaf.key), 0)
 );
@@ -211,4 +211,23 @@ export const dataCellsWidthSelector = createSelector(
       width - rowHeadersWidth,
       columnsWidth + (hasScrollbar ? scrollbarSize() : 0)
     )
+);
+export const getLastChild = header => {
+  let lastChild = header;
+  if (lastChild.orderedChildrenIds && lastChild.orderedChildrenIds.length) {
+    lastChild =
+      lastChild.children[
+        lastChild.orderedChildrenIds[lastChild.orderedChildrenIds.length - 1]
+      ];
+  }
+  return lastChild;
+};
+export const getLastChildWidth = createSelector(
+  [getCellWidthByKeySelector],
+  getWidth => header => getWidth(getLastChild(header).key)
+);
+
+export const getLastChildHeight = createSelector(
+  [getCellHeightByKeySelector],
+  getHeight => header => getHeight(getLastChild(header).key)
 );

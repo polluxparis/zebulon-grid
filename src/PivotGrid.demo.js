@@ -1,19 +1,20 @@
-import React, { Component } from "react";
-import { Provider } from "react-redux";
-import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
-import "react-virtualized/styles.css";
-import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import 'react-virtualized/styles.css';
+import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 /* eslint-disable import/no-extraneous-dependencies*/
-import "react-resizable/css/styles.css";
-import { ResizableBox } from "react-resizable";
+import 'react-resizable/css/styles.css';
+import { ResizableBox } from 'react-resizable';
 /* eslint-enable */
 
-import { createStore } from "redux";
-import PivotGrid, { reducer, hydrateStore, actions } from "./pivotGrid";
-import { getMockDatasource, basicConfig } from "./utils/mock";
+import { createStore } from 'redux';
+import PivotGrid, { reducer, hydrateStore, actions } from './pivotGrid';
+import { getMockDatasource, basicConfig } from './utils/mock';
+import { MEASURE_ID } from './pivotGrid/constants';
 
-import "./App.css";
+import './App.css';
 
 let i = 0;
 let j = 0;
@@ -43,18 +44,19 @@ class PivotGridDemo extends Component {
     this.zoomOut = this.zoomOut.bind(this);
     this.toggleFilter = this.toggleFilter.bind(this);
     this.focusCell = this.focusCell.bind(this);
+    this.toggleMeasureAxis = this.toggleMeasureAxis.bind(this);
   }
 
   addData() {
     this.state.store.dispatch(
       actions.pushData([
         {
-          toto: "666",
-          toto_lb: "",
+          toto: '666',
+          toto_lb: '',
           qty: 100,
           amt: 100,
-          titi: "titi 0",
-          tutu: "0"
+          titi: 'titi 0',
+          tutu: '0'
         }
       ])
     );
@@ -63,22 +65,76 @@ class PivotGridDemo extends Component {
   moveDimension() {
     if (i % 2) {
       this.state.store.dispatch(
-        actions.moveDimension("tutu", "columns", "rows", 1)
+        actions.moveDimension('tutu', 'columns', 'rows', 1)
       );
     } else {
       this.state.store.dispatch(
-        actions.moveDimension("tutu", "rows", "columns", 1)
+        actions.moveDimension('tutu', 'rows', 'columns', 1)
       );
     }
     i += 1;
   }
+  toggleMeasureAxis() {
+    // if (i % 2) {
+    //   this.state.store.dispatch(
+    //     actions.setConfigProperty(
+    //       { measureHeadersAxis: 'columns' },
+    //       'measureHeadersAxis',
+    //       ''
+    //     )
+    //   );
+    // } else {
+    //   this.state.store.dispatch(
+    //     actions.setConfigProperty(
+    //       { measureHeadersAxis: 'rows' },
+    //       'measureHeadersAxis',
+    //       ''
+    //     )
+    //   );
+    // }
+    // i += 1;
+    const store = this.state.store.getState();
+    if (store.config.measureHeadersAxis === 'columns') {
+      this.state.store.dispatch(
+        actions.setConfigProperty(
+          { measureHeadersAxis: 'rows' },
+          'measureHeadersAxis',
+          ''
+        )
+      );
+      this.state.store.dispatch(
+        actions.moveDimension(
+          MEASURE_ID,
+          'columns',
+          'rows',
+          store.axis.rows.length
+        )
+      );
+    } else {
+      this.state.store.dispatch(
+        actions.setConfigProperty(
+          { measureHeadersAxis: 'columns' },
+          'measureHeadersAxis',
+          ''
+        )
+      );
+      this.state.store.dispatch(
+        actions.moveDimension(
+          MEASURE_ID,
+          'rows',
+          'columns',
+          store.axis.columns.length
+        )
+      );
+    }
+  }
 
   sortDimension() {
-    this.state.store.dispatch(actions.changeSortOrder("titi"));
+    this.state.store.dispatch(actions.changeSortOrder('titi'));
   }
 
   toggleMeasure() {
-    this.state.store.dispatch(actions.toggleMeasure("amt"));
+    this.state.store.dispatch(actions.toggleMeasure('amt'));
   }
 
   zoomIn() {
@@ -91,10 +147,10 @@ class PivotGridDemo extends Component {
 
   toggleFilter() {
     if (j % 2) {
-      this.state.store.dispatch(actions.deleteFilter("titi"));
+      this.state.store.dispatch(actions.deleteFilter('titi'));
     } else {
       this.state.store.dispatch(
-        actions.addFilter("titi", "in", null, ["titi 0", "titi 2"], false)
+        actions.addFilter('titi', 'in', null, ['titi 0', 'titi 2'], false)
       );
     }
     j += 1;
@@ -104,27 +160,27 @@ class PivotGridDemo extends Component {
     const getCell = id => ({
       dimensions: [
         {
-          cell: { caption: "0", id: "0" },
-          dimension: { caption: "Tutu", id: "tutu" },
-          axis: "rows",
+          cell: { caption: '0', id: '0' },
+          dimension: { caption: 'Tutu', id: 'tutu' },
+          axis: 'rows',
           index: 1
         },
         {
           cell: { caption: `toto ${id}`, id },
-          dimension: { caption: "Toto", id: "toto" },
-          axis: "rows",
+          dimension: { caption: 'Toto', id: 'toto' },
+          axis: 'rows',
           index: 0
         },
         {
-          cell: { caption: "titi 0", id: "titi 0" },
-          dimension: { caption: "Titi", id: "titi" },
-          axis: "columns",
+          cell: { caption: 'titi 0', id: 'titi 0' },
+          dimension: { caption: 'Titi', id: 'titi' },
+          axis: 'columns',
           index: 0
         }
       ],
       measure: {
-        id: "qty",
-        axis: "columns"
+        id: 'qty',
+        axis: 'columns'
       }
     });
     k = (k + 1) % 3;
@@ -144,6 +200,7 @@ class PivotGridDemo extends Component {
           <div>
             <button onClick={this.addData}>Add data</button>
             <button onClick={this.moveDimension}>Move dimension</button>
+            <button onClick={this.toggleMeasureAxis}>Move measures</button>
             <button onClick={this.sortDimension}>Sort titi dimension</button>
             <button onClick={this.toggleMeasure}>Toggle measure</button>
             <button onClick={this.zoomIn}>Zoom in</button>
@@ -162,7 +219,7 @@ class PivotGridDemo extends Component {
                     height={height}
                     width={width}
                     drilldown={cell => {
-                      console.log("drilldown", cell);
+                      console.log('drilldown', cell);
                     }}
                   />}
               </AutoSizer>

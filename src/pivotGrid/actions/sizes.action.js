@@ -1,21 +1,21 @@
 import { AxisType, toAxis } from '../Axis';
 import { UPDATE_CELL_SIZE } from '../constants';
+import {
+  isNull,
+  isNullOrUndefined,
+  isEmpty,
+  getLeaves
+} from '../utils/generic';
 
-function getNewCellSize(size, offset) {
-  return Math.max(size + offset, 10);
+// function calculateSize(size, offset) {
+//   return Math.max(size + offset, 10);
+// }
+function calculateSize(size, ratio) {
+  return Math.max(size * ratio, 10);
 }
-
-// const mapAxisTypeToLabel = axisType => {
-//   switch (axisType) {
-//     case AxisType.COLUMNS:
-//       return 'columns';
-//     case AxisType.ROWS:
-//       return 'rows';
-//     default:
-//       throw new Error(`Axis type ${axisType} not supported`);
-//   }
-// };
-
+// const getInitialSize = (sizes,defaultSize,leaves =>
+const getInitialSize = (sizes, defaultSize, leaves) =>
+  leaves.reduce((size, leaf) => size + (sizes[leaf.key] || defaultSize), 0);
 /* eslint-disable import/prefer-default-export */
 export const updateCellSize = ({
   handle,
@@ -24,38 +24,43 @@ export const updateCellSize = ({
   defaultCellSizes,
   sizes
 }) => {
-  let size;
-  let direction;
-  if (handle.axis === AxisType.COLUMNS && handle.position === 'right') {
+  let direction, ratio, initialSize, defaultSize, leaves, axisSizes;
+  if (!isNullOrUndefined(handle.header)) {
+    leaves = getLeaves(handle.header);
+  }
+  if (handle.position === 'right') {
     direction = 'widths';
-    size = getNewCellSize(
-      sizes.widths[handle.id] || defaultCellSizes.width,
-      offset.x - initialOffset.x
-    );
-  } else if (handle.axis === AxisType.COLUMNS && handle.position === 'bottom') {
+    (axisSizes = sizes.widths), (defaultSize = defaultCellSizes.width);
+    initialSize = isNullOrUndefined(leaves)
+      ? axisSizes[handle.id] || defaultSize
+      : getInitialSize(sizes.widths, defaultSize, leaves);
+    ratio = (initialSize + offset.x - initialOffset.x) / initialSize;
+  } else if (handle.position === 'bottom') {
     direction = 'heights';
-    size = getNewCellSize(
-      sizes.heights[handle.id] || defaultCellSizes.height,
-      offset.y - initialOffset.y
-    );
-  } else if (handle.axis === AxisType.ROWS && handle.position === 'right') {
-    direction = 'widths';
-    size = getNewCellSize(
-      sizes.widths[handle.id] || defaultCellSizes.width,
-      offset.x - initialOffset.x
-    );
-  } else if (handle.axis === AxisType.ROWS && handle.position === 'bottom') {
-    direction = 'heights';
-    size = getNewCellSize(
-      sizes.heights[handle.id] || defaultCellSizes.height,
-      offset.y - initialOffset.y
+    axisSizes = sizes.heights;
+    defaultSize = defaultCellSizes.height;
+    initialSize = isNullOrUndefined(leaves)
+      ? axisSizes[handle.id] || defaultSize
+      : getInitialSize(sizes.heights, defaultSize, leaves);
+    ratio = (initialSize + offset.y - initialOffset.y) / initialSize;
+  }
+  let newSizes = {};
+  if (isNullOrUndefined(handle.header)) {
+    // Dimension size
+    newSizes = { [handle.id]: calculateSize(initialSize, ratio) };
+  } else {
+    // Header size
+    newSizes = leaves.reduce(
+      (acc, hdr) => ({
+        ...acc,
+        [hdr.key]: calculateSize(axisSizes[hdr.key] || defaultSize, ratio)
+      }),
+      {}
     );
   }
   return {
     type: UPDATE_CELL_SIZE,
-    id: handle.id,
-    size,
-    axis: toAxis(handle.axis),
+    sizes: newSizes,
     direction
   };
 };

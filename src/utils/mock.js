@@ -52,7 +52,7 @@ export function getObservableMockDatasource(interval) {
 }
 export const basicConfig = {
   canMoveDimensions: true,
-  measureHeadersAxis: 'columns',
+  measureHeadersAxis: 'rows',
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -91,7 +91,7 @@ export const basicConfig = {
       keyAccessor: 'toto',
       labelAccessor: 'toto_lb',
       sort: {
-        // order: 'asc',
+        // direction: 'asc',
         keyAccessor: 'toto_lb'
         // accessor: row => row.toto_lb
         // custom: (a, b) => a - b
@@ -105,7 +105,7 @@ export const basicConfig = {
     //     label: '2',
     //     caption: 'Manufacturer',
     //     sort: {
-    //         order: 'asc'
+    //         direction: 'asc'
     //     },
     //     rowSettings: {
     //         subTotal: {

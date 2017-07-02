@@ -1,13 +1,13 @@
-import { Header, DataHeader, DimensionHeader, HeaderType } from "./Cells";
-import { KEY_SEPARATOR } from "./constants";
+import { Header, DataHeader, DimensionHeader, HeaderType } from './Cells';
+import { KEY_SEPARATOR } from './constants';
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
     return headers.find(header => header.key === keys[0]);
   }
   const parentHeader = headers.find(header => header.key === keys[0]);
-  if (!parentHeader) throw new Error("header not found");
-  return findHeader(parentHeader.subheaders, [
+  if (!parentHeader) throw new Error('header not found');
+  return findHeader(parentHeader.children, [
     [keys[0], keys[1]].join(KEY_SEPARATOR),
     ...keys.slice(2)
   ]);
