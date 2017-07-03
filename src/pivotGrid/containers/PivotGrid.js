@@ -28,6 +28,52 @@ const mapStateToProps = state => ({
   dataDimensionsCount: activatedMeasuresSelector(state).length
 });
 
+// const mapDispatchToProps = dispatch => ({
+//   updateCellSize: ({
+//     handle,
+//     offset,
+//     initialOffset,
+//     sizes,
+//     defaultCellSizes
+//   }) => {
+//     if (
+//       handle.leafSubheaders &&
+//       handle.leafSubheaders.length &&
+//       ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
+//         (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
+//     ) {
+//       const fractionalOffset = {
+//         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
+//         y: (offset.y - initialOffset.y) / handle.leafSubheaders.length
+//       };
+//       handle.leafSubheaders.forEach(subheader => {
+//         dispatch(
+//           updateCellSize({
+//             handle: { ...handle, leafSubheaders: [], id: subheader.key },
+//             offset: fractionalOffset,
+//             initialOffset: { x: 0, y: 0 },
+//             defaultCellSizes,
+//             sizes
+//           })
+//         );
+//       });
+//     } else {
+//       dispatch(
+//         updateCellSize({
+//           handle,
+//           offset,
+//           initialOffset,
+//           sizes,
+//           defaultCellSizes
+//         })
+//       );
+//     }
+//   },
+//   setSizes: ({ height, width }) => {
+//     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
+//     if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+//   }
+// });
 const mapDispatchToProps = dispatch => ({
   updateCellSize: ({
     handle,
@@ -36,45 +82,21 @@ const mapDispatchToProps = dispatch => ({
     sizes,
     defaultCellSizes
   }) => {
-    if (
-      handle.leafSubheaders &&
-      handle.leafSubheaders.length &&
-      ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
-        (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
-    ) {
-      const fractionalOffset = {
-        x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
-        y: (offset.y - initialOffset.y) / handle.leafSubheaders.length
-      };
-      handle.leafSubheaders.forEach(subheader => {
-        dispatch(
-          updateCellSize({
-            handle: { ...handle, leafSubheaders: [], id: subheader.key },
-            offset: fractionalOffset,
-            initialOffset: { x: 0, y: 0 },
-            defaultCellSizes,
-            sizes
-          })
-        );
-      });
-    } else {
-      dispatch(
-        updateCellSize({
-          handle,
-          offset,
-          initialOffset,
-          sizes,
-          defaultCellSizes
-        })
-      );
-    }
+    dispatch(
+      updateCellSize({
+        handle,
+        offset,
+        initialOffset,
+        sizes,
+        defaultCellSizes
+      })
+    );
   },
   setSizes: ({ height, width }) => {
     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
     if (width) dispatch(setConfigProperty({ height, width }, 'width'));
   }
 });
-
 const mergeProps = (
   {
     width,

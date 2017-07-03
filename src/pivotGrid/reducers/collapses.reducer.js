@@ -1,7 +1,7 @@
-import { EXPAND_COLLAPSE } from '../constants';
+import { EXPAND_COLLAPSE, EXPAND_COLLAPSE_ATTRIBUTE } from '../constants';
 
 export default (
-  state = { rows: { '1': true }, columns: { 'titi 1': true } },
+  state = { rows: { '1': true }, columns: { 'titi 1': true }, dimensions: {} },
   action
 ) => {
   const { type, axis, key } = action;

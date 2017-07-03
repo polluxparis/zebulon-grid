@@ -14,6 +14,8 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
           obj = {};
           obj.toto = o;
           obj.toto_lb = `toto ${String(o)}`;
+          obj.toto_0 = `att0 ${String(o)}`;
+          obj.toto_1 = `att1 ${String(o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
           obj.qty = u + 10 * i + 100 * o + 1; // +9999999999.1234567890123456
@@ -125,6 +127,19 @@ export const basicConfig = {
       caption: 'Tutu',
       keyAccessor: 'tutu',
       format: formats.id
+    },
+    {
+      id: 'toto att 0',
+      caption: 'toto 0',
+      keyAccessor: 'toto_0',
+      isAttributeOf: 'toto'
+    },
+    {
+      id: 'toto att 1',
+      caption: 'toto 1',
+      keyAccessor: 'toto_1',
+      isAttributeOf: 'toto',
+      format: formats.id
     }
     // {
     //     label: '4',
@@ -166,7 +181,7 @@ export const basicConfig = {
     }
   ],
   columns: ['titi'],
-  rows: ['toto', 'tutu'],
+  rows: ['toto', 'toto att 0', 'toto att 1', 'tutu'],
   activeMeasures: ['qty', 'amt', 'price'],
   // drilldown: (cell) => { console.log('drilldown (config) on cell', cell); },
   preFilters: {

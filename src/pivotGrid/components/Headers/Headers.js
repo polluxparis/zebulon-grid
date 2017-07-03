@@ -129,17 +129,24 @@ class Headers extends PureComponent {
     // collapse expand management
     let collapsedSize = 0;
     let collapsedOffset = 0;
+    let nextDimensionIsAttribute, size;
     const collapsedSizes = [];
     const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
     const lastNotMeasureDimensionIndex =
       dimensions.length - 1 - !isNull(measures);
     for (let index = lastNotMeasureDimensionIndex; index >= 0; index -= 1) {
-      collapsedSizes.push(collapsedSize);
-      collapsedSize += getSize({
+      if (nextDimensionIsAttribute) {
+        collapsedSizes.push(0);
+      } else {
+        collapsedSizes.push(collapsedSize);
+      }
+      nextDimensionIsAttribute = dimensions[index].isAttribute;
+      size = getSize({
         index: [index]
       });
-      collapsedSizes.reverse();
+      collapsedSize += size;
     }
+    collapsedSizes.reverse();
     // const collapsedSizes = dimensions
     //   .reverse()
     //   .map((dimension, index) => {
@@ -228,6 +235,7 @@ class Headers extends PureComponent {
         }
         const isNotCollapsible =
           header.type === HeaderType.MEASURE ||
+          dimension.isAttribute === 1 ||
           header.depth >= lastNotMeasureDimensionIndex ||
           (!header.isCollapsed &&
             span === (isNull(measures) ? 1 : measures.length - 1 || 1));

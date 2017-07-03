@@ -106,6 +106,9 @@ function buildHeaders(
     const currentDimension = dimensions[depth];
     const row = data[dataIndexes[0]];
     const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
+    const isCollapsed = currentDimension.isAttribute
+      ? parent.isCollapsed
+      : areCollapsed[key] || 0;
     header = {
       sortKey: currentDimension.sort.keyAccessor(row),
       id: currentDimension.keyAccessor(row),
@@ -114,14 +117,17 @@ function buildHeaders(
       key,
       dataIndexes,
       orderedChildrenIds: [],
-      isCollapsed: areCollapsed[key] || 0,
+      isCollapsed,
       depth,
       span: 1
       // hasCollapsedParent: parent.isCollapsed || parent.hasCollapsedParent
     };
     header.hasSubTotal = currentDimension.hasSubTotal;
   }
-  if (!header.isCollapsed) {
+  if (
+    !header.isCollapsed ||
+    (depth + 1 < dimensions.length && dimensions[depth + 1].isAttribute)
+  ) {
     header.children = Object.keys(node.children).reduce(
       (acc, nodeId) => ({
         ...acc,

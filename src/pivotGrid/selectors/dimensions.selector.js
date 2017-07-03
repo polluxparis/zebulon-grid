@@ -1,16 +1,46 @@
 import { createSelector } from 'reselect';
 
 import { filteredDataSelector } from './data.selector';
-import { EMPTY_ID } from '../constants';
+import { EMPTY_ID, ROOT_ID } from '../constants';
+const getAxisDimensions = (axis, dimensions, collapses) => {
+	let prevDimension = { id: ROOT_ID };
+	return axis
+		.map(id => {
+			const dimension = dimensions[id];
+			if (
+				prevDimension.id === dimension.isAttributeOf ||
+				(prevDimension.isAttributeOf === dimension.isAttributeOf &&
+					prevDimension.isAttribute)
+			) {
+				dimension.isAttribute = 1;
+				dimension.isCollapsed = prevDimension.isCollapsed;
+			} else {
+				dimension.isCollapsed = collapses[dimension.id];
+			}
+			prevDimension = dimension;
+			return dimension;
+		})
+		.filter(dimension => {
+			return !(dimension.isCollapsed && dimension.isAttribute === 1);
+		});
+};
 
 export const rowDimensionsSelector = createSelector(
-	[state => state.axis.rows, state => state.dimensions],
-	(rowAxis, dimensions) => rowAxis.map(id => dimensions[id])
+	[
+		state => state.axis.rows,
+		state => state.dimensions,
+		state => state.collapses.dimensions
+	],
+	getAxisDimensions
 );
 
 export const columnDimensionsSelector = createSelector(
-	[state => state.axis.columns, state => state.dimensions],
-	(columnAxis, dimensions) => columnAxis.map(id => dimensions[id])
+	[
+		state => state.axis.columns,
+		state => state.dimensions,
+		state => state.collapses.dimensions
+	],
+	getAxisDimensions
 );
 
 export const availableDimensionsSelector = createSelector(

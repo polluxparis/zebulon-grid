@@ -5,9 +5,76 @@ import { MEASURE_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader';
 
 class DimensionHeaders extends Component {
+  constructor() {
+    super();
+    this.headersRenderer = this.headersRenderer.bind(this);
+  }
   shouldComponentUpdate(nextProps) {
     return nextProps.crossPositions !== this.props.crossPositions;
   }
+  headersRenderer(axis, dimensions, lastCrossDimensionId) {
+    const {
+      previewSizes,
+      gridId,
+      toggleCollapseDimension,
+      crossPositions,
+      height,
+      width
+    } = this.props;
+    const headers = [];
+    dimensions.forEach((dimension, index) => {
+      if (dimension.id !== MEASURE_ID) {
+        const isNotCollapsible =
+          !dimension.isCollapsed &&
+          (dimension.isAttribute ||
+            index >=
+              dimensions.length -
+                1 -
+                (dimensions[dimensions.length - 1].id === MEASURE_ID) ||
+            !dimensions[index + 1].isAttribute);
+        let positions;
+        if (axis === AxisType.ROWS) {
+          positions = {
+            left: crossPositions[AxisType.ROWS][dimension.id].position,
+            top:
+              height -
+                crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
+            width: crossPositions[AxisType.ROWS][dimension.id].size,
+            height: crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
+          };
+        } else {
+          positions = {
+            left:
+              width - crossPositions[AxisType.ROWS][lastCrossDimensionId].size,
+            top: crossPositions[AxisType.COLUMNS][dimension.id].position,
+            width: crossPositions[AxisType.ROWS][lastCrossDimensionId].size,
+            height: crossPositions[AxisType.COLUMNS][dimension.id].size
+          };
+        }
+        headers.push(
+          <DimensionHeader
+            key={`dimension-header-${dimension.id}`}
+            left={positions.left}
+            top={positions.top}
+            width={positions.width}
+            height={positions.height}
+            dimensionId={dimension.id}
+            caption={dimension.caption}
+            axis={axis}
+            crossDimensionId={lastCrossDimensionId}
+            isNotCollapsible={isNotCollapsible}
+            isCollapsed={dimension.isCollapsed}
+            previewSizes={previewSizes}
+            gridId={gridId}
+            toggleCollapseDimension={toggleCollapseDimension}
+            isAttribute={dimension.isAttribute}
+          />
+        );
+      }
+    });
+    return headers;
+  }
+
   render() {
     const {
       columnDimensions,
@@ -19,140 +86,90 @@ class DimensionHeaders extends Component {
       height,
       width,
       zoom,
-      gridId
-    } = this.props;
-    // let headers = [];
+      gridId,
 
-    // Get width for column dimension headers
-    // let dimensionWhoseWidthToGet;
-    // // if (measureHeadersAxis === 'rows') {
-    // //   // Dimension headers are on top of the measures column
-    // //   dimensionWhoseWidthToGet = MEASURE_ID;
-    // // } else
-    // if (rowDimensions.length) {
-    //   // Dimension headers are on top of the column of the last dimension of the row headers
-    //   dimensionWhoseWidthToGet = rowDimensions[rowDimensions.length - 1].id;
-    // } else {
-    //   // Dimension headers are on top of the Total header --> get default width
-    //   dimensionWhoseWidthToGet = null;
-    // }
-    // const crossWidth =
-    //   crossPositions[AxisType.COLUMNS][
-    //     columnDimensions[columnDimensions.length - 1].id
-    //   ].size;
-    // const crossHeight =
-    //   crossPositions[AxisType.ROWS][rowDimensions[rowDimensions.length - 1].id]
-    //     .size;
-    // columns header
+      toggleCollapseDimension
+    } = this.props;
+
     let headers = [];
     let lastCrossDimensionId = rowDimensions[rowDimensions.length - 1].id;
-    columnDimensions.forEach(dimension => {
-      if (dimension.id !== MEASURE_ID) {
-        headers.push(
-          <DimensionHeader
-            key={`dimension-header-${dimension.id}`}
-            left={
-              width - crossPositions[AxisType.ROWS][lastCrossDimensionId].size
-            }
-            top={crossPositions[AxisType.COLUMNS][dimension.id].position}
-            width={crossPositions[AxisType.ROWS][lastCrossDimensionId].size}
-            height={crossPositions[AxisType.COLUMNS][dimension.id].size}
-            dimensionId={dimension.id}
-            caption={dimension.caption}
-            mainDirection="right"
-            crossDimensionId={lastCrossDimensionId}
-            previewSizes={previewSizes}
-            gridId={gridId}
-          />
-        );
-      }
-    });
+
+    headers = this.headersRenderer(
+      AxisType.COLUMNS,
+      columnDimensions,
+      lastCrossDimensionId
+    );
+    // columnDimensions.forEach((dimension, index) => {
+    //   if (dimension.id !== MEASURE_ID) {
+    //     const isNotCollapsible =
+    //       dimension.isAttribute ||
+    //       index >=
+    //         columnDimensions.length -
+    //           1 -
+    //           (columnDimensions[columnDimensions.length - 1].id ===
+    //             columnDimensions.length - 1) ||
+    //       !columnDimensions[index + 1].isAttribute;
+    //     headers.push(
+    //       <DimensionHeader
+    //         key={`dimension-header-${dimension.id}`}
+    //         left={
+    //           width - crossPositions[AxisType.ROWS][lastCrossDimensionId].size
+    //         }
+    //         top={crossPositions[AxisType.COLUMNS][dimension.id].position}
+    //         width={crossPositions[AxisType.ROWS][lastCrossDimensionId].size}
+    //         height={crossPositions[AxisType.COLUMNS][dimension.id].size}
+    //         dimensionId={dimension.id}
+    //         caption={dimension.caption}
+    //         axis="columns"
+    //         crossDimensionId={lastCrossDimensionId}
+    //         isNotCollapsible={isNotCollapsible}
+    //         isCollapsed={dimension.isCollapsed}
+    //         previewSizes={previewSizes}
+    //         gridId={gridId}
+    //         toggleCollapseDimension={toggleCollapseDimension}
+    //       />
+    //     );
+    //   }
+    // });
 
     lastCrossDimensionId = columnDimensions[columnDimensions.length - 1].id;
-    rowDimensions.forEach(dimension => {
-      if (dimension.id !== MEASURE_ID) {
-        headers.push(
-          <DimensionHeader
-            key={`dimension-header-${dimension.id}`}
-            left={crossPositions[AxisType.ROWS][dimension.id].position}
-            top={
-              height -
-              crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
-            }
-            width={crossPositions[AxisType.ROWS][dimension.id].size}
-            height={crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size}
-            dimensionId={dimension.id}
-            caption={dimension.caption}
-            mainDirection="down"
-            crossDimensionId={lastCrossDimensionId}
-            previewSizes={previewSizes}
-            gridId={gridId}
-          />
-        );
-      }
-    });
-    // headers = headers.concat(
-    //   columnDimensions.filter(dim => dim.id !== MEASURE_ID).map(dimension => {
-    //     const cross = crossPositions[AxisType.ROWS][dimension.id];
-    //     // const headerHeight = getCrossSize(AxisType.COLUMNS, dimension.id);
-    //     return (
+
+    headers = headers.concat(
+      this.headersRenderer(AxisType.ROWS, rowDimensions, lastCrossDimensionId)
+    );
+    // rowDimensions.forEach((dimension, index) => {
+    //   if (dimension.id !== MEASURE_ID) {
+    //     const isNotCollapsible =
+    //       dimension.isAttribute ||
+    //       index >=
+    //         rowDimensions.length -
+    //           1 -
+    //           (rowDimensions[rowDimensions.length - 1].id ===
+    //             rowDimensions.length - 1) ||
+    //       !rowDimensions[index + 1].isAttribute;
+    //     headers.push(
     //       <DimensionHeader
     //         key={`dimension-header-${dimension.id}`}
-    //         left={width - crossWidth}
-    //         top={cross.position}
-    //         width={crossWidth}
-    //         height={cross.size}
+    //         left={crossPositions[AxisType.ROWS][dimension.id].position}
+    //         top={
+    //           height -
+    //           crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
+    //         }
+    //         width={crossPositions[AxisType.ROWS][dimension.id].size}
+    //         height={crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size}
     //         dimensionId={dimension.id}
     //         caption={dimension.caption}
-    //         mainDirection="right"
-    //         // crossDimensionId={dimensionWhoseWidthToGet}
+    //         axis="rows"
+    //         crossDimensionId={lastCrossDimensionId}
+    //         isNotCollapsible={isNotCollapsible}
+    //         isCollapsed={dimension.isCollapsed}
     //         previewSizes={previewSizes}
     //         gridId={gridId}
+    //         toggleCollapseDimension={toggleCollapseDimension}
     //       />
     //     );
-    //   })
-    // );
-    // Get height for row dimension headers in different cases
-    // let dimensionWhoseHeightToGet;
-    // // if (measureHeadersAxis === 'columns') {
-    // //   // Dimension headers are to the left of the measures row
-    // //   dimensionWhoseHeightToGet = MEASURE_ID;
-    // // } else
-    // if (columnDimensions.length) {
-    //   // Dimension headers are to the left of the row of the last dimension of the column headers
-    //   dimensionWhoseHeightToGet =
-    //     columnDimensions[columnDimensions.length - 1].id;
-    // } else {
-    //   // Dimension headers are to the left of the Total header --> get default height
-    //   dimensionWhoseHeightToGet = null;
-    // }
-
-    //  getCrossSize(
-    //   AxisType.COLUMNS,
-    //   dimensionWhoseHeightToGet
-    // );
-
-    // headers = headers.concat(
-    //   columnDimensions.filter(dim => dim.id !== MEASURE_ID).map(dimension => {
-    //     const cross = crossPositions[AxisType.COLUMNS][dimension.id];
-    //     return (
-    //       <DimensionHeader
-    //         top={height - crossHeight}
-    //         // crossDimensionId={dimensionWhoseHeightToGet}
-    //         dimensionId={dimension.id}
-    //         caption={dimension.caption}
-    //         key={`dimension-header-${dimension.id}`}
-    //         left={cross.position}
-    //         mainDirection="down"
-    //         previewSizes={previewSizes}
-    //         height={crossHeight}
-    //         width={cross.size}
-    //         gridId={gridId}
-    //       />
-    //     );
-    //   })
-    // );
-
+    //   }
+    // });
     return (
       // Putting position as relative here allows its children (the dimension headers)
       // to be absolutely positioned relatively to their parent

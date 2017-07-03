@@ -5,8 +5,8 @@
 }
 
 .pivotgrid-data-cell-highlighted {
-    animation-name: anim-info-updated;
-    animation-duration: 1s;
+  animation-name: anim-info-updated;
+  animation-duration: 1s;
 }
 
 .pivotgrid-column-headers {
@@ -22,14 +22,13 @@
 }
 
 @keyframes anim-info-updated {
-    0% {
-      background-color: red;
-      color: rgb(128, 0, 0);
-    }
-    100% {
-    }
+  0% {
+    background-color: red;
+    color: rgb(128, 0, 0);
+  }
+  100% {
+  }
 }
-
 
 .pivotgrid-header {
   background-color: #eef8fb;
@@ -40,10 +39,15 @@
   margin-left: '0.5em';
 }
 
+.pivotgrid-dimension-headers {
+}
+
 .pivotgrid-dimension-header {
   background-color: #fafad2;
 }
-
+.pivotgrid-dimension-attribute-header {
+  font-style: italic;
+}
 .pivotgrid-dimension-header-inner {
   margin: 0.2em;
   margin-left: '0.5em';

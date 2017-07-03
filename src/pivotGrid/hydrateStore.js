@@ -110,7 +110,8 @@ export function dimensionFactory(dimensionConfig) {
     labelAccessor,
     sort,
     format,
-    subTotal
+    subTotal,
+    isAttributeOf
   } = dimensionConfig;
   const dimSort = !isNullOrUndefined(sort)
     ? {
@@ -130,7 +131,8 @@ export function dimensionFactory(dimensionConfig) {
     labelAccessor: toAccessorFunction(labelAccessor || keyAccessor),
     format: format || (value => value),
     sort: dimSort,
-    subTotal
+    subTotal,
+    isAttributeOf
   };
 }
 // initialisation of measures from configuration

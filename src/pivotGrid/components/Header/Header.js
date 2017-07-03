@@ -4,10 +4,7 @@ import { AxisType } from '../../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
 import { HeaderType } from '../../Cells';
-const rightArrow =
-  'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAIElEQVQ4jWNgGAX4QB0UU2zAMDCEIgMGTjOyAaOAAAAA6dUK1fxYl1IAAAAASUVORK5CYII=)';
-const downArrow =
-  'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAJ0lEQVQ4jWNgGAWDE9RBMbHiOBXWERAj2hCSNeMyhCxAkeZRQCQAAFO3CtUd1w9cAAAAAElFTkSuQmCC)';
+import { rightArrow, downArrow } from '../../icons';
 
 // function getLeafSubheaders(header, result) {
 //   if (header.subheaders && header.subheaders.length) {
@@ -147,8 +144,6 @@ class Header extends Component {
         style={{
           boxSizing: 'border-box',
           overflow: 'hidden',
-          // border: 'solid lightgrey thin',
-          // backgroundColor: '#eef8fb',
           zIndex: 1,
           display: 'flex',
           ...positionStyle
