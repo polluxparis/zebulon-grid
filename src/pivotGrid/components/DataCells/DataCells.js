@@ -95,7 +95,7 @@ class DataCells extends PureComponent {
   }
 
   handleKeyDown(e) {
-    const { columnHeaders, rowHeaders } = this.props;
+    const { columnLeaves, rowLeaves } = this.props;
     if (e.which === 69) {
       if (!this.perf) {
         window.Perf.start();
@@ -116,8 +116,8 @@ class DataCells extends PureComponent {
         this.props.selectRange({
           selectedCellStart: { columnIndex: 0, rowIndex: 0 },
           selectedCellEnd: {
-            columnIndex: columnHeaders.length,
-            rowIndex: rowHeaders.length
+            columnIndex: columnLeaves.length,
+            rowIndex: rowLeaves.length
           }
         });
       }
