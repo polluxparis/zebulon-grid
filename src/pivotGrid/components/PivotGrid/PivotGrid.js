@@ -10,6 +10,7 @@ import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { Header, DataHeader } from '../../Cells';
+import { AxisType } from '../../Axis';
 import { keyToIndex } from '../../AxisUi';
 import { getNextKey, getCellInfosKey } from '../../utils/keys';
 
@@ -146,9 +147,12 @@ class PivotGrid extends Component {
                       )}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
-                      focusCellKeys={this.focusCellKeys}
+                      // focusCellKeys={this.focusCellKeys}
                       onScroll={onScroll}
                       drilldown={drilldown}
+                      ref={ref => {
+                        this.dataCells = ref;
+                      }}
                     />
                   </div>
                 </div>}

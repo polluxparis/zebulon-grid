@@ -5,6 +5,7 @@ import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
 import { HeaderType } from '../../Cells';
 import { rightArrow, downArrow } from '../../icons';
+import { getLeaves } from '../../utils/generic';
 
 // function getLeafSubheaders(header, result) {
 //   if (header.subheaders && header.subheaders.length) {
@@ -30,14 +31,20 @@ import { rightArrow, downArrow } from '../../icons';
 class Header extends Component {
   constructor() {
     super();
+    this.handleClickCollapse = this.handleClickCollapse.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick() {
+  handleClickCollapse() {
     const { toggleCollapse, header } = this.props;
     toggleCollapse(header.key);
   }
+  handleClick() {
+    this.props.selectAxis(this.props.header);
 
+    //   const { toggleCollapse, header } = this.props;
+    //   toggleCollapse(header.key);
+  }
   render() {
     const {
       axis,
@@ -53,8 +60,8 @@ class Header extends Component {
       scrollLeft,
       scrollTop,
       isNotCollapsible,
-      isAffixManaged,
-      toggleCollapse
+      isAffixManaged
+      // toggleCollapse
     } = this.props;
     const { left, top, width, height } = positionStyle;
     let style = { height, width };
@@ -96,7 +103,7 @@ class Header extends Component {
             marginTop: '0.1em',
             marginRight: '0.1em'
           }}
-          onClick={this.handleClick}
+          onClick={this.handleClickCollapse}
         />
       );
     } else if (header.isCollapsed && !isNotCollapsible) {
@@ -110,7 +117,7 @@ class Header extends Component {
             marginTop: '0.1em',
             marginRight: '0.1em'
           }}
-          onClick={this.handleClick}
+          onClick={this.handleClickCollapse}
         />
       );
     } else {
@@ -118,7 +125,10 @@ class Header extends Component {
     }
     const innerHeader = (
       <div className="pivotgrid-header-inner" style={computedStyle}>
-        {collapsedIcon}<div style={{ width: 'inherit' }}>{caption}</div>
+        {collapsedIcon}
+        <div style={{ width: 'inherit' }} onClick={this.handleClick}>
+          {caption}
+        </div>
       </div>
     );
     // if (!header.dim) {

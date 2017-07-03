@@ -1,12 +1,12 @@
-import React from "react";
-import { shallow } from "enzyme";
-import Grid from "./Grid";
+import React from 'react';
+import { shallow } from 'enzyme';
+import PivotGrid from './PivotGrid';
 
-const OriginalGrid = Grid.DecoratedComponent;
-describe("Grid", () => {
-  test("renders without crashing", () => {
+const OriginalPivotGrid = PivotGrid.DecoratedComponent;
+describe('PivotGrid', () => {
+  test('renders without crashing', () => {
     shallow(
-      <OriginalGrid
+      <OriginalPivotGrid
         connectDropTarget={i => i}
         width={1000}
         layout={{ columnHorizontalCount: 22, rowVerticalCount: 33 }}

@@ -262,10 +262,7 @@ export const columnHeadersSelector = createSelector(
 
 export const rowLeavesSelector = createSelector(
   [rowHeadersSelector],
-  header => {
-    console.log(header);
-    return getLeaves(header);
-  }
+  getLeaves
 );
 export const columnLeavesSelector = createSelector(
   [columnHeadersSelector],

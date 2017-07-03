@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import PivotGrid from '../components/Grid/Grid';
+import PivotGrid from '../components/PivotGrid/PivotGrid';
 import {
   getLayout,
   defaultCellSizesSelector,

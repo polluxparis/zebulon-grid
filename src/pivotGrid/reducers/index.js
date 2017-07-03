@@ -8,6 +8,7 @@ import axis from './axis.reducer';
 import sizes from './sizes.reducer';
 import filters from './filters.reducer';
 import collapses from './collapses.reducer';
+import selectedRange from './selection.reducer';
 export default combineReducers({
 	data,
 	config,
@@ -16,5 +17,6 @@ export default combineReducers({
 	axis,
 	sizes,
 	filters,
-	collapses
+	collapses,
+	selectedRange
 });

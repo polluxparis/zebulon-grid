@@ -20,9 +20,9 @@ class DataCells extends PureComponent {
     this.handleDrilldown = this.handleDrilldown.bind(this);
 
     this.state = {
-      valuesCache: {},
-      selectedCellStart: null,
-      selectedCellEnd: null
+      valuesCache: {}
+      // selectedCellStart: null,
+      // selectedCellEnd: null
     };
   }
 
@@ -62,8 +62,12 @@ class DataCells extends PureComponent {
   handleMouseDown(e, { columnIndex, rowIndex }) {
     if (e.button === 0) {
       this.isMouseDown = true;
-      this.setState({ selectedCellStart: { columnIndex, rowIndex } });
-      this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
+      this.props.selectRange({
+        selectedCellStart: { columnIndex, rowIndex },
+        selectedCellEnd: { columnIndex, rowIndex }
+      });
+      // this.setState({ selectedCellStart: { columnIndex, rowIndex } });
+      // this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
     }
   }
 
@@ -73,14 +77,19 @@ class DataCells extends PureComponent {
 
   handleMouseOver({ columnIndex, rowIndex }) {
     if (this.isMouseDown) {
-      this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
+      this.props.selectRange({
+        selectedCellEnd: { columnIndex, rowIndex }
+      });
     }
   }
 
   handleDocumentMouseDown(e) {
     if (e.button === 0 && this.state.selectedCellStart) {
       if (!this.isMouseDown) {
-        this.setState({ selectedCellStart: null, selectedCellEnd: null });
+        this.props.selectRange({
+          selectedCellStart: null,
+          selectedCellEnd: null
+        });
       }
     }
   }
@@ -96,6 +105,7 @@ class DataCells extends PureComponent {
         window.Perf.stop();
       }
     }
+    // ctrl+A
     if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
       if (
         // Works only if the data cells are focused
@@ -103,7 +113,7 @@ class DataCells extends PureComponent {
         // (row and columns headers...) are focused
         findDOMNode(this.grid) === e.target
       ) {
-        this.setState({
+        this.props.selectRange({
           selectedCellStart: { columnIndex: 0, rowIndex: 0 },
           selectedCellEnd: {
             columnIndex: columnHeaders.length,
@@ -135,9 +145,10 @@ class DataCells extends PureComponent {
   }
 
   cellRenderer({ columnIndex, key, rowIndex, style }) {
-    const { selectedCellStart, selectedCellEnd } = this.state;
+    // const { selectedCellStart, selectedCellEnd } = this.state;
+
     const { getCellValue, customFunctions, focusCellKeys } = this.props;
-    const { rowLeaves, columnLeaves, measures } = this.props;
+    const { rowLeaves, columnLeaves, measures, selectedRange } = this.props;
     const rowHeader = rowLeaves[rowIndex];
     const columnHeader = columnLeaves[columnIndex];
 
@@ -153,17 +164,17 @@ class DataCells extends PureComponent {
     }
 
     let selected = false;
-    if (selectedCellStart && selectedCellEnd) {
+    if (selectedRange.selectedCellStart && selectedRange.selectedCellEnd) {
       selected = isInRange(
         { columnIndex, rowIndex },
-        selectedCellStart,
-        selectedCellEnd
+        selectedRange.selectedCellStart,
+        selectedRange.selectedCellEnd
       );
     }
-    const focused = !!focusCellKeys.filter(
-      ({ columns, rows }) =>
-        columns === columnHeader.key && rows === rowHeader.key
-    ).length;
+    // const focused = !!focusCellKeys.filter(
+    //   ({ columns, rows }) =>
+    //     columns === columnHeader.key && rows === rowHeader.key
+    // ).length;
 
     // This causes all the data cells to be rendered when new cells are selected via mouse actions
     // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
@@ -203,11 +214,10 @@ class DataCells extends PureComponent {
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         selected={selected}
-        focused={focused}
       />
     );
   }
-
+  // focused={focused}
   render() {
     const {
       getColumnWidth,

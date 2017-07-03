@@ -122,6 +122,7 @@ export function dimensionFactory(dimensionConfig) {
         )
       }
     : {
+        direction: 'asc',
         keyAccessor: toAccessorFunction(labelAccessor || keyAccessor)
       };
   return {

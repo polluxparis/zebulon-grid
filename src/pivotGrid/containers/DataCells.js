@@ -13,10 +13,12 @@ import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
   columnDimensionsSelector,
-  getCellDimensionInfos
+  getCellDimensionInfos,
+  selectedRangeSelector
 } from '../selectors';
 import DataCells from '../components/DataCells';
 import copy from '../services/copyService';
+import { selectRange } from '../actions';
 // import getCellDimensionInfos from '../selectors/cell.selector';
 
 const mapStateToProps = (state, ownProps) => {
@@ -27,15 +29,15 @@ const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnDimensionsSelector(state);
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
+  const selectedRange = selectedRangeSelector(state);
   // const rowDimensionHeaders = rowHeaders.dimensionHeaders;
   // const columnDimensionHeaders = columnHeaders.dimensionHeaders;
   return {
     columnCount: getLayout(state).columnHorizontalCount,
     columnLeaves,
-    copy: ({ selectedCellStart, selectedCellEnd }) =>
+    copy: selectedRange =>
       copy({
-        selectedCellStart,
-        selectedCellEnd,
+        selectedRange,
         columnLeaves,
         rowLeaves,
         rowDimensions,
@@ -44,7 +46,7 @@ const mapStateToProps = (state, ownProps) => {
         getCellValue,
         getCellDimensionInfos: getCellDimensionInfos(state)
       }),
-    focusCellIndexes,
+    selectedRange,
     getCellValue,
     getCellInfos: getCellInfos(state),
     getColumnWidth: ({ index }) =>
@@ -61,4 +63,9 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(DataCells);
+const mapDispatchToProps = dispatch => ({
+  selectRange: selectedRange => {
+    dispatch(selectRange(selectedRange));
+  }
+});
+export default connect(mapStateToProps, mapDispatchToProps)(DataCells);

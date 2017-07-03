@@ -15,14 +15,16 @@ import {
   filteredDataSelector,
   rowDimensionsSelector,
   rowsVisibleHeightSelector,
-  rowHeadersWidthSelector
+  rowHeadersWidthSelector,
+  getSelectedRowRangeSelector
 } from '../selectors';
 import Headers from '../components/Headers';
-import { toggleCollapse } from '../actions';
+import { toggleCollapse, selectRange } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   const rowDimensions = rowDimensionsSelector(state);
   const leaves = rowLeavesSelector(state);
+
   return {
     axisType: AxisType.ROWS,
     data: filteredDataSelector(state),
@@ -45,14 +47,32 @@ const mapStateToProps = (state, ownProps) => {
     //   getIsCollapsedRowByKeySelector(state)(leaves[index].key),
     sizes: state.sizes,
     zoom: state.config.zoom,
-    gridId: ownProps.gridId
+    gridId: ownProps.gridId,
+    getSelectedRowRange: getSelectedRowRangeSelector(state)
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   toggleCollapse: key => {
     dispatch(toggleCollapse({ axisType: AxisType.ROWS, key }));
+  },
+  selectAxis: getSelectedRowRange => header => {
+    const selectedRange = getSelectedRowRange(header);
+    dispatch(selectRange(selectedRange));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Headers);
 
+const mergeProps = (
+  { getSelectedRowRange, ...restStateProps },
+  { selectAxis, ...restDispatchProps },
+  ownProps
+) => ({
+  selectAxis: selectAxis(getSelectedRowRange),
+  ...restStateProps,
+  ...restDispatchProps,
+  ...ownProps
+});
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+  Headers
+);

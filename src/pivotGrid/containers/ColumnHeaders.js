@@ -15,9 +15,10 @@ import {
   getPreviewSizes,
   columnLeavesSelector,
   getAxisActivatedMeasuresSelector,
-  filteredDataSelector
+  filteredDataSelector,
+  getSelectedColumnRangeSelector
 } from '../selectors';
-import { toggleCollapse } from '../actions';
+import { toggleCollapse, selectRange } from '../actions';
 import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
@@ -29,28 +30,49 @@ const mapStateToProps = (state, ownProps) => {
     dimensions: columnDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     columnCount: getLayout(state).columnHorizontalCount,
-    headers: columnHeadersSelector(state),
-    leaves,
     // crossPositions: crossPositionsSelector(state),
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
     // getCrossSize: getCrossSize(state),
-    getLastChildSize: header => getLastChildWidth(state)(header),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(columnDimensions[index].id),
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: getPreviewSizes(state),
     rowCount: getLayout(state).columnVerticalCount,
-    zoom: state.config.zoom,
+    headers: columnHeadersSelector(state),
+    getLastChildSize: header => getLastChildWidth(state)(header),
+    leaves,
+
     sizes: state.sizes,
-    gridId: ownProps.gridId
+    zoom: state.config.zoom,
+
+    gridId: ownProps.gridId,
+    getSelectedColumnRange: getSelectedColumnRangeSelector(state)
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   toggleCollapse: key => {
     dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
+  },
+  selectAxis: getSelectedColumnRange => header => {
+    const selectedRange = getSelectedColumnRange(header);
+    dispatch(selectRange(selectedRange));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Headers);
+
+const mergeProps = (
+  { getSelectedColumnRange, ...restStateProps },
+  { selectAxis, ...restDispatchProps },
+  ownProps
+) => ({
+  selectAxis: selectAxis(getSelectedColumnRange),
+  ...restStateProps,
+  ...restDispatchProps,
+  ...ownProps
+});
+// export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+  Headers
+);

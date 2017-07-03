@@ -23,6 +23,7 @@ function toComponent(
   isNotCollapsible,
   isAffixManaged,
   toggleCollapse,
+  selectAxis,
   gridId
 ) {
   return (
@@ -43,6 +44,7 @@ function toComponent(
       isAffixManaged={isAffixManaged}
       gridId={gridId}
       toggleCollapse={toggleCollapse}
+      selectAxis={selectAxis}
     />
   );
 }
@@ -90,7 +92,8 @@ class Headers extends PureComponent {
       measures,
       data,
       axisType,
-      toggleCollapse
+      toggleCollapse,
+      selectAxis
     } = this.props;
 
     // this.firstLeafHeader =
@@ -255,6 +258,7 @@ class Headers extends PureComponent {
             isNotCollapsible,
             index === startIndex && header.depth < lastNotMeasureDimensionIndex,
             toggleCollapse,
+            selectAxis,
             gridId
           )
         );

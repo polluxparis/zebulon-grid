@@ -47,6 +47,11 @@ import {
   getDimensionValues,
   filteredDataSelector
 } from './data.selector';
+import {
+  selectedRangeSelector,
+  getSelectedColumnRangeSelector,
+  getSelectedRowRangeSelector
+} from './selection.selector';
 
 export { getLayout };
 export { defaultCellSizesSelector };
@@ -83,3 +88,6 @@ export { getCellDimensionInfos };
 export { getCellHeightByKeySelector };
 export { getCellWidthByKeySelector };
 export { getRowHeaderWidth };
+export { selectedRangeSelector };
+export { getSelectedColumnRangeSelector };
+export { getSelectedRowRangeSelector };
