@@ -1,17 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import renderer from "react-test-renderer";
-import { mount } from "enzyme";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import renderer from 'react-test-renderer';
+import { mount } from 'enzyme';
 
-import WrappedGrid from "./WrappedGrid";
-import { AxisType } from "./Axis";
+import WrappedGrid from './WrappedGrid';
+import { AxisType } from './Axis';
 
-import { getMockDatasource, basicConfig } from "../utils/mock";
+import { getMockDatasource, basicConfig } from '../utils/mock';
 
-describe("WrappedGrid", () => {
+describe('WrappedGrid', () => {
   const data = getMockDatasource(1, 2, 5);
-  test("renders without crashing", () => {
-    const div = document.createElement("div");
+  test('renders without crashing', () => {
+    const div = document.createElement('div');
     ReactDOM.render(
       <WrappedGrid
         data={data}
@@ -23,167 +23,167 @@ describe("WrappedGrid", () => {
     );
   });
 
-  describe("actions", () => {
-    test("push a record", () => {
+  describe('actions', () => {
+    test('push a record', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find("DataCell").first().text()).toEqual("1");
+      expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData({
-        toto: "0",
-        toto_lb: "toto 0",
+        toto: '0',
+        toto_lb: 'toto 0',
         qty: 100,
         amt: 100,
-        titi: "titi 0",
-        tutu: "0"
+        titi: 'titi 0',
+        tutu: '0'
       });
-      expect(wrapper.find("DataCell").first().text()).toEqual("101");
+      expect(wrapper.find('DataCell').first().text()).toEqual('101');
     });
 
-    test("push an array of records", () => {
+    test('push an array of records', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find("DataCell").first().text()).toEqual("1");
+      expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData([
         {
-          toto: "0",
-          toto_lb: "toto 0",
+          toto: '0',
+          toto_lb: 'toto 0',
           qty: 100,
           amt: 100,
-          titi: "titi 0",
-          tutu: "1"
+          titi: 'titi 0',
+          tutu: '1'
         },
         {
-          toto: "0",
-          toto_lb: "toto 0",
+          toto: '0',
+          toto_lb: 'toto 0',
           qty: 100,
           amt: 100,
-          titi: "titi 0",
-          tutu: "0"
+          titi: 'titi 0',
+          tutu: '0'
         }
       ]);
-      expect(wrapper.find("DataCell").first().text()).toEqual("101");
+      expect(wrapper.find('DataCell').first().text()).toEqual('101');
     });
 
-    test("zoom in", () => {
+    test('zoom in', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find("DataCell").length).toEqual(36);
+      expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomIn();
-      expect(wrapper.find("DataCell").length).toEqual(32);
+      expect(wrapper.find('DataCell').length).toEqual(32);
     });
 
-    test("zoom out", () => {
+    test('zoom out', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find("DataCell").length).toEqual(36);
+      expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomOut();
-      expect(wrapper.find("DataCell").length).toEqual(44);
+      expect(wrapper.find('DataCell').length).toEqual(44);
     });
 
-    test("sort", () => {
+    test('sort', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
-      expect(wrapper.find("Header").first().text()).toEqual("titi 0");
-      wrapper.instance().changeSortOrder("titi");
-      expect(wrapper.find("Header").first().text()).toEqual("titi 4");
+      expect(wrapper.find('Header').first().text()).toEqual('titi 0');
+      wrapper.instance().toggleSortOrder('titi');
+      expect(wrapper.find('Header').first().text()).toEqual('titi 4');
     });
 
-    test("sort nested dimension", () => {
+    test('sort nested dimension', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2)
           .filterWhere(wrapper => wrapper.props().header.parent !== null)
           .first()
           .text()
-      ).toEqual("0");
-      wrapper.instance().changeSortOrder("tutu");
+      ).toEqual('0');
+      wrapper.instance().toggleSortOrder('tutu');
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2)
           .filterWhere(wrapper => wrapper.props().header.parent !== null)
           .first()
           .text()
-      ).toEqual("1");
+      ).toEqual('1');
     });
 
-    test("move dimension from row to column", () => {
+    test('move dimension from row to column', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(6);
-      wrapper.instance().moveDimension("tutu", "rows", "columns", 1);
+      wrapper.instance().moveDimension('tutu', 'rows', 'columns', 1);
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(2);
     });
 
-    test("move dimension from row to reserve", () => {
+    test('move dimension from row to reserve', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(6);
-      wrapper.instance().moveDimension("toto", "rows", "dimensions", 0);
+      wrapper.instance().moveDimension('toto', 'rows', 'dimensions', 0);
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(2);
     });
 
-    test("toggle measure", () => {
+    test('toggle measure', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
           )
-          .filterWhere(wrapper => wrapper.props().header.caption === "Amount")
+          .filterWhere(wrapper => wrapper.props().header.caption === 'Amount')
           .length
       ).toEqual(3);
-      wrapper.instance().toggleMeasure("amt");
+      wrapper.instance().toggleMeasure('amt');
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
           )
-          .filterWhere(wrapper => wrapper.props().header.caption === "Amount")
+          .filterWhere(wrapper => wrapper.props().header.caption === 'Amount')
           .length
       ).toEqual(0);
     });
 
-    test("resize header", () => {
+    test('resize header', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
@@ -191,10 +191,10 @@ describe("WrappedGrid", () => {
       ).toEqual(9);
       wrapper.instance().updateCellSize({
         handle: {
-          id: "titi 0-/-qty",
+          id: 'titi 0-/-qty',
           axis: AxisType.COLUMNS,
           leafSubheaders: [],
-          position: "right"
+          position: 'right'
         },
         offset: { x: 200 },
         initialOffset: { x: 0 },
@@ -203,7 +203,7 @@ describe("WrappedGrid", () => {
       });
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 1)
           .filterWhere(
             wrapper => wrapper.props().header.subheaders === undefined
@@ -211,19 +211,19 @@ describe("WrappedGrid", () => {
       ).toEqual(7);
     });
 
-    test("resize header in cross direction", () => {
+    test('resize header in cross direction', () => {
       const wrapper = mount(
         <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(6);
       wrapper.instance().updateCellSize({
         handle: {
-          id: "titi",
-          position: "bottom",
+          id: 'titi',
+          position: 'bottom',
           axis: AxisType.COLUMNS
         },
         offset: { y: 540 },
@@ -233,7 +233,7 @@ describe("WrappedGrid", () => {
       });
       expect(
         wrapper
-          .find("Header")
+          .find('Header')
           .filterWhere(wrapper => wrapper.props().axis === 2).length
       ).toEqual(2);
     });
@@ -247,8 +247,8 @@ describe("WrappedGrid", () => {
     // });
   });
 
-  describe("returns correct markup when config", () => {
-    test("has no columns", () => {
+  describe('returns correct markup when config', () => {
+    test('has no columns', () => {
       const config = { ...basicConfig, columns: [] };
       const tree = renderer
         .create(
@@ -257,7 +257,7 @@ describe("WrappedGrid", () => {
         .toJSON();
       expect(tree).toMatchSnapshot();
     });
-    test("has no rows", () => {
+    test('has no rows', () => {
       const config = { ...basicConfig, rows: [] };
       const tree = renderer
         .create(
@@ -267,7 +267,7 @@ describe("WrappedGrid", () => {
       expect(tree).toMatchSnapshot();
     });
 
-    test("has no data dimension", () => {
+    test('has no data dimension', () => {
       const config = { ...basicConfig, data: [] };
       const tree = renderer
         .create(
@@ -276,8 +276,8 @@ describe("WrappedGrid", () => {
         .toJSON();
       expect(tree).toMatchSnapshot();
     });
-    test("has one data dimension", () => {
-      const config = { ...basicConfig, data: ["Quantity"] };
+    test('has one data dimension', () => {
+      const config = { ...basicConfig, data: ['Quantity'] };
       const tree = renderer
         .create(
           <WrappedGrid data={data} drilldown={() => 33} config={config} />
@@ -285,8 +285,8 @@ describe("WrappedGrid", () => {
         .toJSON();
       expect(tree).toMatchSnapshot();
     });
-    test("has two data dimensions", () => {
-      const config = { ...basicConfig, data: ["Quantity", "Amount"] };
+    test('has two data dimensions', () => {
+      const config = { ...basicConfig, data: ['Quantity', 'Amount'] };
       const tree = renderer
         .create(
           <WrappedGrid data={data} drilldown={() => 33} config={config} />
@@ -294,8 +294,8 @@ describe("WrappedGrid", () => {
         .toJSON();
       expect(tree).toMatchSnapshot();
     });
-    test("has data dimensions on row axis", () => {
-      const config = { ...basicConfig, measureHeadersAxis: "rows" };
+    test('has data dimensions on row axis', () => {
+      const config = { ...basicConfig, measureHeadersAxis: 'rows' };
       const tree = renderer
         .create(
           <WrappedGrid data={data} drilldown={() => 33} config={config} />

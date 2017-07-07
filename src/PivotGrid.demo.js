@@ -130,7 +130,7 @@ class PivotGridDemo extends Component {
   }
 
   sortDimension() {
-    this.state.store.dispatch(actions.changeSortOrder('titi'));
+    this.state.store.dispatch(actions.toggleSortOrder('titi'));
   }
 
   toggleMeasure() {

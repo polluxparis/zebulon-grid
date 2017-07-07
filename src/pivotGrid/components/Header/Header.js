@@ -29,22 +29,16 @@ import { getLeaves } from '../../utils/generic';
 // };
 
 class Header extends Component {
-  constructor() {
-    super();
-    this.handleClickCollapse = this.handleClickCollapse.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClickCollapse() {
+  handleClickCollapse = () => {
     const { toggleCollapse, header } = this.props;
     toggleCollapse(header.key);
-  }
-  handleClick() {
+  };
+  handleClick = () => {
     this.props.selectAxis(this.props.header);
 
     //   const { toggleCollapse, header } = this.props;
     //   toggleCollapse(header.key);
-  }
+  };
   render() {
     const {
       axis,
@@ -96,7 +90,7 @@ class Header extends Component {
       collapsedIcon = (
         <div
           style={{
-            background: rightArrow,
+            background: downArrow,
             backgroundSize: 'cover',
             height: '1em',
             width: '1em',
@@ -110,7 +104,7 @@ class Header extends Component {
       collapsedIcon = (
         <div
           style={{
-            background: downArrow,
+            background: rightArrow,
             backgroundSize: 'cover',
             height: '1em',
             width: '1em',

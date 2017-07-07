@@ -13,9 +13,9 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
         for (let u = 0; u < nTutu; u += 1) {
           obj = {};
           obj.toto = o;
-          obj.toto_lb = `toto ${String(o)}`;
+          obj.toto_lb = `toto ${String(nToto - o)}`;
           obj.toto_0 = `att0 ${String(o)}`;
-          obj.toto_1 = `att1 ${String(o)}`;
+          obj.toto_1 = `att1 ${String(nToto - o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(u);
           obj.qty = u + 10 * i + 100 * o + 1; // +9999999999.1234567890123456

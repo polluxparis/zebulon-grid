@@ -17,6 +17,7 @@ class DimensionHeaders extends Component {
       previewSizes,
       gridId,
       toggleCollapseDimension,
+      toggleSortOrder,
       crossPositions,
       height,
       width
@@ -67,6 +68,7 @@ class DimensionHeaders extends Component {
             previewSizes={previewSizes}
             gridId={gridId}
             toggleCollapseDimension={toggleCollapseDimension}
+            toggleSortOrder={toggleSortOrder}
             isAttribute={dimension.isAttribute}
           />
         );

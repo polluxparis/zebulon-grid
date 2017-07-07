@@ -114,43 +114,51 @@ const getDataRows = (data, rowDimension, columnDimension) => {
 const cellDimensionInfos = (
   data,
   axisDimensions,
-  hasMeasure,
+  axis,
   leaf,
   measures,
   dimensions
 ) => {
   let l = leaf;
-  const depth = axisDimensions.length - hasMeasure;
+  const depth = axisDimensions.length;
   let dimension;
   const row = data[leaf.dataIndexes[0]];
   for (let index = depth - 1; index >= 0; index -= 1) {
     dimension = axisDimensions[index];
-    if (dimension.id === MEASURE_ID) {
+    // when a leaf is collapsed its parent  has a depth < leaf.depth -1
+    // we  have to push an empty cell in this case
+    if (index > l.depth) {
       dimensions.push({
-        dimensionId: leaf.id,
-        dimensionCaption: measures[leaf.id].caption,
-        id: leaf.id,
-        caption: measures[leaf.id].caption
+        axis,
+        dimension: { id: dimension.id, caption: dimension.caption },
+        cell: { id: '', caption: '' }
       });
+    } else if (dimension.id === MEASURE_ID) {
+      dimensions.push({
+        axis,
+        dimension: { id: dimension.id, caption: 'measures' },
+        cell: { id: leaf.id, caption: measures[leaf.id].caption }
+      });
+      l = l.parent;
     } else {
       dimensions.push({
-        dimensionId: dimension.id,
-        dimensionCaption: dimension.caption,
-        id: l.id,
-        caption: dimension.labelAccessor(row)
+        axis,
+        dimension: { id: dimension.id, caption: dimension.caption },
+        cell: { id: leaf.id, caption: dimension.labelAccessor(row) }
       });
+
+      l = l.parent;
     }
-    l = l.parent;
   }
   return dimensions.reverse();
 };
-export const getCellDimensionInfos = createSelector(
+export const getCellDimensionInfosSelector = createSelector(
   [filteredDataSelector],
-  data => (axisDimensions, hasMeasure, leaf, measures, dimensions) => {
+  data => (axisDimensions, axis, leaf, measures, dimensions) => {
     return cellDimensionInfos(
       data,
       axisDimensions,
-      hasMeasure,
+      axis,
       leaf,
       measures,
       dimensions
@@ -158,7 +166,7 @@ export const getCellDimensionInfos = createSelector(
   }
 );
 
-export const getCellInfos = createSelector(
+export const getCellInfosSelector = createSelector(
   [
     filteredDataSelector,
     rowLeavesSelector,
@@ -175,20 +183,27 @@ export const getCellInfos = createSelector(
     rowDimensions,
     columnDimensions
   ) => cell => {
-    let rowLeaf = rowLeaves[cell.rowIndex];
+    const rowLeaf = rowLeaves[cell.rowIndex];
+    const columnLeaf = columnLeaves[cell.columnIndex];
     let measure;
-    let measureAxis;
     if (rowLeaf.type === HeaderType.MEASURE) {
       measure = measures[rowLeaf.id];
-      rowLeaf = rowLeaf.parent;
-      measureAxis = 'row';
-    }
-    let columnLeaf = columnLeaves[cell.columnIndex];
-    if (columnLeaf.type === HeaderType.MEASURE) {
+    } else {
       measure = measures[columnLeaf.id];
-      columnLeaf = columnLeaf.parent;
-      measureAxis = 'column';
     }
+    // let measure;
+    // let measureAxis;
+    // if (rowLeaf.type === HeaderType.MEASURE) {
+    //   measure = measures[rowLeaf.id];
+    //   rowLeaf = rowLeaf.parent;
+    //   measureAxis = 'row';
+    // }
+    // let
+    // if (columnLeaf.type === HeaderType.MEASURE) {
+    //   measure = measures[columnLeaf.id];
+    //   columnLeaf = columnLeaf.parent;
+    //   measureAxis = 'column';
+    // }
     const value = cellValue(
       data,
       measure.valueAccessor,
@@ -200,22 +215,19 @@ export const getCellInfos = createSelector(
     dimensions = cellDimensionInfos(
       data,
       rowDimensions,
-      measureAxis === 'row',
+      'rows',
       rowLeaf,
+      measures,
       dimensions
     );
     dimensions = cellDimensionInfos(
       data,
       columnDimensions,
-      measureAxis === 'column',
+      'columns',
       columnLeaf,
+      measures,
       dimensions
     );
-    measure = {
-      caption: measure.caption,
-      id: measure.id,
-      axis: measureAxis
-    };
-    return { value, dimensions, measure };
+    return { value, dimensions, data };
   }
 );

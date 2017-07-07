@@ -1,4 +1,4 @@
-import { getCellInfosKey } from './keys';
+import { getCellInfosSelectorKey } from './keys';
 import { TOTAL_ID, KEY_SEPARATOR, AXIS_SEPARATOR } from '../constants';
 
 describe('obtain cell keys from cell infos', () => {
@@ -37,7 +37,7 @@ describe('obtain cell keys from cell infos', () => {
       ],
       measure: { caption: 'Quantity', id: 'qty', axis: 'columns' }
     };
-    expect(getCellInfosKey(cellInfos)).toEqual({
+    expect(getCellInfosSelectorKey(cellInfos)).toEqual({
       columns: ['titi 0', 'qty'].join(KEY_SEPARATOR),
       rows: ['0', '0'].join(KEY_SEPARATOR)
     });
@@ -71,7 +71,7 @@ describe('obtain cell keys from cell infos', () => {
       ],
       measure: { caption: 'Quantity', id: 'qty', axis: 'columns' }
     };
-    expect(getCellInfosKey(cellInfos)).toEqual({
+    expect(getCellInfosSelectorKey(cellInfos)).toEqual({
       columns: [
         [TOTAL_ID, 'qty'].join(KEY_SEPARATOR),
         ['tutu', 'toto'].join(KEY_SEPARATOR)
@@ -100,7 +100,7 @@ describe('obtain cell keys from cell infos', () => {
       ],
       measure: { caption: 'Quantity', id: 'qty', axis: 'columns' }
     };
-    expect(getCellInfosKey(cellInfos)).toEqual({
+    expect(getCellInfosSelectorKey(cellInfos)).toEqual({
       columns: ['titi 0', 'qty'].join(KEY_SEPARATOR),
       rows: `${TOTAL_ID}${AXIS_SEPARATOR}titi`
     });
@@ -141,7 +141,7 @@ describe('obtain cell keys from cell infos', () => {
       ],
       measure: { caption: 'Quantity', id: 'qty', axis: 'rows' }
     };
-    expect(getCellInfosKey(cellInfos)).toEqual({
+    expect(getCellInfosSelectorKey(cellInfos)).toEqual({
       columns: ['titi 0'].join(KEY_SEPARATOR),
       rows: ['0', '0', 'qty'].join(KEY_SEPARATOR)
     });

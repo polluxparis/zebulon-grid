@@ -39,8 +39,8 @@ import {
 } from './dimensions.selector';
 import {
   getCellValueSelector,
-  getCellInfos,
-  getCellDimensionInfos
+  getCellInfosSelector,
+  getCellDimensionInfosSelector
 } from './cell.selector';
 import {
   getFilters,
@@ -78,13 +78,13 @@ export { getLastChildWidth };
 export { getLastChildHeight };
 export { columnsVisibleWidthSelector };
 export { rowsVisibleHeightSelector };
-export { getCellValueSelector, getCellInfos };
+export { getCellValueSelector, getCellInfosSelector };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
 export { getDimensionValues };
 export { getFilters };
 export { filteredDataSelector };
-export { getCellDimensionInfos };
+export { getCellDimensionInfosSelector };
 export { getCellHeightByKeySelector };
 export { getCellWidthByKeySelector };
 export { getRowHeaderWidth };

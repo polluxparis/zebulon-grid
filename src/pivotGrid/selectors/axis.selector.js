@@ -161,7 +161,13 @@ function buildHeaders(
       // orderedChildrenMap.length > 0 &&
       header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
     ) {
-      const childrenDimension = dimensions[depth + 1];
+      let childrenDimension = dimensions[depth + 1];
+      if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
+        childrenDimension =
+          dimensions[
+            dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
+          ];
+      }
       let sortFunction;
       if (childrenDimension.sort.custom) {
         sortFunction = (a, b) =>

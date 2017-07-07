@@ -1,5 +1,5 @@
-import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from "../constants";
-import { HeaderType } from "../Cells";
+import { KEY_SEPARATOR, AXIS_SEPARATOR, TOTAL_ID } from '../constants';
+import { HeaderType } from '../Cells';
 
 export function getKey({
   headerType,
@@ -36,19 +36,19 @@ export function getKey({
   }
 }
 
-export function getCellInfosKey(cellInfos) {
+export function getCellInfosSelectorKey(cellInfos) {
   const columnInfos = cellInfos.dimensions
-    .filter(dim => dim.axis === "columns")
+    .filter(dim => dim.axis === 'columns')
     .sort((dim1, dim2) => dim1.index - dim2.index)
     .map(dim => dim.cell.id);
   const rowInfos = cellInfos.dimensions
-    .filter(dim => dim.axis === "rows")
+    .filter(dim => dim.axis === 'rows')
     .sort((dim1, dim2) => dim1.index - dim2.index)
     .map(dim => dim.cell.id);
   let columns;
   let rows;
   if (columnInfos.length === 0 && rowInfos.length === 0) {
-    if (cellInfos.measure.axis === "columns") {
+    if (cellInfos.measure.axis === 'columns') {
       columns = getKey({
         headerType: HeaderType.DATA_HEADER,
         parent: { type: HeaderType.GRAND_TOTAL },
@@ -74,10 +74,10 @@ export function getCellInfosKey(cellInfos) {
   } else if (rowInfos.length === 0) {
     columns = columnInfos.join(KEY_SEPARATOR);
     const crossAxisDimensionsCode = cellInfos.dimensions
-      .filter(dim => dim.axis === "columns")
+      .filter(dim => dim.axis === 'columns')
       .sort((dim1, dim2) => dim1.index - dim2.index)
       .map(dim => dim.dimension.id);
-    if (cellInfos.measure.axis === "columns") {
+    if (cellInfos.measure.axis === 'columns') {
       columns = `${columns}${KEY_SEPARATOR}${cellInfos.measure.id}`;
       rows = getKey({
         headerType: HeaderType.GRAND_TOTAL,
@@ -100,10 +100,10 @@ export function getCellInfosKey(cellInfos) {
   } else if (columnInfos.length === 0) {
     rows = rowInfos.join(KEY_SEPARATOR);
     const crossAxisDimensionsCode = cellInfos.dimensions
-      .filter(dim => dim.axis === "rows")
+      .filter(dim => dim.axis === 'rows')
       .sort((dim1, dim2) => dim1.index - dim2.index)
       .map(dim => dim.dimension.id);
-    if (cellInfos.measure.axis === "rows") {
+    if (cellInfos.measure.axis === 'rows') {
       rows = `${rows}${KEY_SEPARATOR}${cellInfos.measure.id}`;
       columns = getKey({
         headerType: HeaderType.GRAND_TOTAL,
@@ -125,7 +125,7 @@ export function getCellInfosKey(cellInfos) {
   } else {
     columns = columnInfos.join(KEY_SEPARATOR);
     rows = rowInfos.join(KEY_SEPARATOR);
-    if (cellInfos.measure.axis === "columns") {
+    if (cellInfos.measure.axis === 'columns') {
       columns = `${columns}${KEY_SEPARATOR}${cellInfos.measure.id}`;
     } else {
       rows = `${rows}${KEY_SEPARATOR}${cellInfos.measure.id}`;
@@ -139,7 +139,7 @@ export function getNextKey(current, next) {
   const firstLeafHeader =
     current.firstHeaderRow[current.firstHeaderRow.length - 1];
   const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
-  let nextKey = "";
+  let nextKey = '';
   if (current.dimensions.length > next.dimensions.length) {
     const nextDimensionIds = next.dimensions.map(dimension => dimension.id);
     const missingDimensionPosition = current.dimensions.findIndex(
@@ -160,7 +160,7 @@ export function getNextKey(current, next) {
   } else {
     // A filter has been modified
     // For the moment, do nothing
-    nextKey = "";
+    nextKey = '';
   }
   return nextKey;
 }

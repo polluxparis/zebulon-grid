@@ -12,7 +12,7 @@ const getAxisDimensions = (axis, dimensions, collapses) => {
 				(prevDimension.isAttributeOf === dimension.isAttributeOf &&
 					prevDimension.isAttribute)
 			) {
-				dimension.isAttribute = 1;
+				dimension.isAttribute = true;
 				dimension.isCollapsed = prevDimension.isCollapsed;
 			} else {
 				dimension.isCollapsed = collapses[dimension.id];
@@ -21,7 +21,7 @@ const getAxisDimensions = (axis, dimensions, collapses) => {
 			return dimension;
 		})
 		.filter(dimension => {
-			return !(dimension.isCollapsed && dimension.isAttribute === 1);
+			return !(dimension.isCollapsed && dimension.isAttribute);
 		});
 };
 

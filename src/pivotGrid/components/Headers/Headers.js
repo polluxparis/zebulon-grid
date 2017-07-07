@@ -53,8 +53,14 @@ class Headers extends PureComponent {
   constructor() {
     super();
     this.headersRenderer = this.headersRenderer.bind(this);
+    this.cellCache = {};
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.headers !== this.props.headers) {
+      this.cellCache = {};
+    }
+    // this.cellCache = this.getState(cellCache);
+  }
   componentDidUpdate(prevProps) {
     if (
       prevProps.sizes !== this.props.sizes ||
@@ -124,8 +130,6 @@ class Headers extends PureComponent {
     // This ensures that we don't render inexistent headers.
     const correctStopIndex = Math.min(stopIndex, leaves.length - 1);
 
-    // row headers
-    // loop on leaves + leave parents
     const renderedHeaderKeys = {};
     let header;
     let dimensionIndex;
@@ -137,6 +141,11 @@ class Headers extends PureComponent {
     const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
     const lastNotMeasureDimensionIndex =
       dimensions.length - 1 - !isNull(measures);
+    const measuresCount = isNull(measures)
+      ? 1
+      : Object.keys(measures).length || 1;
+
+    // loop on leaves + parent leaf
     for (let index = lastNotMeasureDimensionIndex; index >= 0; index -= 1) {
       if (nextDimensionIsAttribute) {
         collapsedSizes.push(0);
@@ -150,20 +159,6 @@ class Headers extends PureComponent {
       collapsedSize += size;
     }
     collapsedSizes.reverse();
-    // const collapsedSizes = dimensions
-    //   .reverse()
-    //   .map((dimension, index) => {
-    //     if (dimension.id === MEASURE_ID) {
-    //       return collapsedSize;
-    //     }
-    //     const getSize = axisType === AxisType.ROWS
-    //       ? getColumnWidth
-    //       : getRowHeight;
-    //     return (collapsedSize += getSize({
-    //       index: [dimensions.length - 1 - index]
-    //     }));
-    //   })
-    // .reverse();
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
       while (header.id !== ROOT_ID && !renderedHeaderKeys[header.key]) {
@@ -171,79 +166,73 @@ class Headers extends PureComponent {
           header.depth = header.depth;
         }
         renderedHeaderKeys[header.key] = true;
-        const dimension = dimensions[header.depth];
+        let cell = this.cellCache[header.key];
+        if (isNullOrUndefined(cell) || true) {
+          const dimension = dimensions[header.depth];
 
-        let caption;
-        if (header.type === HeaderType.DIMENSION) {
-          caption = dimension.format(
-            dimension.labelAccessor(data[header.dataIndexes[0]])
-          );
-        } else {
-          caption = measures[header.id].caption;
-        }
-
-        const main = sizeAndPositionManager.getSizeAndPositionOfCell(index);
-        const mainOffset = main.offset + offsetAdjustment;
-
-        const span = header.span;
-        // const span = header.orderedChildrenIds.length || 1;
-        const mainSize = getHeaderSize(sizeAndPositionManager, index, span);
-        // 3 cases: normal dimension header, measure header or total header
-        // let left = 0;
-        // if (!header.dim) {
-        //   // Measure header
-        //   width = getCrossSize(AxisType.ROWS, MEASURE_ID);
-        //   left += dimensionPositions.rows[MEASURE_ID];
-        // } else if (header.dim.dimension) {
-        // Normal dimension header
-        //
-        // const crossSize = getCrossSize(axisType, dimension.id);
-        const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
-          header.depth
-        );
-        collapsedSize = 0;
-        // collapsedOffset = 0;
-        if (header.isCollapsed && collapsedSizes.length > 0) {
-          if (header.type !== HeaderType.MEASURE) {
-            //   collapsedOffset = collapsedSizes[0];
-            // } else {
-            collapsedSize = collapsedSizes[header.depth];
+          let caption;
+          if (header.type === HeaderType.DIMENSION) {
+            caption = dimension.format(
+              dimension.labelAccessor(data[header.dataIndexes[0]])
+            );
+          } else {
+            caption = measures[header.id].caption;
           }
-        }
 
-        // collapsedSize = !header.isCollapsed ? 0 : collapsedSizes[header.depth];
-        // const crossPosition = crossPositions[axisType][dimension.id];
-        // } else {
-        //   // Total header
-        //   width = getCrossSize(AxisType.ROWS, TOTAL_ID);
-        // }
+          const main = sizeAndPositionManager.getSizeAndPositionOfCell(index);
+          const mainOffset = main.offset + offsetAdjustment;
 
-        let positionStyle;
-        if (axisType === AxisType.ROWS) {
-          positionStyle = {
-            position: 'absolute',
-            left: cross.offset,
-            top: mainOffset,
-            height: mainSize,
-            width: cross.size + collapsedSize
-          };
-        } else {
-          positionStyle = {
-            position: 'absolute',
-            left: mainOffset,
-            top: cross.offset,
-            height: cross.size + collapsedSize,
-            width: mainSize
-          };
-        }
-        const isNotCollapsible =
-          header.type === HeaderType.MEASURE ||
-          dimension.isAttribute === 1 ||
-          header.depth >= lastNotMeasureDimensionIndex ||
-          (!header.isCollapsed &&
-            span === (isNull(measures) ? 1 : measures.length - 1 || 1));
-        renderedCells.push(
-          toComponent(
+          const span = header.span;
+          // const span = header.orderedChildrenIds.length || 1;
+          const mainSize = getHeaderSize(sizeAndPositionManager, index, span);
+          // 3 cases: normal dimension header, measure header or total header
+          // let left = 0;
+          // if (!header.dim) {
+          //   // Measure header
+          //   width = getCrossSize(AxisType.ROWS, MEASURE_ID);
+          //   left += dimensionPositions.rows[MEASURE_ID];
+          // } else if (header.dim.dimension) {
+          // Normal dimension header
+          //
+          // const crossSize = getCrossSize(axisType, dimension.id);
+          const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
+            header.depth
+          );
+          collapsedSize = 0;
+          // collapsedOffset = 0;
+          if (header.isCollapsed && collapsedSizes.length > 0) {
+            if (header.type !== HeaderType.MEASURE) {
+              //   collapsedOffset = collapsedSizes[0];
+              // } else {
+              collapsedSize = collapsedSizes[header.depth];
+            }
+          }
+
+          let positionStyle;
+          if (axisType === AxisType.ROWS) {
+            positionStyle = {
+              position: 'absolute',
+              left: cross.offset,
+              top: mainOffset,
+              height: mainSize,
+              width: cross.size + collapsedSize
+            };
+          } else {
+            positionStyle = {
+              position: 'absolute',
+              left: mainOffset,
+              top: cross.offset,
+              height: cross.size + collapsedSize,
+              width: mainSize
+            };
+          }
+          const isNotCollapsible =
+            header.type === HeaderType.MEASURE ||
+            dimension.isAttribute ||
+            header.depth >= lastNotMeasureDimensionIndex ||
+            (!header.isCollapsed && span === measuresCount);
+
+          cell = toComponent(
             header,
             caption,
             axisType,
@@ -260,9 +249,11 @@ class Headers extends PureComponent {
             toggleCollapse,
             selectAxis,
             gridId
-          )
-        );
-
+          );
+          this.cellCache[header.key] = cell;
+        }
+        // read parents 9but only once)
+        renderedCells.push(cell);
         header = header.parent;
       }
     }

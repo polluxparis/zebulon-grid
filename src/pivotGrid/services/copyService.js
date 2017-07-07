@@ -17,8 +17,7 @@ function getSelectedText({
   // columnDimensionHeaders,
   // rowDimensionHeaders,
   // customFunctions
-  selectedCellStart,
-  selectedCellEnd,
+  selectedRange,
   rowLeaves,
   columnLeaves,
   rowDimensions,
@@ -33,24 +32,36 @@ function getSelectedText({
   const mr = measureHeadersAxis === 'rows';
   // Build rows headers array
   const rowsRange = [
-    Math.min(selectedCellStart.rowIndex, selectedCellEnd.rowIndex),
-    Math.max(selectedCellStart.rowIndex, selectedCellEnd.rowIndex) + 1
+    Math.min(
+      selectedRange.selectedCellStart.rowIndex,
+      selectedRange.selectedCellEnd.rowIndex
+    ),
+    Math.max(
+      selectedRange.selectedCellStart.rowIndex,
+      selectedRange.selectedCellEnd.rowIndex
+    ) + 1
   ];
   const selectedRowLeaves = rowLeaves.slice(...rowsRange);
 
   // get rows captions
   const rowInfos = selectedRowLeaves.map(leaf =>
-    getCellDimensionInfos(rowDimensions, false, leaf, measures, [])
+    getCellDimensionInfos(rowDimensions, 'rows', leaf, measures, [])
   );
   // Build columns headers array
   const columnsRange = [
-    Math.min(selectedCellStart.columnIndex, selectedCellEnd.columnIndex),
-    Math.max(selectedCellStart.columnIndex, selectedCellEnd.columnIndex) + 1
+    Math.min(
+      selectedRange.selectedCellStart.columnIndex,
+      selectedRange.selectedCellEnd.columnIndex
+    ),
+    Math.max(
+      selectedRange.selectedCellStart.columnIndex,
+      selectedRange.selectedCellEnd.columnIndex
+    ) + 1
   ];
   const selectedColumnLeaves = columnLeaves.slice(...columnsRange);
   // get columns captions
   const columnsInfos = selectedColumnLeaves.map(leaf =>
-    getCellDimensionInfos(columnDimensions, false, leaf, measures, [])
+    getCellDimensionInfos(columnDimensions, 'columns', leaf, measures, [])
   );
   // Build data array
   let measure;
@@ -100,7 +111,7 @@ function getSelectedText({
     }
     // column headers
     for (let x = 0; x < columnsInfos.length; x += 1) {
-      output += `${replaceNullAndUndefined(columnsInfos[x][y].caption)}\t`;
+      output += `${replaceNullAndUndefined(columnsInfos[x][y].cell.caption)}\t`;
     }
     output = output.slice(0, -1);
     output += '\n';
@@ -110,7 +121,7 @@ function getSelectedText({
   for (let y = 0; y < rowInfos.length; y += 1) {
     // row headers
     for (let x = 0; x < width; x += 1) {
-      output += `${replaceNullAndUndefined(rowInfos[y][x].caption)}\t`;
+      output += `${replaceNullAndUndefined(rowInfos[y][x].cell.caption)}\t`;
     }
     // data cells
     for (let x = 0; x < columnLeaves.length; x += 1) {
@@ -124,8 +135,7 @@ function getSelectedText({
 }
 
 export default function copy({
-  selectedCellStart,
-  selectedCellEnd,
+  selectedRange,
   columnLeaves,
   rowLeaves,
   rowDimensions,
@@ -145,8 +155,7 @@ export default function copy({
     clipboardTextArea.style.left = '-10000px';
     bodyElement.appendChild(clipboardTextArea);
     clipboardTextArea.innerHTML = getSelectedText({
-      selectedCellStart,
-      selectedCellEnd,
+      selectedRange,
       rowLeaves,
       columnLeaves,
       rowDimensions,

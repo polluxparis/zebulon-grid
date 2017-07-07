@@ -1,8 +1,8 @@
-import { CHANGE_SORT_ORDER } from "../constants";
+import { CHANGE_SORT_ORDER } from '../constants';
 
 /* eslint-disable import/prefer-default-export */
-export const changeSortOrder = dimensionId => ({
+export const toggleSortOrder = key => ({
 	type: CHANGE_SORT_ORDER,
-	dimensionId
+	key
 });
 /* eslint-enable */

@@ -16,26 +16,29 @@ The drilldrown function takes a single argument *cellInfos*.
 - value
 - data
 - dimensions
-- measure
+
 
 *value* is the value of the cell as a string.
 
 *data* is an array of the data used to calculate the value of the cell.
 
-*dimensions* is an array of the dimensions of the cell.
+*dimensions* is an array of the dimensions of the cell including measure.
 
 Each dimension is an object containing the following properties:
+
+- axis
 
 - dimension
 
   - caption
   - id
 
+
 - cell
 
   - caption
   - id
 
-where for both *dimension* and *cell*, *caption* is the value displayed on the grid and *id* its id in the data source.
+where for both *dimension* and *cell*, *caption* is the value displayed on the grid and *id* its id in the data source. *axis* is *rows* or *columns*
 
-*measure* is the caption of the measure as a string.
+

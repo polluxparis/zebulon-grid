@@ -8,3 +8,10 @@ export const selectRange = selectedRange => {
 		selectedRange
 	};
 };
+
+export const selectCell = cell => {
+	return {
+		type: SELECT_RANGE,
+		selectedRange: { selectedCellStart: cell, selectedCellEnd: cell }
+	};
+};

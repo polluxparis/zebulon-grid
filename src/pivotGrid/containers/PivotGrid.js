@@ -4,29 +4,61 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import PivotGrid from '../components/PivotGrid/PivotGrid';
 import {
-  getLayout,
-  defaultCellSizesSelector,
-  getCellSizes,
-  rowDimensionsSelector,
-  columnHeadersSelector,
-  rowHeadersSelector,
+  activatedMeasuresSelector,
   columnDimensionsSelector,
-  activatedMeasuresSelector
+  columnHeadersSelector,
+  columnLeavesSelector,
+  defaultCellSizesSelector,
+  getCellDimensionInfosSelector,
+  getCellSizes,
+  getCellValueSelector,
+  getLayout,
+  rowDimensionsSelector,
+  rowHeadersSelector,
+  rowLeavesSelector,
+  selectedRangeSelector
 } from '../selectors';
-import { updateCellSize, setConfigProperty } from '../actions';
+import {
+  updateCellSize,
+  setConfigProperty,
+  selectRange,
+  selectCell
+} from '../actions';
+import copy from '../services/copyService';
 import { AxisType } from '../Axis';
+import { isNullOrUndefined } from '../utils/generic';
 
-const mapStateToProps = state => ({
-  width: state.config.width,
-  layout: getLayout(state),
-  defaultCellSizes: defaultCellSizesSelector(state),
-  sizes: state.sizes,
-  columnHeaders: columnHeadersSelector(state),
-  rowHeaders: rowHeadersSelector(state),
-  rowDimensions: rowDimensionsSelector(state),
-  columnDimensions: columnDimensionsSelector(state),
-  dataDimensionsCount: activatedMeasuresSelector(state).length
-});
+const mapStateToProps = state => {
+  const rowLeaves = rowLeavesSelector(state);
+  const columnLeaves = columnLeavesSelector(state);
+  const rowDimensions = rowDimensionsSelector(state);
+  const columnDimensions = columnDimensionsSelector(state);
+  const measures = activatedMeasuresSelector(state);
+  const getCellValue = getCellValueSelector(state);
+  return {
+    width: state.config.width,
+    layout: getLayout(state),
+    defaultCellSizes: defaultCellSizesSelector(state),
+    sizes: state.sizes,
+    columnHeaders: columnHeadersSelector(state),
+    rowHeaders: rowHeadersSelector(state),
+    rowDimensions: rowDimensionsSelector(state),
+    columnDimensions: columnDimensionsSelector(state),
+    dataDimensionsCount: activatedMeasuresSelector(state).length,
+    selectedRange: selectedRangeSelector(state),
+    copy: selectedRange =>
+      copy({
+        selectedRange,
+        columnLeaves,
+        rowLeaves,
+        rowDimensions,
+        columnDimensions,
+        measures,
+        getCellValue,
+        getCellDimensionInfos: getCellDimensionInfosSelector(state)
+      })
+  };
+};
 
 // const mapDispatchToProps = dispatch => ({
 //   updateCellSize: ({
@@ -95,6 +127,12 @@ const mapDispatchToProps = dispatch => ({
   setSizes: ({ height, width }) => {
     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
     if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+  },
+  selectRange: selectedRange => {
+    dispatch(selectRange(selectedRange));
+  },
+  selectCell: cell => {
+    dispatch(selectCell(cell));
   }
 });
 const mergeProps = (
@@ -108,9 +146,11 @@ const mergeProps = (
     rowHeaders,
     rowDimensions,
     columnDimensions,
-    dataDimensionsCount
+    dataDimensionsCount,
+    selectedRange,
+    copy
   },
-  { updateCellSize, setSizes },
+  { updateCellSize, setSizes, selectRange, selectCell },
   ownProps
 ) => ({
   rowDimensions,
@@ -123,6 +163,10 @@ const mergeProps = (
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,
+  selectRange,
+  selectCell,
+  selectedRange,
+  copy,
   ...ownProps
 });
 

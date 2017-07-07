@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import { findDOMNode } from 'react-dom';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 
-import { isInRange, isUndefined } from '../../utils/generic';
+import { isInRange, isNullOrUndefined, isUndefined } from '../../utils/generic';
 import { DataCell, HeaderType } from '../../Cells';
 import DataCellComponent from '../DataCell';
 import { AXIS_SEPARATOR } from '../../constants';
@@ -11,13 +10,6 @@ class DataCells extends PureComponent {
   constructor(props) {
     super(props);
     this.cellRenderer = this.cellRenderer.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleDocumentMouseDown = this.handleDocumentMouseDown.bind(this);
-    this.handleDrilldown = this.handleDrilldown.bind(this);
 
     this.state = {
       valuesCache: {}
@@ -26,19 +18,8 @@ class DataCells extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
-    document.addEventListener('mousedown', this.handleDocumentMouseDown);
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('copy', this.handleCopy);
-  }
-
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
-  }
-
-  componentWillUpdate() {
-    this.isUpdating = true;
   }
 
   componentDidUpdate(prevProps) {
@@ -52,38 +33,54 @@ class DataCells extends PureComponent {
     }
   }
 
-  componentDidUnMount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousedown', this.handleDocumentMouseDown);
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('copy', this.handleCopy);
-  }
-
-  handleMouseDown(e, { columnIndex, rowIndex }) {
+  handleMouseDown = (e, { columnIndex, rowIndex }) => {
     if (e.button === 0) {
+      let range;
+
       this.isMouseDown = true;
-      this.props.selectRange({
-        selectedCellStart: { columnIndex, rowIndex },
-        selectedCellEnd: { columnIndex, rowIndex }
-      });
-      // this.setState({ selectedCellStart: { columnIndex, rowIndex } });
-      // this.setState({ selectedCellEnd: { columnIndex, rowIndex } });
+      if (e.shiftKey) {
+        if (
+          !(
+            this.props.selectedRange.selectedCellEnd.columnIndex ===
+              columnIndex &&
+            this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
+          )
+        ) {
+          this.props.selectRange({
+            selectedCellStart: this.props.selectedRange.selectedCellStart,
+            selectedCellEnd: { columnIndex, rowIndex }
+          });
+        }
+      } else {
+        this.props.selectCell({ columnIndex, rowIndex });
+      }
     }
-  }
+    // this.props.handleMouseDown(columnIndex, rowIndex);
+  };
 
-  handleMouseUp() {
+  handleMouseUp = () => {
     this.isMouseDown = false;
-  }
+  };
 
-  handleMouseOver({ columnIndex, rowIndex }) {
-    if (this.isMouseDown) {
-      this.props.selectRange({
-        selectedCellEnd: { columnIndex, rowIndex }
-      });
+  handleMouseOver = (e, { columnIndex, rowIndex }) => {
+    if (this.isMouseDown && e.buttons === 1) {
+      if (
+        !(
+          this.props.selectedRange.selectedCellEnd.columnIndex ===
+            columnIndex &&
+          this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
+        )
+      ) {
+        this.props.selectRange({
+          selectedCellStart: this.props.selectedRange.selectedCellStart,
+          selectedCellEnd: { columnIndex, rowIndex }
+        });
+      }
+      // this.props.handleMouseDown(columnIndex, rowIndex);
     }
-  }
+  };
 
-  handleDocumentMouseDown(e) {
+  handleDocumentMouseDown = e => {
     if (e.button === 0 && this.state.selectedCellStart) {
       if (!this.isMouseDown) {
         this.props.selectRange({
@@ -92,63 +89,24 @@ class DataCells extends PureComponent {
         });
       }
     }
-  }
+  };
 
-  handleKeyDown(e) {
-    const { columnLeaves, rowLeaves } = this.props;
-    if (e.which === 69) {
-      if (!this.perf) {
-        window.Perf.start();
-        this.perf = true;
-      } else {
-        this.perf = false;
-        window.Perf.stop();
-      }
-    }
-    // ctrl+A
-    if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
-      if (
-        // Works only if the data cells are focused
-        // Later we could make it work if any part of the grid
-        // (row and columns headers...) are focused
-        findDOMNode(this.grid) === e.target
-      ) {
-        this.props.selectRange({
-          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-          selectedCellEnd: {
-            columnIndex: columnLeaves.length,
-            rowIndex: rowLeaves.length
-          }
-        });
-      }
-      e.preventDefault();
-    }
-  }
-
-  handleCopy() {
-    if (
-      // Works only if the data cells are focused
-      // Later we could make it work if any part of the grid
-      // (row and columns headers...) are focused
-      findDOMNode(this.grid) === document.activeElement
-    ) {
-      const { selectedCellStart, selectedCellEnd } = this.state;
-      this.props.copy({
-        selectedCellStart,
-        selectedCellEnd
-      });
-    }
-  }
-
-  handleDrilldown(cell) {
-    return this.props.drilldown(this.props.getCellInfos(cell));
-  }
-
-  cellRenderer({ columnIndex, key, rowIndex, style }) {
+  handleDrilldown = cell => {
+    return this.props.drilldown(this.props.getCellInfosSelector(cell));
+  };
+  cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     // const { selectedCellStart, selectedCellEnd } = this.state;
 
-    const { getCellValue, customFunctions, focusCellKeys } = this.props;
-    const { rowLeaves, columnLeaves, measures, selectedRange } = this.props;
+    const {
+      getCellValue,
+      customFunctions,
+      focusCellKeys,
+      selectCell,
+      rowLeaves,
+      columnLeaves,
+      measures,
+      selectedRange
+    } = this.props;
     const rowHeader = rowLeaves[rowIndex];
     const columnHeader = columnLeaves[columnIndex];
 
@@ -213,10 +171,11 @@ class DataCells extends PureComponent {
         drilldown={this.handleDrilldown}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
+        handleMouseUp={this.handleMouseUp}
         selected={selected}
       />
     );
-  }
+  };
   // focused={focused}
   render() {
     const {
@@ -246,7 +205,6 @@ class DataCells extends PureComponent {
         }}
         rowCount={rowLeaves.length}
         rowHeight={getRowHeight}
-        scrollToAlignment="start"
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}

@@ -6,16 +6,14 @@ import ResizeHandle from '../ResizeHandle';
 import { rightArrow, downArrow } from '../../icons';
 
 class DimensionHeader extends Component {
-  constructor() {
-    super();
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
+  handleClickCollapse = () => {
     const { toggleCollapseDimension, dimensionId, axis } = this.props;
     toggleCollapseDimension(dimensionId);
-  }
-
+  };
+  handleClickSort = () => {
+    const { toggleSortOrder, dimensionId } = this.props;
+    toggleSortOrder(dimensionId);
+  };
   render() {
     const {
       dimensionId,
@@ -30,7 +28,7 @@ class DimensionHeader extends Component {
       isCollapsed,
       previewSizes,
       gridId,
-      toggleCollapseDimension,
+      // toggleCollapseDimension,
       isAttribute
     } = this.props;
 
@@ -51,25 +49,12 @@ class DimensionHeader extends Component {
     const computedStyle = {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
-      display: 'flex'
+      display: 'flex',
+      width: 'inherit'
     };
     let collapsedIcon;
 
     if (!isCollapsed && !isNotCollapsible) {
-      collapsedIcon = (
-        <div
-          style={{
-            background: rightArrow,
-            backgroundSize: 'cover',
-            height: '1em',
-            width: '1em',
-            marginTop: '0.1em',
-            marginRight: '0.1em'
-          }}
-          onClick={this.handleClick}
-        />
-      );
-    } else if (isCollapsed && !isNotCollapsible) {
       collapsedIcon = (
         <div
           style={{
@@ -80,14 +65,32 @@ class DimensionHeader extends Component {
             marginTop: '0.1em',
             marginRight: '0.1em'
           }}
-          onClick={this.handleClick}
+          onClick={this.handleClickCollapse}
+        />
+      );
+    } else if (isCollapsed && !isNotCollapsible) {
+      collapsedIcon = (
+        <div
+          style={{
+            background: rightArrow,
+            backgroundSize: 'cover',
+            height: '1em',
+            width: '1em',
+            marginTop: '0.1em',
+            marginRight: '0.1em'
+          }}
+          onClick={this.handleClickCollapse}
         />
       );
     } else {
       collapsedIcon = <div> </div>;
     }
     const innerHeader = (
-      <div className="pivotgrid-header-inner" style={computedStyle}>
+      <div
+        className="pivotgrid-header-inner"
+        style={computedStyle}
+        onClick={this.handleClickSort}
+      >
         {collapsedIcon}<div style={{ width: 'inherit' }}>{caption}</div>
       </div>
     );

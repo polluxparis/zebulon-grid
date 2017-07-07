@@ -2,33 +2,24 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames';
 
 export default class DataCell extends PureComponent {
-  constructor() {
-    super();
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-  }
-
-  handleMouseDown(e) {
+  handleMouseDown = e => {
     this.props.handleMouseDown(e, {
       columnIndex: this.props.columnIndex,
       rowIndex: this.props.rowIndex
     });
-  }
-
-  handleMouseOver() {
-    this.props.handleMouseOver({
+  };
+  handleMouseOver = e => {
+    this.props.handleMouseOver(e, {
       columnIndex: this.props.columnIndex,
       rowIndex: this.props.rowIndex
     });
-  }
-
-  handleDoubleClick() {
+  };
+  handleDoubleClick = () => {
     this.props.drilldown({
       columnIndex: this.props.columnIndex,
       rowIndex: this.props.rowIndex
     });
-  }
+  };
 
   render() {
     const {
@@ -57,6 +48,7 @@ export default class DataCell extends PureComponent {
         style={{ ...style, ...this.props.style }}
         onMouseDown={this.handleMouseDown}
         onMouseOver={this.handleMouseOver}
+        onMouseUp={this.props.handleMouseUp}
         onDoubleClick={this.handleDoubleClick}
       >
         {caption}
