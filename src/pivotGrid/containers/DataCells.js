@@ -4,7 +4,7 @@ import {
   dataCellsWidthSelector,
   dataCellsHeightSelector,
   rowLeavesSelector,
-  getLayout,
+  getLayoutSelector,
   columnLeavesSelector,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
@@ -33,7 +33,7 @@ const mapStateToProps = (state, ownProps) => {
   // const rowDimensionHeaders = rowHeaders.dimensionHeaders;
   // const columnDimensionHeaders = columnHeaders.dimensionHeaders;
   return {
-    columnCount: getLayout(state).columnHorizontalCount,
+    columnCount: getLayoutSelector(state).columnHorizontalCount,
     columnLeaves,
     copy: selectedRange =>
       copy({
@@ -54,7 +54,7 @@ const mapStateToProps = (state, ownProps) => {
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(rowLeaves[index].key),
     height: dataCellsHeightSelector(state),
-    rowCount: getLayout(state).rowVerticalCount,
+    rowCount: getLayoutSelector(state).rowVerticalCount,
     measures,
     rowLeaves,
     sizes: state.sizes,

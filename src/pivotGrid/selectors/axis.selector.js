@@ -101,7 +101,7 @@ function buildHeaders(
   let header;
   // Root node
   if (node.id === ROOT_ID) {
-    header = { id: ROOT_ID };
+    header = { id: ROOT_ID, orderedChildrenIds: [] };
   } else {
     const currentDimension = dimensions[depth];
     const row = data[dataIndexes[0]];
@@ -275,18 +275,18 @@ export const columnLeavesSelector = createSelector(
   getLeaves
 );
 
-export const getLayout = createSelector(
+export const getLayoutSelector = createSelector(
   [
-    rowHeadersSelector,
-    columnHeadersSelector,
+    rowLeavesSelector,
+    columnLeavesSelector,
     rowDimensionsSelector,
     columnDimensionsSelector
   ],
-  (rowHeaders, columnHeaders, rowDimensions, columnDimensions) => {
+  (rowLeaves, columnLeaves, rowDimensions, columnDimensions) => {
     return {
       rowHorizontalCount: rowDimensions.length,
-      rowVerticalCount: getLeaves(rowHeaders).length,
-      columnHorizontalCount: getLeaves(columnHeaders).length,
+      rowVerticalCount: rowLeaves.length,
+      columnHorizontalCount: columnLeaves.length,
       columnVerticalCount: columnDimensions.length
     };
   }

@@ -14,7 +14,12 @@ import {
   getPreviewSizes
 } from '../selectors';
 import DimensionHeaders from '../components/DimensionHeaders';
-import { toggleCollapseDimension, toggleSortOrder } from '../actions';
+import {
+  toggleCollapseDimension,
+  toggleSortOrder,
+  moveDimension,
+  selectCell
+} from '../actions';
 import { AxisType } from '../Axis';
 const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnDimensionsSelector(state);
@@ -39,6 +44,10 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mapDispatchToProps = dispatch => ({
   toggleCollapseDimension: key => dispatch(toggleCollapseDimension({ key })),
-  toggleSortOrder: key => dispatch(toggleSortOrder(key))
+  toggleSortOrder: key => dispatch(toggleSortOrder(key)),
+  moveDimension: (dimensionId, oldAxis, newAxis, position) => {
+    dispatch(selectCell(null));
+    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
+  }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DimensionHeaders);

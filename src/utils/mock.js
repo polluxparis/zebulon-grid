@@ -54,7 +54,7 @@ export function getObservableMockDatasource(interval) {
 }
 export const basicConfig = {
   canMoveDimensions: true,
-  measureHeadersAxis: 'rows',
+  measureHeadersAxis: 'columns',
   width: 1099,
   height: 601,
   cellHeight: 30,

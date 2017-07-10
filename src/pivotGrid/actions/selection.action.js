@@ -15,3 +15,4 @@ export const selectCell = cell => {
 		selectedRange: { selectedCellStart: cell, selectedCellEnd: cell }
 	};
 };
+

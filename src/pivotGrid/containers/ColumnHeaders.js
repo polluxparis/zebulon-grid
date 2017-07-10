@@ -9,8 +9,7 @@ import {
   columnDimensionsSelector,
   columnHeadersWidthSelector,
   getLastChildWidth,
-  // crossPositionsSelector,
-  getLayout,
+  getLayoutSelector,
   columnsVisibleWidthSelector,
   getPreviewSizes,
   columnLeavesSelector,
@@ -18,7 +17,12 @@ import {
   filteredDataSelector,
   getSelectedColumnRangeSelector
 } from '../selectors';
-import { toggleCollapse, selectRange } from '../actions';
+import {
+  toggleCollapse,
+  selectRange,
+  selectCell,
+  moveDimension
+} from '../actions';
 import Headers from '../components/Headers';
 
 const mapStateToProps = (state, ownProps) => {
@@ -29,17 +33,17 @@ const mapStateToProps = (state, ownProps) => {
     data: filteredDataSelector(state),
     dimensions: columnDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
-    columnCount: getLayout(state).columnHorizontalCount,
-    // crossPositions: crossPositionsSelector(state),
+    columnCount: getLayoutSelector(state).columnHorizontalCount,
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
     // getCrossSize: getCrossSize(state),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(columnDimensions[index].id),
+    getSizeByKey: getCellWidthByKeySelector(state),
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: getPreviewSizes(state),
-    rowCount: getLayout(state).columnVerticalCount,
+    rowCount: getLayoutSelector(state).columnVerticalCount,
     headers: columnHeadersSelector(state),
     getLastChildSize: header => getLastChildWidth(state)(header),
     leaves,
@@ -55,6 +59,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
   toggleCollapse: key => {
     dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
+  },
+  moveDimension: (dimensionId, oldAxis, newAxis, position) => {
+    dispatch(selectCell(null));
+    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   },
   selectAxis: getSelectedColumnRange => header => {
     const selectedRange = getSelectedColumnRange(header);

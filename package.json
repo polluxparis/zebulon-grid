@@ -32,6 +32,7 @@
     "object.values": "^1.0.4",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
+    "react-contextmenu": "^2.6.3",
     "react-dnd": "^2.4.0",
     "react-dnd-html5-backend": "^2.4.1",
     "react-dom": "^15.5.4",

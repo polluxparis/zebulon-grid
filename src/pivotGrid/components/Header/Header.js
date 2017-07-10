@@ -4,8 +4,8 @@ import { AxisType } from '../../Axis';
 import { MEASURE_ID, TOTAL_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle';
 import { HeaderType } from '../../Cells';
-import { rightArrow, downArrow } from '../../icons';
 import { getLeaves } from '../../utils/generic';
+import InnerHeader from '../InnerHeader/InnerHeader';
 
 // function getLeafSubheaders(header, result) {
 //   if (header.subheaders && header.subheaders.length) {
@@ -54,7 +54,9 @@ class Header extends Component {
       scrollLeft,
       scrollTop,
       isNotCollapsible,
-      isAffixManaged
+      isCollapsed,
+      isAffixManaged,
+      moveDimension
       // toggleCollapse
     } = this.props;
     const { left, top, width, height } = positionStyle;
@@ -77,54 +79,54 @@ class Header extends Component {
       }
     }
 
-    const computedStyle = {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      display: 'flex',
-      ...style
-    };
+    // const computedStyle = {
+    //   whiteSpace: 'nowrap',
+    //   overflow: 'hidden',
+    //   display: 'flex',
+    //   ...style
+    // };
 
-    let collapsedIcon;
+    // let collapsedIcon;
 
-    if (!header.isCollapsed && !isNotCollapsible) {
-      collapsedIcon = (
-        <div
-          style={{
-            background: downArrow,
-            backgroundSize: 'cover',
-            height: '1em',
-            width: '1em',
-            marginTop: '0.1em',
-            marginRight: '0.1em'
-          }}
-          onClick={this.handleClickCollapse}
-        />
-      );
-    } else if (header.isCollapsed && !isNotCollapsible) {
-      collapsedIcon = (
-        <div
-          style={{
-            background: rightArrow,
-            backgroundSize: 'cover',
-            height: '1em',
-            width: '1em',
-            marginTop: '0.1em',
-            marginRight: '0.1em'
-          }}
-          onClick={this.handleClickCollapse}
-        />
-      );
-    } else {
-      collapsedIcon = <div> </div>;
-    }
-    const innerHeader = (
-      <div className="pivotgrid-header-inner" style={computedStyle}>
-        {collapsedIcon}
-        <div style={{ width: 'inherit' }} onClick={this.handleClick}>
-          {caption}
-        </div>
-      </div>
-    );
+    // if (!header.isCollapsed && !isNotCollapsible) {
+    //   collapsedIcon = (
+    //     <div
+    //       style={{
+    //         background: downArrow,
+    //         backgroundSize: 'cover',
+    //         height: '1em',
+    //         width: '1em',
+    //         marginTop: '0.1em',
+    //         marginRight: '0.1em'
+    //       }}
+    //       onClick={this.handleClickCollapse}
+    //     />
+    //   );
+    // } else if (header.isCollapsed && !isNotCollapsible) {
+    //   collapsedIcon = (
+    //     <div
+    //       style={{
+    //         background: rightArrow,
+    //         backgroundSize: 'cover',
+    //         height: '1em',
+    //         width: '1em',
+    //         marginTop: '0.1em',
+    //         marginRight: '0.1em'
+    //       }}
+    //       onClick={this.handleClickCollapse}
+    //     />
+    //   );
+    // } else {
+    //   collapsedIcon = <div> </div>;
+    // }
+    // const innerHeader = (
+    //   <div className="pivotgrid-header-inner" style={computedStyle}>
+    //     {collapsedIcon}
+    //     <div style={{ width: 'inherit' }} onClick={this.handleClick}>
+    //       {caption}
+    //     </div>
+    //   </div>
+    // );
     // if (!header.dim) {
     //   // Measure header
     //   dimensionId = MEASURE_ID;
@@ -153,7 +155,16 @@ class Header extends Component {
           ...positionStyle
         }}
       >
-        {innerHeader}
+        <InnerHeader
+          axis={axis}
+          id={dimensionKey}
+          index={null}
+          caption={caption}
+          isNotCollapsible={isNotCollapsible}
+          isCollapsed={isCollapsed}
+          handleClickCollapse={this.handleClickCollapse}
+          moveDimension={moveDimension}
+        />
         <ResizeHandle
           position="right"
           size={height}

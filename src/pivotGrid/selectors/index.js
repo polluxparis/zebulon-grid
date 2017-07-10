@@ -1,5 +1,5 @@
 import {
-  getLayout,
+  getLayoutSelector,
   columnHeadersSelector,
   rowHeadersSelector,
   columnLeavesSelector,
@@ -53,7 +53,7 @@ import {
   getSelectedRowRangeSelector
 } from './selection.selector';
 
-export { getLayout };
+export { getLayoutSelector };
 export { defaultCellSizesSelector };
 // export { getCellSizes };
 export { columnHeadersSelector };

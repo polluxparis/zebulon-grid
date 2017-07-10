@@ -45,6 +45,12 @@
 .pivotgrid-dimension-header {
   background-color: #fafad2;
 }
+.pivotgrid-dimension-header-row {
+  border-bottom: solid .07em;
+}
+.pivotgrid-dimension-header-column {
+  border-right: solid .07em;
+}
 .pivotgrid-dimension-attribute-header {
   font-style: italic;
 }

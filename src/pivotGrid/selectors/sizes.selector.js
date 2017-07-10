@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { scrollbarSize } from '../utils/domHelpers';
 import { getLeaves } from '../utils/generic';
 import { AxisType, toAxisType } from '../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../constants';
+import { MEASURE_ID, TOTAL_ID, ROOT_ID } from '../constants';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
 import {
   columnDimensionsSelector,
@@ -56,14 +56,28 @@ const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
   // if (!dimensions.length) {
   //   position += getCrossSize(axisType, TOTAL_ID);
   // } else {
-  dimensions.forEach(dimension => {
-    const size = getCellSizeByKey(dimension.id);
-    res[dimension.id] = { position, size };
-    position += size;
-  });
+  if (dimensions.length === 0) {
+    res[ROOT_ID] = { position, size: getCellSizeByKey(ROOT_ID) };
+  } else {
+    dimensions.forEach(dimension => {
+      const size = getCellSizeByKey(dimension.id);
+      res[dimension.id] = { position, size };
+      position += size;
+    });
+  }
   return res;
 };
 //
+// export const rowCrossPositionsSelector = createSelector(
+//   [getCellHeightByKeySelector, columnDimensionsSelector],
+//   (getCellHeightByKey, columnDimensions) =>
+//     calculateCrossPositions(columnDimensions, getCellHeightByKey)
+// );
+// export const columnCrossPositionsSelector = createSelector(
+//   [getCellWidthByKeySelector, rowDimensionsSelector],
+//   (getCellWidthByKey, rowDimensions) =>
+//     calculateCrossPositions(rowDimensions, getCellWidthByKey)
+// );
 export const crossPositionsSelector = createSelector(
   [
     getCellWidthByKeySelector,
@@ -79,6 +93,7 @@ export const crossPositionsSelector = createSelector(
     [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellWidthByKey)
   })
 );
+
 //--------------------------------------------------------
 export const rowsHeightSelector = createSelector(
   [rowLeavesSelector, getCellHeightByKeySelector],
@@ -92,19 +107,33 @@ export const columnsWidthSelector = createSelector(
 );
 export const rowHeadersWidthSelector = createSelector(
   [rowDimensionsSelector, getCellWidthByKeySelector],
-  (rowDimensions, getCellWidthByKey) =>
-    rowDimensions.reduce(
-      (width, dimension) => width + getCellWidthByKey(dimension.id),
-      0
-    )
+  (rowDimensions, getCellWidthByKey) => {
+    let width;
+    if (rowDimensions.length === 0) {
+      width = getCellWidthByKey(ROOT_ID);
+    } else {
+      width = rowDimensions.reduce(
+        (width, dimension) => width + getCellWidthByKey(dimension.id),
+        0
+      );
+    }
+    return width;
+  }
 );
 export const columnHeadersWidthSelector = createSelector(
   [columnDimensionsSelector, getCellHeightByKeySelector],
-  (columnDimensions, getCellHeightByKey) =>
-    columnDimensions.reduce(
-      (height, dimension) => height + getCellHeightByKey(dimension.id),
-      0
-    )
+  (columnDimensions, getCellHeightByKey) => {
+    let height;
+    if (columnDimensions.length === 0) {
+      height = getCellHeightByKey(ROOT_ID);
+    } else {
+      height = columnDimensions.reduce(
+        (height, dimension) => height + getCellHeightByKey(dimension.id),
+        0
+      );
+    }
+    return height;
+  }
 );
 const hasHorizontalScrollbar = createSelector(
   [

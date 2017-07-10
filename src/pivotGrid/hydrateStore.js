@@ -127,7 +127,7 @@ export function dimensionFactory(dimensionConfig) {
       };
   return {
     id,
-    caption: caption || id,
+    caption: id === MEASURE_ID ? '' : caption || id,
     keyAccessor: toAccessorFunction(keyAccessor),
     labelAccessor: toAccessorFunction(labelAccessor || keyAccessor),
     format: format || (value => value),

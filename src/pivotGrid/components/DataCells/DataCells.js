@@ -9,7 +9,7 @@ import { AXIS_SEPARATOR } from '../../constants';
 class DataCells extends PureComponent {
   constructor(props) {
     super(props);
-    this.cellRenderer = this.cellRenderer.bind(this);
+    // this.cellRenderer = this.cellRenderer.bind(this);
 
     this.state = {
       valuesCache: {}
@@ -80,16 +80,16 @@ class DataCells extends PureComponent {
     }
   };
 
-  handleDocumentMouseDown = e => {
-    if (e.button === 0 && this.state.selectedCellStart) {
-      if (!this.isMouseDown) {
-        this.props.selectRange({
-          selectedCellStart: null,
-          selectedCellEnd: null
-        });
-      }
-    }
-  };
+  // handleDocumentMouseDown = e => {
+  //   if (e.button === 0 && this.state.selectedCellStart) {
+  //     if (!this.isMouseDown) {
+  //       this.props.selectRange({
+  //         selectedCellStart: null,
+  //         selectedCellEnd: null
+  //       });
+  //     }
+  //   }
+  // };
 
   handleDrilldown = cell => {
     return this.props.drilldown(this.props.getCellInfosSelector(cell));

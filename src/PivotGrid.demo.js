@@ -32,7 +32,7 @@ class PivotGridDemo extends Component {
       /* eslint-enable */
     );
 
-    const data = getMockDatasource(1, 20, 10);
+    const data = getMockDatasource(1, 20, 30);
     this.customFunctions = hydrateStore(store, basicConfig, data);
     this.state = { store, focusCells: [] };
 
@@ -52,17 +52,33 @@ class PivotGridDemo extends Component {
       actions.pushData([
         {
           toto: '666',
-          toto_lb: '',
+          toto_lb: 'toto 666',
+          toto_0: 'aaaa',
+          toto_1: 'bbbb',
+          titi: 'titi 0',
+          tutu: '1',
           qty: 100,
           amt: 100,
-          titi: 'titi 0',
+
           tutu: '0'
+        },
+        {
+          toto: '666',
+          toto_lb: 'toto 666',
+          toto_0: 'aaaa',
+          toto_1: 'bbbb',
+          titi: 'titi 4',
+          tutu: '1',
+          qty: 201,
+          amt: 302,
+          tutu: '4'
         }
       ])
     );
   }
 
   moveDimension() {
+    this.state.store.dispatch(actions.selectCell(null));
     if (i % 2) {
       this.state.store.dispatch(
         actions.moveDimension('tutu', 'columns', 'rows', 1)
@@ -93,6 +109,7 @@ class PivotGridDemo extends Component {
     //   );
     // }
     // i += 1;
+    this.state.store.dispatch(actions.selectCell(null));
     const store = this.state.store.getState();
     if (store.config.measureHeadersAxis === 'columns') {
       this.state.store.dispatch(
@@ -134,6 +151,7 @@ class PivotGridDemo extends Component {
   }
 
   toggleMeasure() {
+    this.state.store.dispatch(actions.selectCell({}));
     this.state.store.dispatch(actions.toggleMeasure('amt'));
   }
 

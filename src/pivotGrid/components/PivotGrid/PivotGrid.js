@@ -18,7 +18,8 @@ import {
   isNull,
   isInRange,
   isNullOrUndefined,
-  isUndefined
+  isUndefined,
+  isEmpty
 } from '../../utils/generic';
 
 class PivotGrid extends Component {
@@ -87,9 +88,25 @@ class PivotGrid extends Component {
     // // In this case, do nothing
     // if (nextScrollToRow >= 0) this.scrollToRow = nextScrollToRow;
     // if (nextScrollColumn >= 0) this.columnStartIndex = nextScrollColumn;
-    if (!isNull(nextProps.selectedRange.selectedCellEnd)) {
+    if (!isEmpty(nextProps.selectedRange.selectedCellEnd)) {
       this.scrollToRow = nextProps.selectedRange.selectedCellEnd.rowIndex;
       this.scrollToColumn = nextProps.selectedRange.selectedCellEnd.columnIndex;
+    } else {
+      // else if (
+      //   !isEmpty(this.props.selectedRange.selectedCellEnd) &&
+      //   !isNullOrUndefined(this.props.selectedRange.selectedCellEnd.rowIndex)
+      // ) {
+      //   let rowIndex = this.props.selectedRange.selectedCellEnd.rowIndex;
+      //   let columnIndex = this.props.selectedRange.selectedCellEnd.columnIndex;
+      //   const prevRowKey = this.props.rowLeaves[rowIndex].key;
+      //   const prevColumnKey = this.props.columnLeaves[columnIndex].key;
+      //   rowIndex = nextProps.rowLeaves.findIndex(leaf => (leaf.key = prevRowKey));
+      //   columnIndex = nextProps.columnLeaves.findIndex(
+      //     leaf => (leaf.key = prevColumnKey)
+      //   );
+      //   this.handleScrollToChange(columnIndex, rowIndex);
+      // }
+      this.handleScrollToChange(0, 0);
     }
   }
 
@@ -212,7 +229,13 @@ class PivotGrid extends Component {
         >
           {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
             <ScrollSync>
-              {({ onScroll, scrollLeft, scrollTop }) =>
+              {({
+                clientHeight,
+                clientWidth,
+                onScroll,
+                scrollLeft,
+                scrollTop
+              }) =>
                 <div className="pivotgrid-pivotgrid">
                   <div style={{ display: 'flex' }}>
                     <DimensionHeaders gridId={gridId} />
@@ -238,8 +261,8 @@ class PivotGrid extends Component {
                       // focusCellKeys={this.focusCellKeys}
                       onScroll={onScroll}
                       drilldown={drilldown}
-                      // handleMouseDown={this.handleMouseDown}
-                      // handleMouseOver={this.handleMouseOver}
+                      clientHeight={clientHeight}
+                      clientWidth={clientWidth}
                     />
                   </div>
                 </div>}

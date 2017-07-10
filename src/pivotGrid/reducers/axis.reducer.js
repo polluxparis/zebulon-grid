@@ -1,4 +1,4 @@
-import { MOVE_DIMENSION, SET_AXIS } from "../constants";
+import { MOVE_DIMENSION, SET_AXIS } from '../constants';
 
 export default (state = { rows: [], columns: [], dimensions: [] }, action) => {
   const { type, id, position, oldAxis, newAxis, axis } = action;

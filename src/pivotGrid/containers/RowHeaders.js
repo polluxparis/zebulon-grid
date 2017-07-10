@@ -2,9 +2,8 @@ import { connect } from 'react-redux';
 
 import { AxisType } from '../Axis';
 import {
-  // crossPositionsSelector,
   getLastChildHeight,
-  getLayout,
+  getLayoutSelector,
   getPreviewSizes,
   getRowHeadersVisibleHeight,
   getCellWidthByKeySelector,
@@ -19,7 +18,12 @@ import {
   getSelectedRowRangeSelector
 } from '../selectors';
 import Headers from '../components/Headers';
-import { toggleCollapse, selectRange } from '../actions';
+import {
+  toggleCollapse,
+  selectRange,
+  selectCell,
+  moveDimension
+} from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   const rowDimensions = rowDimensionsSelector(state);
@@ -30,16 +34,16 @@ const mapStateToProps = (state, ownProps) => {
     data: filteredDataSelector(state),
     dimensions: rowDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
-    columnCount: getLayout(state).rowHorizontalCount,
-    // crossPositions: crossPositionsSelector(state),
+    columnCount: getLayoutSelector(state).rowHorizontalCount,
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(rowDimensions[index].id),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(leaves[index].key),
+    getSizeByKey: getCellHeightByKeySelector(state),
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: getPreviewSizes(state),
-    rowCount: getLayout(state).rowVerticalCount,
+    rowCount: getLayoutSelector(state).rowVerticalCount,
     headers: rowHeadersSelector(state),
     getLastChildSize: header => getLastChildHeight(state)(header),
     leaves,
@@ -59,7 +63,9 @@ const mapDispatchToProps = dispatch => ({
   selectAxis: getSelectedRowRange => header => {
     const selectedRange = getSelectedRowRange(header);
     dispatch(selectRange(selectedRange));
-  }
+  },
+  moveDimension: (dimensionId, oldAxis, newAxis, position) =>
+    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position))
 });
 
 const mergeProps = (
