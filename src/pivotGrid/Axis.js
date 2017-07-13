@@ -8,7 +8,8 @@ import { isUndefined } from './utils/generic';
 export const AxisType = {
   COLUMNS: 1,
   ROWS: 2,
-  MEASURE: 3
+  MEASURE: 3,
+  DIMENSION: 4
   // DATA: 3,
   // FIELDS: 4,
   // CHART: 5
@@ -22,6 +23,8 @@ export function toAxis(axisType) {
       return 'rows';
     case AxisType.MEASURES:
       return 'measures';
+    case AxisType.DIMENSION:
+      return 'dimensions';
     default:
       return '__AXIS_TYPE_UNKNOWN__';
   }

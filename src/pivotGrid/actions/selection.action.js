@@ -12,7 +12,10 @@ export const selectRange = selectedRange => {
 export const selectCell = cell => {
 	return {
 		type: SELECT_RANGE,
-		selectedRange: { selectedCellStart: cell, selectedCellEnd: cell }
+		selectedRange: {
+			selectedCellStart: cell,
+			selectedCellEnd: cell,
+			focusedCell: cell
+		}
 	};
 };
-

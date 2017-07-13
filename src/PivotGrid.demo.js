@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -211,19 +214,20 @@ class PivotGridDemo extends Component {
     }
   }
 
+  handleClickMenu = (e, data) => console.log(`Clicked on menu ${data.item}`);
+  // <button onClick={this.moveDimension}>Move dimension</button>
+  //     <button onClick={this.sortDimension}>Sort titi dimension</button>
   render() {
     return (
       <Provider store={this.state.store}>
         <div>
           <div>
             <button onClick={this.addData}>Add data</button>
-            <button onClick={this.moveDimension}>Move dimension</button>
+            <button onClick={this.toggleFilter}>Toggle filter</button>
             <button onClick={this.toggleMeasureAxis}>Move measures</button>
-            <button onClick={this.sortDimension}>Sort titi dimension</button>
             <button onClick={this.toggleMeasure}>Toggle measure</button>
             <button onClick={this.zoomIn}>Zoom in</button>
             <button onClick={this.zoomOut}>Zoom out</button>
-            <button onClick={this.toggleFilter}>Toggle filter</button>
             <button onClick={this.focusCell}>Focus cells</button>
           </div>
           <div>

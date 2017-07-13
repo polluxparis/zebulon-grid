@@ -15,11 +15,6 @@ import {
 import { ROOT_ID, EMPTY_ID, MEASURE_ID } from '../constants';
 import { HeaderType } from '../Cells';
 
-// const activatedMeasuresSelectorCount = createSelector(
-//   [activatedMeasuresSelector],
-//   measures => measures.length
-// );
-
 export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
     [activatedMeasuresSelector, state => state.config.measureHeadersAxis],
@@ -71,16 +66,16 @@ function buildAxisTrees(data, { columns, rows }) {
   });
   return { columns: columnRoot, rows: rowRoot };
 }
-export const getAxisTrees = createSelector(
+const getAxisTreesSelector = createSelector(
   [filteredDataSelector, rowDimensionsSelector, columnDimensionsSelector],
   (data, rows, columns) => buildAxisTrees(data, { columns, rows })
 );
 export const columnAxisTreeSelector = createSelector(
-  [getAxisTrees],
+  [getAxisTreesSelector],
   axisTrees => axisTrees.columns
 );
 export const rowAxisTreeSelector = createSelector(
-  [getAxisTrees],
+  [getAxisTreesSelector],
   axisTrees => axisTrees.rows
 );
 
@@ -108,12 +103,13 @@ function buildHeaders(
     const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
     const isCollapsed = currentDimension.isAttribute
       ? parent.isCollapsed
-      : areCollapsed[key] || 0;
+      : areCollapsed[key] || false;
     header = {
       sortKey: currentDimension.sort.keyAccessor(row),
       id: currentDimension.keyAccessor(row),
       type: HeaderType.DIMENSION,
       parent,
+      // key: currentDimension.isAttribute ? parent.key : key,
       key,
       dataIndexes,
       orderedChildrenIds: [],

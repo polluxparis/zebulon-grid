@@ -15,12 +15,21 @@ import { AxisType } from '../../Axis';
 import { keyToIndex } from '../../AxisUi';
 import { getNextKey, getCellInfosSelectorKey } from '../../utils/keys';
 import {
+  ContextMenu,
+  MenuItem,
+  ContextMenuTrigger,
+  connectMenu,
+  SubMenu
+} from 'react-contextmenu';
+import {
   isNull,
   isInRange,
   isNullOrUndefined,
   isUndefined,
   isEmpty
 } from '../../utils/generic';
+
+// ------------------------------------------
 
 class PivotGrid extends Component {
   constructor(props) {
@@ -30,6 +39,8 @@ class PivotGrid extends Component {
     this.focusCellKeys = [];
     this.handleScrollToChange = this.handleScrollToChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    // this.DynamicMenu = this.DynamicMenu.bind(this);
+    // this.ConnectedMenu = this.ConnectedMenu.bind(this);
   }
 
   componentDidMount() {
@@ -88,26 +99,13 @@ class PivotGrid extends Component {
     // // In this case, do nothing
     // if (nextScrollToRow >= 0) this.scrollToRow = nextScrollToRow;
     // if (nextScrollColumn >= 0) this.columnStartIndex = nextScrollColumn;
-    if (!isEmpty(nextProps.selectedRange.selectedCellEnd)) {
-      this.scrollToRow = nextProps.selectedRange.selectedCellEnd.rowIndex;
-      this.scrollToColumn = nextProps.selectedRange.selectedCellEnd.columnIndex;
-    } else {
-      // else if (
-      //   !isEmpty(this.props.selectedRange.selectedCellEnd) &&
-      //   !isNullOrUndefined(this.props.selectedRange.selectedCellEnd.rowIndex)
-      // ) {
-      //   let rowIndex = this.props.selectedRange.selectedCellEnd.rowIndex;
-      //   let columnIndex = this.props.selectedRange.selectedCellEnd.columnIndex;
-      //   const prevRowKey = this.props.rowLeaves[rowIndex].key;
-      //   const prevColumnKey = this.props.columnLeaves[columnIndex].key;
-      //   rowIndex = nextProps.rowLeaves.findIndex(leaf => (leaf.key = prevRowKey));
-      //   columnIndex = nextProps.columnLeaves.findIndex(
-      //     leaf => (leaf.key = prevColumnKey)
-      //   );
-      //   this.handleScrollToChange(columnIndex, rowIndex);
-      // }
-      this.handleScrollToChange(0, 0);
+    if (!isEmpty(nextProps.selectedRange.focusedCell)) {
+      this.scrollToRow = nextProps.selectedRange.focusedCell.rowIndex;
+      this.scrollToColumn = nextProps.selectedRange.focusedCell.columnIndex;
     }
+    // else {
+    //   this.handleScrollToChange(0, 0);
+    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -116,6 +114,51 @@ class PivotGrid extends Component {
       setSizes({ height, width });
     }
   }
+  // ------------------------------------------
+  // contextual menues
+  // // ------------------------------------------
+  //  getRowHeight: ({ index }) =>
+  //     getCellHeightByKeySelector(state)(leaves[index].key),
+  // DynamicMenu = (availableDimensions, isRightClick) => props => {
+  //   console.log(['menu', isRightClick]);
+  //   if (!isRightClick) return <ContextMenu id={''} disabled={true} />;
+  //   else {
+  //     const { id, trigger } = props;
+  //     const handleItemClick = trigger ? trigger.onItemClick : null;
+  //     if (isNullOrUndefined(trigger)) {
+  //       return (
+  //         <ContextMenu id={id} disabled={true}>
+  //           action 1
+  //         </ContextMenu>
+  //       );
+  //     }
+
+  //     if (trigger.type === 'dimension-header') {
+  //       const isDisable = availableDimensions.length === 0;
+  //       return (
+  //         <ContextMenu id={id}>
+  //           <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
+  //             {`remove dimension ${trigger.caption}`}
+  //           </MenuItem>
+  //           <SubMenu title="add dimension" disabled={isDisable}>
+  //             {availableDimensions.map(dimension =>
+  //               <MenuItem
+  //                 onClick={trigger.onItemClick}
+  //                 data={{ action: 'add', newDimensionId: dimension.id }}
+  //               >
+  //                 {dimension.caption}
+  //               </MenuItem>
+  //             )}
+
+  //           </SubMenu>
+  //         </ContextMenu>
+  //       );
+  //     }
+  //   }
+  // };
+  // ConnectedMenu = connectMenu(`context-menu- ${this.props.gridId}`)(
+  //   this.DynamicMenu(this.props.availableDimensions, this.isRightClick || false)
+  // );
 
   handleCopy = () => {
     if (
@@ -127,11 +170,11 @@ class PivotGrid extends Component {
     }
   };
 
-  // handleMouseDown = (columnIndex, rowIndex) => {
-  // this.props.handleMouseDown(e, {
-  //   columnIndex: this.props.columnIndex,
-  //   rowIndex: this.props.rowIndex
-  // });
+  // handleMouseDown = e => {
+  //   this.isRightClick = e.button === 2;
+  //   console.log(['handleMouseDown', e.button]);
+  //   return e;
+  // };
   // console.log([columnIndex, rowIndex]);
   // this.scrollToRow = rowIndex;
   // this.scrollToColumn = columnIndex;
@@ -148,17 +191,41 @@ class PivotGrid extends Component {
     const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
     this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
     this.shiftKeyIsPressed = e.shiftKey;
-    // console.log([this.shiftKeyIsPressed, e.shiftKey]);
-    // ctrl+A
-    if (e.which === 65 && (e.metaKey || e.ctrlKey)) {
-      this.props.selectRange({
-        selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-        selectedCellEnd: {
-          columnIndex: columnHorizontalCount,
-          rowIndex: rowVerticalCount
-        }
-      });
-      e.preventDefault();
+    if (e.metaKey || e.ctrlKey) {
+      // ctrl A -> select all
+      console;
+      if (e.which === 65) {
+        this.props.selectRange({
+          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
+          selectedCellEnd: {
+            columnIndex: columnHorizontalCount,
+            rowIndex: rowVerticalCount
+          }
+        });
+        e.preventDefault();
+      }
+      // ctrl + -> zoom in
+      if (e.key === '+') {
+        this.props.selectRange({
+          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
+          selectedCellEnd: {
+            columnIndex: columnHorizontalCount,
+            rowIndex: rowVerticalCount
+          }
+        });
+        e.preventDefault();
+      }
+      // ctrl - -> zoom out
+      if (e.key === '+') {
+        this.props.selectRange({
+          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
+          selectedCellEnd: {
+            columnIndex: columnHorizontalCount,
+            rowIndex: rowVerticalCount
+          }
+        });
+        e.preventDefault();
+      }
     }
   };
   handleKeyUp = e => {
@@ -180,12 +247,13 @@ class PivotGrid extends Component {
     };
   }
 
-  handleScrollToChange({ scrollToColumn, scrollToRow }) {
+  handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
     console.log([scrollToColumn, scrollToRow, this.shiftKeyIsPressed]);
     if (this.shiftKeyIsPressed) {
       this.props.selectRange({
-        selectedCellStart: this.props.selectedRange.selectedCellStart,
-        selectedCellEnd: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
+        // selectedCellStart: this.props.selectedRange.selectedCellStart,
+        selectedCellEnd: { columnIndex: scrollToColumn, rowIndex: scrollToRow },
+        focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
       });
     } else {
       this.props.selectCell({
@@ -195,8 +263,11 @@ class PivotGrid extends Component {
     }
     this.scrollToRow = scrollToRow;
     this.scrollToColumn = scrollToColumn;
-  }
-
+  };
+  // handleClickMenu = (e, data, target) => {
+  //   const a = 3;
+  //   console.log([`Clicked on menu ${data.item}`, e]);
+  // };
   render() {
     const {
       connectDropTarget,
@@ -227,6 +298,7 @@ class PivotGrid extends Component {
           onScrollToChange={this.handleScrollToChange}
           isControlled={true}
         >
+
           {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
             <ScrollSync>
               {({
@@ -265,14 +337,27 @@ class PivotGrid extends Component {
                       clientWidth={clientWidth}
                     />
                   </div>
+
                 </div>}
             </ScrollSync>}
         </ArrowKeyStepper>
+
       </div>
     );
   }
 }
-
+//         <ContextMenu id={'toto2'}>
+//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 1' }}>
+//             Menu Item 1
+//           </MenuItem>
+//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 2' }}>
+//             Menu Item 2
+//           </MenuItem>
+//           <MenuItem divider />
+//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 3' }}>
+//             Menu Item 3
+//           </MenuItem>
+//         </ContextMenu>
 const gridSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();

@@ -16,7 +16,8 @@ import {
   rowDimensionsSelector,
   // rowHeadersSelector,
   rowLeavesSelector,
-  selectedRangeSelector
+  selectedRangeSelector,
+  availableDimensionsSelector
 } from '../selectors';
 import {
   updateCellSize,
@@ -44,8 +45,10 @@ const mapStateToProps = state => {
     rowLeaves,
     rowDimensions: rowDimensionsSelector(state),
     columnDimensions: columnDimensionsSelector(state),
+    availableDimensions: availableDimensionsSelector(state),
     dataDimensionsCount: activatedMeasuresSelector(state).length,
     selectedRange: selectedRangeSelector(state),
+
     copy: selectedRange =>
       copy({
         selectedRange,
@@ -146,6 +149,7 @@ const mergeProps = (
     rowLeaves,
     rowDimensions,
     columnDimensions,
+    availableDimensions,
     dataDimensionsCount,
     selectedRange,
     copy
@@ -155,6 +159,7 @@ const mergeProps = (
 ) => ({
   rowDimensions,
   columnDimensions,
+  availableDimensions,
   columnLeaves,
   rowLeaves,
   width,

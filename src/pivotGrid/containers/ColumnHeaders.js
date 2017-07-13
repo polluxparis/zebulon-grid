@@ -15,7 +15,8 @@ import {
   columnLeavesSelector,
   getAxisActivatedMeasuresSelector,
   filteredDataSelector,
-  getSelectedColumnRangeSelector
+  getSelectedColumnRangeSelector,
+  crossPositionsSelector
 } from '../selectors';
 import {
   toggleCollapse,
@@ -40,6 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(columnDimensions[index].id),
     getSizeByKey: getCellWidthByKeySelector(state),
+    crossPositions: crossPositionsSelector(state)[AxisType.COLUMNS],
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: getPreviewSizes(state),

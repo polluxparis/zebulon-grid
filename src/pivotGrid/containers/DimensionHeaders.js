@@ -11,7 +11,8 @@ import {
   rowHeadersWidthSelector,
   // getCrossSize,
   crossPositionsSelector,
-  getPreviewSizes
+  getPreviewSizes,
+  availableDimensionsSelector
 } from '../selectors';
 import DimensionHeaders from '../components/DimensionHeaders';
 import {
@@ -27,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     columnDimensions,
     rowDimensions,
+    availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),
     // getCrossSize: getCrossSize(state),
     // getColumnWidth: ({ index }) =>

@@ -16,6 +16,7 @@ const getAxisDimensions = (axis, dimensions, collapses) => {
 				dimension.isCollapsed = prevDimension.isCollapsed;
 			} else {
 				dimension.isCollapsed = collapses[dimension.id];
+				dimension.isAttribute = false;
 			}
 			prevDimension = dimension;
 			return dimension;

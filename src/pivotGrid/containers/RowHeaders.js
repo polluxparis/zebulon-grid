@@ -15,7 +15,8 @@ import {
   rowDimensionsSelector,
   rowsVisibleHeightSelector,
   rowHeadersWidthSelector,
-  getSelectedRowRangeSelector
+  getSelectedRowRangeSelector,
+  crossPositionsSelector
 } from '../selectors';
 import Headers from '../components/Headers';
 import {
@@ -40,6 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(leaves[index].key),
     getSizeByKey: getCellHeightByKeySelector(state),
+    crossPositions: crossPositionsSelector(state)[AxisType.ROWS],
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: getPreviewSizes(state),

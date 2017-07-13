@@ -56,7 +56,7 @@ function toComponent(
 class Headers extends PureComponent {
   constructor() {
     super();
-    this.headersRenderer = this.headersRenderer.bind(this);
+    // this.headersRenderer = this.headersRenderer.bind(this);
     this.cellCache = {};
   }
   componentWillReceiveProps(nextProps) {
@@ -66,8 +66,10 @@ class Headers extends PureComponent {
     // this.cellCache = this.getState(cellCache);
   }
   componentDidUpdate(prevProps) {
+    console.log(33);
     if (
       prevProps.sizes !== this.props.sizes ||
+      prevProps.headers !== this.props.headers ||
       prevProps.zoom !== this.props.zoom
     ) {
       this.grid.recomputeGridSize();
@@ -84,8 +86,7 @@ class Headers extends PureComponent {
     scrollTop,
     scrollLeft,
     verticalOffsetAdjustment,
-    horizontalOffsetAdjustment,
-    crossPositions
+    horizontalOffsetAdjustment
   }) => {
     const {
       headers,
@@ -104,29 +105,28 @@ class Headers extends PureComponent {
       toggleCollapse,
       selectAxis,
       moveDimension,
-      getSizeByKey
+      getSizeByKey,
+      crossPositions
     } = this.props;
 
     // this.firstLeafHeader =
     //   headers[rowStartIndex][headers[rowStartIndex].length - 1];
 
     const renderedCells = [];
-    let startIndex,
-      stopIndex,
-      sizeAndPositionManager,
-      offsetAdjustment,
-      crossSizeAndPositionManager;
+    let startIndex, stopIndex, sizeAndPositionManager, offsetAdjustment;
+    // ,
+    // crossSizeAndPositionManager;
     if (axisType === AxisType.ROWS) {
       startIndex = rowStartIndex;
       stopIndex = rowStopIndex;
       sizeAndPositionManager = rowSizeAndPositionManager;
-      crossSizeAndPositionManager = columnSizeAndPositionManager;
+      // crossSizeAndPositionManager = columnSizeAndPositionManager;
       offsetAdjustment = verticalOffsetAdjustment;
     } else {
       startIndex = columnStartIndex;
       stopIndex = columnStopIndex;
       sizeAndPositionManager = columnSizeAndPositionManager;
-      crossSizeAndPositionManager = rowSizeAndPositionManager;
+      // crossSizeAndPositionManager = rowSizeAndPositionManager;
       offsetAdjustment = horizontalOffsetAdjustment;
     }
     // Because of the offset caused by the fixed headers,
@@ -136,7 +136,7 @@ class Headers extends PureComponent {
     const correctStopIndex = Math.min(stopIndex, leaves.length - 1);
 
     const renderedHeaderKeys = {};
-    let header;
+    let header, leafKey;
     let mainLeafOffset = 0;
     let dimensionIndex;
     // collapse expand management
@@ -165,12 +165,16 @@ class Headers extends PureComponent {
     collapsedSizes.reverse();
     // console.log([rowStartIndex, rowStopIndex, correctStopIndex]);
     // loop on leaves + parent leaf
+    // if (axisType === 2) {
+    //   console.log([getColumnWidth({ index: 1 }), getColumnWidth({ index: 2 })]);
+    // }
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
+      leafKey = header.key;
       while (header.id !== ROOT_ID && !renderedHeaderKeys[header.key]) {
-        if (header.isCollapsed) {
-          header.depth = header.depth;
-        }
+        // if (header.isCollapsed) {
+        //   header.depth = header.depth;
+        // }
         renderedHeaderKeys[header.key] = true;
         // let cell = this.cellCache[header.key];
         // if (isNullOrUndefined(cell) || true) {
@@ -184,18 +188,22 @@ class Headers extends PureComponent {
         } else {
           caption = measures[header.id].caption;
         }
-        let mainSize, mainOffset;
-        if (header.depth === dimensions.length - 1) {
+        let mainSize, mainOffset, isAffixManaged;
+        if (leafKey === header.key) {
           const main = sizeAndPositionManager.getSizeAndPositionOfCell(index);
           mainSize = main.size;
           mainOffset = main.offset + offsetAdjustment;
+          isAffixManaged = false;
           mainLeafOffset = mainOffset;
         } else {
-          mainSize = getLeaves(header).reduce(
+          const headerLeaves = getLeaves(header);
+          mainSize = headerLeaves.reduce(
             (acc, leaf) => acc + getSizeByKey(leaf.key),
             0
           );
           mainOffset = mainLeafOffset;
+          isAffixManaged =
+            leafKey !== headerLeaves[headerLeaves.length - 1].key;
         }
         const span = header.span;
         // const span = header.orderedChildrenIds.length || 1;
@@ -213,9 +221,10 @@ class Headers extends PureComponent {
         // Normal dimension header
         //
         // const crossSize = getCrossSize(axisType, dimension.id);
-        const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
-          header.depth
-        );
+        // const cross = crossSizeAndPositionManager.getSizeAndPositionOfCell(
+        //   header.depth
+        // );
+        const cross = crossPositions[dimension.id];
         collapsedSize = 0;
         // collapsedOffset = 0;
         if (header.isCollapsed && collapsedSizes.length > 0) {
@@ -227,10 +236,28 @@ class Headers extends PureComponent {
         }
 
         let positionStyle;
+        // if (axisType === AxisType.ROWS) {
+        //   positionStyle = {
+        //     position: 'absolute',
+        //     left: cross.offset,
+        //     top: mainOffset,
+        //     height: mainSize,
+        //     width: cross.size + collapsedSize
+        //   };
+        // } else {
+        //   positionStyle = {
+        //     position: 'absolute',
+        //     left: mainOffset,
+        //     top: cross.offset,
+        //     height: cross.size + collapsedSize,
+        //     width: mainSize
+        //   };
+        // }
+        //   let positionStyle;
         if (axisType === AxisType.ROWS) {
           positionStyle = {
             position: 'absolute',
-            left: cross.offset,
+            left: cross.position,
             top: mainOffset,
             height: mainSize,
             width: cross.size + collapsedSize
@@ -239,7 +266,7 @@ class Headers extends PureComponent {
           positionStyle = {
             position: 'absolute',
             left: mainOffset,
-            top: cross.offset,
+            top: cross.position,
             height: cross.size + collapsedSize,
             width: mainSize
           };
@@ -287,7 +314,7 @@ class Headers extends PureComponent {
             positionStyle,
             dimension.id,
             isNotCollapsible,
-            index === startIndex && header.depth < lastNotMeasureDimensionIndex,
+            index === startIndex && isAffixManaged,
             toggleCollapse,
             isDragTarget ? moveDimension : null,
             selectAxis,

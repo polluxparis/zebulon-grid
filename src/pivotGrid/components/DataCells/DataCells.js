@@ -47,8 +47,9 @@ class DataCells extends PureComponent {
           )
         ) {
           this.props.selectRange({
-            selectedCellStart: this.props.selectedRange.selectedCellStart,
-            selectedCellEnd: { columnIndex, rowIndex }
+            // selectedCellStart: this.props.selectedRange.selectedCellStart,
+            selectedCellEnd: { columnIndex, rowIndex },
+            focusedCell: { columnIndex, rowIndex }
           });
         }
       } else {
@@ -72,8 +73,9 @@ class DataCells extends PureComponent {
         )
       ) {
         this.props.selectRange({
-          selectedCellStart: this.props.selectedRange.selectedCellStart,
-          selectedCellEnd: { columnIndex, rowIndex }
+          // selectedCellStart: this.props.selectedRange.selectedCellStart,
+          selectedCellEnd: { columnIndex, rowIndex },
+          focusedCell: { columnIndex, rowIndex }
         });
       }
       // this.props.handleMouseDown(columnIndex, rowIndex);
@@ -100,8 +102,7 @@ class DataCells extends PureComponent {
     const {
       getCellValue,
       customFunctions,
-      focusCellKeys,
-      selectCell,
+      selectedCellEnd,
       rowLeaves,
       columnLeaves,
       measures,
@@ -129,11 +130,12 @@ class DataCells extends PureComponent {
         selectedRange.selectedCellEnd
       );
     }
-    // const focused = !!focusCellKeys.filter(
-    //   ({ columns, rows }) =>
-    //     columns === columnHeader.key && rows === rowHeader.key
-    // ).length;
-
+    let focused = false;
+    if (selectedRange.focusedCell) {
+      focused =
+        columnIndex === selectedRange.focusedCell.columnIndex &&
+        rowIndex === selectedRange.focusedCell.rowIndex;
+    }
     // This causes all the data cells to be rendered when new cells are selected via mouse actions
     // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
     // bring complexity and this is good enough at the time.
@@ -173,6 +175,7 @@ class DataCells extends PureComponent {
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
         selected={selected}
+        focused={focused}
       />
     );
   };

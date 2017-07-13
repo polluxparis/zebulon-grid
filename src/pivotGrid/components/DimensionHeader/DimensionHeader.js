@@ -2,22 +2,69 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import InnerHeader from '../InnerHeader/InnerHeader';
-import { AxisType } from '../../Axis';
+import { AxisType, toAxis } from '../../Axis';
 import ResizeHandle from '../ResizeHandle';
 
 import { MEASURE_ID, ROOT_ID } from '../../constants';
 
+import {
+  ContextMenu,
+  MenuItem,
+  ContextMenuTrigger,
+  connectMenu
+} from 'react-contextmenu';
+
+// const collectMenu = props => {
+//   const a = 3;
+//   return props;
+// };
+
 class DimensionHeader extends Component {
-  handleClickCollapse = () => {
-    const { toggleCollapseDimension, dimensionId, axis } = this.props;
-    toggleCollapseDimension(dimensionId);
-  };
-  handleClickSort = () => {
-    const { toggleSortOrder, dimensionId } = this.props;
-    if (dimensionId !== MEASURE_ID && dimensionId !== ROOT_ID) {
-      toggleSortOrder(dimensionId);
+  handleClickCollapse = e => {
+    if (e.button === 0) {
+      const { toggleCollapseDimension, dimensionId, axis } = this.props;
+      toggleCollapseDimension(dimensionId);
     }
   };
+  handleClick = e => {
+    this.button = e.button;
+    if (e.button === 0) {
+      const { toggleSortOrder, dimensionId } = this.props;
+      if (dimensionId !== MEASURE_ID && dimensionId !== ROOT_ID) {
+        toggleSortOrder(dimensionId);
+      }
+    }
+  };
+
+  // };
+  // // this.props.handleMouseDown(columnIndex, rowIndex);
+  // handleMouseUp = () => (this.isRightClick = false);
+  // this.props.handleMouseDown(columnIndex, rowIndex);
+  // collect = props => {
+  //   return props;
+  // };
+
+  handleClickMenu = (e, data, target) => {
+    if (e.button === 0) {
+      console.log(data);
+      if (data.action === 'remove') {
+        this.props.moveDimension(
+          data.dimensionId,
+          toAxis(data.axis),
+          toAxis(AxisType.DIMENSION)
+        );
+      }
+      if (data.action === 'add') {
+        this.props.moveDimension(
+          data.newDimensionId,
+          toAxis(AxisType.DIMENSION),
+          toAxis(data.axis),
+          data.index
+        );
+      }
+    }
+  };
+
   render() {
     const {
       dimensionId,
@@ -35,7 +82,8 @@ class DimensionHeader extends Component {
       gridId,
       // toggleCollapseDimension,
       moveDimension,
-      isAttribute
+      isAttribute,
+      collectMenu
     } = this.props;
 
     const ids = {};
@@ -46,63 +94,7 @@ class DimensionHeader extends Component {
       ids.bottom = dimensionId;
       ids.right = crossDimensionId;
     }
-    // const computedStyle = {
-    //   whiteSpace: 'nowrap',
-    //   overflow: 'hidden',
-    //   display: 'flex',
-    //   ...style
-    // };
-    // const computedStyle = {
-    //   whiteSpace: 'nowrap',
-    //   overflow: 'hidden',
-    //   display: 'flex',
-    //   width: 'inherit'
-    // };
-    // let collapsedIcon;
 
-    // if (!isCollapsed && !isNotCollapsible) {
-    //   collapsedIcon = (
-    //     <div
-    //       style={{
-    //         background: downArrow,
-    //         backgroundSize: 'cover',
-    //         height: '1em',
-    //         width: '1em',
-    //         marginTop: '0.1em',
-    //         marginRight: '0.1em'
-    //       }}
-    //       onClick={this.handleClickCollapse}
-    //     />
-    //   );
-    // } else if (isCollapsed && !isNotCollapsible) {
-    //   collapsedIcon = (
-    //     <div
-    //       style={{
-    //         background: rightArrow,
-    //         backgroundSize: 'cover',
-    //         height: '1em',
-    //         width: '1em',
-    //         marginTop: '0.1em',
-    //         marginRight: '0.1em'
-    //       }}
-    //       onClick={this.handleClickCollapse}
-    //     />
-    //   );
-    // } else {
-    //   collapsedIcon = <div> </div>;
-    // }
-
-    // const innerHeader = (
-    //   <div
-    //     className="pivotgrid-header-inner"
-    //     style={computedStyle}
-    //     onClick={this.handleClickSort}
-    //     axis={axis}
-    //     index={dimensionIndex}
-    //   >
-    //     {collapsedIcon}<div style={{ width: 'inherit' }}>{caption}</div>
-    //   </div>
-    // );
     const className = classNames({
       'pivotgrid-cell': true,
       'pivotgrid-dimension-header': true,
@@ -124,6 +116,7 @@ class DimensionHeader extends Component {
           boxSizing: 'border-box',
           display: 'flex'
         }}
+        onClick={this.handleClickMenu}
       >
         <InnerHeader
           axis={axis}
@@ -132,9 +125,12 @@ class DimensionHeader extends Component {
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
-          handleClickSort={this.handleClickSort}
+          handleClick={this.handleClick}
           handleClickCollapse={this.handleClickCollapse}
+          handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
+          collectMenu={collectMenu}
+          gridId={gridId}
         />
         <ResizeHandle
           position="right"
@@ -152,8 +148,28 @@ class DimensionHeader extends Component {
           axis={AxisType.COLUMNS}
           previewSize={previewSizes.width}
         />
+
       </div>
     );
+    // return (
+    //   <div>
+    //     <ContextMenuTrigger
+    //       id={'toto2'}
+    //       holdToDisplay={1000}
+    //       disable={false}
+    //       collect={collectMenu}
+    //       onItemClick={this.handleClickMenu}
+    //       type={'dimension-header'}
+    //       axis={axis}
+    //       dimensionId={dimensionId}
+    //       caption={caption}
+    //       index={dimensionIndex}
+    //       button={this.button}
+    //     >
+    //       {header}
+    //     </ContextMenuTrigger>
+    //   </div>
+    // );
   }
 }
 export default DimensionHeader;

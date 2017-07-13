@@ -3,15 +3,76 @@ import React, { Component } from 'react';
 import { AxisType } from '../../Axis';
 import { MEASURE_ID, ROOT_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader';
-
+import {
+  ContextMenu,
+  MenuItem,
+  ContextMenuTrigger,
+  connectMenu,
+  SubMenu
+} from 'react-contextmenu';
+import { isNullOrUndefined } from '../../utils/generic';
 class DimensionHeaders extends Component {
-  // constructor() {
-  //   super();
-  //   this.headersRenderer = this.headersRenderer.bind(this);
-  // }
+  constructor() {
+    super();
+    this.headersRenderer = this.headersRenderer.bind(this);
+  }
   shouldComponentUpdate(nextProps) {
     return nextProps.crossPositions !== this.props.crossPositions;
   }
+  // -----------------------------------------------------
+  handleMouseDown = e => {
+    this.isRightClick = e.button === 2;
+    console.log(['handleMouseDown', e.button]);
+    return e;
+  };
+  DynamicMenu = props => {
+    // if (!props.isRightClick) return <ContextMenu id={''} disabled={true} />;
+    // else {
+    const { id, trigger } = props;
+    const handleItemClick = trigger ? trigger.onItemClick : null;
+    if (isNullOrUndefined(trigger)) {
+      return (
+        <ContextMenu id={id} disabled={true}>
+          action 1
+        </ContextMenu>
+      );
+    }
+
+    if (trigger.type === 'dimension-header') {
+      const isDisable = trigger.availableDimensions.length === 0;
+      return (
+        <ContextMenu id={id}>
+          <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
+            {`Remove dimension ${trigger.caption}`}
+          </MenuItem>
+          <SubMenu title="Add dimension" disabled={isDisable}>
+            {trigger.availableDimensions.map(dimension =>
+              <MenuItem
+                onClick={trigger.onItemClick}
+                data={{ action: 'add', newDimensionId: dimension.id }}
+              >
+                {dimension.caption}
+              </MenuItem>
+            )}
+
+          </SubMenu>
+        </ContextMenu>
+      );
+    }
+    // }
+  };
+  // ConnectedMenu = connectMenu(`context-menu- ${this.props.gridId}`)(
+  //   this.DynamicMenu(this.props.availableDimensions, this.isRightClick || false)
+  // );
+  collectMenu = props => {
+    console.log(this);
+    return {
+      ...props,
+      availableDimensions: this.props.availableDimensions,
+      isRightClick: this.isRightClick
+    };
+  };
+  // ---------------------------------------------------
   headersRenderer = (axis, dimensions, lastCrossDimensionId) => {
     const {
       previewSizes,
@@ -76,6 +137,8 @@ class DimensionHeaders extends Component {
             toggleSortOrder={toggleSortOrder}
             moveDimension={moveDimension}
             isAttribute={dimension.isAttribute}
+            collectMenu={this.collectMenu}
+            isRightClick={this.isRightClick}
           />
         );
       }
@@ -95,9 +158,12 @@ class DimensionHeaders extends Component {
       width,
       zoom,
       gridId,
-      toggleCollapseDimension
+      toggleCollapseDimension,
+      availableDimensions
     } = this.props;
-
+    const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(
+      this.DynamicMenu
+    );
     let headers = [];
     let lastCrossDimensionId;
     if (rowDimensions.length === 0) {
@@ -137,8 +203,11 @@ class DimensionHeaders extends Component {
           overflow: 'hidden'
         }}
         className="pivotgrid-dimension-headers"
+        onMouseDown={this.handleMouseDown}
       >
         {headers}
+        <ConnectedMenu />
+
       </div>
     );
   }
