@@ -1,14 +1,12 @@
 import { connect } from 'react-redux';
 
-import { AxisType } from '../Axis';
+import { AxisType } from '../constants';
 import {
-  getLastChildHeight,
+  getLastChildHeightSelector,
   getLayoutSelector,
-  getPreviewSizes,
-  getRowHeadersVisibleHeight,
+  previewSizesSelector,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
-  rowHeadersSelector,
   rowLeavesSelector,
   getAxisActivatedMeasuresSelector,
   filteredDataSelector,
@@ -18,13 +16,8 @@ import {
   getSelectedRowRangeSelector,
   crossPositionsSelector
 } from '../selectors';
-import Headers from '../components/Headers';
-import {
-  toggleCollapse,
-  selectRange,
-  selectCell,
-  moveDimension
-} from '../actions';
+import Headers from '../components/Headers/Headers';
+import { toggleCollapse, selectRange, moveDimension } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   const rowDimensions = rowDimensionsSelector(state);
@@ -44,13 +37,10 @@ const mapStateToProps = (state, ownProps) => {
     crossPositions: crossPositionsSelector(state)[AxisType.ROWS],
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
-    previewSizes: getPreviewSizes(state),
+    previewSizes: previewSizesSelector(state),
     rowCount: getLayoutSelector(state).rowVerticalCount,
-    headers: rowHeadersSelector(state),
-    getLastChildSize: header => getLastChildHeight(state)(header),
+    getLastChildSize: header => getLastChildHeightSelector(state)(header),
     leaves,
-    // getIsCollapsed: ({ index }) =>
-    //   getIsCollapsedRowByKeySelector(state)(leaves[index].key),
     sizes: state.sizes,
     zoom: state.config.zoom,
     gridId: ownProps.gridId,

@@ -1,16 +1,6 @@
 import { createSelector } from 'reselect';
 
-// import { scrollbarSize } from '../utils/domHelpers';
-// import { getLeaves } from '../utils/generic';
-import { AxisType, toAxisType } from '../Axis';
-// import { MEASURE_ID, TOTAL_ID } from '../constants';
-//import { columnLeavesSelector, rowLeavesSelector } from './axis.selector';
-// import {
-//   columnDimensionsSelector,
-//   rowDimensionsSelector
-// } from './dimensions.selector';
-
-
+import { AxisType, toAxisType } from '../constants';
 
 export const getIsCollapsedColumnByKeySelector = createSelector(
   [state => state.collapses.columns,

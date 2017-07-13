@@ -1,7 +1,5 @@
-import { AxisType, toAxis } from '../Axis';
-import { EXPAND_COLLAPSE, EXPAND_COLLAPSE_ATTRIBUTE } from '../constants';
+import { toAxis, EXPAND_COLLAPSE } from '../constants';
 
-/* eslint-disable import/prefer-default-export */
 export const toggleCollapse = ({ axisType, key }) => {
 	return {
 		type: EXPAND_COLLAPSE,
@@ -16,4 +14,3 @@ export const toggleCollapseDimension = ({ key }) => {
 		axis: 'dimensions'
 	};
 };
-/* eslint-enable */

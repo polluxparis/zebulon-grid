@@ -1,9 +1,7 @@
 import { createSelector } from 'reselect';
 
 import { scrollbarSize } from '../utils/domHelpers';
-import { getLeaves } from '../utils/generic';
-import { AxisType, toAxisType } from '../Axis';
-import { MEASURE_ID, TOTAL_ID, ROOT_ID } from '../constants';
+import { ROOT_ID, AxisType } from '../constants';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
 import {
   columnDimensionsSelector,
@@ -67,17 +65,7 @@ const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
   }
   return res;
 };
-//
-// export const rowCrossPositionsSelector = createSelector(
-//   [getCellHeightByKeySelector, columnDimensionsSelector],
-//   (getCellHeightByKey, columnDimensions) =>
-//     calculateCrossPositions(columnDimensions, getCellHeightByKey)
-// );
-// export const columnCrossPositionsSelector = createSelector(
-//   [getCellWidthByKeySelector, rowDimensionsSelector],
-//   (getCellWidthByKey, rowDimensions) =>
-//     calculateCrossPositions(rowDimensions, getCellWidthByKey)
-// );
+
 export const crossPositionsSelector = createSelector(
   [
     getCellWidthByKeySelector,
@@ -182,7 +170,7 @@ export const columnsVisibleWidthSelector = createSelector(
       columnsWidth
     )
 );
-export const getPreviewSizes = createSelector(
+export const previewSizesSelector = createSelector(
   [
     state => state.config.height,
     state => state.config.width,
@@ -241,7 +229,7 @@ export const dataCellsWidthSelector = createSelector(
       columnsWidth + (hasScrollbar ? scrollbarSize() : 0)
     )
 );
-export const getLastChild = header => {
+const getLastChild = header => {
   let lastChild = header;
   if (lastChild.orderedChildrenIds && lastChild.orderedChildrenIds.length) {
     lastChild =
@@ -251,12 +239,12 @@ export const getLastChild = header => {
   }
   return lastChild;
 };
-export const getLastChildWidth = createSelector(
+export const getLastChildWidthSelector = createSelector(
   [getCellWidthByKeySelector],
   getWidth => header => getWidth(getLastChild(header).key)
 );
 
-export const getLastChildHeight = createSelector(
+export const getLastChildHeightSelector = createSelector(
   [getCellHeightByKeySelector],
   getHeight => header => getHeight(getLastChild(header).key)
 );

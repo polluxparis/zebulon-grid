@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { ArrowKeyStepper } from 'react-virtualized/dist/commonjs/ArrowKeyStepper';
@@ -10,24 +9,7 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
-import { Header, DataHeader } from '../../Cells';
-import { AxisType } from '../../Axis';
-import { keyToIndex } from '../../AxisUi';
-import { getNextKey, getCellInfosSelectorKey } from '../../utils/keys';
-import {
-  ContextMenu,
-  MenuItem,
-  ContextMenuTrigger,
-  connectMenu,
-  SubMenu
-} from 'react-contextmenu';
-import {
-  isNull,
-  isInRange,
-  isNullOrUndefined,
-  isUndefined,
-  isEmpty
-} from '../../utils/generic';
+import { isEmpty } from '../../utils/generic';
 
 // ------------------------------------------
 
@@ -52,10 +34,10 @@ class PivotGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let nextScrollToRow;
-    let nextScrollColumn;
-    const current = {};
-    const next = {};
+    // let nextScrollToRow;
+    // let nextScrollColumn;
+    // const current = {};
+    // const next = {};
     // if (this.props.focusCells !== nextProps.focusCells) {
     //   this.focusCellKeys = nextProps.focusCells.map(cell =>
     //     getCellInfosSelectorKey(cell)
@@ -103,9 +85,6 @@ class PivotGrid extends Component {
       this.scrollToRow = nextProps.selectedRange.focusedCell.rowIndex;
       this.scrollToColumn = nextProps.selectedRange.focusedCell.columnIndex;
     }
-    // else {
-    //   this.handleScrollToChange(0, 0);
-    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -114,78 +93,15 @@ class PivotGrid extends Component {
       setSizes({ height, width });
     }
   }
-  // ------------------------------------------
-  // contextual menues
-  // // ------------------------------------------
-  //  getRowHeight: ({ index }) =>
-  //     getCellHeightByKeySelector(state)(leaves[index].key),
-  // DynamicMenu = (availableDimensions, isRightClick) => props => {
-  //   console.log(['menu', isRightClick]);
-  //   if (!isRightClick) return <ContextMenu id={''} disabled={true} />;
-  //   else {
-  //     const { id, trigger } = props;
-  //     const handleItemClick = trigger ? trigger.onItemClick : null;
-  //     if (isNullOrUndefined(trigger)) {
-  //       return (
-  //         <ContextMenu id={id} disabled={true}>
-  //           action 1
-  //         </ContextMenu>
-  //       );
-  //     }
-
-  //     if (trigger.type === 'dimension-header') {
-  //       const isDisable = availableDimensions.length === 0;
-  //       return (
-  //         <ContextMenu id={id}>
-  //           <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
-  //             {`remove dimension ${trigger.caption}`}
-  //           </MenuItem>
-  //           <SubMenu title="add dimension" disabled={isDisable}>
-  //             {availableDimensions.map(dimension =>
-  //               <MenuItem
-  //                 onClick={trigger.onItemClick}
-  //                 data={{ action: 'add', newDimensionId: dimension.id }}
-  //               >
-  //                 {dimension.caption}
-  //               </MenuItem>
-  //             )}
-
-  //           </SubMenu>
-  //         </ContextMenu>
-  //       );
-  //     }
-  //   }
-  // };
-  // ConnectedMenu = connectMenu(`context-menu- ${this.props.gridId}`)(
-  //   this.DynamicMenu(this.props.availableDimensions, this.isRightClick || false)
-  // );
 
   handleCopy = () => {
     if (
       // Works only if the grid is focused
       this.modifierKeyIsPressed
     ) {
-      // const { selectedCellStart, selectedCellEnd } = this.state;
       this.props.copy(this.props.selectedRange);
     }
   };
-
-  // handleMouseDown = e => {
-  //   this.isRightClick = e.button === 2;
-  //   console.log(['handleMouseDown', e.button]);
-  //   return e;
-  // };
-  // console.log([columnIndex, rowIndex]);
-  // this.scrollToRow = rowIndex;
-  // this.scrollToColumn = columnIndex;
-  // };
-
-  // handleMouseOver = () => {
-  // this.props.handleMouseOver({
-  //   columnIndex: this.props.columnIndex,
-  //   rowIndex: this.props.rowIndex
-  // });
-  // };
 
   handleKeyDown = e => {
     const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
@@ -193,7 +109,6 @@ class PivotGrid extends Component {
     this.shiftKeyIsPressed = e.shiftKey;
     if (e.metaKey || e.ctrlKey) {
       // ctrl A -> select all
-      console;
       if (e.which === 65) {
         this.props.selectRange({
           selectedCellStart: { columnIndex: 0, rowIndex: 0 },
@@ -234,24 +149,12 @@ class PivotGrid extends Component {
     }
     if (e.which === 16) {
       this.shiftKeyIsPressed = false;
-      // console.log(this.shiftKeyKeyIsPressed);
     }
   };
-  handleSectionRendered(onSectionRendered) {
-    return indexes => {
-      // const { rowStartIndex, columnStartIndex } = indexes;
-      // this.scrollToRow = rowStartIndex;
-      // this.scrollToColumn = columnStartIndex;
-
-      onSectionRendered(indexes);
-    };
-  }
 
   handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
-    console.log([scrollToColumn, scrollToRow, this.shiftKeyIsPressed]);
     if (this.shiftKeyIsPressed) {
       this.props.selectRange({
-        // selectedCellStart: this.props.selectedRange.selectedCellStart,
         selectedCellEnd: { columnIndex: scrollToColumn, rowIndex: scrollToRow },
         focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
       });
@@ -264,10 +167,7 @@ class PivotGrid extends Component {
     this.scrollToRow = scrollToRow;
     this.scrollToColumn = scrollToColumn;
   };
-  // handleClickMenu = (e, data, target) => {
-  //   const a = 3;
-  //   console.log([`Clicked on menu ${data.item}`, e]);
-  // };
+
   render() {
     const {
       connectDropTarget,
@@ -325,12 +225,9 @@ class PivotGrid extends Component {
                     />
                     <DataCells
                       customFunctions={customFunctions}
-                      onSectionRendered={this.handleSectionRendered(
-                        onSectionRendered
-                      )}
+                      onSectionRendered={onSectionRendered}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
-                      // focusCellKeys={this.focusCellKeys}
                       onScroll={onScroll}
                       drilldown={drilldown}
                       clientHeight={clientHeight}
@@ -346,18 +243,7 @@ class PivotGrid extends Component {
     );
   }
 }
-//         <ContextMenu id={'toto2'}>
-//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 1' }}>
-//             Menu Item 1
-//           </MenuItem>
-//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 2' }}>
-//             Menu Item 2
-//           </MenuItem>
-//           <MenuItem divider />
-//           <MenuItem onClick={this.handleClickMenu} data={{ item: 'item 3' }}>
-//             Menu Item 3
-//           </MenuItem>
-//         </ContextMenu>
+
 const gridSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
@@ -370,44 +256,6 @@ const gridSpec = {
 const collect = connect => ({
   connectDropTarget: connect.dropTarget()
 });
-
-PivotGrid.propTypes = {
-  columnDimensions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  columnHeaders: PropTypes.arrayOf(
-    PropTypes.arrayOf(
-      PropTypes.oneOfType([
-        PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader)
-      ])
-    )
-  ).isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
-  customFunctions: PropTypes.shape({
-    aggregation: PropTypes.object,
-    format: PropTypes.object,
-    sort: PropTypes.object
-  }).isRequired,
-  dataDimensionsCount: PropTypes.number.isRequired,
-  drilldown: PropTypes.func.isRequired,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  layout: PropTypes.shape({
-    columnHorizontalCount: PropTypes.number,
-    columnVerticalCount: PropTypes.number,
-    rowHorizontalCount: PropTypes.number,
-    rowVerticalCount: PropTypes.number
-  }).isRequired,
-  rowDimensions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  rowHeaders: PropTypes.arrayOf(
-    PropTypes.arrayOf(
-      PropTypes.oneOfType([
-        PropTypes.instanceOf(Header),
-        PropTypes.instanceOf(DataHeader)
-      ])
-    )
-  ).isRequired,
-  setSizes: PropTypes.func.isRequired,
-  width: PropTypes.number.isRequired
-};
 
 PivotGrid.defaultProps = { id: 0 };
 

@@ -9,7 +9,6 @@ import {
 import {
   isPromise,
   isObservable,
-  //isString,
   isStringOrNumber,
   isNullOrUndefined,
   toAccessorFunction

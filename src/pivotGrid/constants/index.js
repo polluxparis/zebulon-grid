@@ -9,6 +9,41 @@ export const AXIS_SEPARATOR = '-//-';
 export const ROOT_ID = '__ROOT_ID__';
 export const EMPTY_ID = '__EMPTY_ID__';
 
+// Headers
+export const HeaderType = {
+	MEASURE: 1, // measure header
+	DIMENSION: 2, // dimension value (leaf)
+	DIMENSION_HEADER: 3, // dimension header
+	GRAND_TOTAL: 4
+};
+
+// Axis
+export const AxisType = {
+	COLUMNS: 1,
+	ROWS: 2,
+	MEASURE: 3,
+	DIMENSION: 4
+};
+
+export function toAxis(axisType) {
+	switch (axisType) {
+		case AxisType.COLUMNS:
+			return 'columns';
+		case AxisType.ROWS:
+			return 'rows';
+		case AxisType.MEASURES:
+			return 'measures';
+		case AxisType.DIMENSION:
+			return 'dimensions';
+		default:
+			return '__AXIS_TYPE_UNKNOWN__';
+	}
+}
+
+export function toAxisType(axis) {
+	return AxisType[axis.toUpperCase()];
+}
+
 // ACTIONS
 
 export const SET_DIMENSIONS = 'PIVOTGRID_SET_DIMENSIONS';

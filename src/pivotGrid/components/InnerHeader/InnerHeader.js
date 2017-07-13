@@ -1,24 +1,14 @@
 import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
-import { toAxis, AxisType } from '../../Axis';
 import { isNullOrUndefined } from '../../utils/generic';
-import { MEASURE_ID, ROOT_ID } from '../../constants';
+import { MEASURE_ID, ROOT_ID, toAxis, AxisType } from '../../constants';
 import { rightArrow, downArrow } from '../../icons';
-import {
-  ContextMenu,
-  MenuItem,
-  ContextMenuTrigger,
-  connectMenu
-} from 'react-contextmenu';
+import { ContextMenuTrigger } from 'react-contextmenu';
 
 // -------------------------------
 const headerSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
-
-    // const initialOffset = monitor.getInitialClientOffset();
-    // const offset = monitor.getClientOffset();
-    // component.props.updateCellSize({ handle, offset, initialOffset });
     let newAxis, index;
     if (props.id === MEASURE_ID || props.id === ROOT_ID) {
       newAxis = toAxis(
@@ -115,7 +105,6 @@ const innerHeader = ({
     </div>
   );
   // contextual menu
-  // if ((false && !isNullOrUndefined(index)) || id === MEASURE_ID) {
   if (!isNullOrUndefined(index) || id === MEASURE_ID) {
     header = (
       <ContextMenuTrigger
@@ -147,19 +136,11 @@ const innerHeader = ({
       {header}
     </div>
   );
-  // contextual menu
-  // collectMenu = props => {
-  //   const a = 3;
-  //   return props;
-  // };
 
   // drag and drop of dimension headers to move dimensions
   // dimension header -> drag source
   if (!isNullOrUndefined(index)) {
     header = connectDragSource(header);
-    // header = connectDragSource(
-    //   <div style={{ width: 'inherit' }}>{header}</div>
-    // );
   }
   // dimension header -> drop target
   if (!isNullOrUndefined(moveDimension)) {

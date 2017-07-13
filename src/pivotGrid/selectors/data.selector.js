@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { pass } from '../Filtering';
 import { isDate, isNumber } from '../utils/generic';
 
-export const getFilters = state => state.filters || {};
+const getFilters = state => state.filters || {};
 const getData = state => state.data;
 
 export const filteredDataSelector = createSelector(
@@ -20,7 +20,7 @@ export const filteredDataSelector = createSelector(
   }
 );
 
-export const getDimensionValues = createSelector(
+export const dimensionValuesSelector = createSelector(
   [getData],
   data => (dimension, filterFunc) => {
     const values = [];

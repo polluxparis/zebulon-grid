@@ -1,75 +1,15 @@
 import React, { Component } from 'react';
 
-import { AxisType } from '../../Axis';
-import { MEASURE_ID, ROOT_ID } from '../../constants';
-import DimensionHeader from '../DimensionHeader';
-import {
-  ContextMenu,
-  MenuItem,
-  ContextMenuTrigger,
-  connectMenu,
-  SubMenu
-} from 'react-contextmenu';
-import { isNullOrUndefined } from '../../utils/generic';
+import { AxisType, MEASURE_ID, ROOT_ID } from '../../constants';
+import DimensionHeader from '../DimensionHeader/DimensionHeader';
+import { connectMenu } from 'react-contextmenu';
+import ContextMenu from '../ContextMenu/ContextMenu';
 class DimensionHeaders extends Component {
-  constructor() {
-    super();
-    this.headersRenderer = this.headersRenderer.bind(this);
-  }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.crossPositions !== this.props.crossPositions;
-  }
   // -----------------------------------------------------
-  handleMouseDown = e => {
-    this.isRightClick = e.button === 2;
-    console.log(['handleMouseDown', e.button]);
-    return e;
-  };
-  DynamicMenu = props => {
-    // if (!props.isRightClick) return <ContextMenu id={''} disabled={true} />;
-    // else {
-    const { id, trigger } = props;
-    const handleItemClick = trigger ? trigger.onItemClick : null;
-    if (isNullOrUndefined(trigger)) {
-      return (
-        <ContextMenu id={id} disabled={true}>
-          action 1
-        </ContextMenu>
-      );
-    }
-
-    if (trigger.type === 'dimension-header') {
-      const isDisable = trigger.availableDimensions.length === 0;
-      return (
-        <ContextMenu id={id}>
-          <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
-            {`Remove dimension ${trigger.caption}`}
-          </MenuItem>
-          <SubMenu title="Add dimension" disabled={isDisable}>
-            {trigger.availableDimensions.map(dimension =>
-              <MenuItem
-                onClick={trigger.onItemClick}
-                data={{ action: 'add', newDimensionId: dimension.id }}
-              >
-                {dimension.caption}
-              </MenuItem>
-            )}
-
-          </SubMenu>
-        </ContextMenu>
-      );
-    }
-    // }
-  };
-  // ConnectedMenu = connectMenu(`context-menu- ${this.props.gridId}`)(
-  //   this.DynamicMenu(this.props.availableDimensions, this.isRightClick || false)
-  // );
   collectMenu = props => {
-    console.log(this);
     return {
       ...props,
-      availableDimensions: this.props.availableDimensions,
-      isRightClick: this.isRightClick
+      availableDimensions: this.props.availableDimensions
     };
   };
   // ---------------------------------------------------
@@ -87,7 +27,7 @@ class DimensionHeaders extends Component {
     const headers = [];
     dimensions.forEach((dimension, index) => {
       if (
-        (dimension.id !== MEASURE_ID || lastCrossDimensionId == ROOT_ID) &&
+        (dimension.id !== MEASURE_ID || lastCrossDimensionId === ROOT_ID) &&
         dimension.id !== ROOT_ID
       ) {
         const isNotCollapsible =
@@ -149,21 +89,13 @@ class DimensionHeaders extends Component {
   render() {
     const {
       columnDimensions,
-      crossPositions,
-      getColumnWidth,
-      getRowHeight,
       rowDimensions,
-      previewSizes,
       height,
       width,
       zoom,
-      gridId,
-      toggleCollapseDimension,
-      availableDimensions
+      gridId
     } = this.props;
-    const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(
-      this.DynamicMenu
-    );
+    const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
     let headers = [];
     let lastCrossDimensionId;
     if (rowDimensions.length === 0) {

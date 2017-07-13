@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
-import { getLeaves } from '../utils/generic';
+import { getLeaves } from '../utils/headers';
 
 const getIndexfromKey = (leaves, key) =>
 	leaves.findIndex(leaf => leaf.key === key);

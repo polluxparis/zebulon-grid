@@ -11,41 +11,20 @@ import {
   getCellValueSelector,
   getCellInfosSelector,
   activatedMeasuresSelector,
-  rowDimensionsSelector,
-  columnDimensionsSelector,
-  getCellDimensionInfosSelector,
   selectedRangeSelector
 } from '../selectors';
-import DataCells from '../components/DataCells';
-import copy from '../services/copyService';
+import DataCells from '../components/DataCells/DataCells';
 import { selectRange, selectCell } from '../actions';
-// import getCellDimensionInfosSelector from '../selectors/cell.selector';
 
 const mapStateToProps = (state, ownProps) => {
-  const { customFunctions, focusCellIndexes, handleMouseDown } = ownProps;
   const rowLeaves = rowLeavesSelector(state);
   const columnLeaves = columnLeavesSelector(state);
-  const rowDimensions = rowDimensionsSelector(state);
-  const columnDimensions = columnDimensionsSelector(state);
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
   const selectedRange = selectedRangeSelector(state);
-  // const rowDimensionHeaders = rowHeaders.dimensionHeaders;
-  // const columnDimensionHeaders = columnHeaders.dimensionHeaders;
   return {
     columnCount: getLayoutSelector(state).columnHorizontalCount,
     columnLeaves,
-    copy: selectedRange =>
-      copy({
-        selectedRange,
-        columnLeaves,
-        rowLeaves,
-        rowDimensions,
-        columnDimensions,
-        measures,
-        getCellValue,
-        getCellDimensionInfosSelector: getCellDimensionInfosSelector(state)
-      }),
     selectedRange,
     getCellValue,
     getCellInfosSelector: getCellInfosSelector(state),

@@ -1,17 +1,15 @@
 import { connect } from 'react-redux';
 
-import { AxisType } from '../Axis';
+import { AxisType } from '../constants';
 import {
-  columnHeadersSelector,
   getCellWidthByKeySelector,
   getCellHeightByKeySelector,
-  getColumnHeight,
   columnDimensionsSelector,
   columnHeadersWidthSelector,
-  getLastChildWidth,
+  getLastChildWidthSelector,
   getLayoutSelector,
   columnsVisibleWidthSelector,
-  getPreviewSizes,
+  previewSizesSelector,
   columnLeavesSelector,
   getAxisActivatedMeasuresSelector,
   filteredDataSelector,
@@ -24,7 +22,7 @@ import {
   selectCell,
   moveDimension
 } from '../actions';
-import Headers from '../components/Headers';
+import Headers from '../components/Headers/Headers';
 
 const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnDimensionsSelector(state);
@@ -37,22 +35,18 @@ const mapStateToProps = (state, ownProps) => {
     columnCount: getLayoutSelector(state).columnHorizontalCount,
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
-    // getCrossSize: getCrossSize(state),
     getRowHeight: ({ index }) =>
       getCellHeightByKeySelector(state)(columnDimensions[index].id),
     getSizeByKey: getCellWidthByKeySelector(state),
     crossPositions: crossPositionsSelector(state)[AxisType.COLUMNS],
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
-    previewSizes: getPreviewSizes(state),
+    previewSizes: previewSizesSelector(state),
     rowCount: getLayoutSelector(state).columnVerticalCount,
-    headers: columnHeadersSelector(state),
-    getLastChildSize: header => getLastChildWidth(state)(header),
+    getLastChildSize: header => getLastChildWidthSelector(state)(header),
     leaves,
-
     sizes: state.sizes,
     zoom: state.config.zoom,
-
     gridId: ownProps.gridId,
     getSelectedColumnRange: getSelectedColumnRangeSelector(state)
   };
@@ -82,7 +76,6 @@ const mergeProps = (
   ...restDispatchProps,
   ...ownProps
 });
-// export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
   Headers
 );

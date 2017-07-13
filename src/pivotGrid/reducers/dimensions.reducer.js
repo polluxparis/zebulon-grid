@@ -32,7 +32,6 @@ export default (state = {}, action) => {
       return {
         ...state,
         ...dimensionsSort
-        // [dimension.id]: { ...state[dimension.id], sort },
       };
     default:
       return state;

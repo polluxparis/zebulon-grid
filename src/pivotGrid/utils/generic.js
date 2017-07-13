@@ -173,39 +173,3 @@ export const range = (a, b) =>
       }
     })(a, b)
   );
-/* eslint-enable */
-export function getNotCollapsedLeaf(header) {
-  if (
-    (header.isCollapsed || header.hasCollapsedParent) &&
-    header.key !== ROOT_ID
-  ) {
-    return header.parent;
-  } else {
-    return header;
-  }
-}
-
-export function getLeaves(header) {
-  const leaf = getNotCollapsedLeaf(header);
-  if (
-    isNullOrUndefined(header.orderedChildrenIds) ||
-    header.orderedChildrenIds.length === 0
-  ) {
-    return [header];
-  }
-  return [].concat(
-    ...header.orderedChildrenIds.map(headerId =>
-      getLeaves(header.children[headerId])
-    )
-  );
-}
-
-export function countHeadersDepth(header) {
-  let depth = 0;
-  let currentHeader = header;
-  while (currentHeader.orderedChildrenIds.length > 0) {
-    depth += 1;
-    currentHeader = currentHeader.children[currentHeader.orderedChildrenIds[0]];
-  }
-  return depth;
-}

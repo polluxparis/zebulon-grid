@@ -1,22 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 
-import { isInRange, isNullOrUndefined, isUndefined } from '../../utils/generic';
-import { DataCell, HeaderType } from '../../Cells';
-import DataCellComponent from '../DataCell';
-import { AXIS_SEPARATOR } from '../../constants';
+import { isInRange, isUndefined } from '../../utils/generic';
+import DataCellComponent from '../DataCell/DataCell';
+import { AXIS_SEPARATOR, HeaderType } from '../../constants';
 
 class DataCells extends PureComponent {
-  constructor(props) {
-    super(props);
-    // this.cellRenderer = this.cellRenderer.bind(this);
-
-    this.state = {
-      valuesCache: {}
-      // selectedCellStart: null,
-      // selectedCellEnd: null
-    };
-  }
+  state = {
+    valuesCache: {}
+  };
 
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
@@ -35,8 +27,6 @@ class DataCells extends PureComponent {
 
   handleMouseDown = (e, { columnIndex, rowIndex }) => {
     if (e.button === 0) {
-      let range;
-
       this.isMouseDown = true;
       if (e.shiftKey) {
         if (
@@ -47,7 +37,6 @@ class DataCells extends PureComponent {
           )
         ) {
           this.props.selectRange({
-            // selectedCellStart: this.props.selectedRange.selectedCellStart,
             selectedCellEnd: { columnIndex, rowIndex },
             focusedCell: { columnIndex, rowIndex }
           });
@@ -56,7 +45,6 @@ class DataCells extends PureComponent {
         this.props.selectCell({ columnIndex, rowIndex });
       }
     }
-    // this.props.handleMouseDown(columnIndex, rowIndex);
   };
 
   handleMouseUp = () => {
@@ -64,6 +52,7 @@ class DataCells extends PureComponent {
   };
 
   handleMouseOver = (e, { columnIndex, rowIndex }) => {
+    // buttons = 1 to help when mouse is up outside of the grid
     if (this.isMouseDown && e.buttons === 1) {
       if (
         !(
@@ -73,36 +62,20 @@ class DataCells extends PureComponent {
         )
       ) {
         this.props.selectRange({
-          // selectedCellStart: this.props.selectedRange.selectedCellStart,
           selectedCellEnd: { columnIndex, rowIndex },
           focusedCell: { columnIndex, rowIndex }
         });
       }
-      // this.props.handleMouseDown(columnIndex, rowIndex);
     }
   };
-
-  // handleDocumentMouseDown = e => {
-  //   if (e.button === 0 && this.state.selectedCellStart) {
-  //     if (!this.isMouseDown) {
-  //       this.props.selectRange({
-  //         selectedCellStart: null,
-  //         selectedCellEnd: null
-  //       });
-  //     }
-  //   }
-  // };
 
   handleDrilldown = cell => {
     return this.props.drilldown(this.props.getCellInfosSelector(cell));
   };
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
-    // const { selectedCellStart, selectedCellEnd } = this.state;
-
     const {
       getCellValue,
       customFunctions,
-      selectedCellEnd,
       rowLeaves,
       columnLeaves,
       measures,
@@ -139,12 +112,6 @@ class DataCells extends PureComponent {
     // This causes all the data cells to be rendered when new cells are selected via mouse actions
     // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
     // bring complexity and this is good enough at the time.
-    // const cell = new DataCell(
-    //   getCellValue,
-    //   rowHeader,
-    //   columnHeader,
-    //   customFunctions
-    // );
     const value = getCellValue(
       measure.valueAccessor,
       rowHeader.dataIndexes,
@@ -179,7 +146,7 @@ class DataCells extends PureComponent {
       />
     );
   };
-  // focused={focused}
+
   render() {
     const {
       getColumnWidth,

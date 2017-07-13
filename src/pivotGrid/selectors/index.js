@@ -4,30 +4,22 @@ import {
   rowHeadersSelector,
   columnLeavesSelector,
   rowLeavesSelector,
-  getColumnDimensionHeaders,
-  getRowDimensionHeaders,
   getAxisActivatedMeasuresSelector
 } from './axis.selector';
 import {
   defaultCellSizesSelector,
-  // getCellSizes,
   crossPositionsSelector,
-  // getCrossSize,
-  // getHeaderSize,
   rowsHeightSelector,
   rowHeadersWidthSelector,
   columnHeadersWidthSelector,
   columnsWidthSelector,
-  getPreviewSizes,
+  previewSizesSelector,
   getCellHeightByKeySelector,
   getCellWidthByKeySelector,
-  getColumnHeaderHeight,
-  getRowHeaderWidth,
-  getLeafHeaderSize,
   columnsVisibleWidthSelector,
   rowsVisibleHeightSelector,
-  getLastChildWidth,
-  getLastChildHeight,
+  getLastChildWidthSelector,
+  getLastChildHeightSelector,
   dataCellsHeightSelector,
   dataCellsWidthSelector
 } from './sizes.selector';
@@ -42,11 +34,7 @@ import {
   getCellInfosSelector,
   getCellDimensionInfosSelector
 } from './cell.selector';
-import {
-  getFilters,
-  getDimensionValues,
-  filteredDataSelector
-} from './data.selector';
+import { dimensionValuesSelector, filteredDataSelector } from './data.selector';
 import {
   selectedRangeSelector,
   getSelectedColumnRangeSelector,
@@ -55,39 +43,33 @@ import {
 
 export { getLayoutSelector };
 export { defaultCellSizesSelector };
-// export { getCellSizes };
 export { columnHeadersSelector };
 export { rowHeadersSelector };
 export { columnLeavesSelector };
 export { rowLeavesSelector };
-export { getColumnDimensionHeaders };
-export { getRowDimensionHeaders };
+export { columnsWidthSelector };
 export { activatedMeasuresSelector };
 export { getAxisActivatedMeasuresSelector };
 export { rowDimensionsSelector };
 export { columnDimensionsSelector };
 export { availableDimensionsSelector };
 export { crossPositionsSelector };
-// export { getHeaderSize };
 export { rowsHeightSelector };
 export { rowHeadersWidthSelector };
 export { columnHeadersWidthSelector };
-export { getPreviewSizes };
-export { getLeafHeaderSize };
-export { getLastChildWidth };
-export { getLastChildHeight };
+export { previewSizesSelector };
+export { getLastChildWidthSelector };
+export { getLastChildHeightSelector };
 export { columnsVisibleWidthSelector };
 export { rowsVisibleHeightSelector };
 export { getCellValueSelector, getCellInfosSelector };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
-export { getDimensionValues };
-export { getFilters };
+export { dimensionValuesSelector };
 export { filteredDataSelector };
 export { getCellDimensionInfosSelector };
 export { getCellHeightByKeySelector };
 export { getCellWidthByKeySelector };
-export { getRowHeaderWidth };
 export { selectedRangeSelector };
 export { getSelectedColumnRangeSelector };
 export { getSelectedRowRangeSelector };

@@ -6,18 +6,14 @@ import PivotGrid from '../components/PivotGrid/PivotGrid';
 import {
   activatedMeasuresSelector,
   columnDimensionsSelector,
-  // columnHeadersSelector,
   columnLeavesSelector,
   defaultCellSizesSelector,
   getCellDimensionInfosSelector,
-  getCellSizes,
   getCellValueSelector,
   getLayoutSelector,
   rowDimensionsSelector,
-  // rowHeadersSelector,
   rowLeavesSelector,
-  selectedRangeSelector,
-  availableDimensionsSelector
+  selectedRangeSelector
 } from '../selectors';
 import {
   updateCellSize,
@@ -26,8 +22,6 @@ import {
   selectCell
 } from '../actions';
 import copy from '../services/copyService';
-import { AxisType } from '../Axis';
-import { isNullOrUndefined } from '../utils/generic';
 
 const mapStateToProps = state => {
   const rowLeaves = rowLeavesSelector(state);
@@ -43,12 +37,7 @@ const mapStateToProps = state => {
     sizes: state.sizes,
     columnLeaves,
     rowLeaves,
-    rowDimensions: rowDimensionsSelector(state),
-    columnDimensions: columnDimensionsSelector(state),
-    availableDimensions: availableDimensionsSelector(state),
-    dataDimensionsCount: activatedMeasuresSelector(state).length,
     selectedRange: selectedRangeSelector(state),
-
     copy: selectedRange =>
       copy({
         selectedRange,
@@ -63,52 +52,6 @@ const mapStateToProps = state => {
   };
 };
 
-// const mapDispatchToProps = dispatch => ({
-//   updateCellSize: ({
-//     handle,
-//     offset,
-//     initialOffset,
-//     sizes,
-//     defaultCellSizes
-//   }) => {
-//     if (
-//       handle.leafSubheaders &&
-//       handle.leafSubheaders.length &&
-//       ((handle.axis === AxisType.COLUMNS && handle.position === 'right') ||
-//         (handle.axis === AxisType.ROWS && handle.position === 'bottom'))
-//     ) {
-//       const fractionalOffset = {
-//         x: (offset.x - initialOffset.x) / handle.leafSubheaders.length,
-//         y: (offset.y - initialOffset.y) / handle.leafSubheaders.length
-//       };
-//       handle.leafSubheaders.forEach(subheader => {
-//         dispatch(
-//           updateCellSize({
-//             handle: { ...handle, leafSubheaders: [], id: subheader.key },
-//             offset: fractionalOffset,
-//             initialOffset: { x: 0, y: 0 },
-//             defaultCellSizes,
-//             sizes
-//           })
-//         );
-//       });
-//     } else {
-//       dispatch(
-//         updateCellSize({
-//           handle,
-//           offset,
-//           initialOffset,
-//           sizes,
-//           defaultCellSizes
-//         })
-//       );
-//     }
-//   },
-//   setSizes: ({ height, width }) => {
-//     if (height) dispatch(setConfigProperty({ height, width }, 'height'));
-//     if (width) dispatch(setConfigProperty({ height, width }, 'width'));
-//   }
-// });
 const mapDispatchToProps = dispatch => ({
   updateCellSize: ({
     handle,
@@ -138,33 +81,14 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectCell(cell));
   }
 });
+
 const mergeProps = (
-  {
-    width,
-    layout,
-    headerSizes,
-    sizes,
-    defaultCellSizes,
-    columnLeaves,
-    rowLeaves,
-    rowDimensions,
-    columnDimensions,
-    availableDimensions,
-    dataDimensionsCount,
-    selectedRange,
-    copy
-  },
+  { width, layout, headerSizes, sizes, defaultCellSizes, selectedRange, copy },
   { updateCellSize, setSizes, selectRange, selectCell },
   ownProps
 ) => ({
-  rowDimensions,
-  columnDimensions,
-  availableDimensions,
-  columnLeaves,
-  rowLeaves,
   width,
   layout,
-  dataDimensionsCount,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,

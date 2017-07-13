@@ -1,19 +1,20 @@
 import { createSelector } from 'reselect';
-import { Axis, AxisType, toAxisType } from '../Axis';
 import { filteredDataSelector } from './data.selector';
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
   activatedMeasuresSelector
 } from './dimensions.selector';
+import { isNull, isNullOrUndefined } from '../utils/generic';
+import { getLeaves } from '../utils/headers';
 import {
-  getLeaves,
-  countHeadersDepth,
-  isNull,
-  isNullOrUndefined
-} from '../utils/generic';
-import { ROOT_ID, EMPTY_ID, MEASURE_ID } from '../constants';
-import { HeaderType } from '../Cells';
+  ROOT_ID,
+  EMPTY_ID,
+  MEASURE_ID,
+  HeaderType,
+  AxisType,
+  toAxisType
+} from '../constants';
 
 export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
@@ -39,10 +40,6 @@ function buildNode(id, node, index) {
     node.children[id] = { id, children: {}, dataIndexes: [index] };
     return node.children[id];
   }
-}
-// build one axis (colums or rows) tree
-function buildAxisTree(data, dimensions) {
-  return buildAxisTrees(data, { columns: dimensions, rows: [] }).columns;
 }
 
 // build colums and rows trees
@@ -82,7 +79,6 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
-// a=[{a:3,b:"toto 10"},{a:10,b:"toto 3"},{a:11,b:"toto 1"},{a:2,b:"toto 4"}]
 function buildHeaders(
   data,
   node,
@@ -92,7 +88,7 @@ function buildHeaders(
   parent,
   areCollapsed
 ) {
-  const { id, children, dataIndexes } = node;
+  const { id, dataIndexes } = node;
   let header;
   // Root node
   if (node.id === ROOT_ID) {
@@ -109,14 +105,12 @@ function buildHeaders(
       id: currentDimension.keyAccessor(row),
       type: HeaderType.DIMENSION,
       parent,
-      // key: currentDimension.isAttribute ? parent.key : key,
       key,
       dataIndexes,
       orderedChildrenIds: [],
       isCollapsed,
       depth,
       span: 1
-      // hasCollapsedParent: parent.isCollapsed || parent.hasCollapsedParent
     };
     header.hasSubTotal = currentDimension.hasSubTotal;
   }
@@ -154,7 +148,6 @@ function buildHeaders(
       };
     });
     if (
-      // orderedChildrenMap.length > 0 &&
       header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
     ) {
       let childrenDimension = dimensions[depth + 1];
@@ -234,11 +227,6 @@ export function buildAxisHeaders(
     areCollapsed
   );
 }
-
-// export const sortedRowHeadersSelector = createSelector([rowHeadersSelector, rowDimensionsSelector], (headers, dimensions) =>
-//   headers.sortedChildrenIds.reverse();
-//   return {...headers}
-//   )
 
 export const rowHeadersSelector = createSelector(
   [

@@ -15,7 +15,6 @@ export default (
         [direction]: {
           ...state[direction],
           ...sizes
-          // }
         }
       };
     default:

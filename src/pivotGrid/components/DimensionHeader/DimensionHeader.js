@@ -2,31 +2,18 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import InnerHeader from '../InnerHeader/InnerHeader';
-import { AxisType, toAxis } from '../../Axis';
-import ResizeHandle from '../ResizeHandle';
+import ResizeHandle from '../ResizeHandle/ResizeHandle';
 
-import { MEASURE_ID, ROOT_ID } from '../../constants';
-
-import {
-  ContextMenu,
-  MenuItem,
-  ContextMenuTrigger,
-  connectMenu
-} from 'react-contextmenu';
-
-// const collectMenu = props => {
-//   const a = 3;
-//   return props;
-// };
+import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from '../../constants';
 
 class DimensionHeader extends Component {
   handleClickCollapse = e => {
     if (e.button === 0) {
-      const { toggleCollapseDimension, dimensionId, axis } = this.props;
+      const { toggleCollapseDimension, dimensionId } = this.props;
       toggleCollapseDimension(dimensionId);
     }
   };
-  handleClick = e => {
+  handleClickSort = e => {
     this.button = e.button;
     if (e.button === 0) {
       const { toggleSortOrder, dimensionId } = this.props;
@@ -36,17 +23,8 @@ class DimensionHeader extends Component {
     }
   };
 
-  // };
-  // // this.props.handleMouseDown(columnIndex, rowIndex);
-  // handleMouseUp = () => (this.isRightClick = false);
-  // this.props.handleMouseDown(columnIndex, rowIndex);
-  // collect = props => {
-  //   return props;
-  // };
-
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      console.log(data);
       if (data.action === 'remove') {
         this.props.moveDimension(
           data.dimensionId,
@@ -80,7 +58,6 @@ class DimensionHeader extends Component {
       isCollapsed,
       previewSizes,
       gridId,
-      // toggleCollapseDimension,
       moveDimension,
       isAttribute,
       collectMenu
@@ -125,7 +102,7 @@ class DimensionHeader extends Component {
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
-          handleClick={this.handleClick}
+          handleClick={this.handleClickSort}
           handleClickCollapse={this.handleClickCollapse}
           handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
@@ -151,25 +128,6 @@ class DimensionHeader extends Component {
 
       </div>
     );
-    // return (
-    //   <div>
-    //     <ContextMenuTrigger
-    //       id={'toto2'}
-    //       holdToDisplay={1000}
-    //       disable={false}
-    //       collect={collectMenu}
-    //       onItemClick={this.handleClickMenu}
-    //       type={'dimension-header'}
-    //       axis={axis}
-    //       dimensionId={dimensionId}
-    //       caption={caption}
-    //       index={dimensionIndex}
-    //       button={this.button}
-    //     >
-    //       {header}
-    //     </ContextMenuTrigger>
-    //   </div>
-    // );
   }
 }
 export default DimensionHeader;

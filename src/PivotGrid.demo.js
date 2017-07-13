@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import 'react-virtualized/styles.css';
+
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 /* eslint-disable import/no-extraneous-dependencies*/
 import 'react-resizable/css/styles.css';
@@ -38,19 +36,9 @@ class PivotGridDemo extends Component {
     const data = getMockDatasource(1, 20, 30);
     this.customFunctions = hydrateStore(store, basicConfig, data);
     this.state = { store, focusCells: [] };
-
-    this.addData = this.addData.bind(this);
-    this.moveDimension = this.moveDimension.bind(this);
-    this.sortDimension = this.sortDimension.bind(this);
-    this.toggleMeasure = this.toggleMeasure.bind(this);
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
-    this.toggleFilter = this.toggleFilter.bind(this);
-    this.focusCell = this.focusCell.bind(this);
-    this.toggleMeasureAxis = this.toggleMeasureAxis.bind(this);
   }
 
-  addData() {
+  addData = () => {
     this.state.store.dispatch(
       actions.pushData([
         {
@@ -78,9 +66,9 @@ class PivotGridDemo extends Component {
         }
       ])
     );
-  }
+  };
 
-  moveDimension() {
+  moveDimension = () => {
     this.state.store.dispatch(actions.selectCell(null));
     if (i % 2) {
       this.state.store.dispatch(
@@ -92,26 +80,8 @@ class PivotGridDemo extends Component {
       );
     }
     i += 1;
-  }
-  toggleMeasureAxis() {
-    // if (i % 2) {
-    //   this.state.store.dispatch(
-    //     actions.setConfigProperty(
-    //       { measureHeadersAxis: 'columns' },
-    //       'measureHeadersAxis',
-    //       ''
-    //     )
-    //   );
-    // } else {
-    //   this.state.store.dispatch(
-    //     actions.setConfigProperty(
-    //       { measureHeadersAxis: 'rows' },
-    //       'measureHeadersAxis',
-    //       ''
-    //     )
-    //   );
-    // }
-    // i += 1;
+  };
+  toggleMeasureAxis = () => {
     this.state.store.dispatch(actions.selectCell(null));
     const store = this.state.store.getState();
     if (store.config.measureHeadersAxis === 'columns') {
@@ -147,26 +117,26 @@ class PivotGridDemo extends Component {
         )
       );
     }
-  }
+  };
 
-  sortDimension() {
+  sortDimension = () => {
     this.state.store.dispatch(actions.toggleSortOrder('titi'));
-  }
+  };
 
-  toggleMeasure() {
+  toggleMeasure = () => {
     this.state.store.dispatch(actions.selectCell({}));
     this.state.store.dispatch(actions.toggleMeasure('amt'));
-  }
+  };
 
-  zoomIn() {
+  zoomIn = () => {
     this.state.store.dispatch(actions.zoomIn());
-  }
+  };
 
-  zoomOut() {
+  zoomOut = () => {
     this.state.store.dispatch(actions.zoomOut());
-  }
+  };
 
-  toggleFilter() {
+  toggleFilter = () => {
     if (j % 2) {
       this.state.store.dispatch(actions.deleteFilter('titi'));
     } else {
@@ -175,9 +145,9 @@ class PivotGridDemo extends Component {
       );
     }
     j += 1;
-  }
+  };
 
-  focusCell() {
+  focusCell = () => {
     const getCell = id => ({
       dimensions: [
         {
@@ -212,11 +182,9 @@ class PivotGridDemo extends Component {
         focusCells: [...Array(k).keys()].map(id => getCell(id))
       });
     }
-  }
+  };
 
   handleClickMenu = (e, data) => console.log(`Clicked on menu ${data.item}`);
-  // <button onClick={this.moveDimension}>Move dimension</button>
-  //     <button onClick={this.sortDimension}>Sort titi dimension</button>
   render() {
     return (
       <Provider store={this.state.store}>

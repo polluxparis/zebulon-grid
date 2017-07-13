@@ -1,32 +1,8 @@
 import React, { Component } from 'react';
 
-import { AxisType, toAxis } from '../../Axis';
-import { MEASURE_ID, TOTAL_ID } from '../../constants';
-import ResizeHandle from '../ResizeHandle';
-import { HeaderType } from '../../Cells';
-import { getLeaves } from '../../utils/generic';
+import { AxisType, toAxis } from '../../constants';
+import ResizeHandle from '../ResizeHandle/ResizeHandle';
 import InnerHeader from '../InnerHeader/InnerHeader';
-
-// function getLeafSubheaders(header, result) {
-//   if (header.subheaders && header.subheaders.length) {
-//     header.subheaders.forEach(subheader =>
-//       getLeafSubheaders(subheader, result)
-//     );
-//     return result;
-//   }
-//   result.push(header);
-//   return result;
-// }
-// const lastKey = header => {
-//   let key = header.key;
-//   if (header.children !== undefined) {
-//     const childrenKeys = Object.keys(header.children);
-//     if (childrenKeys.length > 0) {
-//       key = lastKey(header.children[childrenKeys[childrenKeys.length - 1]]);
-//     }
-//   }
-//   return key;
-// };
 
 class Header extends Component {
   handleClickCollapse = () => {
@@ -38,7 +14,6 @@ class Header extends Component {
   };
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      console.log(data);
       if (data.action === 'remove') {
         this.props.moveDimension(
           data.dimensionId,
@@ -73,8 +48,6 @@ class Header extends Component {
       caption,
       positionStyle,
       previewSizes,
-      span,
-      startIndex,
       scrollLeft,
       scrollTop,
       isNotCollapsible,
@@ -82,10 +55,6 @@ class Header extends Component {
       isAffixManaged,
       moveDimension
     } = this.props;
-    //
-    const innerHeaderStyle = {
-      width: 'inherit'
-    };
     let style = positionStyle;
 
     // affix management to keep labels on screen (except for leaves)
@@ -115,6 +84,7 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.keykey : dimensionKey;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
+
     return (
       <div
         className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"

@@ -7,21 +7,10 @@ import { getMockDatasource, basicConfig } from './utils/mock';
 let i = 0;
 let k = 0;
 class WrappedGridDemo extends Component {
-  constructor() {
-    super();
-    this.addData = this.addData.bind(this);
-    this.moveDimension = this.moveDimension.bind(this);
-    this.sortDimension = this.sortDimension.bind(this);
-    this.toggleMeasure = this.toggleMeasure.bind(this);
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
-    this.toggleMeasureAxis = this.toggleMeasureAxis.bind(this);
-    this.focusCell = this.focusCell.bind(this);
+  state = { focusCell: [] };
+  data = getMockDatasource(1, 100, 100);
 
-    this.state = { focusCell: [] };
-    this.data = getMockDatasource(1, 100, 100);
-  }
-  addData() {
+  addData = () => {
     this.grid.pushData([
       {
         toto: '0',
@@ -32,24 +21,24 @@ class WrappedGridDemo extends Component {
         tutu: '0'
       }
     ]);
-  }
+  };
 
-  moveDimension() {
+  moveDimension = () => {
     if (i % 2) {
       this.grid.moveDimension('tutu', 'columns', 'rows', 1);
     } else {
       this.grid.moveDimension('tutu', 'rows', 'columns', 1);
     }
     i += 1;
-  }
-  sortDimension() {
+  };
+  sortDimension = () => {
     this.grid.toggleSortOrder('toto');
-  }
+  };
 
-  toggleMeasure() {
+  toggleMeasure = () => {
     this.grid.toggleMeasure('amt');
-  }
-  toggleMeasureAxis() {
+  };
+  toggleMeasureAxis = () => {
     if (k % 2) {
       this.grid.setConfigProperty(
         { measureHeadersAxis: 'columns' },
@@ -62,14 +51,14 @@ class WrappedGridDemo extends Component {
       );
     }
     k += 1;
-  }
-  zoomIn() {
+  };
+  zoomIn = () => {
     this.grid.zoomIn();
-  }
-  zoomOut() {
+  };
+  zoomOut = () => {
     this.grid.zoomOut();
-  }
-  focusCell() {
+  };
+  focusCell = () => {
     const getCell = id => ({
       dimensions: [
         {
@@ -104,7 +93,7 @@ class WrappedGridDemo extends Component {
         focusCells: [...Array(k).keys()].map(id => getCell(id))
       });
     }
-  }
+  };
 
   render() {
     return (

@@ -13,7 +13,7 @@ import {
   getRowsWidth,
   getRowHeadersVisibleHeight,
   getColumnHeadersVisibleWidth,
-  getPreviewSizes,
+  previewSizesSelector,
   dataCellsHeightSelector,
   dataCellsWidthSelector
 } from './sizes.selector';
@@ -530,7 +530,7 @@ describe('preview sizes are computed correctly', () => {
     // not in DOM so scrollbar size is 0 anyway
     const hasVerticalScrollbar = false;
     const hasHorizontalScrollbar = false;
-    const actual = getPreviewSizes.resultFunc(
+    const actual = previewSizesSelector.resultFunc(
       height,
       width,
       hasVerticalScrollbar,
@@ -552,7 +552,7 @@ describe('preview sizes are computed correctly', () => {
     const columnHeadersHeight = 60; // not in DOM so scrollbar size is 0 anyway
     const hasVerticalScrollbar = false;
     const hasHorizontalScrollbar = false;
-    const actual = getPreviewSizes.resultFunc(
+    const actual = previewSizesSelector.resultFunc(
       height,
       width,
       hasVerticalScrollbar,

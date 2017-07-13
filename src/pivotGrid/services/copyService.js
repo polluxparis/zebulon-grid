@@ -1,4 +1,3 @@
-import { DataCell } from '../Cells';
 import { MEASURE_ID } from '../constants';
 function replaceNullAndUndefined(val) {
   if (val === null || val === undefined) {
@@ -8,15 +7,6 @@ function replaceNullAndUndefined(val) {
 }
 
 function getSelectedText({
-  // selectedCellStart,
-  // selectedCellEnd,
-  // measureHeadersAxis,
-  // getCellValue,
-  // columnHeaders,
-  // rowHeaders,
-  // columnDimensionHeaders,
-  // rowDimensionHeaders,
-  // customFunctions
   selectedRange,
   rowLeaves,
   columnLeaves,
@@ -26,7 +16,6 @@ function getSelectedText({
   measureHeadersAxis,
   getCellValue,
   getCellDimensionInfos
-  // measureHeadersAxis,
 }) {
   const mc = measureHeadersAxis === 'columns';
   const mr = measureHeadersAxis === 'rows';

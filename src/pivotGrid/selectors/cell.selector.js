@@ -1,43 +1,13 @@
 import { createSelector } from 'reselect';
-import {
-  isNullOrUndefined,
-  twoArraysIntersect,
-  range,
-  countHeadersDepth
-} from '../utils/generic';
+import { isNullOrUndefined, twoArraysIntersect, range } from '../utils/generic';
 import { filteredDataSelector } from './data.selector';
-import { HeaderType } from '../Cells';
 import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
   columnDimensionsSelector
 } from './dimensions.selector';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
-import { ALL, ROOT_ID, MEASURE_ID } from '../constants';
-import { Axis, AxisType, toAxisType } from '../Axis';
-const getIndexesIntersectionFromDimensions = (
-  rowDimension,
-  columnDimension
-) => {
-  if (!(rowDimension && columnDimension)) {
-    return [];
-  }
-  let intersection;
-  if (rowDimension.isRoot && columnDimension.isRoot) {
-    // When no dimension (i.e. Total) on both axis, intersection is ALL
-    intersection = ALL;
-  } else if (rowDimension.isRoot) {
-    intersection = columnDimension.rowIndexes;
-  } else if (columnDimension.isRoot) {
-    intersection = rowDimension.rowIndexes;
-  } else {
-    intersection = twoArraysIntersect(
-      columnDimension.rowIndexes,
-      rowDimension.rowIndexes
-    );
-  }
-  return intersection;
-};
+import { ALL, MEASURE_ID, HeaderType } from '../constants';
 
 const cellValue = (
   data,
@@ -87,29 +57,6 @@ export const getCellValueSelector = createSelector(
     );
   }
 );
-
-const getDataRows = (data, rowDimension, columnDimension) => {
-  const intersection = getIndexesIntersectionFromDimensions(
-    rowDimension,
-    columnDimension
-  );
-  return intersection.map(index => data[index]);
-};
-
-// const getDimensionInfos = dimensionArg => {
-//   if (dimensionArg.isRoot) {
-//     return [];
-//   }
-//   const dimension = {
-//     caption: dimensionArg.dimension.caption,
-//     id: dimensionArg.dimension.id
-//   };
-//   const cell = {
-//     caption: dimensionArg.caption,
-//     id: dimensionArg.id
-//   };
-//   return [{ dimension, cell }].concat(getDimensionInfos(dimensionArg.parent));
-// };
 
 const cellDimensionInfos = (
   data,
@@ -191,19 +138,6 @@ export const getCellInfosSelector = createSelector(
     } else {
       measure = measures[columnLeaf.id];
     }
-    // let measure;
-    // let measureAxis;
-    // if (rowLeaf.type === HeaderType.MEASURE) {
-    //   measure = measures[rowLeaf.id];
-    //   rowLeaf = rowLeaf.parent;
-    //   measureAxis = 'row';
-    // }
-    // let
-    // if (columnLeaf.type === HeaderType.MEASURE) {
-    //   measure = measures[columnLeaf.id];
-    //   columnLeaf = columnLeaf.parent;
-    //   measureAxis = 'column';
-    // }
     const value = cellValue(
       data,
       measure.valueAccessor,
