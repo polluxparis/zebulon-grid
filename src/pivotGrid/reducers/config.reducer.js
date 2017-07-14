@@ -1,4 +1,10 @@
-import { SET_CONFIG_PROPERTY, ZOOM_IN, ZOOM_OUT } from '../constants';
+import {
+  SET_CONFIG_PROPERTY,
+  ZOOM_IN,
+  ZOOM_OUT,
+  MOVE_DIMENSION,
+  MEASURE_ID
+} from '../constants';
 
 function getNextZoom(previousZoom, zoomIn) {
   const zoomValues = [
@@ -30,8 +36,14 @@ function getNextZoom(previousZoom, zoomIn) {
   return zoomValues[nextZoomIndex];
 }
 export default (state = {}, action) => {
-  const { type, property, value } = action;
+  const { type, property, value, id, oldAxis, newAxis } = action;
+
+  console.log(['zoom reducer', type]);
   switch (type) {
+    case MOVE_DIMENSION:
+      if (id === MEASURE_ID && oldAxis !== newAxis) {
+        return { ...state, measureHeadersAxis: newAxis };
+      } else return state;
     case SET_CONFIG_PROPERTY:
       return { ...state, [property]: value };
     case ZOOM_IN:

@@ -14,13 +14,15 @@ import {
   getAxisActivatedMeasuresSelector,
   filteredDataSelector,
   getSelectedColumnRangeSelector,
-  crossPositionsSelector
+  crossPositionsSelector,
+  availableMeasuresSelector
 } from '../selectors';
 import {
   toggleCollapse,
   selectRange,
-  selectCell,
-  moveDimension
+  // selectCell,
+  moveDimension,
+  toggleMeasure
 } from '../actions';
 import Headers from '../components/Headers/Headers';
 
@@ -32,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     data: filteredDataSelector(state),
     dimensions: columnDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
+    availableMeasures: availableMeasuresSelector(state),
     columnCount: getLayoutSelector(state).columnHorizontalCount,
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(leaves[index].key),
@@ -57,9 +60,10 @@ const mapDispatchToProps = dispatch => ({
     dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
-    dispatch(selectCell(null));
+    // dispatch(selectCell(null));
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   },
+  toggleMeasure: measureId => dispatch(toggleMeasure(measureId)),
   selectAxis: getSelectedColumnRange => header => {
     const selectedRange = getSelectedColumnRange(header);
     dispatch(selectRange(selectedRange));

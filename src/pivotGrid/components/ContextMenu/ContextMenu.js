@@ -16,8 +16,14 @@ const ContextMenu = props => {
     const isDisable = trigger.availableDimensions.length === 0;
     return (
       <ReactContextMenu id={id}>
+        <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
+          {`Sort  ${trigger.direction} `}
+        </MenuItem>
+        <MenuItem onClick={trigger.onItemClick} data={{ action: 'filter' }}>
+          Filter
+        </MenuItem>
         <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
-          {`Remove dimension ${trigger.caption}`}
+          Remove
         </MenuItem>
         <SubMenu title="Add dimension" disabled={isDisable}>
           {trigger.availableDimensions.map(dimension =>
@@ -26,6 +32,29 @@ const ContextMenu = props => {
               data={{ action: 'add', newDimensionId: dimension.id }}
             >
               {dimension.caption}
+            </MenuItem>
+          )}
+
+        </SubMenu>
+      </ReactContextMenu>
+    );
+  } else if (trigger.type === `header-${trigger.axis}`) {
+    const isDisable = trigger.availableMeasure.length === 0;
+    return (
+      <ReactContextMenu id={id}>
+        <MenuItem onClick={trigger.onItemClick} data={{ action: 'move' }}>
+          Move measures
+        </MenuItem>
+        <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
+          Remove
+        </MenuItem>
+        <SubMenu title="Add" disabled={isDisable}>
+          {trigger.availableMeasure.map(measure =>
+            <MenuItem
+              onClick={trigger.onItemClick}
+              data={{ action: 'add', newMeasureId: measure.id }}
+            >
+              {measure.caption}
             </MenuItem>
           )}
 

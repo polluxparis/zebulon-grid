@@ -1,4 +1,3 @@
-import { ROOT_ID } from '../constants';
 /**
  * Returns whether or not obj is a number
  * @param  {object}  obj

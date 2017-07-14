@@ -3,7 +3,6 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { isNullOrUndefined } from '../../utils/generic';
 import { MEASURE_ID, ROOT_ID, toAxis, AxisType } from '../../constants';
 import { rightArrow, downArrow } from '../../icons';
-import { ContextMenuTrigger } from 'react-contextmenu';
 
 // -------------------------------
 const headerSpec = {
@@ -53,13 +52,11 @@ const innerHeader = ({
   isCollapsed,
   handleClick,
   handleClickCollapse,
-  handleClickMenu,
   moveDimension,
   connectDragSource,
   connectDropTarget,
-  collectMenu,
-  gridId,
-  isRightClick
+  isDropTarget,
+  gridId
 }) => {
   const computedStyle = {
     whiteSpace: 'nowrap',
@@ -104,46 +101,22 @@ const innerHeader = ({
       {caption}
     </div>
   );
-  // contextual menu
-  if (!isNullOrUndefined(index) || id === MEASURE_ID) {
-    header = (
-      <ContextMenuTrigger
-        id={`context-menu-${gridId}`}
-        holdToDisplay={-1}
-        collect={collectMenu}
-        onItemClick={handleClickMenu}
-        type={'dimension-header'}
-        axis={axis}
-        dimensionId={id}
-        caption={caption}
-        index={index}
-        style={{ width: 'inherit' }}
-      >
-        {header}
-      </ContextMenuTrigger>
-    );
-  }
   header = (
-    <div
-      className="pivotgrid-header-inner"
-      style={computedStyle}
-      axis={axis}
-      id={id}
-      index={index}
-      moveDimension={moveDimension}
-    >
+    <div className="pivotgrid-header-inner" style={computedStyle} axis={axis}>
       {collapsedIcon}
       {header}
     </div>
   );
-
+  // id={id}
+  //       index={index}
+  //       moveDimension={moveDimension}
   // drag and drop of dimension headers to move dimensions
   // dimension header -> drag source
   if (!isNullOrUndefined(index)) {
     header = connectDragSource(header);
   }
   // dimension header -> drop target
-  if (!isNullOrUndefined(moveDimension)) {
+  if (isDropTarget) {
     header = connectDropTarget(header);
   }
 

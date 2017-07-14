@@ -49,9 +49,7 @@ class PivotGridDemo extends Component {
           titi: 'titi 0',
           tutu: '1',
           qty: 100,
-          amt: 100,
-
-          tutu: '0'
+          amt: 100
         },
         {
           toto: '666',
@@ -59,7 +57,6 @@ class PivotGridDemo extends Component {
           toto_0: 'aaaa',
           toto_1: 'bbbb',
           titi: 'titi 4',
-          tutu: '1',
           qty: 201,
           amt: 302,
           tutu: '4'
@@ -192,11 +189,40 @@ class PivotGridDemo extends Component {
           <div>
             <button onClick={this.addData}>Add data</button>
             <button onClick={this.toggleFilter}>Toggle filter</button>
-            <button onClick={this.toggleMeasureAxis}>Move measures</button>
-            <button onClick={this.toggleMeasure}>Toggle measure</button>
-            <button onClick={this.zoomIn}>Zoom in</button>
-            <button onClick={this.zoomOut}>Zoom out</button>
-            <button onClick={this.focusCell}>Focus cells</button>
+          </div>
+          <div>
+            Ctrl A : select all, Ctrl + : zoom in, Ctrl - : zoom out, Shift Up,
+            Down, Right, Left(, PageDown, PageUp, Home, End) to extend selection
+          </div>
+          <div> Dimension headers: </div>
+          <div> Click: toggle sort direction</div>
+          <div>
+            Drag and drop on an other dimension header to reorder or change axis
+            of a dimension.
+          </div>
+          <div>
+            Collapse or expand button to hide or show attribute dimensions (in
+            Italic).
+          </div>
+          <div>
+            Right and bottom handle drag and drop to resize rows or columns
+            headers.
+          </div>
+          <div>
+            Collapse or expand button to hide or show attribute dimensions (in
+            Italic).
+          </div>
+          <div>
+            Right click to sort, filter, remove or add a dimension.
+          </div>
+          <div> Column or row headers: </div>
+          <div> Click: select children headers columns or rows.</div>
+          <div>
+            Collapse or expand button to hide or show children headers and
+            recompute measures.
+          </div>
+          <div>
+            Right and bottom handle drag and drop to resize rows or columns.
           </div>
           <div>
             <ResizableBox height={basicConfig.height} width={basicConfig.width}>
@@ -220,5 +246,11 @@ class PivotGridDemo extends Component {
     );
   }
 }
-
+//
+// <button onClick={this.zoomIn}>Zoom in</button>
+//        <button onClick={this.zoomOut}>Zoom out</button>
+// <button onClick={this.zoomOut}>Zoom out</button>
+// <button onClick={this.focusCell}>Focus cells</button>
+//    <button onClick={this.toggleMeasureAxis}>Move measures</button>
+// <button onClick={this.toggleMeasure}>Toggle measure</button>
 export default DragDropContext(HTML5Backend)(PivotGridDemo);

@@ -25,6 +25,10 @@ export const getSelectedColumnRangeSelector = createSelector(
 			selectedCellEnd: {
 				columnIndex: stopIndex,
 				rowIndex: rowLeaves.length - 1
+			},
+			focusedCell: {
+				columnIndex: stopIndex,
+				rowIndex: null
 			}
 		};
 	}
@@ -39,6 +43,10 @@ export const getSelectedRowRangeSelector = createSelector(
 			selectedCellStart: { columnIndex: 0, rowIndex: startIndex },
 			selectedCellEnd: {
 				columnIndex: columnLeaves.length - 1,
+				rowIndex: stopIndex
+			},
+			focusedCell: {
+				columnIndex: null,
 				rowIndex: stopIndex
 			}
 		};

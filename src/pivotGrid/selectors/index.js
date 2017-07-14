@@ -27,7 +27,8 @@ import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
   columnDimensionsSelector,
-  availableDimensionsSelector
+  availableDimensionsSelector,
+  availableMeasuresSelector
 } from './dimensions.selector';
 import {
   getCellValueSelector,
@@ -53,6 +54,7 @@ export { getAxisActivatedMeasuresSelector };
 export { rowDimensionsSelector };
 export { columnDimensionsSelector };
 export { availableDimensionsSelector };
+export { availableMeasuresSelector };
 export { crossPositionsSelector };
 export { rowsHeightSelector };
 export { rowHeadersWidthSelector };

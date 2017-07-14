@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import { AxisType, toAxis } from '../../constants';
+import { AxisType, toAxis, MEASURE_ID } from '../../constants';
 import ResizeHandle from '../ResizeHandle/ResizeHandle';
 import InnerHeader from '../InnerHeader/InnerHeader';
-
+import { ContextMenuTrigger } from 'react-contextmenu';
 class Header extends Component {
   handleClickCollapse = () => {
     const { toggleCollapse, header } = this.props;
@@ -12,37 +12,32 @@ class Header extends Component {
   handleClick = () => {
     this.props.selectAxis(this.props.header);
   };
+
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      if (data.action === 'remove') {
-        this.props.moveDimension(
-          data.dimensionId,
-          toAxis(data.axis),
-          toAxis(AxisType.DIMENSION)
-        );
-      }
-      if (data.action === 'add') {
-        this.props.moveDimension(
-          data.newDimensionId,
-          toAxis(AxisType.DIMENSION),
-          toAxis(data.axis),
-          data.index
-        );
-      }
       if (data.action === 'move') {
         this.props.moveDimension(
-          data.newDimensionId,
-          toAxis(AxisType.DIMENSION),
+          MEASURE_ID,
           toAxis(data.axis),
-          data.index
+          toAxis(
+            data.axis === AxisType.COLUMNS ? AxisType.ROWS : AxisType.COLUMNS
+          )
         );
+      }
+      if (data.action === 'remove') {
+        this.props.toggleMeasure(data.measureId);
+      }
+      if (data.action === 'add') {
+        this.props.toggleMeasure(data.newMeasureId);
       }
     }
   };
   render() {
     const {
       axis,
-      dimensionKey,
+      dimensionId,
+      // dimensionKey,
+      // measureIndex,
       gridId,
       header,
       caption,
@@ -53,7 +48,9 @@ class Header extends Component {
       isNotCollapsible,
       isCollapsed,
       isAffixManaged,
-      moveDimension
+      moveDimension,
+      collectMenu,
+      isDropTarget
     } = this.props;
     let style = positionStyle;
 
@@ -80,12 +77,12 @@ class Header extends Component {
       }
     }
 
-    const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionKey;
-    const bottomKey = axis === AxisType.ROWS ? header.keykey : dimensionKey;
+    const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
+    const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
 
-    return (
+    const head = (
       <div
         className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
         style={{
@@ -98,7 +95,7 @@ class Header extends Component {
       >
         <InnerHeader
           axis={axis}
-          id={dimensionKey}
+          id={dimensionId}
           index={null}
           caption={caption}
           isNotCollapsible={isNotCollapsible}
@@ -107,7 +104,7 @@ class Header extends Component {
           handleClick={this.handleClick}
           handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
-          collectMenu={this.collectMenu}
+          isDropTarget={isDropTarget}
           gridId={gridId}
         />
         <ResizeHandle
@@ -130,6 +127,26 @@ class Header extends Component {
         />
       </div>
     );
+    if (dimensionId === MEASURE_ID) {
+      return (
+        <ContextMenuTrigger
+          id={`context-menu-${axis}-${gridId}`}
+          holdToDisplay={-1}
+          collect={collectMenu}
+          onItemClick={this.handleClickMenu}
+          type={`header-${axis}`}
+          axis={axis}
+          dimensionId={dimensionId}
+          measureId={header.id}
+          caption={caption}
+          style={{ width: 'inherit' }}
+        >
+          {head}
+        </ContextMenuTrigger>
+      );
+    } else {
+      return head;
+    }
   }
 }
 

@@ -80,7 +80,6 @@ function getSelectedText({
   // build string with corner headers and column headers
   let output = '';
   let caption;
-  let leaf;
 
   // // First rows with only the dimension and columns headers (corner)
   const depth = columnDimensions.length;

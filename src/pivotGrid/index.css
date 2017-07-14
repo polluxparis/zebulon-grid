@@ -79,16 +79,14 @@
   /*background-color: lightgreen;*/
   border: solid .05em;
 }
+
 .react-contextmenu {
-  min-width: 100px;
-  padding: 5px 0;
-  margin: 2px 0 0;
-  font-size: 16px;
+  min-width: 9em;
   color: #373a3c;
   text-align: left;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, .15);
+  border: .01em solid rgba(0, 0, 0, .15);
   border-radius: .25rem;
   outline: none;
   opacity: 0;
@@ -99,11 +97,11 @@
 .react-contextmenu.react-contextmenu--visible {
   opacity: 1;
   pointer-events: auto;
-  z-index: 100;
+  z-index: 4;
 }
 
 .react-contextmenu-item {
-  padding: 3px 5px;
+  padding: .2em .2em;
   font-weight: 400;
   line-height: 1.5;
   color: #373a3c;

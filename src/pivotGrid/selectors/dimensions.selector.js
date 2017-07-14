@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
-import { filteredDataSelector } from './data.selector';
-import { EMPTY_ID, ROOT_ID } from '../constants';
+// import { filteredDataSelector } from './data.selector';
+import { ROOT_ID } from '../constants';
 const getAxisDimensions = (axis, dimensions, collapses) => {
 	let prevDimension = { id: ROOT_ID };
 	return axis
@@ -58,4 +58,12 @@ export const activatedMeasuresSelector = createSelector(
 			.map(id => measures[id])
 			.filter(measure => measure.activated)
 			.reduce((acc, mea) => ({ ...acc, [mea.id]: mea }), {})
+);
+export const availableMeasuresSelector = createSelector(
+	[measuresSelector],
+	measures =>
+		Object.keys(measures)
+			.map(id => measures[id])
+			.filter(measure => !measure.activated)
+	// .reduce((acc, mea) => ({ ...acc, [mea.id]: mea }), {})
 );

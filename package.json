@@ -10,6 +10,7 @@
     "autoprefixer": "6.7.2",
     "babel-cli": "6.23.0",
     "babel-jest": "^20.0.3",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-react-app": "3.0.0",
     "cross-env": "3.1.4",
     "enzyme": "^2.8.2",
@@ -47,7 +48,7 @@
     "build:test": "REACT_APP_PIVOTGRID_ENV=fps-test npm run build",
     "compile": "npm run lint && npm run compile:js &&npm run compile:css",
     "lint": "eslint src/**/*.js",
-    "compile:js": "rimraf lib/commonjs && cross-env NODE_ENV=production babel src/pivotGrid -d lib/commonjs --presets react-app --ignore test.js",
+    "compile:js": "rimraf lib/commonjs && cross-env NODE_ENV=production babel src/pivotGrid -d lib/commonjs --presets es2015,react-app --ignore test.js",
     "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "peerDependencies": {},

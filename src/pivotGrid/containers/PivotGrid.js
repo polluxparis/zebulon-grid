@@ -19,7 +19,8 @@ import {
   updateCellSize,
   setConfigProperty,
   selectRange,
-  selectCell
+  selectCell,
+  zoom
 } from '../actions';
 import copy from '../services/copyService';
 
@@ -79,12 +80,15 @@ const mapDispatchToProps = dispatch => ({
   },
   selectCell: cell => {
     dispatch(selectCell(cell));
+  },
+  zoom: type => {
+    dispatch(zoom(type));
   }
 });
 
 const mergeProps = (
   { width, layout, headerSizes, sizes, defaultCellSizes, selectedRange, copy },
-  { updateCellSize, setSizes, selectRange, selectCell },
+  { updateCellSize, setSizes, selectRange, selectCell, zoom },
   ownProps
 ) => ({
   width,
@@ -95,6 +99,7 @@ const mergeProps = (
   selectRange,
   selectCell,
   selectedRange,
+  zoom,
   copy,
   ...ownProps
 });

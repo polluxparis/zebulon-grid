@@ -2,7 +2,7 @@ import { getAxisActivatedMeasuresSelector } from './axis.selector';
 // import { measureFactory, dimensionFactory } from '../dimensions';
 import { AxisType } from '../Axis';
 
-describe('getAxisActivatedMeasuresSelector', () => {
+fdescribe('getAxisActivatedMeasuresSelector', () => {
   const measures = [{ id: 0 }];
   const measureHeadersAxis = 'rows';
   test('returns measures when axis has measures', () => {
@@ -21,25 +21,26 @@ describe('getAxisActivatedMeasuresSelector', () => {
   });
 });
 
-describe('buildAxisHeaders', () => {
-  test('build the correct row headers', () => {
-    const data = 1;
-    const axisTree = 1;
-    const dimensions = 1;
-    const measures = 1;
-    const areCollapsed = 1;
-    const actual = buildAxisHeaders(
-      data,
-      axisTree,
-      dimensions,
-      measures,
-      areCollapsed
-    );
-    // const expexted = 1;
-    // expect(actual).toEqual(expexted);
-    expect(actual).toMatchSnapshot();
-  });
-});
+// describe('buildAxisHeaders', () => {
+//   test('build the correct row headers', () => {
+//     const data = 1;
+//     const axisTree = 1;
+//     const dimensions = 1;
+//     const measures = 1;
+//     const areCollapsed = 1;
+//     const actual = buildAxisHeaders(
+//       data,
+//       axisTree,
+//       dimensions,
+//       measures,
+//       areCollapsed
+//     );
+//     // const expexted = 1;
+//     // expect(actual).toEqual(expexted);
+//     expect(actual).toMatchSnapshot();
+//   });
+// });
+//
 // xdescribe('axis with one dimension', () => {
 //   test('works', () => {
 //     const dimensions = {

@@ -5,50 +5,53 @@ import { MEASURE_ID, ROOT_ID, HeaderType, AxisType } from '../../constants';
 import HeaderComponent from '../Header/Header';
 import { isNull } from '../../utils/generic';
 import { getLeaves } from '../../utils/headers';
-
-function toComponent(
-  header,
-  caption,
-  axisType,
-  startIndex,
-  scrollTop,
-  scrollLeft,
-  previewSizes,
-  getLastChildSize,
-  span,
-  positionStyle,
-  dimensionKey,
-  isNotCollapsible,
-  isAffixManaged,
-  toggleCollapse,
-  moveDimension,
-  selectAxis,
-  gridId
-) {
-  return (
-    <HeaderComponent
-      key={`header-${header.key}`}
-      axis={axisType}
-      header={header}
-      caption={caption}
-      positionStyle={positionStyle}
-      span={span}
-      startIndex={startIndex}
-      scrollLeft={scrollLeft}
-      scrollTop={scrollTop}
-      previewSizes={previewSizes}
-      getLastChildSize={getLastChildSize}
-      dimensionKey={dimensionKey}
-      isNotCollapsible={isNotCollapsible}
-      isCollapsed={header.isCollapsed}
-      isAffixManaged={isAffixManaged}
-      gridId={gridId}
-      toggleCollapse={toggleCollapse}
-      selectAxis={selectAxis}
-      moveDimension={moveDimension}
-    />
-  );
-}
+import { connectMenu } from 'react-contextmenu';
+import ContextMenu from '../ContextMenu/ContextMenu';
+// function toComponent(
+//   header,
+//   caption,
+//   axisType,
+//   startIndex,
+//   scrollTop,
+//   scrollLeft,
+//   previewSizes,
+//   getLastChildSize,
+//   span,
+//   positionStyle,
+//   dimensionKey,
+//   isNotCollapsible,
+//   isAffixManaged,
+//   toggleCollapse,
+//   moveDimension,
+//   selectAxis,
+//   gridId,
+//   collectMenu
+// ) {
+//   return (
+//     <HeaderComponent
+//       key={`header-${header.key}`}
+//       axis={axisType}
+//       header={header}
+//       caption={caption}
+//       positionStyle={positionStyle}
+//       span={span}
+//       startIndex={startIndex}
+//       scrollLeft={scrollLeft}
+//       scrollTop={scrollTop}
+//       previewSizes={previewSizes}
+//       getLastChildSize={getLastChildSize}
+//       dimensionKey={dimensionKey}
+//       isNotCollapsible={isNotCollapsible}
+//       isCollapsed={header.isCollapsed}
+//       isAffixManaged={isAffixManaged}
+//       gridId={gridId}
+//       toggleCollapse={toggleCollapse}
+//       selectAxis={selectAxis}
+//       moveDimension={moveDimension}
+//       collectMenu={collectMenu}
+//     />
+//   );
+// }
 
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
@@ -69,10 +72,9 @@ class Headers extends PureComponent {
   collectMenu = props => {
     return {
       ...props,
-      availableDimensions: this.props.availableDimensions
+      availableMeasure: this.props.availableMeasures
     };
   };
-
   headersRenderer = ({
     rowSizeAndPositionManager,
     rowStartIndex,
@@ -99,6 +101,7 @@ class Headers extends PureComponent {
       toggleCollapse,
       selectAxis,
       moveDimension,
+      toggleMeasure,
       getSizeByKey,
       crossPositions
     } = this.props;
@@ -219,28 +222,32 @@ class Headers extends PureComponent {
           dimension.isAttribute ||
           header.depth >= lastNotMeasureDimensionIndex ||
           (!header.isCollapsed && span === measuresCount);
-        const isDragTarget = dimension.id === MEASURE_ID && header.depth === 0;
+        const isDropTarget = dimension.id === MEASURE_ID && header.depth === 0;
         // read parents (but only once)
         renderedCells.push(
-          toComponent(
-            header,
-            caption,
-            axisType,
-            rowStartIndex,
-            scrollTop,
-            scrollLeft,
-            previewSizes,
-            getLastChildSize,
-            span,
-            positionStyle,
-            dimension.id,
-            isNotCollapsible,
-            index === startIndex && isAffixManaged,
-            toggleCollapse,
-            isDragTarget ? moveDimension : null,
-            selectAxis,
-            gridId
-          )
+          <HeaderComponent
+            key={`header-${header.key}`}
+            axis={axisType}
+            header={header}
+            caption={caption}
+            positionStyle={positionStyle}
+            span={span}
+            scrollLeft={scrollLeft}
+            scrollTop={scrollTop}
+            previewSizes={previewSizes}
+            getLastChildSize={getLastChildSize}
+            dimensionId={dimension.id}
+            isNotCollapsible={isNotCollapsible}
+            isCollapsed={header.isCollapsed}
+            isAffixManaged={index === startIndex && isAffixManaged}
+            gridId={gridId}
+            toggleCollapse={toggleCollapse}
+            selectAxis={selectAxis}
+            moveDimension={moveDimension}
+            toggleMeasure={toggleMeasure}
+            isDropTarget={isDropTarget}
+            collectMenu={this.collectMenu}
+          />
         );
         header = header.parent;
       }
@@ -258,38 +265,46 @@ class Headers extends PureComponent {
       scrollTop,
       scrollLeft,
       height,
-      width
+      width,
+      gridId,
+      axisType
     } = this.props;
+    const ConnectedMenu = connectMenu(`context-menu-${axisType}-${gridId}`)(
+      ContextMenu
+    );
     return (
-      <ReactVirtualizedGrid
-        cellRangeRenderer={this.headersRenderer}
-        cellRenderer={function mock() {}}
-        // className="pivotgrid-row-headers"
-        // The position of inner style was set to static in react-virtualized 9.2.3
-        // This broke the grid because the height of the inner container was not reset
-        // when the height prop changed
-        // This is a workaround
-        containerStyle={{ position: 'static' }}
-        height={height}
-        width={width}
-        rowCount={rowCount}
-        rowHeight={getRowHeight}
-        columnCount={columnCount}
-        columnWidth={getColumnWidth}
-        ref={ref => {
-          this.grid = ref;
-        }}
-        scrollLeft={scrollLeft}
-        scrollTop={scrollTop}
-        overscanRowCount={0}
-        // We set overflowX and overflowY and not overflow
-        // because react-virtualized sets them during render
-        style={{
-          fontSize: `${zoom * 100}%`,
-          overflowX: 'hidden',
-          overflowY: 'hidden'
-        }}
-      />
+      <div>
+        <ReactVirtualizedGrid
+          cellRangeRenderer={this.headersRenderer}
+          cellRenderer={function mock() {}}
+          // className="pivotgrid-row-headers"
+          // The position of inner style was set to static in react-virtualized 9.2.3
+          // This broke the grid because the height of the inner container was not reset
+          // when the height prop changed
+          // This is a workaround
+          containerStyle={{ position: 'static' }}
+          height={height}
+          width={width}
+          rowCount={rowCount}
+          rowHeight={getRowHeight}
+          columnCount={columnCount}
+          columnWidth={getColumnWidth}
+          ref={ref => {
+            this.grid = ref;
+          }}
+          scrollLeft={scrollLeft}
+          scrollTop={scrollTop}
+          overscanRowCount={0}
+          // We set overflowX and overflowY and not overflow
+          // because react-virtualized sets them during render
+          style={{
+            fontSize: `${zoom * 100}%`,
+            overflowX: 'hidden',
+            overflowY: 'hidden'
+          }}
+        />
+        <ConnectedMenu />
+      </div>
     );
   }
 }

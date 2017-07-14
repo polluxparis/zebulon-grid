@@ -9,8 +9,8 @@ import DimensionHeaders from '../../containers/DimensionHeaders';
 import ColumnHeaders from '../../containers/ColumnHeaders';
 import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
-import { isEmpty } from '../../utils/generic';
-
+import { isEmpty, isNull } from '../../utils/generic';
+import { ZOOM_IN, ZOOM_OUT } from '../../constants';
 // ------------------------------------------
 
 class PivotGrid extends Component {
@@ -82,9 +82,12 @@ class PivotGrid extends Component {
     // if (nextScrollToRow >= 0) this.scrollToRow = nextScrollToRow;
     // if (nextScrollColumn >= 0) this.columnStartIndex = nextScrollColumn;
     if (!isEmpty(nextProps.selectedRange.focusedCell)) {
-      this.scrollToRow = nextProps.selectedRange.focusedCell.rowIndex;
-      this.scrollToColumn = nextProps.selectedRange.focusedCell.columnIndex;
+      this.scrollToRow =
+        nextProps.selectedRange.focusedCell.rowIndex || this.scrollToRow;
+      this.scrollToColumn =
+        nextProps.selectedRange.focusedCell.columnIndex || this.scrollToColumn;
     }
+    console.log([this.scrollToRow]);
   }
 
   componentDidUpdate(prevProps) {
@@ -121,24 +124,13 @@ class PivotGrid extends Component {
       }
       // ctrl + -> zoom in
       if (e.key === '+') {
-        this.props.selectRange({
-          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-          selectedCellEnd: {
-            columnIndex: columnHorizontalCount,
-            rowIndex: rowVerticalCount
-          }
-        });
+        this.props.zoom(ZOOM_IN);
+
         e.preventDefault();
       }
       // ctrl - -> zoom out
-      if (e.key === '+') {
-        this.props.selectRange({
-          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-          selectedCellEnd: {
-            columnIndex: columnHorizontalCount,
-            rowIndex: rowVerticalCount
-          }
-        });
+      if (e.key === '-') {
+        this.props.zoom(ZOOM_OUT);
         e.preventDefault();
       }
     }
@@ -153,11 +145,42 @@ class PivotGrid extends Component {
   };
 
   handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
+    const selectedRange = this.props.selectedRange;
+
     if (this.shiftKeyIsPressed) {
-      this.props.selectRange({
-        selectedCellEnd: { columnIndex: scrollToColumn, rowIndex: scrollToRow },
-        focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
-      });
+      // after column selection
+      if (isNull(selectedRange.focusedCell.rowIndex)) {
+        const columnIndex =
+          selectedRange.selectedCellEnd.columnIndex +
+          (scrollToColumn > this.scrollToColumn ? 1 : -1);
+        this.props.selectRange({
+          selectedCellEnd: {
+            columnIndex,
+            rowIndex: selectedRange.selectedCellEnd.rowIndex
+          },
+          focusedCell: { columnIndex, rowIndex: null }
+        });
+      } else if (isNull(selectedRange.focusedCell.columnIndex)) {
+        // after row  selection
+        const rowIndex =
+          selectedRange.selectedCellEnd.rowIndex +
+          (scrollToRow > this.scrollToRow ? 1 : -1);
+        this.props.selectRange({
+          selectedCellEnd: {
+            rowIndex,
+            columnIndex: selectedRange.selectedCellEnd.columnIndex
+          },
+          focusedCell: { rowIndex, columnIndex: null }
+        });
+      } else {
+        this.props.selectRange({
+          selectedCellEnd: {
+            columnIndex: scrollToColumn,
+            rowIndex: scrollToRow
+          },
+          focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
+        });
+      }
     } else {
       this.props.selectCell({
         columnIndex: scrollToColumn,

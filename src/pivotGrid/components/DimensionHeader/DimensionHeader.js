@@ -5,6 +5,7 @@ import InnerHeader from '../InnerHeader/InnerHeader';
 import ResizeHandle from '../ResizeHandle/ResizeHandle';
 
 import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from '../../constants';
+import { ContextMenuTrigger } from 'react-contextmenu';
 
 class DimensionHeader extends Component {
   handleClickCollapse = e => {
@@ -40,6 +41,11 @@ class DimensionHeader extends Component {
           data.index
         );
       }
+      if (data.action === 'sort') {
+        this.props.toggleSortOrder(data.dimensionId);
+      }
+      if (data.action === 'filter') {
+      }
     }
   };
 
@@ -47,6 +53,7 @@ class DimensionHeader extends Component {
     const {
       dimensionId,
       dimensionIndex,
+      sortDirection,
       caption,
       left,
       top,
@@ -60,7 +67,8 @@ class DimensionHeader extends Component {
       gridId,
       moveDimension,
       isAttribute,
-      collectMenu
+      collectMenu,
+      isDropTarget
     } = this.props;
 
     const ids = {};
@@ -79,7 +87,7 @@ class DimensionHeader extends Component {
       'pivotgrid-dimension-header-row': axis === AxisType.ROWS,
       'pivotgrid-dimension-attribute-header': isAttribute
     });
-    return (
+    let header = (
       <div
         key={`fixed-dim-${dimensionId}`}
         className={className}
@@ -104,9 +112,8 @@ class DimensionHeader extends Component {
           isCollapsed={isCollapsed}
           handleClick={this.handleClickSort}
           handleClickCollapse={this.handleClickCollapse}
-          handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
-          collectMenu={collectMenu}
+          isDropTarget={isDropTarget}
           gridId={gridId}
         />
         <ResizeHandle
@@ -128,6 +135,25 @@ class DimensionHeader extends Component {
 
       </div>
     );
+
+    return (
+      <ContextMenuTrigger
+        id={`context-menu-dimension-header-${gridId}`}
+        holdToDisplay={-1}
+        collect={collectMenu}
+        onItemClick={this.handleClickMenu}
+        type={'dimension-header'}
+        axis={axis}
+        dimensionId={dimensionId}
+        sortDirection={sortDirection}
+        caption={caption}
+        index={dimensionIndex}
+        style={{ width: 'inherit' }}
+      >
+        {header}
+      </ContextMenuTrigger>
+    );
   }
 }
+
 export default DimensionHeader;

@@ -9,6 +9,7 @@ import {
   getCellHeightByKeySelector,
   rowLeavesSelector,
   getAxisActivatedMeasuresSelector,
+  availableMeasuresSelector,
   filteredDataSelector,
   rowDimensionsSelector,
   rowsVisibleHeightSelector,
@@ -17,7 +18,12 @@ import {
   crossPositionsSelector
 } from '../selectors';
 import Headers from '../components/Headers/Headers';
-import { toggleCollapse, selectRange, moveDimension } from '../actions';
+import {
+  toggleCollapse,
+  selectRange,
+  moveDimension,
+  toggleMeasure
+} from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
   const rowDimensions = rowDimensionsSelector(state);
@@ -28,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     data: filteredDataSelector(state),
     dimensions: rowDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
+    availableMeasures: availableMeasuresSelector(state),
     columnCount: getLayoutSelector(state).rowHorizontalCount,
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(rowDimensions[index].id),
@@ -57,7 +64,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectRange(selectedRange));
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) =>
-    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position))
+    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position)),
+  toggleMeasure: measureId => dispatch(toggleMeasure(measureId))
 });
 
 const mergeProps = (

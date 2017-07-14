@@ -1,4 +1,4 @@
-import { dimensionFactory, measureFactory } from "../hydrateStore";
+import { dimensionFactory, measureFactory } from '../hydrateStore';
 import {
   SET_AXIS,
   SET_DIMENSIONS,
@@ -8,7 +8,7 @@ import {
   MOVE_DIMENSION,
   ZOOM_IN,
   ZOOM_OUT
-} from "../constants";
+} from '../constants';
 
 export const setDimensions = configObject => ({
   type: SET_DIMENSIONS,
@@ -46,5 +46,12 @@ export const setAxis = axis => ({
   axis
 });
 
-export const zoomIn = () => ({ type: ZOOM_IN });
+export const zoomIn = () => {
+  console.log('zoom in action');
+  return { type: ZOOM_IN };
+};
 export const zoomOut = () => ({ type: ZOOM_OUT });
+export const zoom = type => {
+  console.log(['zoom action', type]);
+  return { type };
+};

@@ -151,12 +151,14 @@ function buildHeaders(
       header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
     ) {
       let childrenDimension = dimensions[depth + 1];
+
       if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
         childrenDimension =
           dimensions[
             dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
-          ];
+          ] || childrenDimension;
       }
+      console.log([childrenDimension, depth + 1, dimensions, header]);
       let sortFunction;
       if (childrenDimension.sort.custom) {
         sortFunction = (a, b) =>

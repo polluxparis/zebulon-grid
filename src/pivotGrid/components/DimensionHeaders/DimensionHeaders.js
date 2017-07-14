@@ -9,7 +9,8 @@ class DimensionHeaders extends Component {
   collectMenu = props => {
     return {
       ...props,
-      availableDimensions: this.props.availableDimensions
+      availableDimensions: this.props.availableDimensions,
+      direction: props.sortDirection === 'asc' ? 'descending' : 'ascending'
     };
   };
   // ---------------------------------------------------
@@ -66,19 +67,20 @@ class DimensionHeaders extends Component {
             height={positions.height}
             dimensionId={dimension.id}
             dimensionIndex={index}
+            sortDirection={dimension.sort.direction}
             caption={dimension.caption}
             axis={axis}
             crossDimensionId={lastCrossDimensionId}
             isNotCollapsible={isNotCollapsible}
-            isCollapsed={dimension.isCollapsed}
+            isCollapsed={dimension.isCollapsed || false}
             previewSizes={previewSizes}
             gridId={gridId}
             toggleCollapseDimension={toggleCollapseDimension}
             toggleSortOrder={toggleSortOrder}
             moveDimension={moveDimension}
+            isDropTarget={true}
             isAttribute={dimension.isAttribute}
             collectMenu={this.collectMenu}
-            isRightClick={this.isRightClick}
           />
         );
       }
@@ -95,7 +97,9 @@ class DimensionHeaders extends Component {
       zoom,
       gridId
     } = this.props;
-    const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
+    const ConnectedMenu = connectMenu(
+      `context-menu-dimension-header-${gridId}`
+    )(ContextMenu);
     let headers = [];
     let lastCrossDimensionId;
     if (rowDimensions.length === 0) {
