@@ -22,7 +22,8 @@ export const AxisType = {
 	COLUMNS: 1,
 	ROWS: 2,
 	MEASURE: 3,
-	DIMENSION: 4
+	DIMENSION: 4,
+	DATACELL: 5
 };
 
 export function toAxis(axisType) {

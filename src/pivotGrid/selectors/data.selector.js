@@ -1,13 +1,13 @@
 import { createSelector } from 'reselect';
 import { pass } from '../Filtering';
-import { isDate, isNumber } from '../utils/generic';
+import { isUndefined } from '../utils/generic';
 
 const getFilters = state => state.filters || {};
 const getData = state => state.data;
 
 export const filteredDataSelector = createSelector(
-  [getData, getFilters],
-  (data, filtersObject) => {
+  [getData, getFilters, state => state.dimensions],
+  (data, filtersObject, dimensions) => {
     const filters = [
       ...Object.keys(filtersObject).map(id => filtersObject[id])
     ];
@@ -15,72 +15,59 @@ export const filteredDataSelector = createSelector(
       return data;
     }
     return data.filter(row =>
-      filters.every(filter => pass(filter, row[filter.dimensionId]))
+      filters.every(filter =>
+        pass(filter, dimensions[filter.dimensionId].keyAccessor(row))
+      )
     );
   }
 );
 
 export const dimensionValuesSelector = createSelector(
-  [getData],
-  data => (dimension, filterFunc) => {
-    const values = [];
-    const labels = [];
-    let res = [];
-    const labelsMap = {};
-    const valuesMap = {};
-    let containsBlank = false;
+  [getData, getFilters, state => state.dimensions],
+  (data, filters, dimensions) => id => {
+    const dimension = dimensions[id];
+    const filter = filters[id] || {};
+    // const values = [];
+    // const labels = [];
+
+    let values = {};
+    let countNotFiltered = 0;
     // We use data here instead of filteredData
     // Otherwise you lose the filtered values the next time you open a Filter Panel
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
-      const val = row[dimension.id];
-      const label = row[dimension.name];
-      labelsMap[val] = label;
-      valuesMap[label] = val;
-      if (filterFunc !== undefined) {
-        if (
-          filterFunc === true ||
-          (typeof filterFunc === 'function' && filterFunc(val))
-        ) {
-          values.push(val);
-          labels.push(label);
-        }
-      } else if (val != null) {
-        values.push(val);
-        labels.push(label);
-      } else {
-        containsBlank = true;
+      const key = dimension.keyAccessor(row);
+      if (isUndefined(values[key])) {
+        // const label = dimension.format(dimension.labelAccessor(row));
+        const label = dimension.labelAccessor(row);
+        const sortKey = dimension.sort.keyAccessor(row);
+        const isNotFiltered = pass(filter, key);
+        countNotFiltered += isNotFiltered;
+        values[key] = {
+          key: key,
+          label: label,
+          sortKey: sortKey,
+          filterOperator: filter.operator,
+          isNotFiltered: isNotFiltered
+        };
       }
     }
-    if (labels.length > 1) {
-      if (isNumber(labels[0]) || isDate(labels[0])) {
-        labels.sort((a, b) => {
-          if (a) {
-            if (b) {
-              return a - b;
-            }
-            return 1;
-          }
-          if (b) {
-            return -1;
-          }
-          return 0;
-        });
-      } else {
-        labels.sort();
-      }
-
-      for (let vi = 0; vi < labels.length; vi += 1) {
-        if (vi === 0 || labels[vi] !== res[res.length - 1].label) {
-          res.push({ value: valuesMap[labels[vi]], label: labels[vi] });
-        }
-      }
+    values = Object.keys(values).map(key => values[key]);
+    let sortFunction;
+    if (dimension.sort.custom) {
+      sortFunction = (a, b) => dimension.sort.custom(a.sortKey, b.sortKey);
     } else {
-      res = values.map(value => ({ value, label: labelsMap[value] }));
+      sortFunction = (a, b) =>
+        (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
     }
-    if (containsBlank) {
-      res.unshift({ value: null, label: '' });
-    }
-    return res;
+    values.sort(sortFunction);
+    // if (containsBlank) {
+    //   values.unshift({ key: null, label: '', sortKey: null });
+    // }
+    return { values, noFilter: values.length === countNotFiltered };
   }
+);
+export const dimensionFiltersSelector = createSelector(
+  [getFilters],
+  filters => dimensionId => filters[dimensionId]
 );

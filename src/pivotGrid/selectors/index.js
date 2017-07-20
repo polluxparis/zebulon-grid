@@ -28,14 +28,19 @@ import {
   rowDimensionsSelector,
   columnDimensionsSelector,
   availableDimensionsSelector,
-  availableMeasuresSelector
+  availableMeasuresSelector,
+  dimensionsSelector
 } from './dimensions.selector';
 import {
   getCellValueSelector,
   getCellInfosSelector,
   getCellDimensionInfosSelector
 } from './cell.selector';
-import { dimensionValuesSelector, filteredDataSelector } from './data.selector';
+import {
+  dimensionValuesSelector,
+  dimensionFiltersSelector,
+  filteredDataSelector
+} from './data.selector';
 import {
   selectedRangeSelector,
   getSelectedColumnRangeSelector,
@@ -52,6 +57,7 @@ export { columnsWidthSelector };
 export { activatedMeasuresSelector };
 export { getAxisActivatedMeasuresSelector };
 export { rowDimensionsSelector };
+export { dimensionsSelector };
 export { columnDimensionsSelector };
 export { availableDimensionsSelector };
 export { availableMeasuresSelector };
@@ -68,6 +74,7 @@ export { getCellValueSelector, getCellInfosSelector };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
 export { dimensionValuesSelector };
+export { dimensionFiltersSelector };
 export { filteredDataSelector };
 export { getCellDimensionInfosSelector };
 export { getCellHeightByKeySelector };

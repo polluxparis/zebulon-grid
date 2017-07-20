@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-
+// import Checkbox from 'rc-checkbox';
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
+import Filter from './pivotGrid/containers/Filter';
 /* eslint-disable import/no-extraneous-dependencies*/
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';

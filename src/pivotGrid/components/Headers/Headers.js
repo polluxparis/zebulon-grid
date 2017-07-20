@@ -7,72 +7,32 @@ import { isNull } from '../../utils/generic';
 import { getLeaves } from '../../utils/headers';
 import { connectMenu } from 'react-contextmenu';
 import ContextMenu from '../ContextMenu/ContextMenu';
-// function toComponent(
-//   header,
-//   caption,
-//   axisType,
-//   startIndex,
-//   scrollTop,
-//   scrollLeft,
-//   previewSizes,
-//   getLastChildSize,
-//   span,
-//   positionStyle,
-//   dimensionKey,
-//   isNotCollapsible,
-//   isAffixManaged,
-//   toggleCollapse,
-//   moveDimension,
-//   selectAxis,
-//   gridId,
-//   collectMenu
-// ) {
-//   return (
-//     <HeaderComponent
-//       key={`header-${header.key}`}
-//       axis={axisType}
-//       header={header}
-//       caption={caption}
-//       positionStyle={positionStyle}
-//       span={span}
-//       startIndex={startIndex}
-//       scrollLeft={scrollLeft}
-//       scrollTop={scrollTop}
-//       previewSizes={previewSizes}
-//       getLastChildSize={getLastChildSize}
-//       dimensionKey={dimensionKey}
-//       isNotCollapsible={isNotCollapsible}
-//       isCollapsed={header.isCollapsed}
-//       isAffixManaged={isAffixManaged}
-//       gridId={gridId}
-//       toggleCollapse={toggleCollapse}
-//       selectAxis={selectAxis}
-//       moveDimension={moveDimension}
-//       collectMenu={collectMenu}
-//     />
-//   );
-// }
-
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
     if (nextProps.headers !== this.props.headers) {
       this.cellCache = {};
     }
   };
+  componentShouldUpdate = nextProps =>
+    nextProps.sizes !== this.props.sizes ||
+    nextProps.zoom !== this.props.zoom ||
+    nextProps.leaves !== this.props.leaves;
+
   componentDidUpdate = prevProps => {
     if (
       prevProps.sizes !== this.props.sizes ||
-      prevProps.headers !== this.props.headers ||
+      prevProps.dimensions !== this.props.dimensions ||
       prevProps.zoom !== this.props.zoom
     ) {
-      this.grid.recomputeGridSize();
     }
+    this.grid.recomputeGridSize();
   };
 
   collectMenu = props => {
     return {
       ...props,
-      availableMeasure: this.props.availableMeasures
+      availableMeasures: this.props.availableMeasures,
+      measures: this.props.measures
     };
   };
   headersRenderer = ({
@@ -105,7 +65,7 @@ class Headers extends PureComponent {
       getSizeByKey,
       crossPositions
     } = this.props;
-
+    console.log(rowStartIndex, rowStopIndex);
     const renderedCells = [];
 
     let startIndex, stopIndex, sizeAndPositionManager, offsetAdjustment;

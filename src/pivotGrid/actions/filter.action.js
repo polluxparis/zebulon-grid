@@ -1,4 +1,4 @@
-import { ADD_FILTER, DELETE_FILTER } from "../constants";
+import { ADD_FILTER, DELETE_FILTER } from '../constants';
 
 export const addFilter = (
   dimensionId,
@@ -6,11 +6,14 @@ export const addFilter = (
   term,
   staticValue,
   excludeStatic
-) => ({
-  type: ADD_FILTER,
-  filter: { dimensionId, operator, term, staticValue, excludeStatic },
-  dimension: dimensionId
-});
+) => {
+  const a = 1;
+  return {
+    type: ADD_FILTER,
+    filter: { dimensionId, operator, term, staticValue, excludeStatic },
+    dimension: dimensionId
+  };
+};
 
 export const deleteFilter = dimensionId => ({
   type: DELETE_FILTER,

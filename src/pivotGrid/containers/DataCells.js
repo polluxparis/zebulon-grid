@@ -11,7 +11,8 @@ import {
   getCellValueSelector,
   getCellInfosSelector,
   activatedMeasuresSelector,
-  selectedRangeSelector
+  selectedRangeSelector,
+  dimensionsSelector
 } from '../selectors';
 import DataCells from '../components/DataCells/DataCells';
 import { selectRange, selectCell } from '../actions';
@@ -27,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     columnLeaves,
     selectedRange,
     getCellValue,
+    dimensions: dimensionsSelector(state),
     getCellInfosSelector: getCellInfosSelector(state),
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(columnLeaves[index].key),

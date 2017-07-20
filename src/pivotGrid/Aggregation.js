@@ -45,6 +45,17 @@ export function avg(accessor, intersection, data) {
   }
   return avg;
 }
+export function weighted_avg(accessor, intersection, data) {
+  let wavg = [0, 0];
+  const len = intersection.length;
+  if (len > 0) {
+    forEachIntersection(accessor, intersection, data, val => {
+      wavg[0] += val[0];
+      wavg[1] += val[1];
+    });
+  }
+  return wavg[0] / wavg[1];
+}
 export function prod(accessor, intersection, data) {
   let prod = null;
   const len = intersection.length;

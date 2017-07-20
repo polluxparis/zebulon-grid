@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-
+import { ContextMenuTrigger } from 'react-contextmenu';
 export default class DataCell extends PureComponent {
   handleMouseDown = e => {
     this.props.handleMouseDown(e, {
@@ -20,14 +20,23 @@ export default class DataCell extends PureComponent {
       rowIndex: this.props.rowIndex
     });
   };
-
+  handleClickMenu = (e, data, target) => {
+    if (e.button === 0) {
+      if (data.action === 'drilldown') {
+        this.handleDoubleClick();
+      }
+    }
+  };
   render() {
     const {
       caption,
       rowIndex,
+      columnIndex,
       selected,
       focused,
-      valueHasChanged
+      valueHasChanged,
+      collectMenu,
+      gridId
     } = this.props;
     const style = {
       boxSizing: 'border-box',
@@ -43,16 +52,27 @@ export default class DataCell extends PureComponent {
     });
 
     return (
-      <div
-        className={className}
-        style={{ ...style, ...this.props.style }}
-        onMouseDown={this.handleMouseDown}
-        onMouseOver={this.handleMouseOver}
-        onMouseUp={this.props.handleMouseUp}
-        onDoubleClick={this.handleDoubleClick}
+      <ContextMenuTrigger
+        id={`context-menu-data-cell-${gridId}`}
+        holdToDisplay={-1}
+        collect={collectMenu}
+        onItemClick={this.handleClickMenu}
+        type={'data-cell'}
+        style={{ width: 'inherit' }}
+        rowIndex={rowIndex}
+        columnIndex={columnIndex}
       >
-        {caption}
-      </div>
+        <div
+          className={className}
+          style={{ ...style, ...this.props.style }}
+          onMouseDown={this.handleMouseDown}
+          onMouseOver={this.handleMouseOver}
+          onMouseUp={this.props.handleMouseUp}
+          onDoubleClick={this.handleDoubleClick}
+        >
+          {caption}
+        </div>
+      </ContextMenuTrigger>
     );
   }
 }

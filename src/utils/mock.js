@@ -175,8 +175,8 @@ export const basicConfig = {
     {
       id: 'price',
       caption: 'Price',
-      aggregation: 'avg',
-      valueAccessor: row => row.amt / row.qty,
+      aggregation: 'weighted_avg',
+      valueAccessor: row => [row.amt, row.qty],
       format: formats.price
     }
   ],

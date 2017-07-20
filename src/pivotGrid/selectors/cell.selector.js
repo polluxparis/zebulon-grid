@@ -58,40 +58,49 @@ export const getCellValueSelector = createSelector(
   }
 );
 
-const cellDimensionInfos = (
-  data,
-  axisDimensions,
-  axis,
-  leaf,
-  measures,
-  dimensions
-) => {
+const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   let l = leaf;
   const depth = axisDimensions.length;
   let dimension;
-  const row = data[leaf.dataIndexes[0]];
+  const dimensions = [];
+  const row = isNullOrUndefined(leaf.dataIndexes)
+    ? null
+    : data[leaf.dataIndexes[0]];
   for (let index = depth - 1; index >= 0; index -= 1) {
     dimension = axisDimensions[index];
+
     // when a leaf is collapsed its parent  has a depth < leaf.depth -1
     // we  have to push an empty cell in this case
     if (index > l.depth) {
       dimensions.push({
         axis,
-        dimension: { id: dimension.id, caption: dimension.caption },
-        cell: { id: '', caption: '' }
+        dimension: {
+          id: dimension.id,
+          caption: dimension.caption,
+          isCollapsed: true
+        },
+        cell: { id: null, caption: null }
       });
     } else if (dimension.id === MEASURE_ID) {
       dimensions.push({
         axis,
-        dimension: { id: dimension.id, caption: 'measures' },
-        cell: { id: leaf.id, caption: measures[leaf.id].caption }
+        dimension: {
+          id: dimension.id,
+          caption: 'measures',
+          isCollapsed: false
+        },
+        cell: { id: l.id, caption: measures[l.id].caption }
       });
       l = l.parent;
     } else {
       dimensions.push({
         axis,
-        dimension: { id: dimension.id, caption: dimension.caption },
-        cell: { id: leaf.id, caption: dimension.labelAccessor(row) }
+        dimension: {
+          id: dimension.id,
+          caption: dimension.caption,
+          isCollapsed: false
+        },
+        cell: { id: l.id, caption: dimension.labelAccessor(row) }
       });
 
       l = l.parent;
@@ -151,17 +160,21 @@ export const getCellInfosSelector = createSelector(
       rowDimensions,
       'rows',
       rowLeaf,
-      measures,
-      dimensions
+      measures
     );
-    dimensions = cellDimensionInfos(
-      data,
-      columnDimensions,
-      'columns',
-      columnLeaf,
-      measures,
-      dimensions
+    dimensions = dimensions.concat(
+      cellDimensionInfos(
+        data,
+        columnDimensions,
+        'columns',
+        columnLeaf,
+        measures
+      )
     );
-    return { value, dimensions, data };
+    const usedData = twoArraysIntersect(
+      rowLeaf.dataIndexes,
+      columnLeaf.dataIndexes
+    ).map(x => data[x]);
+    return { value, dimensions, data: usedData };
   }
 );

@@ -48,7 +48,10 @@ export const availableDimensionsSelector = createSelector(
 	[state => state.axis.dimensions, state => state.dimensions],
 	(dimensionAxis, dimensions) => dimensionAxis.map(id => dimensions[id])
 );
-
+export const dimensionsSelector = createSelector(
+	[state => state.dimensions],
+	dimensions => Object.keys(dimensions).map(id => dimensions[id])
+);
 const measuresSelector = state => state.measures;
 
 export const activatedMeasuresSelector = createSelector(

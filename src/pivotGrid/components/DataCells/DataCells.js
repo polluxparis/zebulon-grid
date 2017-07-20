@@ -3,8 +3,9 @@ import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Gr
 
 import { isInRange, isUndefined } from '../../utils/generic';
 import DataCellComponent from '../DataCell/DataCell';
-import { AXIS_SEPARATOR, HeaderType } from '../../constants';
-
+import { AXIS_SEPARATOR, HeaderType, AxisType } from '../../constants';
+import { connectMenu } from 'react-contextmenu';
+import ContextMenu from '../ContextMenu/ContextMenu';
 class DataCells extends PureComponent {
   state = {
     valuesCache: {}
@@ -13,17 +14,50 @@ class DataCells extends PureComponent {
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
   }
+  componentShouldUpdate(nextProps) {
+    // if (
+    //   nextProps.zoom !== this.props.zoom ||
+    //   nextProps.sizes !== this.props.sizes
+    // ) {
+    //   this.grid.recomputeGridSize();
+    // }
+    return (
+      nextProps.zoom !== this.props.zoom ||
+      nextProps.sizes !== this.props.sizes ||
+      nextProps.rowLeaves !== this.props.rowLeaves ||
+      nextProps.columnLeaves !== this.props.columnLeaves ||
+      nextProps.selectedRange !== this.props.selectedRange
+    );
+  }
 
   componentDidUpdate(prevProps) {
-    this.isUpdating = false;
     if (
-      prevProps.zoom !== this.props.zoom ||
-      prevProps.sizes.heights !== this.props.sizes.heights ||
-      prevProps.sizes.widths !== this.props.sizes.widths
+      prevProps.sizes !== this.props.sizes ||
+      prevProps.dimensions !== this.props.dimensions ||
+      prevProps.zoom !== this.props.zoom
     ) {
       this.grid.recomputeGridSize();
     }
+    this.isUpdating = false;
   }
+
+  handleKeyDown = e => {
+    // Page down
+    if (e.key === 'PageDown') {
+      if (e.shiftKey) {
+      } else {
+      }
+      e.preventDefault();
+    }
+
+    // Page up
+    if (e.key === 'PageUp') {
+      if (e.shiftKey) {
+      } else {
+      }
+      e.preventDefault();
+    }
+  };
 
   handleMouseDown = (e, { columnIndex, rowIndex }) => {
     if (e.button === 0) {
@@ -72,14 +106,21 @@ class DataCells extends PureComponent {
   handleDrilldown = cell => {
     return this.props.drilldown(this.props.getCellInfosSelector(cell));
   };
+  collectMenu = props => {
+    return {
+      ...props,
+      dimensions: this.props.dimensions
+    };
+  };
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getCellValue,
-      customFunctions,
+      // customFunctions,
       rowLeaves,
       columnLeaves,
       measures,
-      selectedRange
+      selectedRange,
+      gridId
     } = this.props;
     const rowHeader = rowLeaves[rowIndex];
     const columnHeader = columnLeaves[columnIndex];
@@ -116,7 +157,8 @@ class DataCells extends PureComponent {
       measure.valueAccessor,
       rowHeader.dataIndexes,
       columnHeader.dataIndexes,
-      customFunctions.aggregation[measure.id]
+      measure.aggregation
+      // customFunctions.aggregation[measure.id]
     );
     const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     this.valuesCache[cellKey] = value;
@@ -143,6 +185,8 @@ class DataCells extends PureComponent {
         handleMouseUp={this.handleMouseUp}
         selected={selected}
         focused={focused}
+        collectMenu={this.collectMenu}
+        gridId={gridId}
       />
     );
   };
@@ -159,28 +203,36 @@ class DataCells extends PureComponent {
       onSectionRendered,
       zoom,
       columnLeaves,
-      rowLeaves
+      rowLeaves,
+      gridId
     } = this.props;
     this.valuesCache = {};
+    const ConnectedMenu = connectMenu(`context-menu-data-cell-${gridId}`)(
+      ContextMenu
+    );
+
     return (
-      <ReactVirtualizedGrid
-        cellRenderer={this.cellRenderer}
-        className="pivotgrid-data-cells"
-        columnCount={columnLeaves.length}
-        columnWidth={getColumnWidth}
-        height={height}
-        onScroll={onScroll}
-        ref={ref => {
-          this.grid = ref;
-        }}
-        rowCount={rowLeaves.length}
-        rowHeight={getRowHeight}
-        onSectionRendered={onSectionRendered}
-        scrollToColumn={scrollToColumn}
-        scrollToRow={scrollToRow}
-        style={{ fontSize: `${zoom * 100}%` }}
-        width={width}
-      />
+      <div>
+        <ReactVirtualizedGrid
+          cellRenderer={this.cellRenderer}
+          className="pivotgrid-data-cells"
+          columnCount={columnLeaves.length}
+          columnWidth={getColumnWidth}
+          height={height}
+          onScroll={onScroll}
+          ref={ref => {
+            this.grid = ref;
+          }}
+          rowCount={rowLeaves.length}
+          rowHeight={getRowHeight}
+          onSectionRendered={onSectionRendered}
+          scrollToColumn={scrollToColumn}
+          scrollToRow={scrollToRow}
+          style={{ fontSize: `${zoom * 100}%` }}
+          width={width}
+        />
+        <ConnectedMenu />
+      </div>
     );
   }
 }

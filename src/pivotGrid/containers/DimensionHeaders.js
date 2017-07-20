@@ -7,7 +7,8 @@ import {
   rowHeadersWidthSelector,
   crossPositionsSelector,
   previewSizesSelector,
-  availableDimensionsSelector
+  availableDimensionsSelector,
+  dimensionValuesSelector
 } from '../selectors';
 import DimensionHeaders from '../components/DimensionHeaders/DimensionHeaders';
 import {
@@ -22,6 +23,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     columnDimensions,
     rowDimensions,
+    dimensionValues: dimensionValuesSelector(state),
+    filters: state.filters,
+    dimensionFilter: dimensionValuesSelector(state),
     availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),
     height: columnHeadersWidthSelector(state),

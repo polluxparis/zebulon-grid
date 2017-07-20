@@ -38,7 +38,7 @@ class DimensionHeader extends Component {
           data.newDimensionId,
           toAxis(AxisType.DIMENSION),
           toAxis(data.axis),
-          data.index
+          data.index + 1
         );
       }
       if (data.action === 'sort') {

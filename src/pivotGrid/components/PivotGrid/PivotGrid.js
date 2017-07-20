@@ -12,6 +12,71 @@ import DragLayer from './DragLayer';
 import { isEmpty, isNull } from '../../utils/generic';
 import { ZOOM_IN, ZOOM_OUT } from '../../constants';
 // ------------------------------------------
+// CONCEPTS
+// ------------------------------------------
+// The pivot grid is build using a dataset (as an array of data rows) and a meta description(configuration) of the data set
+// most of the configuration can be determined from the dataset, nevertheless
+// - MEASURE:
+// measures are the descriptions for available computed (aggregated) values displayed into the grid
+// measures properties are
+//    - id
+//    - label
+//    - aggregation function
+//    - data accessor
+//    - format
+//  measures together can be restituted in rows or columns
+// - DIMENSION:
+//  dimensions are the descriptions of the axes used to determine the perimeter of the calculation of the measures (group by)
+// dimension properties are:
+//    - id
+//    - label
+//    - id accessor
+//    - label accessor
+//    - sort accessor
+//    - format
+//    - parent dimension for 'attributes'
+//      attributes are additional properties of a dimension with (0,1) cardinality (person -> gender, age, nationality...) ,g
+//      it will be possible to expand/collapse those attributes
+//  any dimension can be restituted either in row nor in column
+//  filters can be defined on the dimension and will be applied to the dataset
+// in a 'SQL like' expression you may represent the result of your configuration as something like:
+// select
+//        measure1.aggregation_function(measure1.data_accessor),
+//        measure2.aggregation_function(measure2.data_accessor)
+// from   dataset
+// where  dimension3.filter_function()
+// group by
+//        dimension1.id_accessor,dimension1.label_accessor in row,
+//        dimension2.id_accessor,dimension2.label_accessor in row,
+//        dimension3.id_accessor,dimension3.label_accessor in column
+// order by
+//        dimension1.sort_accessor,dimension2.sort_accessor
+// ------------------------------------------
+// PIVOT GRID
+// ------------------------------------------
+// pivot grid is the main component is the main component
+// it is decomposed in 4 different parts
+// - the data cells grid where the measures aggregation calculations are displayed
+// this is a virtualised grid in rows and columns with standards navigation, selection, copy... functionalities
+// - the row headers grid
+// this is a virtualised grid in rows, synchronized in rows with the the datacells grid that display,
+// as a tree the successive dimensions values (for in row dimensions)
+// this is a virtualised grid in columns, synchronized in columns with the the datacells grid that display,
+// as a tree the successive dimensions values (for in column dimensions)
+// - the dimension headers grid that will display the captions of dimensions in rows and columns
+// most of changes of the pivot grid configuration are available there (dimension  moves, sort...)
+// const Checkbox = ({ onChange, checked, key, label, index, style }) =>
+//   <div style={{ ...style, textAlign: 'left' }}>
+//     <label>
+//       <input
+//         type="checkbox"
+//         value={label}
+//         onChange={onChange}
+//         checked={checked || false}
+//       />
+//       {label}
+//     </label>
+//   </div>;
 
 class PivotGrid extends Component {
   constructor(props) {
@@ -21,8 +86,6 @@ class PivotGrid extends Component {
     this.focusCellKeys = [];
     this.handleScrollToChange = this.handleScrollToChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    // this.DynamicMenu = this.DynamicMenu.bind(this);
-    // this.ConnectedMenu = this.ConnectedMenu.bind(this);
   }
 
   componentDidMount() {
@@ -133,6 +196,12 @@ class PivotGrid extends Component {
         this.props.zoom(ZOOM_OUT);
         e.preventDefault();
       }
+      // Page down
+      //   if (e.key === 'PageDown') {
+      //     handleScrollToChange({});
+
+      //     e.preventDefault();
+      // }
     }
   };
   handleKeyUp = e => {
@@ -196,7 +265,7 @@ class PivotGrid extends Component {
       connectDropTarget,
       width,
       layout,
-      customFunctions,
+      // customFunctions,
       drilldown,
       id: gridId
     } = this.props;
@@ -247,7 +316,6 @@ class PivotGrid extends Component {
                       gridId={gridId}
                     />
                     <DataCells
-                      customFunctions={customFunctions}
                       onSectionRendered={onSectionRendered}
                       scrollToColumn={scrollToColumn}
                       scrollToRow={scrollToRow}
@@ -255,13 +323,13 @@ class PivotGrid extends Component {
                       drilldown={drilldown}
                       clientHeight={clientHeight}
                       clientWidth={clientWidth}
+                      gridId={gridId}
                     />
                   </div>
 
                 </div>}
             </ScrollSync>}
         </ArrowKeyStepper>
-
       </div>
     );
   }

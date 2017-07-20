@@ -10,7 +10,9 @@ class DimensionHeaders extends Component {
     return {
       ...props,
       availableDimensions: this.props.availableDimensions,
-      direction: props.sortDirection === 'asc' ? 'descending' : 'ascending'
+      direction: props.sortDirection === 'asc' ? 'descending' : 'ascending',
+      dimensionValues: this.props.dimensionValues(props.dimensionId),
+      dimensionFilter: this.props.filters[props.dimensionId]
     };
   };
   // ---------------------------------------------------
@@ -81,6 +83,7 @@ class DimensionHeaders extends Component {
             isDropTarget={true}
             isAttribute={dimension.isAttribute}
             collectMenu={this.collectMenu}
+            fontWeigth="bold"
           />
         );
       }
@@ -143,7 +146,6 @@ class DimensionHeaders extends Component {
       >
         {headers}
         <ConnectedMenu />
-
       </div>
     );
   }
