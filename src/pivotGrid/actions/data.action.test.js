@@ -1,4 +1,4 @@
-import { PUSH_DATA, SET_DATA } from '../constants';
+import { PUSH_DATA, FETCH_SUCCESS } from '../constants';
 import { pushData, setData } from './data.action';
 
 describe('pushData create correct action', () => {
@@ -129,7 +129,7 @@ describe('setData create correct action', () => {
       }
     ];
     expect(setData(payload)).toEqual({
-      type: SET_DATA,
+      type: FETCH_SUCCESS,
       payload
     });
   });
@@ -143,7 +143,7 @@ describe('setData create correct action', () => {
       amt: 0
     };
     expect(setData(payload)).toEqual({
-      type: SET_DATA,
+      type: FETCH_SUCCESS,
       payload: [payload]
     });
   });
@@ -179,21 +179,21 @@ describe('setData create correct action', () => {
       ]
     ];
     expect(setData(payload)).toEqual({
-      type: SET_DATA,
+      type: FETCH_SUCCESS,
       payload
     });
   });
   test('when payload is null', () => {
     const payload = null;
     expect(setData(payload)).toEqual({
-      type: SET_DATA,
+      type: FETCH_SUCCESS,
       payload: []
     });
   });
   test('when payload is a function', () => {
     const payload = () => {};
     expect(setData(payload)).toEqual({
-      type: SET_DATA,
+      type: FETCH_SUCCESS,
       payload: []
     });
   });

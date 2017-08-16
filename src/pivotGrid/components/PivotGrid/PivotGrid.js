@@ -11,7 +11,7 @@ import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { isEmpty, isNull } from '../../utils/generic';
 import { ZOOM_IN, ZOOM_OUT } from '../../constants';
-import * as actions from '../../actions';
+// import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
 // ------------------------------------------
@@ -272,12 +272,14 @@ class PivotGrid extends Component {
 
     const { columnHorizontalCount, rowVerticalCount } = layout;
     let grid;
-    if (this.props.status === 'loading') {
+    console.log(this.props);
+    if (this.props.status.loading) {
       grid = <div>Loading data...</div>;
-    } else if (this.props.status === 'error') {
+    } else if (this.props.status.error) {
       grid = (
         <div style={{ color: 'red' }}>
           <p>Error loading data</p>
+          {this.props.status.error.message}
         </div>
       );
     } else {

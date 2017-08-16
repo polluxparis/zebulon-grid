@@ -1,5 +1,5 @@
 import reducer from './data.reducer';
-import { PUSH_DATA, SET_DATA } from '../constants';
+import { PUSH_DATA, FETCH_SUCCESS } from '../constants';
 
 describe('data reducer', () => {
   test('with setData action', () => {
@@ -23,7 +23,7 @@ describe('data reducer', () => {
     ];
     expect(
       reducer(state, {
-        type: SET_DATA,
+        type: FETCH_SUCCESS,
         payload: [
           {
             toto: 0,

@@ -3,17 +3,17 @@ import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
 
-import WrappedGrid from './WrappedGrid';
+import ZebulonGrid from './ZebulonGrid';
 import { AxisType } from './Axis';
 
 import { getMockDatasource, basicConfig } from '../utils/mock';
 
-describe('WrappedGrid', () => {
+describe('ZebulonGrid', () => {
   const data = getMockDatasource(1, 2, 5);
   test('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(
-      <WrappedGrid
+      <ZebulonGrid
         data={data}
         config={basicConfig}
         drilldown={() => 33}
@@ -26,7 +26,7 @@ describe('WrappedGrid', () => {
   describe('actions', () => {
     test('push a record', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData({
@@ -42,7 +42,7 @@ describe('WrappedGrid', () => {
 
     test('push an array of records', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(wrapper.find('DataCell').first().text()).toEqual('1');
       wrapper.instance().pushData([
@@ -68,7 +68,7 @@ describe('WrappedGrid', () => {
 
     test('zoom in', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomIn();
@@ -77,7 +77,7 @@ describe('WrappedGrid', () => {
 
     test('zoom out', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomOut();
@@ -86,7 +86,7 @@ describe('WrappedGrid', () => {
 
     test('sort', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(wrapper.find('Header').first().text()).toEqual('titi 0');
       wrapper.instance().toggleSortOrder('titi');
@@ -95,7 +95,7 @@ describe('WrappedGrid', () => {
 
     test('sort nested dimension', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -118,7 +118,7 @@ describe('WrappedGrid', () => {
 
     test('move dimension from row to column', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -135,7 +135,7 @@ describe('WrappedGrid', () => {
 
     test('move dimension from row to reserve', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -152,7 +152,7 @@ describe('WrappedGrid', () => {
 
     test('toggle measure', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -179,7 +179,7 @@ describe('WrappedGrid', () => {
 
     test('resize header', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -213,7 +213,7 @@ describe('WrappedGrid', () => {
 
     test('resize header in cross direction', () => {
       const wrapper = mount(
-        <WrappedGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
       );
       expect(
         wrapper
@@ -241,7 +241,7 @@ describe('WrappedGrid', () => {
     // describe('data updates', () => {
     //   test('highlight cells', () => {
     //     const observableDatasource = getObservableMockDatasource();
-    //     const tree = renderer.create(<WrappedGrid ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
+    //     const tree = renderer.create(<ZebulonGrid ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
     //     expect(tree).toMatchSnapshot();
     //   });
     // });
@@ -252,7 +252,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, columns: [] };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -261,7 +261,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, rows: [] };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -271,7 +271,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, data: [] };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -280,7 +280,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, data: ['Quantity'] };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -289,7 +289,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, data: ['Quantity', 'Amount'] };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -298,7 +298,7 @@ describe('WrappedGrid', () => {
       const config = { ...basicConfig, measureHeadersAxis: 'rows' };
       const tree = renderer
         .create(
-          <WrappedGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();

@@ -1,4 +1,4 @@
-import { dimensionFactory, measureFactory } from '../setConfig';
+import { dimensionFactory, measureFactory } from '../utils/setConfig';
 import {
   SET_AXIS,
   SET_DIMENSIONS,
@@ -22,11 +22,6 @@ export const setMeasures = (configObject, configFunctions) => ({
   measures: configObject.measures.map(measure =>
     measureFactory(measure, configFunctions)
   )
-});
-export const setProperty = (property, value) => ({
-  type: SET_CONFIG_PROPERTY,
-  property,
-  value
 });
 export const setConfigProperty = (configObject, property, defaultValue) => ({
   type: SET_CONFIG_PROPERTY,

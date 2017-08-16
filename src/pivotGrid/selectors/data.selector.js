@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { pass } from '../Filtering';
+import { pass } from '../utils/Filtering';
 import { isUndefined } from '../utils/generic';
 
 const getFilters = state => state.filters || {};

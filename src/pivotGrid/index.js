@@ -1,15 +1,11 @@
 import PivotGrid, { PivotGridWithoutDndContext } from './containers/PivotGrid';
-import WrappedGrid from './WrappedGrid';
+import ZebulonGrid from './ZebulonGrid';
 import reducer from './reducers';
 import * as actions from './actions';
-import hydrateStore from './hydrateStore';
+import { setConfig } from './utils/setConfig';
 
 // Import polyfills
 import './utils/polyfill';
 
 export default PivotGrid;
-export { PivotGridWithoutDndContext };
-export { WrappedGrid };
-export { reducer };
-export { actions };
-export { hydrateStore };
+export { PivotGridWithoutDndContext, ZebulonGrid, reducer, actions, setConfig };

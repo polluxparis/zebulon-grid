@@ -1,4 +1,12 @@
-import { PUSH_DATA, SET_DATA } from '../constants';
+import {
+  PUSH_DATA,
+  FETCH_SUCCESS,
+  FETCH_DATA,
+  FETCH_FAILURE
+} from '../constants';
+
+export const fetchData = () => ({ type: FETCH_DATA });
+export const fetchFailure = error => ({ type: FETCH_FAILURE, error });
 
 const validateData = payload => {
   // typeof null is 'object'...
@@ -20,7 +28,7 @@ export const pushData = payload => ({
   payload: validateData(payload)
 });
 
-export const setData = payload => ({
-  type: SET_DATA,
+export const fetchSuccess = payload => ({
+  type: FETCH_SUCCESS,
   payload: validateData(payload)
 });

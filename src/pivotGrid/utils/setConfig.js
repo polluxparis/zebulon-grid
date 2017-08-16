@@ -1,38 +1,40 @@
 import {
-  setData,
+  fetchData,
+  fetchFailure,
+  fetchSuccess,
   pushData,
   setDimensions,
   setMeasures,
-  setProperty,
   setConfigProperty,
   moveDimension,
   toggleMeasure
-} from './actions';
+} from '../actions';
 import {
   isPromise,
   isObservable,
   isStringOrNumber,
   isNullOrUndefined,
   toAccessorFunction
-} from './utils/generic';
-import { MEASURE_ID } from './constants';
+} from './generic';
+import { MEASURE_ID } from '../constants';
 import * as aggregations from './Aggregation';
-export const _setData = (store, data) => {
-  store.dispatch(setProperty('status', 'loading'));
+export const setData = (store, data) => {
+  store.dispatch(fetchData());
   if (Array.isArray(data)) {
-    store.dispatch(setData(data));
-    store.dispatch(setProperty('status', 'loaded'));
+    store.dispatch(fetchSuccess(data));
   } else if (isPromise(data)) {
-    console.log('promise', Date.now());
-    data.then(data => {
-      store.dispatch(setData(data));
-      store.dispatch(setProperty('status', 'loaded'));
-    });
+    data
+      .then(data => {
+        store.dispatch(fetchSuccess(data));
+      })
+      .catch(error => store.dispatch(fetchFailure(error)));
   } else if (isObservable(data)) {
-    data.subscribe(data => {
-      store.dispatch(pushData(data));
-      store.dispatch(setProperty('status', 'loaded'));
-    });
+    data.subscribe(
+      data => {
+        store.dispatch(pushData(data));
+      },
+      error => store.dispatch(fetchFailure(error))
+    );
   } else {
     throw new Error(
       'datasource type is not supported, datasource must be an array, a promise or an observable, got ',
@@ -40,9 +42,9 @@ export const _setData = (store, data) => {
     );
   }
 };
-export const _setConfig = (store, config, configFunctions, data) => {
+export const setConfig = (store, config, configFunctions, data) => {
   if (!isNullOrUndefined(data)) {
-    _setData(store, data);
+    setData(store, data);
   }
   config.dimensions.push({ id: MEASURE_ID, caption: '' });
   store.dispatch(setDimensions(config, configFunctions));

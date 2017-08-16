@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import data from './data.reducer';
+import status from './status.reducer';
 import config from './config.reducer';
 import dimensions from './dimensions.reducer';
 import measures from './measures.reducer';
@@ -10,6 +11,7 @@ import filters from './filters.reducer';
 import collapses from './collapses.reducer';
 import selectedRange from './selection.reducer';
 export default combineReducers({
+	status,
 	data,
 	config,
 	dimensions,

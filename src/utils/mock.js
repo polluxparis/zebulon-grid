@@ -76,6 +76,9 @@ export function getObservableMockDatasource(interval) {
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
+export function getObservableError() {
+  return Observable.throw(new Error('titi'));
+}
 export const getPromiseMockDatasource = (
   dataRepetition = 1,
   nToto = 10,
@@ -83,13 +86,15 @@ export const getPromiseMockDatasource = (
 ) => {
   console.log(Date.now());
   const p = new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    getMockDatasource(dataRepetition, nToto, nTiti)
+    // getMockDatasource(dataRepetition, nToto, nTiti)
+    {
+      throw new Error('toto');
+    }
   );
   console.log(Date.now());
   return p;
 };
 export const basicConfig = {
-  canMoveDimensions: true,
   measureHeadersAxis: 'columns',
   width: 1099,
   height: 601,
@@ -160,7 +165,6 @@ export const basicConfig = {
   activeMeasures: ['qty', 'amt', 'price']
 };
 export const basicConfig2 = {
-  canMoveDimensions: true,
   measureHeadersAxis: 'columns',
   width: 1099,
   height: 601,

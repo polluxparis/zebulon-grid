@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import WrappedGrid from './pivotGrid/WrappedGrid';
+import { ZebulonGrid } from './pivotGrid';
 
 import {
   getMockDatasource,
@@ -12,7 +12,7 @@ import {
 import { configFunctions } from './utils/configFunctions';
 import { externalFunctions } from './utils/externalFunctions';
 
-class WrappedGridDemo extends Component {
+class ZebulonGridDemo extends Component {
   state = { focusCell: [] };
   // data = getMockDatasource(1, 100, 100);
   data = getPromiseMockDatasource(1, 100, 100);
@@ -64,10 +64,9 @@ class WrappedGridDemo extends Component {
             Right and bottom handle drag and drop to resize rows or columns.
           </div>
         </div>
-        <WrappedGrid
+        <ZebulonGrid
           config={basicConfig}
           data={this.data}
-          focusCells={this.state.focusCells}
           externalFunctions={externalFunctions}
           configFunctions={configFunctions}
           ref={ref => {
@@ -82,4 +81,4 @@ class WrappedGridDemo extends Component {
   }
 }
 
-export default WrappedGridDemo;
+export default ZebulonGridDemo;

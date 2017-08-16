@@ -32,7 +32,7 @@ const mapStateToProps = state => {
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
   return {
-    status: state.config.status,
+    status: state.status,
     width: state.config.width,
     layout: getLayoutSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
