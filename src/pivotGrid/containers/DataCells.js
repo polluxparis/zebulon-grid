@@ -10,6 +10,7 @@ import {
   getCellHeightByKeySelector,
   getCellValueSelector,
   getCellInfosSelector,
+  getRangeInfosSelector,
   activatedMeasuresSelector,
   selectedRangeSelector,
   dimensionsSelector
@@ -29,7 +30,8 @@ const mapStateToProps = (state, ownProps) => {
     selectedRange,
     getCellValue,
     dimensions: dimensionsSelector(state),
-    getCellInfosSelector: getCellInfosSelector(state),
+    getCellInfos: getCellInfosSelector(state),
+    getRangeInfos: getRangeInfosSelector(state),
     getColumnWidth: ({ index }) =>
       getCellWidthByKeySelector(state)(columnLeaves[index].key),
     getRowHeight: ({ index }) =>

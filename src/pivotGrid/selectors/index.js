@@ -4,7 +4,8 @@ import {
   rowHeadersSelector,
   columnLeavesSelector,
   rowLeavesSelector,
-  getAxisActivatedMeasuresSelector
+  getAxisActivatedMeasuresSelector,
+  getDimensionKeysSelector
 } from './axis.selector';
 import {
   defaultCellSizesSelector,
@@ -34,7 +35,8 @@ import {
 import {
   getCellValueSelector,
   getCellInfosSelector,
-  getCellDimensionInfosSelector
+  getCellDimensionInfosSelector,
+  getRangeInfosSelector
 } from './cell.selector';
 import {
   dimensionValuesSelector,
@@ -70,7 +72,7 @@ export { getLastChildWidthSelector };
 export { getLastChildHeightSelector };
 export { columnsVisibleWidthSelector };
 export { rowsVisibleHeightSelector };
-export { getCellValueSelector, getCellInfosSelector };
+export { getCellValueSelector, getCellInfosSelector, getRangeInfosSelector };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
 export { dimensionValuesSelector };
@@ -82,3 +84,4 @@ export { getCellWidthByKeySelector };
 export { selectedRangeSelector };
 export { getSelectedColumnRangeSelector };
 export { getSelectedRowRangeSelector };
+export { getDimensionKeysSelector };

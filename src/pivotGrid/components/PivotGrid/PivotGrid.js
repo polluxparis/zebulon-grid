@@ -11,6 +11,7 @@ import RowHeaders from '../../containers/RowHeaders';
 import DragLayer from './DragLayer';
 import { isEmpty, isNull } from '../../utils/generic';
 import { ZOOM_IN, ZOOM_OUT } from '../../constants';
+import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
 // ------------------------------------------
@@ -84,8 +85,8 @@ class PivotGrid extends Component {
     this.scrollToRow = 0;
     this.scrollToColumn = 0;
     this.focusCellKeys = [];
-    this.handleScrollToChange = this.handleScrollToChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    // this.handleScrollToChange = this.handleScrollToChange.bind(this);
+    // this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -150,7 +151,6 @@ class PivotGrid extends Component {
       this.scrollToColumn =
         nextProps.selectedRange.focusedCell.columnIndex || this.scrollToColumn;
     }
-    console.log([this.scrollToRow]);
   }
 
   componentDidUpdate(prevProps) {
@@ -271,67 +271,79 @@ class PivotGrid extends Component {
     } = this.props;
 
     const { columnHorizontalCount, rowVerticalCount } = layout;
-
-    return connectDropTarget(
-      // Width has to be set in order to render correctly in a resizable box
-      // Position must be relative so that the absolutely positioned DragLayer behaves correctly
-      <div
-        style={{ width, position: 'relative' }}
-        onKeyDown={this.handleKeyDown}
-        onKeyUp={this.handleKeyUp}
-      >
-        <DragLayer gridId={gridId} />
-        <ArrowKeyStepper
-          columnCount={columnHorizontalCount}
-          mode="cells"
-          rowCount={rowVerticalCount}
-          scrollToRow={this.scrollToRow}
-          scrollToColumn={this.scrollToColumn}
-          onScrollToChange={this.handleScrollToChange}
-          isControlled={true}
+    let grid;
+    if (this.props.status === 'loading') {
+      grid = <div>Loading data...</div>;
+    } else if (this.props.status === 'error') {
+      grid = (
+        <div style={{ color: 'red' }}>
+          <p>Error loading data</p>
+        </div>
+      );
+    } else {
+      grid = connectDropTarget(
+        // Width has to be set in order to render correctly in a resizable box
+        // Position must be relative so that the absolutely positioned DragLayer behaves correctly
+        <div
+          style={{ width, position: 'relative' }}
+          onKeyDown={this.handleKeyDown}
+          onKeyUp={this.handleKeyUp}
         >
+          <DragLayer gridId={gridId} />
+          <ArrowKeyStepper
+            columnCount={columnHorizontalCount}
+            mode="cells"
+            rowCount={rowVerticalCount}
+            scrollToRow={this.scrollToRow}
+            scrollToColumn={this.scrollToColumn}
+            onScrollToChange={this.handleScrollToChange}
+            isControlled={true}
+          >
 
-          {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
-            <ScrollSync>
-              {({
-                clientHeight,
-                clientWidth,
-                onScroll,
-                scrollLeft,
-                scrollTop
-              }) =>
-                <div className="pivotgrid-pivotgrid">
-                  <div style={{ display: 'flex' }}>
-                    <DimensionHeaders gridId={gridId} />
-                    <ColumnHeaders
-                      gridId={gridId}
-                      scrollLeft={scrollLeft}
-                      scrollTop={0}
-                    />
-                  </div>
-                  <div style={{ display: 'flex' }}>
-                    <RowHeaders
-                      scrollTop={scrollTop}
-                      scrollLeft={0}
-                      gridId={gridId}
-                    />
-                    <DataCells
-                      onSectionRendered={onSectionRendered}
-                      scrollToColumn={scrollToColumn}
-                      scrollToRow={scrollToRow}
-                      onScroll={onScroll}
-                      drilldown={drilldown}
-                      clientHeight={clientHeight}
-                      clientWidth={clientWidth}
-                      gridId={gridId}
-                    />
-                  </div>
+            {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
+              <ScrollSync>
+                {({
+                  clientHeight,
+                  clientWidth,
+                  onScroll,
+                  scrollLeft,
+                  scrollTop
+                }) =>
+                  <div className="pivotgrid-pivotgrid">
+                    <div style={{ display: 'flex' }}>
+                      <DimensionHeaders gridId={gridId} />
+                      <ColumnHeaders
+                        gridId={gridId}
+                        scrollLeft={scrollLeft}
+                        scrollTop={0}
+                      />
+                    </div>
+                    <div style={{ display: 'flex' }}>
+                      <RowHeaders
+                        scrollTop={scrollTop}
+                        scrollLeft={0}
+                        gridId={gridId}
+                      />
+                      <DataCells
+                        onSectionRendered={onSectionRendered}
+                        scrollToColumn={scrollToColumn}
+                        scrollToRow={scrollToRow}
+                        onScroll={onScroll}
+                        drilldown={drilldown}
+                        externalFunctions={this.props.externalFunctions}
+                        clientHeight={clientHeight}
+                        clientWidth={clientWidth}
+                        gridId={gridId}
+                      />
+                    </div>
 
-                </div>}
-            </ScrollSync>}
-        </ArrowKeyStepper>
-      </div>
-    );
+                  </div>}
+              </ScrollSync>}
+          </ArrowKeyStepper>
+        </div>
+      );
+    }
+    return grid;
   }
 }
 
@@ -349,7 +361,14 @@ const collect = connect => ({
 });
 
 PivotGrid.defaultProps = { id: 0 };
-
+// expose all actions
+// Object.keys(actions).forEach(action => {
+//   /* eslint-disable func-names */
+//   PivotGrid.prototype[action] = function(...args) {
+//     this.state.store.dispatch(actions[action](...args));
+//   };
+//   /* eslint-enable */
+// });
 // Add grid id to the type to ensure only correct drop target is used
 export default DropTarget(
   props => `cell-resize-handle--${props.id || 0}`,

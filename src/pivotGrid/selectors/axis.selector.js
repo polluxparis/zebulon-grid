@@ -158,7 +158,6 @@ function buildHeaders(
             dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
           ] || childrenDimension;
       }
-      console.log([childrenDimension, depth + 1, dimensions, header]);
       let sortFunction;
       if (childrenDimension.sort.custom) {
         sortFunction = (a, b) =>
@@ -276,4 +275,42 @@ export const getLayoutSelector = createSelector(
       columnVerticalCount: columnDimensions.length
     };
   }
+);
+export const getDimensionKeys = (
+  node,
+  dimensionDepth,
+  depth,
+  parent,
+  isCollapsed
+) => {
+  const key = depth !== -1 && parent.id !== ROOT_ID
+    ? `${parent.key}-/-${node.id}`
+    : String(node.id);
+  let keys = {};
+  if (dimensionDepth === depth) {
+    keys = { [key]: isCollapsed };
+  } else {
+    keys = Object.keys(node.children).reduce((acc, child) => {
+      const k = getDimensionKeys(
+        node.children[child],
+        dimensionDepth,
+        depth + 1,
+        { ...node, key: key },
+        isCollapsed
+      );
+      return { ...acc, ...k };
+    }, {});
+  }
+  return keys;
+};
+export const getDimensionKeysSelector = createSelector(
+  [rowAxisTreeSelector, columnAxisTreeSelector],
+  (rowNode, columnNode) => (axis, depth, isCollapsed) =>
+    getDimensionKeys(
+      axis === AxisType.ROWS ? rowNode : columnNode,
+      depth,
+      -1,
+      null,
+      isCollapsed
+    )
 );

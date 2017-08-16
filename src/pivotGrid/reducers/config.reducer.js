@@ -38,7 +38,6 @@ function getNextZoom(previousZoom, zoomIn) {
 export default (state = {}, action) => {
   const { type, property, value, id, oldAxis, newAxis } = action;
 
-  console.log(['zoom reducer', type]);
   switch (type) {
     case MOVE_DIMENSION:
       if (id === MEASURE_ID && oldAxis !== newAxis) {

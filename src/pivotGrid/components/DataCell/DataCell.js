@@ -20,13 +20,13 @@ export default class DataCell extends PureComponent {
       rowIndex: this.props.rowIndex
     });
   };
-  handleClickMenu = (e, data, target) => {
-    if (e.button === 0) {
-      if (data.action === 'drilldown') {
-        this.handleDoubleClick();
-      }
-    }
-  };
+  // handleClickMenu = (e, data, target) => {
+  //   if (e.button === 0) {
+  //     if (data.action === 'drilldown') {
+  //       this.handleDoubleClick();
+  //     }
+  //   }
+  // };
   render() {
     const {
       caption,
@@ -56,7 +56,7 @@ export default class DataCell extends PureComponent {
         id={`context-menu-data-cell-${gridId}`}
         holdToDisplay={-1}
         collect={collectMenu}
-        onItemClick={this.handleClickMenu}
+        onItemClick={this.props.handleClickMenu}
         type={'data-cell'}
         style={{ width: 'inherit' }}
         rowIndex={rowIndex}

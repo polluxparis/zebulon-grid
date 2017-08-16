@@ -32,6 +32,7 @@ const mapStateToProps = state => {
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
   return {
+    status: state.config.status,
     width: state.config.width,
     layout: getLayoutSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
@@ -87,10 +88,20 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (
-  { width, layout, headerSizes, sizes, defaultCellSizes, selectedRange, copy },
+  {
+    status,
+    width,
+    layout,
+    headerSizes,
+    sizes,
+    defaultCellSizes,
+    selectedRange,
+    copy
+  },
   { updateCellSize, setSizes, selectRange, selectCell, zoom },
   ownProps
 ) => ({
+  status,
   width,
   layout,
   updateCellSize: ({ handle, offset, initialOffset }) =>

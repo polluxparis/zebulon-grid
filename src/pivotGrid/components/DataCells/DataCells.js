@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 
 import { isInRange, isUndefined } from '../../utils/generic';
-import DataCellComponent from '../DataCell/DataCell';
+import DataCell from '../DataCell/DataCell';
 import { AXIS_SEPARATOR, HeaderType, AxisType } from '../../constants';
 import { connectMenu } from 'react-contextmenu';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -14,9 +14,9 @@ class DataCells extends PureComponent {
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
   }
-  componentShouldUpdate(nextProps) {
+  shouldComponentUpdate(nextProps) {
     // if (
-    //   nextProps.zoom !== this.props.zoom ||
+    //   s.zoom !== this.props.zoom ||
     //   nextProps.sizes !== this.props.sizes
     // ) {
     //   this.grid.recomputeGridSize();
@@ -104,14 +104,37 @@ class DataCells extends PureComponent {
   };
 
   handleDrilldown = cell => {
-    return this.props.drilldown(this.props.getCellInfosSelector(cell));
+    return this.props.drilldown(this.props.getCellInfos(cell));
   };
   collectMenu = props => {
     return {
       ...props,
-      dimensions: this.props.dimensions
+      dimensions: this.props.dimensions,
+      externalFunctions: this.props.externalFunctions
     };
   };
+  handleClickMenu = (e, data, target) => {
+    if (e.button === 0) {
+      if (data.action === 'drilldown') {
+        this.handleDrilldown({
+          columnIndex: data.columnIndex,
+          rowIndex: data.rowIndex
+        });
+      } else if (data.functionType === 'cell') {
+        this.props.externalFunctions.dataCellFunctions[data.action].function(
+          this.props.getCellInfos({
+            columnIndex: data.columnIndex,
+            rowIndex: data.rowIndex
+          })
+        );
+      } else if (data.functionType === 'range') {
+        this.props.externalFunctions.rangeFunctions[data.action].function(
+          this.props.getRangeInfos(this.props.selectedRange)
+        );
+      }
+    }
+  };
+  // };
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getCellValue,
@@ -172,7 +195,7 @@ class DataCells extends PureComponent {
     }
     const caption = measure.format(value);
     return (
-      <DataCellComponent
+      <DataCell
         key={key}
         valueHasChanged={valueHasChanged}
         style={style}
@@ -183,6 +206,7 @@ class DataCells extends PureComponent {
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
+        handleClickMenu={this.handleClickMenu}
         selected={selected}
         focused={focused}
         collectMenu={this.collectMenu}

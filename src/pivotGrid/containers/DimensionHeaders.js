@@ -8,13 +8,15 @@ import {
   crossPositionsSelector,
   previewSizesSelector,
   availableDimensionsSelector,
-  dimensionValuesSelector
+  dimensionValuesSelector,
+  getDimensionKeysSelector
 } from '../selectors';
 import DimensionHeaders from '../components/DimensionHeaders/DimensionHeaders';
 import {
   toggleCollapseDimension,
   toggleSortOrder,
-  moveDimension
+  moveDimension,
+  expandCollapseAll
 } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
@@ -24,6 +26,8 @@ const mapStateToProps = (state, ownProps) => {
     columnDimensions,
     rowDimensions,
     dimensionValues: dimensionValuesSelector(state),
+    getDimensionKeys: (axis, depth, isCollapsed) =>
+      getDimensionKeysSelector(state)(axis, depth, isCollapsed),
     filters: state.filters,
     dimensionFilter: dimensionValuesSelector(state),
     availableDimensions: availableDimensionsSelector(state),
@@ -39,6 +43,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => ({
   toggleCollapseDimension: key => dispatch(toggleCollapseDimension({ key })),
   toggleSortOrder: key => dispatch(toggleSortOrder(key)),
+  expandCollapseAll: (axisType, keys) =>
+    dispatch(expandCollapseAll({ axisType, keys })),
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   }

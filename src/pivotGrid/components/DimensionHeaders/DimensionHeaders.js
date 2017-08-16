@@ -4,6 +4,7 @@ import { AxisType, MEASURE_ID, ROOT_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader/DimensionHeader';
 import { connectMenu } from 'react-contextmenu';
 import ContextMenu from '../ContextMenu/ContextMenu';
+import { isNullOrUndefined } from '../../utils/generic';
 class DimensionHeaders extends Component {
   // -----------------------------------------------------
   collectMenu = props => {
@@ -12,7 +13,14 @@ class DimensionHeaders extends Component {
       availableDimensions: this.props.availableDimensions,
       direction: props.sortDirection === 'asc' ? 'descending' : 'ascending',
       dimensionValues: this.props.dimensionValues(props.dimensionId),
-      dimensionFilter: this.props.filters[props.dimensionId]
+      dimensionFilter: this.props.filters[props.dimensionId],
+      isNotCollapsible:
+        props.isAttribute ||
+          props.index ===
+            (props.axis === AxisType.COLUMNS
+              ? this.props.columnDimensions.length
+              : this.props.rowDimensions.length) -
+              1
     };
   };
   // ---------------------------------------------------
@@ -22,6 +30,8 @@ class DimensionHeaders extends Component {
       gridId,
       toggleCollapseDimension,
       moveDimension,
+      getDimensionKeys,
+      expandCollapseAll,
       toggleSortOrder,
       crossPositions,
       height,
@@ -80,10 +90,12 @@ class DimensionHeaders extends Component {
             toggleCollapseDimension={toggleCollapseDimension}
             toggleSortOrder={toggleSortOrder}
             moveDimension={moveDimension}
+            getDimensionKeys={getDimensionKeys}
+            expandCollapseAll={expandCollapseAll}
             isDropTarget={true}
             isAttribute={dimension.isAttribute}
             collectMenu={this.collectMenu}
-            fontWeigth="bold"
+            isFiltered={!isNullOrUndefined(this.props.filters[dimension.id])}
           />
         );
       }

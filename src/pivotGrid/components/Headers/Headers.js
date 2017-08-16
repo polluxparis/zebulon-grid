@@ -13,10 +13,17 @@ class Headers extends PureComponent {
       this.cellCache = {};
     }
   };
-  componentShouldUpdate = nextProps =>
-    nextProps.sizes !== this.props.sizes ||
+  shouldComponentUpdate = nextProps =>
+    (nextProps.height !== this.props.heigh &&
+      this.props.axisType === AxisType.ROWS) ||
+    (nextProps.getColumnWidth !== this.props.width &&
+      this.props.axisType === AxisType.COLUMNS) ||
     nextProps.zoom !== this.props.zoom ||
-    nextProps.leaves !== this.props.leaves;
+    nextProps.leaves !== this.props.leaves ||
+    (nextProps.scrollTop !== this.props.scrollTop &&
+      this.props.axisType === AxisType.ROWS) ||
+    (nextProps.scrollLeft !== this.props.scrollLeft &&
+      this.props.axisType === AxisType.COLUMNS);
 
   componentDidUpdate = prevProps => {
     if (
@@ -65,7 +72,6 @@ class Headers extends PureComponent {
       getSizeByKey,
       crossPositions
     } = this.props;
-    console.log(rowStartIndex, rowStopIndex);
     const renderedCells = [];
 
     let startIndex, stopIndex, sizeAndPositionManager, offsetAdjustment;

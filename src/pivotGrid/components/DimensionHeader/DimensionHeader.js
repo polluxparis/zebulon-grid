@@ -44,6 +44,14 @@ class DimensionHeader extends Component {
       if (data.action === 'sort') {
         this.props.toggleSortOrder(data.dimensionId);
       }
+      if (data.action === 'expand all') {
+        const keys = this.props.getDimensionKeys(data.axis, data.index, false);
+        this.props.expandCollapseAll(data.axis, keys);
+      }
+      if (data.action === 'collapse all') {
+        const keys = this.props.getDimensionKeys(data.axis, data.index, true);
+        this.props.expandCollapseAll(data.axis, keys);
+      }
       if (data.action === 'filter') {
       }
     }
@@ -68,7 +76,8 @@ class DimensionHeader extends Component {
       moveDimension,
       isAttribute,
       collectMenu,
-      isDropTarget
+      isDropTarget,
+      isFiltered
     } = this.props;
 
     const ids = {};
@@ -85,7 +94,8 @@ class DimensionHeader extends Component {
       'pivotgrid-dimension-header': true,
       'pivotgrid-dimension-header-column': axis === AxisType.COLUMNS,
       'pivotgrid-dimension-header-row': axis === AxisType.ROWS,
-      'pivotgrid-dimension-attribute-header': isAttribute
+      'pivotgrid-dimension-attribute-header': isAttribute,
+      'pivotgrid-dimension-filtered-header': isFiltered
     });
     let header = (
       <div
@@ -148,6 +158,7 @@ class DimensionHeader extends Component {
         sortDirection={sortDirection}
         caption={caption}
         index={dimensionIndex}
+        isAttribute={isAttribute}
         style={{ width: 'inherit' }}
       >
         {header}

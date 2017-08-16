@@ -5,19 +5,19 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-import Filter from './pivotGrid/containers/Filter';
-/* eslint-disable import/no-extraneous-dependencies*/
+// import Filter from './pivotGrid/containers/Filter';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
-/* eslint-enable */
-
 import { createStore } from 'redux';
 import PivotGrid, { reducer, hydrateStore, actions } from './pivotGrid';
-import { getMockDatasource, basicConfig } from './utils/mock';
 import { MEASURE_ID } from './pivotGrid/constants';
 
+// custom functions and mock dataset
+import { getMockDatasource, basicConfig } from './utils/mock';
+import { configFunctions } from './utils/configFunctions';
+import { externalFunctions } from './utils/externalFunctions';
 import './App.css';
-
+//
 let i = 0;
 let j = 0;
 let k = 0;
@@ -34,8 +34,9 @@ class PivotGridDemo extends Component {
       /* eslint-enable */
     );
 
-    const data = getMockDatasource(1, 20, 30);
-    this.customFunctions = hydrateStore(store, basicConfig, data);
+    const data = getMockDatasource(1, 100, 100);
+    // this.customFunctions =
+    hydrateStore(store, basicConfig, data, configFunctions);
     this.state = { store, focusCells: [] };
   }
 
@@ -231,7 +232,8 @@ class PivotGridDemo extends Component {
                 {({ height, width }) =>
                   <PivotGrid
                     id={0}
-                    customFunctions={this.customFunctions}
+                    externalFunctions={externalFunctions}
+                    configFunctions={configFunctions}
                     focusCells={this.state.focusCells}
                     height={height}
                     width={width}

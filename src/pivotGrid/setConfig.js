@@ -1,7 +1,9 @@
 import {
+  setData,
   pushData,
   setDimensions,
   setMeasures,
+  setProperty,
   setConfigProperty,
   moveDimension,
   toggleMeasure
@@ -15,39 +17,39 @@ import {
 } from './utils/generic';
 import { MEASURE_ID } from './constants';
 import * as aggregations from './Aggregation';
-
-export default function hydrateStore(
-  store,
-  config,
-  datasource,
-  configFunctions
-) {
-  if (Array.isArray(datasource)) {
-    store.dispatch(pushData(datasource));
-  } else if (isPromise(datasource)) {
-    datasource.then(data => store.dispatch(pushData(data)));
-  } else if (isObservable(datasource)) {
-    datasource.subscribe(data => {
+export const _setData = (store, data) => {
+  store.dispatch(setProperty('status', 'loading'));
+  if (Array.isArray(data)) {
+    store.dispatch(setData(data));
+    store.dispatch(setProperty('status', 'loaded'));
+  } else if (isPromise(data)) {
+    console.log('promise', Date.now());
+    data.then(data => {
+      store.dispatch(setData(data));
+      store.dispatch(setProperty('status', 'loaded'));
+    });
+  } else if (isObservable(data)) {
+    data.subscribe(data => {
       store.dispatch(pushData(data));
+      store.dispatch(setProperty('status', 'loaded'));
     });
   } else {
     throw new Error(
       'datasource type is not supported, datasource must be an array, a promise or an observable, got ',
-      datasource
+      data
     );
+  }
+};
+export const _setConfig = (store, config, configFunctions, data) => {
+  if (!isNullOrUndefined(data)) {
+    _setData(store, data);
   }
   config.dimensions.push({ id: MEASURE_ID, caption: '' });
   store.dispatch(setDimensions(config, configFunctions));
 
-  store.dispatch(setDimensions(config, configFunctions));
+  // store.dispatch(setDimensions(config, configFunctions));
 
   store.dispatch(setMeasures(config, configFunctions));
-  const dimensions = config.dimensions.map(dimension =>
-    dimensionFactory(dimension, configFunctions)
-  );
-  const measures = config.measures.map(measure =>
-    measureFactory(measure, configFunctions)
-  );
 
   store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'columns'));
   store.dispatch(setConfigProperty(config, 'height', 600));
@@ -74,7 +76,7 @@ export default function hydrateStore(
       moveDimension(MEASURE_ID, 'dimensions', 'rows', config.rows.length)
     );
   }
-  Object.values(dimensions)
+  config.dimensions
     .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
     .forEach((dimension, index) => {
       store.dispatch(
@@ -85,27 +87,7 @@ export default function hydrateStore(
   config.activeMeasures.forEach(measureId => {
     store.dispatch(toggleMeasure(measureId));
   });
-
-  // const customFunctions = {
-  //   sort: dimensions.reduce(
-  //     (acc, dimension) => ({ ...acc, [dimension.id]: dimension.sort.custom }),
-  //     {}
-  //   ),
-  //   access: measures.reduce(
-  //     (acc, dimension) => ({ ...acc, [dimension.id]: dimension.accessor }),
-  //     {}
-  //   ),
-  //   format: measures.reduce(
-  //     (acc, dimension) => ({ ...acc, [dimension.id]: dimension.format }),
-  //     {}
-  //   ),
-  //   aggregation: measures.reduce(
-  //     (acc, dimension) => ({ ...acc, [dimension.id]: dimension.aggregation }),
-  //     {}
-  //   )
-  // };
-  // return customFunctions;
-}
+};
 
 // initialisation of dimensions from configuration
 export function dimensionFactory(dimensionConfig, configFunctions) {

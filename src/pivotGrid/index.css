@@ -54,6 +54,9 @@
 .pivotgrid-dimension-attribute-header {
   font-style: italic;
 }
+.pivotgrid-dimension-filtered-header {
+  font-weight: bold;
+}
 .pivotgrid-dimension-header-inner {
   margin: 0.2em;
   margin-left: '0.5em';

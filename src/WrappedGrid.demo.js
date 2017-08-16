@@ -2,117 +2,74 @@ import React, { Component } from 'react';
 
 import WrappedGrid from './pivotGrid/WrappedGrid';
 
-import { getMockDatasource, basicConfig } from './utils/mock';
+import {
+  getMockDatasource,
+  getMockDatasource2,
+  getPromiseMockDatasource,
+  basicConfig,
+  basicConfig2
+} from './utils/mock';
+import { configFunctions } from './utils/configFunctions';
+import { externalFunctions } from './utils/externalFunctions';
 
-let i = 0;
-let k = 0;
 class WrappedGridDemo extends Component {
   state = { focusCell: [] };
-  data = getMockDatasource(1, 100, 100);
+  // data = getMockDatasource(1, 100, 100);
+  data = getPromiseMockDatasource(1, 100, 100);
 
-  addData = () => {
-    this.grid.pushData([
-      {
-        toto: '0',
-        toto_lb: 'toto 0',
-        qty: 100,
-        amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
-      }
-    ]);
-  };
-
-  moveDimension = () => {
-    if (i % 2) {
-      this.grid.moveDimension('tutu', 'columns', 'rows', 1);
-    } else {
-      this.grid.moveDimension('tutu', 'rows', 'columns', 1);
-    }
-    i += 1;
-  };
-  sortDimension = () => {
-    this.grid.toggleSortOrder('toto');
-  };
-
-  toggleMeasure = () => {
-    this.grid.toggleMeasure('amt');
-  };
-  toggleMeasureAxis = () => {
-    if (k % 2) {
-      this.grid.setConfigProperty(
-        { measureHeadersAxis: 'columns' },
-        'measureHeadersAxis'
-      );
-    } else {
-      this.grid.setConfigProperty(
-        { measureHeadersAxis: 'rows' },
-        'measureHeadersAxis'
-      );
-    }
-    k += 1;
-  };
-  zoomIn = () => {
-    this.grid.zoomIn();
-  };
-  zoomOut = () => {
-    this.grid.zoomOut();
-  };
-  focusCell = () => {
-    const getCell = id => ({
-      dimensions: [
-        {
-          cell: { caption: '0', id: '0' },
-          dimension: { caption: 'Tutu', id: 'tutu' },
-          axis: 'rows',
-          index: 1
-        },
-        {
-          cell: { caption: `toto ${id}`, id },
-          dimension: { caption: 'Toto', id: 'toto' },
-          axis: 'rows',
-          index: 0
-        },
-        {
-          cell: { caption: 'titi 0', id: 'titi 0' },
-          dimension: { caption: 'Titi', id: 'titi' },
-          axis: 'columns',
-          index: 0
-        }
-      ],
-      measure: {
-        id: 'qty',
-        axis: 'columns'
-      }
-    });
-    k = (k + 1) % 3;
-    if (k === 0) {
-      this.setState({ focusCells: [] });
-    } else {
-      this.setState({
-        focusCells: [...Array(k).keys()].map(id => getCell(id))
-      });
-    }
-  };
-
+  setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
+  pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
+  setConfig = () =>
+    this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
+  // pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
   render() {
     return (
       <div>
-        <button onClick={this.addData}>Add data</button>
-        <button onClick={this.moveDimension}>Move dimension</button>
-        <button onClick={this.sortDimension}>Sort toto dimension</button>
-        <button onClick={this.toggleMeasure}>Toggle measure</button>
-        <button onClick={this.zoomIn}>Zoom in</button>
-        <button onClick={this.zoomOut}>Zoom out</button>
-        <button onClick={this.focusCell}>Focus cells</button>
-        <button onClick={this.toggleMeasureAxis}>
-          Toggle measures axis
-        </button>
-
+        <button onClick={this.setData}>set data</button>
+        <button onClick={this.pushData}>push data</button>
+        <button onClick={this.setConfig}>set config</button>
+        <div>
+          <div>
+            Ctrl A : select all, Ctrl + : zoom in, Ctrl - : zoom out, Shift Up,
+            Down, Right, Left(, PageDown, PageUp, Home, End) to extend selection
+          </div>
+          <div> Dimension headers: </div>
+          <div> Click: toggle sort direction</div>
+          <div>
+            Drag and drop on an other dimension header to reorder or change axis
+            of a dimension.
+          </div>
+          <div>
+            Collapse or expand button to hide or show attribute dimensions (in
+            Italic).
+          </div>
+          <div>
+            Right and bottom handle drag and drop to resize rows or columns
+            headers.
+          </div>
+          <div>
+            Collapse or expand button to hide or show attribute dimensions (in
+            Italic).
+          </div>
+          <div>
+            Right click to sort, filter, remove or add a dimension.
+          </div>
+          <div> Column or row headers: </div>
+          <div> Click: select children headers columns or rows.</div>
+          <div>
+            Collapse or expand button to hide or show children headers and
+            recompute measures.
+          </div>
+          <div>
+            Right and bottom handle drag and drop to resize rows or columns.
+          </div>
+        </div>
         <WrappedGrid
           config={basicConfig}
           data={this.data}
           focusCells={this.state.focusCells}
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
           ref={ref => {
             this.grid = ref;
           }}

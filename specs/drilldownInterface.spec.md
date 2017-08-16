@@ -32,7 +32,7 @@ Each dimension is an object containing the following properties:
 
   - caption
   - id
-
+  - isCollapsed
 
 - cell
 

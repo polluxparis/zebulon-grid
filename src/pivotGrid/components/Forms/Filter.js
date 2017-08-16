@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import List from 'react-virtualized/dist/commonjs/List';
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
-import { ResizableBox } from 'react-resizable';
+// import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+// import { ResizableBox } from 'react-resizable';
 import { isNull } from '../../utils/generic';
 // const CheckboxFilter = ({ value, onChange, style }) =>
 // 	<div style={{ ...style, textAlign: 'left' }}>

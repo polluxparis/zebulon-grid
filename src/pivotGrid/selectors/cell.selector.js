@@ -178,3 +178,109 @@ export const getCellInfosSelector = createSelector(
     return { value, dimensions, data: usedData };
   }
 );
+export const getRangeInfosSelector = createSelector(
+  [
+    filteredDataSelector,
+    rowLeavesSelector,
+    columnLeavesSelector,
+    activatedMeasuresSelector,
+    rowDimensionsSelector,
+    columnDimensionsSelector,
+    state => state.config.measureHeadersAxis
+  ],
+  (
+    data,
+    rowLeaves,
+    columnLeaves,
+    measures,
+    rowDimensions,
+    columnDimensions,
+    measureHeadersAxis
+  ) => rg => {
+    const range = {
+      selectedCellStart: {
+        rowIndex: Math.min(
+          rg.selectedCellStart.rowIndex,
+          rg.selectedCellEnd.rowIndex
+        ),
+        columnIndex: Math.min(
+          rg.selectedCellStart.columnIndex,
+          rg.selectedCellEnd.columnIndex
+        )
+      },
+      selectedCellEnd: {
+        rowIndex: Math.max(
+          rg.selectedCellStart.rowIndex,
+          rg.selectedCellEnd.rowIndex
+        ),
+        columnIndex: Math.max(
+          rg.selectedCellStart.columnIndex,
+          rg.selectedCellEnd.columnIndex
+        )
+      }
+    };
+    const rows = {};
+    for (
+      let index = range.selectedCellStart.rowIndex;
+      index <= range.selectedCellEnd.rowIndex;
+      index += 1
+    ) {
+      const rowLeaf = rowLeaves[index];
+      rows[index] = cellDimensionInfos(
+        data,
+        rowDimensions,
+        'rows',
+        rowLeaf,
+        measures
+      );
+    }
+    const columns = {};
+    for (
+      let index = range.selectedCellStart.columnIndex;
+      index <= range.selectedCellEnd.columnIndex;
+      index += 1
+    ) {
+      const columnLeaf = columnLeaves[index];
+      columns[index] = cellDimensionInfos(
+        data,
+        columnDimensions,
+        'columns',
+        columnLeaf,
+        measures
+      );
+    }
+    const values = {};
+    for (
+      let columnIndex = range.selectedCellStart.columnIndex;
+      columnIndex <= range.selectedCellEnd.columnIndex;
+      columnIndex += 1
+    ) {
+      const columnLeaf = columnLeaves[columnIndex];
+      values[columnIndex] = {};
+      for (
+        let rowIndex = range.selectedCellEnd.rowIndex;
+        rowIndex <= range.selectedCellEnd.rowIndex;
+        rowIndex += 1
+      ) {
+        const rowLeaf = rowLeaves[rowIndex];
+        const measure = rowLeaf.type === HeaderType.MEASURE
+          ? measures[rowLeaf.id]
+          : measures[columnLeaf.id];
+        const value = cellValue(
+          data,
+          measure.valueAccessor,
+          rowLeaf.dataIndexes,
+          columnLeaf.dataIndexes,
+          measure.aggregation
+        );
+        values[columnIndex][rowIndex] = value;
+
+        // const usedData = twoArraysIntersect(
+        //   rowLeaf.dataIndexes,
+        //   columnLeaf.dataIndexes
+        // ).map(x => data[x]);
+      }
+    }
+    return { values, columns, rows, range, measureHeadersAxis };
+  }
+);

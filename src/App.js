@@ -5,7 +5,7 @@ import WrappedGridDemo from './WrappedGrid.demo';
 class App extends Component {
   constructor() {
     super();
-    this.state = { demo: 'pivotGrid' };
+    this.state = { demo: 'zebulonGrid' };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
@@ -15,17 +15,18 @@ class App extends Component {
     let grid = null;
     if (this.state.demo === 'pivotGrid') {
       grid = <PivotGridDemo />;
-    } else if (this.state.demo === 'wrappedGrid') {
+    } else if (this.state.demo === 'zebulonGrid') {
       grid = <WrappedGridDemo />;
     }
     return (
       <div>
         <select onChange={this.handleChange} defaultValue={this.state.demo}>
+
+          <option value="zebulonGrid">
+            Zebulon Grid
+          </option>
           <option value="pivotGrid">
             Pivot Grid
-          </option>
-          <option value="wrappedGrid">
-            Wrapped Grid
           </option>
         </select>
         {grid}
