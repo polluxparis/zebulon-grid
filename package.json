@@ -1,6 +1,6 @@
 {
   "name": "zebulon-grid",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "homepage": ".",
   "license": "MIT",
   "description": "Pivot table javascript library",
@@ -57,10 +57,15 @@
     "react": "^15.6.1"
   },
   "babel": {
-    "presets": ["react-app"]
+    "presets": [
+      "react-app"
+    ]
   },
   "eslintConfig": {
-    "extends": ["react-app", "prettier"],
+    "extends": [
+      "react-app",
+      "prettier"
+    ],
     "env": {
       "browser": true,
       "jest": true
