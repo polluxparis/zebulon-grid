@@ -8,41 +8,9 @@ import { isNullOrUndefined } from '../../utils/generic';
 import { MEASURE_ID } from '../../constants';
 import Filter from '../../containers/Filter';
 
-// const Filter = (dimensionId, values, filter) => {
-//   const checkedValues = values.map(val => ({
-//     checked: filter.values.includes(val.key),
-//     label: val.label,
-//     value: val.key
-//   }));
-//   return (
-//     <VirtualizedCheckbox
-//       items={checkedValues}
-//       //     onOk={(all, result) =>
-//       //       handleFilter(all, '', '', result.map(box => box.value), false)}
-//       //     onCancel={onHide}
-//       maxHeight={100}
-//     />
-//   );
-// };
-
 const DimensionMenu = (id, trigger) => {
   const isNotCollapsible = trigger.isNotCollapsible;
   const isAddDimensionDisable = trigger.availableDimensions.length === 0;
-  const filterSubmenuStyle = !isNullOrUndefined(trigger.dimensionFilter)
-    ? { fontWeight: 'bold' }
-    : null;
-  // <SubMenu title="filter" style={filterSubmenuStyle}>
-  //   <MenuItem onClick={trigger.onItemClick}>
-  //     Filter(
-  //     trigger.dimensionId,
-  //     trigger.dimensionValues,
-  //     filter={trigger.dimensionFilter})
-  //   </MenuItem>
-  // </SubMenu>
-
-  // <SubMenu title="Find">
-  //   <Find dimensionId={trigger.dimensionId} />
-  // </SubMenu>
   return (
     <ReactContextMenu id={id}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
@@ -86,11 +54,11 @@ const DimensionMenu = (id, trigger) => {
             {dimension.caption}
           </MenuItem>
         )}
-
       </SubMenu>
     </ReactContextMenu>
   );
 };
+
 const MeasureMenu = (id, trigger) => {
   const isDisable = trigger.availableMeasures.length === 0;
   return (
@@ -114,11 +82,11 @@ const MeasureMenu = (id, trigger) => {
             {measure.caption}
           </MenuItem>
         )}
-
       </SubMenu>
     </ReactContextMenu>
   );
 };
+
 const DataCellMenu = (id, trigger) => {
   const filterSubmenuStyle = !isNullOrUndefined(trigger.filter)
     ? { fontWeight: 'bold' }
@@ -166,14 +134,13 @@ const DataCellMenu = (id, trigger) => {
               <Filter dimensionId={dimension.id} style={filterSubmenuStyle} />
             </SubMenu>
           )}
-
       </SubMenu>
     </ReactContextMenu>
   );
 };
+
 const ContextMenu = props => {
   const { id, trigger } = props;
-
   if (isNullOrUndefined(trigger)) {
     return <ReactContextMenu id={id} disabled={true} />;
   }

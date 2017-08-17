@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { pass } from '../utils/Filtering';
+import pass from '../utils/Filtering';
 import { isUndefined } from '../utils/generic';
 
 const getFilters = state => state.filters || {};
@@ -27,8 +27,6 @@ export const dimensionValuesSelector = createSelector(
   (data, filters, dimensions) => id => {
     const dimension = dimensions[id];
     const filter = filters[id] || {};
-    // const values = [];
-    // const labels = [];
 
     let values = {};
     let countNotFiltered = 0;
@@ -38,7 +36,6 @@ export const dimensionValuesSelector = createSelector(
       const row = data[i];
       const key = dimension.keyAccessor(row);
       if (isUndefined(values[key])) {
-        // const label = dimension.format(dimension.labelAccessor(row));
         const label = dimension.labelAccessor(row);
         const sortKey = dimension.sort.keyAccessor(row);
         const isNotFiltered = pass(filter, key);
@@ -61,9 +58,6 @@ export const dimensionValuesSelector = createSelector(
         (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
     }
     values.sort(sortFunction);
-    // if (containsBlank) {
-    //   values.unshift({ key: null, label: '', sortKey: null });
-    // }
     return { values, noFilter: values.length === countNotFiltered };
   }
 );

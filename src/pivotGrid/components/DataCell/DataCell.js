@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
 import { ContextMenuTrigger } from 'react-contextmenu';
+
 export default class DataCell extends PureComponent {
   handleMouseDown = e => {
     this.props.handleMouseDown(e, {
@@ -20,13 +21,6 @@ export default class DataCell extends PureComponent {
       rowIndex: this.props.rowIndex
     });
   };
-  // handleClickMenu = (e, data, target) => {
-  //   if (e.button === 0) {
-  //     if (data.action === 'drilldown') {
-  //       this.handleDoubleClick();
-  //     }
-  //   }
-  // };
   render() {
     const {
       caption,
