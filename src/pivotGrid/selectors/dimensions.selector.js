@@ -8,11 +8,15 @@ const getAxisDimensions = (axis, dimensions, collapses) => {
 		.map(id => {
 			const dimension = dimensions[id];
 			if (
-				prevDimension.id === dimension.isAttributeOf ||
-				(prevDimension.isAttributeOf === dimension.isAttributeOf &&
+				dimension.attributeParents.includes(prevDimension.id) ||
+				(dimension.attributeParents.includes(
+					prevDimension.isAttributeOf
+				) &&
 					prevDimension.isAttribute)
 			) {
 				dimension.isAttribute = true;
+				dimension.isAttributeOf =
+					prevDimension.isAttributeOf || prevDimension.id;
 				dimension.isCollapsed = prevDimension.isCollapsed;
 			} else {
 				dimension.isCollapsed = collapses[dimension.id];

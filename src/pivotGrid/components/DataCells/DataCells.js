@@ -133,6 +133,8 @@ class DataCells extends PureComponent {
         this.props.externalFunctions.rangeFunctions[data.action].function(
           this.props.getRangeInfos(this.props.selectedRange)
         );
+      } else if (data.functionType === 'function') {
+        this.props.externalFunctions.functions[data.action].function();
       }
     }
   };

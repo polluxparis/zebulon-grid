@@ -126,13 +126,13 @@ export const basicConfig = {
       id: 'toto att 0',
       caption: 'toto 0',
       keyAccessor: 'toto_0',
-      isAttributeOf: 'toto'
+      attributeParents: ['toto']
     },
     {
       id: 'toto att 1',
       caption: 'toto 1',
       keyAccessor: 'toto_1',
-      isAttributeOf: 'toto',
+      attributeParents: ['toto'],
       format: 'id'
     }
   ],
@@ -196,13 +196,13 @@ export const basicConfig2 = {
       id: 'toto att 0',
       caption: 'toto 0',
       keyAccessor: 'toto_0',
-      isAttributeOf: 'toto'
+      attributeParents: ['toto']
     },
     {
       id: 'toto att 1',
       caption: 'toto 1',
       keyAccessor: 'toto_1',
-      isAttributeOf: 'toto',
+      attributeParents: ['toto'],
       format: 'id'
     }
   ],

@@ -101,7 +101,7 @@ export function dimensionFactory(dimensionConfig, configFunctions) {
     sort,
     format,
     subTotal,
-    isAttributeOf
+    attributeParents
   } = dimensionConfig;
   const { formats, accessors, sorts } = configFunctions;
   const dimSort = !isNullOrUndefined(sort)
@@ -139,7 +139,7 @@ export function dimensionFactory(dimensionConfig, configFunctions) {
     format: formats[format] || (value => value),
     sort: dimSort,
     subTotal,
-    isAttributeOf
+    attributeParents: attributeParents || []
   };
 }
 // initialisation of measures from configuration
