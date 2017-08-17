@@ -121,9 +121,11 @@ const MeasureMenu = (id, trigger) => {
 };
 const externalMenu = (functionType, externalFunction, onClick) => {
   if (externalFunction.type === 'subMenu') {
-    <SubMenu title={externalFunction.caption}>
-      {externalFunction.function}
-    </SubMenu>;
+    return (
+      <SubMenu title={externalFunction.caption}>
+        {externalFunction.function}
+      </SubMenu>
+    );
   } else {
     return (
       <MenuItem
