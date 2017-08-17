@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import { scrollbarSize } from '../utils/domHelpers';
+import scrollbarSize from '../utils/scrollbarSize';
 import { ROOT_ID, AxisType } from '../constants';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
 import {

@@ -4,45 +4,15 @@ import {
   MenuItem,
   SubMenu
 } from 'react-contextmenu';
+import classnames from 'classnames';
+
 import { isNullOrUndefined } from '../../utils/generic';
 import { MEASURE_ID } from '../../constants';
 import Filter from '../../containers/Filter';
 
-// const Filter = (dimensionId, values, filter) => {
-//   const checkedValues = values.map(val => ({
-//     checked: filter.values.includes(val.key),
-//     label: val.label,
-//     value: val.key
-//   }));
-//   return (
-//     <VirtualizedCheckbox
-//       items={checkedValues}
-//       //     onOk={(all, result) =>
-//       //       handleFilter(all, '', '', result.map(box => box.value), false)}
-//       //     onCancel={onHide}
-//       maxHeight={100}
-//     />
-//   );
-// };
-
 const DimensionMenu = (id, trigger) => {
   const isNotCollapsible = trigger.isNotCollapsible;
   const isAddDimensionDisable = trigger.availableDimensions.length === 0;
-  const filterSubmenuStyle = !isNullOrUndefined(trigger.dimensionFilter)
-    ? { fontWeight: 'bold' }
-    : null;
-  // <SubMenu title="filter" style={filterSubmenuStyle}>
-  //   <MenuItem onClick={trigger.onItemClick}>
-  //     Filter(
-  //     trigger.dimensionId,
-  //     trigger.dimensionValues,
-  //     filter={trigger.dimensionFilter})
-  //   </MenuItem>
-  // </SubMenu>
-
-  // <SubMenu title="Find">
-  //   <Find dimensionId={trigger.dimensionId} />
-  // </SubMenu>
   return (
     <ReactContextMenu id={id}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
@@ -70,7 +40,9 @@ const DimensionMenu = (id, trigger) => {
             : null
         }
       >
-        <Filter dimensionId={trigger.dimensionId} />
+        <div style={{ height: 400 }}>
+          <Filter dimensionId={trigger.dimensionId} />
+        </div>
       </SubMenu>
 
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'remove' }}>
@@ -86,13 +58,13 @@ const DimensionMenu = (id, trigger) => {
             {dimension.caption}
           </MenuItem>
         )}
-
       </SubMenu>
     </ReactContextMenu>
   );
 };
+
 const MeasureMenu = (id, trigger) => {
-  const isDisable = trigger.availableMeasures.length === 0;
+  const isDisabled = trigger.availableMeasures.length === 0;
   return (
     <ReactContextMenu id={id}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'move' }}>
@@ -105,7 +77,7 @@ const MeasureMenu = (id, trigger) => {
       >
         Remove
       </MenuItem>
-      <SubMenu title="Add" disabled={isDisable}>
+      <SubMenu title="Add" disabled={isDisabled}>
         {trigger.availableMeasures.map(measure =>
           <MenuItem
             onClick={trigger.onItemClick}
@@ -114,7 +86,6 @@ const MeasureMenu = (id, trigger) => {
             {measure.caption}
           </MenuItem>
         )}
-
       </SubMenu>
     </ReactContextMenu>
   );
@@ -138,9 +109,6 @@ const externalMenu = (functionType, externalFunction, onClick) => {
   }
 };
 const DataCellMenu = (id, trigger) => {
-  const filterSubmenuStyle = !isNullOrUndefined(trigger.filter)
-    ? { fontWeight: 'bold' }
-    : null;
   let fct = trigger.externalFunctions.dataCellFunctions;
   const externalCellFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('cell', fct[externalFunction], trigger.onItemClick)
@@ -191,20 +159,32 @@ const DataCellMenu = (id, trigger) => {
         {trigger.dimensions
           .filter(dimension => dimension.id !== MEASURE_ID)
           .map(dimension =>
-            <SubMenu title={dimension.caption}>
-              <Filter dimensionId={dimension.id} style={filterSubmenuStyle} />
+            <SubMenu
+              key={dimension.id}
+              title={
+                <span
+                  className={classnames({
+                    'react-contextmenu-item-filtered': !isNullOrUndefined(
+                      trigger.filters[dimension.id]
+                    )
+                  })}
+                >
+                  {dimension.caption}
+                </span>
+              }
+            >
+              <Filter dimensionId={dimension.id} />
             </SubMenu>
           )}
-
       </SubMenu>
     </ReactContextMenu>
   );
 };
+
 const ContextMenu = props => {
   const { id, trigger } = props;
-
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id} disabled={true} />;
+    return null;
   }
 
   if (trigger.type === 'dimension-header') {

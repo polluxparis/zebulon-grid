@@ -272,7 +272,6 @@ class PivotGrid extends Component {
 
     const { columnHorizontalCount, rowVerticalCount } = layout;
     let grid;
-    console.log(this.props);
     if (this.props.status.loading) {
       grid = <div>Loading data...</div>;
     } else if (this.props.status.error) {
@@ -301,7 +300,6 @@ class PivotGrid extends Component {
             onScrollToChange={this.handleScrollToChange}
             isControlled={true}
           >
-
             {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
               <ScrollSync>
                 {({
@@ -338,7 +336,6 @@ class PivotGrid extends Component {
                         gridId={gridId}
                       />
                     </div>
-
                   </div>}
               </ScrollSync>}
           </ArrowKeyStepper>

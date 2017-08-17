@@ -1,32 +1,36 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import { dimensionValuesSelector } from '../selectors';
-import { Filter } from '../components/Forms/Filter';
+import VirtualizedCheckbox from 'react-virtualized-checkbox';
+
+import { getDimensionValuesSelector } from '../selectors';
 import { addFilter, deleteFilter } from '../actions';
-// import {
-//   columnDimensionsSelector,
-//   rowDimensionsSelector,
-//   columnHeadersWidthSelector,
-//   rowHeadersWidthSelector,
-//   crossPositionsSelector,
-//   previewSizesSelector,
-//   availableDimensionsSelector
-// } from '../selectors';
-// import DimensionHeaders from '../components/DimensionHeaders/DimensionHeaders';
-// import {
-//   toggleCollapseDimension,
-//   toggleSortOrder,
-//   moveDimension
-// } from '../actions';
+
+const Filter = ({ items, onOk }) =>
+  <div style={{ height: 400 }}>
+    <VirtualizedCheckbox items={items} onOk={onOk} valueKey="key" />
+  </div>;
 
 const mapStateToProps = (state, ownProps) => {
-	return {
-		dimensionValues: dimensionValuesSelector(state)
-	};
+  return {
+    items: getDimensionValuesSelector(state)(ownProps.dimensionId)
+  };
 };
-const mapDispatchToProps = dispatch => ({
-	setFilter: (dimensionId, operator, filterKeys) =>
-		dispatch(addFilter(dimensionId, operator, null, filterKeys, false)),
-	deleteFilter: dimensionId => dispatch(deleteFilter(dimensionId))
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onOk: (checkedAll, filterKeys) => {
+    if (checkedAll) {
+      dispatch(deleteFilter(ownProps.dimensionId));
+    } else {
+      dispatch(
+        addFilter(
+          ownProps.dimensionId,
+          'in',
+          null,
+          filterKeys.map(v => v.key),
+          false
+        )
+      );
+    }
+  }
 });
-// const mapDispatchToProps = dispatch => ({});
+
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

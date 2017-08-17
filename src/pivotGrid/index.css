@@ -78,11 +78,6 @@
   background-color: lightcyan;
 }
 
-.pivotgrid-data-cell-focused {
-  /*background-color: lightgreen;*/
-  border: solid .05em;
-}
-
 .react-contextmenu {
   min-width: 9em;
   color: #373a3c;
@@ -162,4 +157,8 @@
 }
 .react-contextmenu-wrapper {
   width: inherit;
+}
+
+.react-contextmenu-item-filtered {
+  font-weight: bold;
 }

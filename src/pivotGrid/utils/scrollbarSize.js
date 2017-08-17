@@ -1,11 +1,12 @@
 let calculatedScrollBarSize;
 let lastDevicePixelRatio;
 
-const inDOM = !!(typeof window !== 'undefined' &&
+const inDOM = !!(
+  typeof window !== 'undefined' &&
   window.document &&
-  window.document.createElement);
-/* eslint-disable import/prefer-default-export */
-export function scrollbarSize(recalc) {
+  window.document.createElement
+);
+export default function scrollbarSize(recalc) {
   // scrollbar size changes when zoom (devicePixelRatio) is modified
   if (
     !calculatedScrollBarSize ||
@@ -41,4 +42,3 @@ export function scrollbarSize(recalc) {
   }
   return calculatedScrollBarSize || 0;
 }
-/* eslint-enable */

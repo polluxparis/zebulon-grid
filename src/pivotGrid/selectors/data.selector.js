@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { pass } from '../utils/Filtering';
+import pass from '../utils/Filtering';
 import { isUndefined } from '../utils/generic';
 
 const getFilters = state => state.filters || {};
@@ -22,33 +22,26 @@ export const filteredDataSelector = createSelector(
   }
 );
 
-export const dimensionValuesSelector = createSelector(
+export const getDimensionValuesSelector = createSelector(
   [getData, getFilters, state => state.dimensions],
   (data, filters, dimensions) => id => {
     const dimension = dimensions[id];
     const filter = filters[id] || {};
-    // const values = [];
-    // const labels = [];
 
     let values = {};
-    let countNotFiltered = 0;
     // We use data here instead of filteredData
     // Otherwise you lose the filtered values the next time you open a Filter Panel
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
       const key = dimension.keyAccessor(row);
       if (isUndefined(values[key])) {
-        // const label = dimension.format(dimension.labelAccessor(row));
         const label = dimension.labelAccessor(row);
         const sortKey = dimension.sort.keyAccessor(row);
-        const isNotFiltered = pass(filter, key);
-        countNotFiltered += isNotFiltered;
         values[key] = {
           key: key,
           label: label,
           sortKey: sortKey,
-          filterOperator: filter.operator,
-          isNotFiltered: isNotFiltered
+          checked: pass(filter, key)
         };
       }
     }
@@ -61,12 +54,10 @@ export const dimensionValuesSelector = createSelector(
         (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
     }
     values.sort(sortFunction);
-    // if (containsBlank) {
-    //   values.unshift({ key: null, label: '', sortKey: null });
-    // }
-    return { values, noFilter: values.length === countNotFiltered };
+    return values;
   }
 );
+
 export const dimensionFiltersSelector = createSelector(
   [getFilters],
   filters => dimensionId => filters[dimensionId]

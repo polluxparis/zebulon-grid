@@ -11,10 +11,8 @@ class ZebulonGrid extends Component {
   componentWillMount() {
     const { data, config, configFunctions, externalFunctions } = this.props;
     const store = createStore(reducer);
-    // _setData(store, data);
     setConfig(store, config, configFunctions, data);
     this.setState({ store, configFunctions, externalFunctions });
-    this.setState({ status: 'loading' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -22,18 +20,11 @@ class ZebulonGrid extends Component {
       setConfig(
         this.state.store,
         nextProps.config,
-        [],
-        this.state.configFunctions
+        this.state.configFunctions,
+        nextProps.data
       );
-      // this.setState({ customFunctions });
     }
-    // if (this.props.data !== nextProps.data) {
-    //   this.state.store.dispatch(actions.setData(nextProps.data));
-    // }
   }
-  // setData = data => _setData(this.state.store, data);
-  // setConfig = (config, data) =>
-  //   setConfig(this.state.store, config, this.props.configFunctions, data);
 
   render() {
     const { store, externalFunctions } = this.state;

@@ -17,14 +17,12 @@ import { externalFunctions } from './utils/externalFunctions';
 
 class ZebulonGridDemo extends Component {
   state = { focusCell: [] };
-  // data = getMockDatasource(1, 100, 100);
   data = getPromiseMockDatasource(1, 100, 100);
 
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
-  pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
+  pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
   setConfig = () =>
     this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
-  // pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
   render() {
     return (
       <div>
@@ -54,9 +52,7 @@ class ZebulonGridDemo extends Component {
             Collapse or expand button to hide or show attribute dimensions (in
             Italic).
           </div>
-          <div>
-            Right click to sort, filter, remove or add a dimension.
-          </div>
+          <div>Right click to sort, filter, remove or add a dimension.</div>
           <div> Column or row headers: </div>
           <div> Click: select children headers columns or rows.</div>
           <div>

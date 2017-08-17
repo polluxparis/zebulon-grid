@@ -9,7 +9,6 @@ export default (
   action
 ) => {
   const { type, selectedRange } = action;
-  console.log(['selector reducer', type]);
   switch (type) {
     case MOVE_DIMENSION:
       return {

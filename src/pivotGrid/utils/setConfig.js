@@ -49,8 +49,6 @@ export const setConfig = (store, config, configFunctions, data) => {
   config.dimensions.push({ id: MEASURE_ID, caption: '' });
   store.dispatch(setDimensions(config, configFunctions));
 
-  // store.dispatch(setDimensions(config, configFunctions));
-
   store.dispatch(setMeasures(config, configFunctions));
 
   store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'columns'));

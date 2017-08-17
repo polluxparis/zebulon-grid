@@ -3,7 +3,7 @@ import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Gr
 
 import { isInRange, isUndefined } from '../../utils/generic';
 import DataCell from '../DataCell/DataCell';
-import { AXIS_SEPARATOR, HeaderType, AxisType } from '../../constants';
+import { AXIS_SEPARATOR, HeaderType } from '../../constants';
 import { connectMenu } from 'react-contextmenu';
 import ContextMenu from '../ContextMenu/ContextMenu';
 class DataCells extends PureComponent {
@@ -15,12 +15,6 @@ class DataCells extends PureComponent {
     this.setState({ valuesCache: this.valuesCache });
   }
   shouldComponentUpdate(nextProps) {
-    // if (
-    //   s.zoom !== this.props.zoom ||
-    //   nextProps.sizes !== this.props.sizes
-    // ) {
-    //   this.grid.recomputeGridSize();
-    // }
     return (
       nextProps.zoom !== this.props.zoom ||
       nextProps.sizes !== this.props.sizes ||
@@ -112,7 +106,8 @@ class DataCells extends PureComponent {
     return {
       ...props,
       dimensions: this.props.dimensions,
-      externalFunctions: this.props.externalFunctions
+      externalFunctions: this.props.externalFunctions,
+      filters: this.props.filters
     };
   };
   handleClickMenu = (e, data, target) => {
@@ -138,7 +133,6 @@ class DataCells extends PureComponent {
       }
     }
   };
-  // };
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getCellValue,
@@ -185,7 +179,6 @@ class DataCells extends PureComponent {
       rowHeader.dataIndexes,
       columnHeader.dataIndexes,
       measure.aggregation
-      // customFunctions.aggregation[measure.id]
     );
     const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     this.valuesCache[cellKey] = value;

@@ -27,6 +27,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     columnCount: getLayoutSelector(state).columnHorizontalCount,
     columnLeaves,
+    filters: state.filters,
     selectedRange,
     getCellValue,
     dimensions: dimensionsSelector(state),

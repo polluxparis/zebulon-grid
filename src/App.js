@@ -21,13 +21,8 @@ class App extends Component {
     return (
       <div>
         <select onChange={this.handleChange} defaultValue={this.state.demo}>
-
-          <option value="zebulonGrid">
-            Zebulon Grid
-          </option>
-          <option value="pivotGrid">
-            Pivot Grid
-          </option>
+          <option value="zebulonGrid">Zebulon Grid</option>
+          <option value="pivotGrid">Pivot Grid</option>
         </select>
         {grid}
       </div>
