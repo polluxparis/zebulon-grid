@@ -12,15 +12,14 @@ class DimensionHeaders extends Component {
       ...props,
       availableDimensions: this.props.availableDimensions,
       direction: props.sortDirection === 'asc' ? 'descending' : 'ascending',
-      dimensionValues: this.props.dimensionValues(props.dimensionId),
       dimensionFilter: this.props.filters[props.dimensionId],
       isNotCollapsible:
         props.isAttribute ||
-          props.index ===
-            (props.axis === AxisType.COLUMNS
-              ? this.props.columnDimensions.length
-              : this.props.rowDimensions.length) -
-              1
+        props.index ===
+          (props.axis === AxisType.COLUMNS
+            ? this.props.columnDimensions.length
+            : this.props.rowDimensions.length) -
+            1
     };
   };
   // ---------------------------------------------------
@@ -57,7 +56,7 @@ class DimensionHeaders extends Component {
             left: crossPositions[AxisType.ROWS][dimension.id].position,
             top:
               height -
-                crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
+              crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
             width: crossPositions[AxisType.ROWS][dimension.id].size,
             height: crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
           };

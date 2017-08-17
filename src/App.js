@@ -5,7 +5,7 @@ import ZebulonGridDemo from './ZebulonGrid.demo';
 class App extends Component {
   constructor() {
     super();
-    this.state = { demo: 'zebulonGrid' };
+    this.state = { demo: 'pivotGrid' };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {

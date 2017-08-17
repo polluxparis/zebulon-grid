@@ -104,7 +104,8 @@ class DataCells extends PureComponent {
     return {
       ...props,
       dimensions: this.props.dimensions,
-      externalFunctions: this.props.externalFunctions
+      externalFunctions: this.props.externalFunctions,
+      filters: this.props.filters
     };
   };
   handleClickMenu = (e, data, target) => {

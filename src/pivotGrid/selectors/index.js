@@ -39,7 +39,7 @@ import {
   getRangeInfosSelector
 } from './cell.selector';
 import {
-  dimensionValuesSelector,
+  getDimensionValuesSelector,
   dimensionFiltersSelector,
   filteredDataSelector
 } from './data.selector';
@@ -75,7 +75,7 @@ export { rowsVisibleHeightSelector };
 export { getCellValueSelector, getCellInfosSelector, getRangeInfosSelector };
 export { dataCellsHeightSelector };
 export { dataCellsWidthSelector };
-export { dimensionValuesSelector };
+export { getDimensionValuesSelector };
 export { dimensionFiltersSelector };
 export { filteredDataSelector };
 export { getCellDimensionInfosSelector };

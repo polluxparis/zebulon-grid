@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
+import classnames from 'classnames';
 
 import { MEASURE_ID, ROOT_ID, HeaderType, AxisType } from '../../constants';
 import HeaderComponent from '../Header/Header';
@@ -14,7 +15,7 @@ class Headers extends PureComponent {
     }
   };
   shouldComponentUpdate = nextProps =>
-    (nextProps.height !== this.props.heigh &&
+    (nextProps.height !== this.props.height &&
       this.props.axisType === AxisType.ROWS) ||
     (nextProps.getColumnWidth !== this.props.width &&
       this.props.axisType === AxisType.COLUMNS) ||
@@ -239,7 +240,12 @@ class Headers extends PureComponent {
       ContextMenu
     );
     return (
-      <div>
+      <div
+        className={classnames({
+          'pivotgrid-column-headers': axisType === AxisType.COLUMNS,
+          'pivotgrid-row-headers': axisType === AxisType.ROWS
+        })}
+      >
         <ReactVirtualizedGrid
           cellRangeRenderer={this.headersRenderer}
           cellRenderer={function mock() {}}
@@ -266,7 +272,8 @@ class Headers extends PureComponent {
           style={{
             fontSize: `${zoom * 100}%`,
             overflowX: 'hidden',
-            overflowY: 'hidden'
+            overflowY: 'hidden',
+            outline: 'none'
           }}
         />
         <ConnectedMenu />
