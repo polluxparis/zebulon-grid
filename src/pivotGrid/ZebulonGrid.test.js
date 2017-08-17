@@ -4,9 +4,11 @@ import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
 
 import ZebulonGrid from './ZebulonGrid';
-import { AxisType } from './Axis';
+import { AxisType } from './constants';
 
 import { getMockDatasource, basicConfig } from '../utils/mock';
+import { configFunctions } from '../utils/configFunctions';
+import { externalFunctions } from '../utils/externalFunctions';
 
 describe('ZebulonGrid', () => {
   const data = getMockDatasource(1, 2, 5);
@@ -16,6 +18,8 @@ describe('ZebulonGrid', () => {
       <ZebulonGrid
         data={data}
         config={basicConfig}
+        externalFunctions={externalFunctions}
+        configFunctions={configFunctions}
         drilldown={() => 33}
         id={0}
       />,
@@ -26,49 +30,43 @@ describe('ZebulonGrid', () => {
   describe('actions', () => {
     test('push a record', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
-      expect(wrapper.find('DataCell').first().text()).toEqual('1');
-      wrapper.instance().pushData({
-        toto: '0',
-        toto_lb: 'toto 0',
-        qty: 100,
-        amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
-      });
       expect(wrapper.find('DataCell').first().text()).toEqual('101');
+      wrapper.instance().pushData(data[data.length - 1]);
+      expect(wrapper.find('DataCell').first().text()).toEqual('202');
     });
 
     test('push an array of records', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
-      expect(wrapper.find('DataCell').first().text()).toEqual('1');
-      wrapper.instance().pushData([
-        {
-          toto: '0',
-          toto_lb: 'toto 0',
-          qty: 100,
-          amt: 100,
-          titi: 'titi 0',
-          tutu: '1'
-        },
-        {
-          toto: '0',
-          toto_lb: 'toto 0',
-          qty: 100,
-          amt: 100,
-          titi: 'titi 0',
-          tutu: '0'
-        }
-      ]);
       expect(wrapper.find('DataCell').first().text()).toEqual('101');
+      wrapper.instance().pushData(data);
+      expect(wrapper.find('DataCell').first().text()).toEqual('202');
     });
 
     test('zoom in', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomIn();
@@ -77,7 +75,13 @@ describe('ZebulonGrid', () => {
 
     test('zoom out', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(wrapper.find('DataCell').length).toEqual(36);
       wrapper.instance().zoomOut();
@@ -86,7 +90,13 @@ describe('ZebulonGrid', () => {
 
     test('sort', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(wrapper.find('Header').first().text()).toEqual('titi 0');
       wrapper.instance().toggleSortOrder('titi');
@@ -95,7 +105,13 @@ describe('ZebulonGrid', () => {
 
     test('sort nested dimension', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -118,7 +134,13 @@ describe('ZebulonGrid', () => {
 
     test('move dimension from row to column', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -135,7 +157,13 @@ describe('ZebulonGrid', () => {
 
     test('move dimension from row to reserve', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -152,7 +180,13 @@ describe('ZebulonGrid', () => {
 
     test('toggle measure', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -179,7 +213,13 @@ describe('ZebulonGrid', () => {
 
     test('resize header', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -213,7 +253,13 @@ describe('ZebulonGrid', () => {
 
     test('resize header in cross direction', () => {
       const wrapper = mount(
-        <ZebulonGrid data={data} drilldown={() => 33} config={basicConfig} />
+        <ZebulonGrid
+          externalFunctions={externalFunctions}
+          configFunctions={configFunctions}
+          data={data}
+          drilldown={() => 33}
+          config={basicConfig}
+        />
       );
       expect(
         wrapper
@@ -241,7 +287,8 @@ describe('ZebulonGrid', () => {
     // describe('data updates', () => {
     //   test('highlight cells', () => {
     //     const observableDatasource = getObservableMockDatasource();
-    //     const tree = renderer.create(<ZebulonGrid ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
+    //     const tree = renderer.create(<ZebulonGrid        externalFunctions={externalFunctions}
+    // configFunctions={configFunctions} ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
     //     expect(tree).toMatchSnapshot();
     //   });
     // });
@@ -252,7 +299,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, columns: [] };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -261,7 +314,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, rows: [] };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -271,7 +330,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, data: [] };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -280,7 +345,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, data: ['Quantity'] };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -289,7 +360,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, data: ['Quantity', 'Amount'] };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();
@@ -298,7 +375,13 @@ describe('ZebulonGrid', () => {
       const config = { ...basicConfig, measureHeadersAxis: 'rows' };
       const tree = renderer
         .create(
-          <ZebulonGrid data={data} drilldown={() => 33} config={config} />
+          <ZebulonGrid
+            externalFunctions={externalFunctions}
+            configFunctions={configFunctions}
+            data={data}
+            drilldown={() => 33}
+            config={config}
+          />
         )
         .toJSON();
       expect(tree).toMatchSnapshot();

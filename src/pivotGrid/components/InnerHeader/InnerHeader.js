@@ -102,7 +102,7 @@ const innerHeader = ({
     </div>
   );
   header = (
-    <div className="pivotgrid-header-inner" style={computedStyle} axis={axis}>
+    <div className="pivotgrid-header-inner" style={computedStyle}>
       {collapsedIcon}
       {header}
     </div>

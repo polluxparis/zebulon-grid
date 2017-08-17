@@ -142,7 +142,7 @@ const DataCellMenu = (id, trigger) => {
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id} disabled={true} />;
+    return null;
   }
 
   if (trigger.type === 'dimension-header') {

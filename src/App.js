@@ -5,7 +5,7 @@ import ZebulonGridDemo from './ZebulonGrid.demo';
 class App extends Component {
   constructor() {
     super();
-    this.state = { demo: 'pivotGrid' };
+    this.state = { demo: 'zebulonGrid' };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
@@ -21,13 +21,8 @@ class App extends Component {
     return (
       <div>
         <select onChange={this.handleChange} defaultValue={this.state.demo}>
-
-          <option value="zebulonGrid">
-            Zebulon Grid
-          </option>
-          <option value="pivotGrid">
-            Pivot Grid
-          </option>
+          <option value="zebulonGrid">Zebulon Grid</option>
+          <option value="pivotGrid">Pivot Grid</option>
         </select>
         {grid}
       </div>
