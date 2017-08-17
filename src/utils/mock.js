@@ -85,11 +85,11 @@ export const getPromiseMockDatasource = (
   nTiti = 10
 ) => {
   console.log(Date.now());
-  const p = new Promise(resolve => setTimeout(resolve, 2000)).then(() =>
-    // getMockDatasource(dataRepetition, nToto, nTiti)
-    {
-      throw new Error('toto');
-    }
+  const p = new Promise(resolve => setTimeout(resolve, 2000)).then(
+    () => getMockDatasource(dataRepetition, nToto, nTiti)
+    // {
+    //   throw new Error('toto');
+    // }
   );
   console.log(Date.now());
   return p;

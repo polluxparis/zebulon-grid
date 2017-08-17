@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
 import { ZebulonGrid } from './pivotGrid';
-
+import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
+// import Filter from './pivotGrid/containers/Filter';
+import 'react-resizable/css/styles.css';
+import { ResizableBox } from 'react-resizable';
 import {
   getMockDatasource,
   getMockDatasource2,
@@ -64,18 +67,26 @@ class ZebulonGridDemo extends Component {
             Right and bottom handle drag and drop to resize rows or columns.
           </div>
         </div>
-        <ZebulonGrid
-          config={basicConfig}
-          data={this.data}
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
-          ref={ref => {
-            this.grid = ref;
-          }}
-          /* eslint-disable no-console */
-          drilldown={cellInfos => console.log('drilldown', cellInfos)}
-          /* eslint-enable */
-        />
+        <ResizableBox height={basicConfig.height} width={basicConfig.width}>
+          <AutoSizer>
+            {({ height, width }) =>
+              <ZebulonGrid
+                config={basicConfig}
+                data={this.data}
+                externalFunctions={externalFunctions}
+                configFunctions={configFunctions}
+                height={height}
+                width={width}
+                ref={ref => {
+                  this.grid = ref;
+                }}
+                /* eslint-disable no-console */
+                drilldown={cellInfos => console.log('drilldown', cellInfos)}
+                /* eslint-enable */
+              />}
+          </AutoSizer>
+        </ResizableBox>
+
       </div>
     );
   }

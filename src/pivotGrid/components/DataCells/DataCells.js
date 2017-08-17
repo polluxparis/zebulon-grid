@@ -26,7 +26,9 @@ class DataCells extends PureComponent {
       nextProps.sizes !== this.props.sizes ||
       nextProps.rowLeaves !== this.props.rowLeaves ||
       nextProps.columnLeaves !== this.props.columnLeaves ||
-      nextProps.selectedRange !== this.props.selectedRange
+      nextProps.selectedRange !== this.props.selectedRange ||
+      nextProps.height !== this.props.height ||
+      nextProps.width !== this.props.width
     );
   }
 

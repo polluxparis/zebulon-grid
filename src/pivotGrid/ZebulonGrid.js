@@ -45,6 +45,8 @@ class ZebulonGrid extends Component {
           id={this.props.id}
           drilldown={this.props.drilldown}
           focusCells={this.props.focusCells}
+          height={this.props.height}
+          width={this.props.width}
         />
       </Provider>
     );
