@@ -35,7 +35,7 @@ export const getDimensionValuesSelector = createSelector(
       const row = data[i];
       const key = dimension.keyAccessor(row);
       if (isUndefined(values[key])) {
-        const label = dimension.labelAccessor(row);
+        const label = String(dimension.labelAccessor(row));
         const sortKey = dimension.sort.keyAccessor(row);
         values[key] = {
           key: key,
