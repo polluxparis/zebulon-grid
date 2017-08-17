@@ -136,9 +136,9 @@ const externalMenu = (functionType, externalFunction, onClick) => {
   }
 };
 const DataCellMenu = (id, trigger) => {
-  // const filterSubmenuStyle = !isNullOrUndefined(trigger.filter)
-  //   ? { fontWeight: 'bold' }
-  //   : null;
+  const filterSubmenuStyle = !isNullOrUndefined(trigger.filter)
+    ? { fontWeight: 'bold' }
+    : null;
   let fct = trigger.externalFunctions.dataCellFunctions;
   const externalCellFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('cell', fct[externalFunction], trigger.onItemClick)
