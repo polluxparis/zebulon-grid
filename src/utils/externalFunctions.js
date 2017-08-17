@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 
 export const externalFunctions = {
 	dataCellFunctions: {
@@ -26,5 +26,12 @@ export const externalFunctions = {
 			}
 		}
 	},
-	functions: {}
+	functions: {
+		qi: {
+			code: 'qi',
+			type: 'subMenu',
+			caption: 'Query Infos',
+			function: () => <div>toto</div>
+		}
+	}
 };

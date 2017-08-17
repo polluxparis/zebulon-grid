@@ -123,7 +123,7 @@ const externalMenu = (functionType, externalFunction, onClick) => {
   if (externalFunction.type === 'subMenu') {
     return (
       <SubMenu title={externalFunction.caption}>
-        {externalFunction.function}
+        {externalFunction.function()}
       </SubMenu>
     );
   } else {
