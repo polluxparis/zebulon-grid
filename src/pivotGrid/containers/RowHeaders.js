@@ -49,7 +49,6 @@ const mapStateToProps = (state, ownProps) => {
     getLastChildSize: header => getLastChildHeightSelector(state)(header),
     leaves,
     sizes: state.sizes,
-    zoom: state.config.zoom,
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state)
   };

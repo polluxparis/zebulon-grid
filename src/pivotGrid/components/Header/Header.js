@@ -130,7 +130,7 @@ class Header extends Component {
     if (dimensionId === MEASURE_ID) {
       return (
         <ContextMenuTrigger
-          id={`context-menu-${axis}-${gridId}`}
+          id={`context-menu-${gridId}`}
           holdToDisplay={-1}
           collect={collectMenu}
           onItemClick={this.handleClickMenu}

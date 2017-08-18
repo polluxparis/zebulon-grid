@@ -34,7 +34,6 @@ const mapStateToProps = (state, ownProps) => {
     previewSizes: previewSizesSelector(state),
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,
-    zoom: state.config.zoom,
     sizes: state.sizes
   };
 };

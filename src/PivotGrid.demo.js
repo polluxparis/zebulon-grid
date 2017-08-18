@@ -41,9 +41,7 @@ class PivotGridDemo extends Component {
     const data = getMockDatasource(1, 100, 100);
     // const data = getObservableError();
     setConfig(store, basicConfig, configFunctions, data);
-    this.setState({ store, configFunctions, externalFunctions });
-    this.setState({ status: 'loading' });
-    this.state = { store, focusCells: [] };
+    this.state = { store };
   }
 
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
@@ -141,7 +139,6 @@ class PivotGridDemo extends Component {
                     id={0}
                     externalFunctions={externalFunctions}
                     configFunctions={configFunctions}
-                    focusCells={this.state.focusCells}
                     height={height}
                     width={width}
                     drilldown={cell => {

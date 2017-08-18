@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
 import { ArrowKeyStepper } from 'react-virtualized/dist/commonjs/ArrowKeyStepper';
 import { DropTarget } from 'react-dnd';
+import { connectMenu } from 'react-contextmenu';
+import ContextMenu from '../ContextMenu/ContextMenu';
 
 // import ArrowKeyStepper from '../../containers/ArrowKeyStepper';
 import DataCells from '../../containers/DataCells';
@@ -186,13 +188,15 @@ class PivotGrid extends Component {
         e.preventDefault();
       }
       // ctrl + -> zoom in
-      if (e.key === '+') {
+      // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
+      if (e.key === '+' || e.key === '=') {
         this.props.zoom(ZOOM_IN);
 
         e.preventDefault();
       }
       // ctrl - -> zoom out
-      if (e.key === '-') {
+      // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
+      if (e.key === '-' || e.key === '_') {
         this.props.zoom(ZOOM_OUT);
         e.preventDefault();
       }
@@ -267,6 +271,7 @@ class PivotGrid extends Component {
       layout,
       // customFunctions,
       drilldown,
+      zoomValue,
       id: gridId
     } = this.props;
 
@@ -282,6 +287,7 @@ class PivotGrid extends Component {
         </div>
       );
     } else {
+      const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
@@ -309,7 +315,10 @@ class PivotGrid extends Component {
                   scrollLeft,
                   scrollTop
                 }) =>
-                  <div className="pivotgrid-pivotgrid">
+                  <div
+                    className="pivotgrid-pivotgrid"
+                    style={{ fontSize: `${zoomValue * 100}%` }}
+                  >
                     <div style={{ display: 'flex' }}>
                       <DimensionHeaders gridId={gridId} />
                       <ColumnHeaders
@@ -336,6 +345,7 @@ class PivotGrid extends Component {
                         gridId={gridId}
                       />
                     </div>
+                    <ConnectedMenu />
                   </div>}
               </ScrollSync>}
           </ArrowKeyStepper>

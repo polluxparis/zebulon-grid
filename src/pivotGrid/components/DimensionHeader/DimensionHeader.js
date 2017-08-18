@@ -148,7 +148,7 @@ class DimensionHeader extends Component {
 
     return (
       <ContextMenuTrigger
-        id={`context-menu-dimension-header-${gridId}`}
+        id={`context-menu-${gridId}`}
         holdToDisplay={-1}
         collect={collectMenu}
         onItemClick={this.handleClickMenu}

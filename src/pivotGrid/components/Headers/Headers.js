@@ -6,8 +6,6 @@ import { MEASURE_ID, ROOT_ID, HeaderType, AxisType } from '../../constants';
 import HeaderComponent from '../Header/Header';
 import { isNull } from '../../utils/generic';
 import { getLeaves } from '../../utils/headers';
-import { connectMenu } from 'react-contextmenu';
-import ContextMenu from '../ContextMenu/ContextMenu';
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
     if (nextProps.headers !== this.props.headers) {
@@ -224,7 +222,6 @@ class Headers extends PureComponent {
 
   render() {
     const {
-      zoom,
       getRowHeight,
       getColumnWidth,
       columnCount,
@@ -233,12 +230,8 @@ class Headers extends PureComponent {
       scrollLeft,
       height,
       width,
-      gridId,
       axisType
     } = this.props;
-    const ConnectedMenu = connectMenu(`context-menu-${axisType}-${gridId}`)(
-      ContextMenu
-    );
     return (
       <div
         className={classnames({
@@ -270,13 +263,11 @@ class Headers extends PureComponent {
           // We set overflowX and overflowY and not overflow
           // because react-virtualized sets them during render
           style={{
-            fontSize: `${zoom * 100}%`,
             overflowX: 'hidden',
             overflowY: 'hidden',
             outline: 'none'
           }}
         />
-        <ConnectedMenu />
       </div>
     );
   }

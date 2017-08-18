@@ -93,13 +93,14 @@ const MeasureMenu = (id, trigger) => {
 const externalMenu = (functionType, externalFunction, onClick) => {
   if (externalFunction.type === 'subMenu') {
     return (
-      <SubMenu title={externalFunction.caption}>
+      <SubMenu key={externalFunction.code} title={externalFunction.caption}>
         {externalFunction.function()}
       </SubMenu>
     );
   } else {
     return (
       <MenuItem
+        key={externalFunction.code}
         onClick={onClick}
         data={{ action: externalFunction.code, functionType }}
       >
@@ -184,7 +185,7 @@ const DataCellMenu = (id, trigger) => {
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return null;
+    return <ReactContextMenu id={id}>''</ReactContextMenu>;
   }
 
   if (trigger.type === 'dimension-header') {

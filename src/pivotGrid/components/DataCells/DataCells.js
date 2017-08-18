@@ -4,8 +4,7 @@ import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Gr
 import { isInRange, isUndefined } from '../../utils/generic';
 import DataCell from '../DataCell/DataCell';
 import { AXIS_SEPARATOR, HeaderType } from '../../constants';
-import { connectMenu } from 'react-contextmenu';
-import ContextMenu from '../ContextMenu/ContextMenu';
+
 class DataCells extends PureComponent {
   state = {
     valuesCache: {}
@@ -107,7 +106,8 @@ class DataCells extends PureComponent {
       ...props,
       dimensions: this.props.dimensions,
       externalFunctions: this.props.externalFunctions,
-      filters: this.props.filters
+      filters: this.props.filters,
+      zoom: this.props.zoom
     };
   };
   handleClickMenu = (e, data, target) => {
@@ -222,38 +222,29 @@ class DataCells extends PureComponent {
       scrollToColumn,
       scrollToRow,
       onSectionRendered,
-      zoom,
       columnLeaves,
-      rowLeaves,
-      gridId
+      rowLeaves
     } = this.props;
     this.valuesCache = {};
-    const ConnectedMenu = connectMenu(`context-menu-data-cell-${gridId}`)(
-      ContextMenu
-    );
 
     return (
-      <div>
-        <ReactVirtualizedGrid
-          cellRenderer={this.cellRenderer}
-          className="pivotgrid-data-cells"
-          columnCount={columnLeaves.length}
-          columnWidth={getColumnWidth}
-          height={height}
-          onScroll={onScroll}
-          ref={ref => {
-            this.grid = ref;
-          }}
-          rowCount={rowLeaves.length}
-          rowHeight={getRowHeight}
-          onSectionRendered={onSectionRendered}
-          scrollToColumn={scrollToColumn}
-          scrollToRow={scrollToRow}
-          style={{ fontSize: `${zoom * 100}%` }}
-          width={width}
-        />
-        <ConnectedMenu />
-      </div>
+      <ReactVirtualizedGrid
+        cellRenderer={this.cellRenderer}
+        className="pivotgrid-data-cells"
+        columnCount={columnLeaves.length}
+        columnWidth={getColumnWidth}
+        height={height}
+        onScroll={onScroll}
+        ref={ref => {
+          this.grid = ref;
+        }}
+        rowCount={rowLeaves.length}
+        rowHeight={getRowHeight}
+        onSectionRendered={onSectionRendered}
+        scrollToColumn={scrollToColumn}
+        scrollToRow={scrollToRow}
+        width={width}
+      />
     );
   }
 }

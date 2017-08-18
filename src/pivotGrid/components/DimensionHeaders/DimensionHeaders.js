@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import { AxisType, MEASURE_ID, ROOT_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader/DimensionHeader';
-import { connectMenu } from 'react-contextmenu';
-import ContextMenu from '../ContextMenu/ContextMenu';
 import { isNullOrUndefined } from '../../utils/generic';
 class DimensionHeaders extends Component {
   // -----------------------------------------------------
@@ -15,11 +13,11 @@ class DimensionHeaders extends Component {
       dimensionFilter: this.props.filters[props.dimensionId],
       isNotCollapsible:
         props.isAttribute ||
-        props.index ===
-          (props.axis === AxisType.COLUMNS
-            ? this.props.columnDimensions.length
-            : this.props.rowDimensions.length) -
-            1
+          props.index ===
+            (props.axis === AxisType.COLUMNS
+              ? this.props.columnDimensions.length
+              : this.props.rowDimensions.length) -
+              1
     };
   };
   // ---------------------------------------------------
@@ -56,7 +54,7 @@ class DimensionHeaders extends Component {
             left: crossPositions[AxisType.ROWS][dimension.id].position,
             top:
               height -
-              crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
+                crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
             width: crossPositions[AxisType.ROWS][dimension.id].size,
             height: crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
           };
@@ -103,17 +101,7 @@ class DimensionHeaders extends Component {
   };
 
   render() {
-    const {
-      columnDimensions,
-      rowDimensions,
-      height,
-      width,
-      zoom,
-      gridId
-    } = this.props;
-    const ConnectedMenu = connectMenu(
-      `context-menu-dimension-header-${gridId}`
-    )(ContextMenu);
+    const { columnDimensions, rowDimensions, height, width } = this.props;
     let headers = [];
     let lastCrossDimensionId;
     if (rowDimensions.length === 0) {
@@ -149,14 +137,12 @@ class DimensionHeaders extends Component {
           position: 'relative',
           height,
           width,
-          fontSize: `${zoom * 100}%`,
           overflow: 'hidden'
         }}
         className="pivotgrid-dimension-headers"
         onMouseDown={this.handleMouseDown}
       >
         {headers}
-        <ConnectedMenu />
       </div>
     );
   }

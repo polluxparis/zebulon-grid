@@ -138,6 +138,7 @@
 
 .react-contextmenu-item.react-contextmenu-submenu {
   padding: 0;
+  outline: none;
 }
 
 .react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item {

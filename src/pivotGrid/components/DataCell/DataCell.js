@@ -47,7 +47,7 @@ export default class DataCell extends PureComponent {
 
     return (
       <ContextMenuTrigger
-        id={`context-menu-data-cell-${gridId}`}
+        id={`context-menu-${gridId}`}
         holdToDisplay={-1}
         collect={collectMenu}
         onItemClick={this.props.handleClickMenu}

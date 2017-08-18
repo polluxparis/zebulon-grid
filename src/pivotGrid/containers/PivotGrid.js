@@ -40,6 +40,7 @@ const mapStateToProps = state => {
     columnLeaves,
     rowLeaves,
     selectedRange: selectedRangeSelector(state),
+    zoomValue: state.config.zoom,
     copy: selectedRange =>
       copy({
         selectedRange,
@@ -96,7 +97,8 @@ const mergeProps = (
     sizes,
     defaultCellSizes,
     selectedRange,
-    copy
+    copy,
+    zoomValue
   },
   { updateCellSize, setSizes, selectRange, selectCell, zoom },
   ownProps
@@ -112,6 +114,7 @@ const mergeProps = (
   selectedRange,
   zoom,
   copy,
+  zoomValue,
   ...ownProps
 });
 
