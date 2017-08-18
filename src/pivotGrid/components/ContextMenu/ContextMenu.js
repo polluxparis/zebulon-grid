@@ -110,52 +110,32 @@ const externalMenu = (functionType, externalFunction, onClick) => {
   }
 };
 const DataCellMenu = (id, trigger) => {
-  let fct = trigger.externalFunctions.dataCellFunctions;
-  const externalCellFunctions = Object.keys(fct).map(externalFunction =>
+  let fct = trigger.menuFunctions.dataCellFunctions;
+  const cellFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('cell', fct[externalFunction], trigger.onItemClick)
   );
-  fct = trigger.externalFunctions.rangeFunctions;
-  const externalRangeFunctions = Object.keys(fct).map(externalFunction =>
+  fct = trigger.menuFunctions.rangeFunctions;
+  const rangeFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('range', fct[externalFunction], trigger.onItemClick)
   );
-  fct = trigger.externalFunctions.functions;
-  const externalFunctions = Object.keys(fct).map(externalFunction =>
+  fct = trigger.menuFunctions.gridFunctions;
+  const gridFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('function', fct[externalFunction], trigger.onItemClick)
   );
-  // const externalCellFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'cell' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
-  // fct = trigger.externalFunctions.rangeFunctions;
-  // const externalRangeFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'range' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
-  // fct = trigger.externalFunctions.functions;
-  // const externalFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'function' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
   return (
     <ReactContextMenu id={id}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'drilldown' }}>
         DrillDown
       </MenuItem>
-      {externalCellFunctions}
-      {externalRangeFunctions}
-      {externalFunctions}
+      <SubMenu title="Cell">
+        {cellFunctions}
+      </SubMenu>
+      <SubMenu title="Range">
+        {rangeFunctions}
+      </SubMenu>
+      <SubMenu title="Grid">
+        {gridFunctions}
+      </SubMenu>
       <SubMenu title="Filters">
         {trigger.dimensions
           .filter(dimension => dimension.id !== MEASURE_ID)

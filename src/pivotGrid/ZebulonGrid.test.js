@@ -7,8 +7,8 @@ import ZebulonGrid from './ZebulonGrid';
 import { AxisType } from './constants';
 
 import { getMockDatasource, basicConfig } from '../utils/mock';
-import { configFunctions } from '../utils/configFunctions';
-import { externalFunctions } from '../utils/externalFunctions';
+import { configurationFunctions } from '../utils/configurationFunctions';
+import { menuFunctions } from '../utils/menuFunctions';
 
 describe('ZebulonGrid', () => {
   const data = getMockDatasource(1, 2, 5);
@@ -18,8 +18,8 @@ describe('ZebulonGrid', () => {
       <ZebulonGrid
         data={data}
         config={basicConfig}
-        externalFunctions={externalFunctions}
-        configFunctions={configFunctions}
+        menuFunctions={menuFunctions}
+        configurationFunctions={configurationFunctions}
         drilldown={() => 33}
         id={0}
       />,
@@ -31,8 +31,8 @@ describe('ZebulonGrid', () => {
     test('push a record', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -46,8 +46,8 @@ describe('ZebulonGrid', () => {
     test('push an array of records', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -61,8 +61,8 @@ describe('ZebulonGrid', () => {
     test('zoom in', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -76,8 +76,8 @@ describe('ZebulonGrid', () => {
     test('zoom out', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -91,8 +91,8 @@ describe('ZebulonGrid', () => {
     test('sort', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -106,8 +106,8 @@ describe('ZebulonGrid', () => {
     test('sort nested dimension', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -135,8 +135,8 @@ describe('ZebulonGrid', () => {
     test('move dimension from row to column', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -158,8 +158,8 @@ describe('ZebulonGrid', () => {
     test('move dimension from row to reserve', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -181,8 +181,8 @@ describe('ZebulonGrid', () => {
     test('toggle measure', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -214,8 +214,8 @@ describe('ZebulonGrid', () => {
     test('resize header', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -254,8 +254,8 @@ describe('ZebulonGrid', () => {
     test('resize header in cross direction', () => {
       const wrapper = mount(
         <ZebulonGrid
-          externalFunctions={externalFunctions}
-          configFunctions={configFunctions}
+          menuFunctions={menuFunctions}
+          configurationFunctions={configurationFunctions}
           data={data}
           drilldown={() => 33}
           config={basicConfig}
@@ -287,8 +287,8 @@ describe('ZebulonGrid', () => {
     // describe('data updates', () => {
     //   test('highlight cells', () => {
     //     const observableDatasource = getObservableMockDatasource();
-    //     const tree = renderer.create(<ZebulonGrid        externalFunctions={externalFunctions}
-    // configFunctions={configFunctions} ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
+    //     const tree = renderer.create(<ZebulonGrid        menuFunctions={menuFunctions}
+    // configurationFunctions={configurationFunctions} ref={grid => {wrapper.instance() = grid}} data={data} drilldown={() => 33} config={basicConfig} />).toJSON();
     //     expect(tree).toMatchSnapshot();
     //   });
     // });
@@ -300,8 +300,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}
@@ -315,8 +315,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}
@@ -331,8 +331,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}
@@ -346,8 +346,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}
@@ -361,8 +361,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}
@@ -376,8 +376,8 @@ describe('ZebulonGrid', () => {
       const tree = renderer
         .create(
           <ZebulonGrid
-            externalFunctions={externalFunctions}
-            configFunctions={configFunctions}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
             data={data}
             drilldown={() => 33}
             config={config}

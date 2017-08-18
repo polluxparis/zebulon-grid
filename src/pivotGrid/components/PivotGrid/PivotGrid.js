@@ -339,7 +339,7 @@ class PivotGrid extends Component {
                         scrollToRow={scrollToRow}
                         onScroll={onScroll}
                         drilldown={drilldown}
-                        externalFunctions={this.props.externalFunctions}
+                        menuFunctions={this.props.menuFunctions}
                         clientHeight={clientHeight}
                         clientWidth={clientWidth}
                         gridId={gridId}

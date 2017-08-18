@@ -1,5 +1,5 @@
 import React from 'react';
-export const configFunctions = {
+export const configurationFunctions = {
   formats: {
     id: value =>
       <div style={{ color: 'blue', textAlign: 'right' }}>

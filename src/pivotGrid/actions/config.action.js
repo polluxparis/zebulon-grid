@@ -1,4 +1,4 @@
-import { dimensionFactory, measureFactory } from '../utils/setConfig';
+import { dimensionFactory, measureFactory } from '../utils/configuration';
 import {
   SET_AXIS,
   SET_DIMENSIONS,
@@ -10,17 +10,17 @@ import {
   ZOOM_OUT
 } from '../constants';
 
-export const setDimensions = (configObject, configFunctions) => ({
+export const setDimensions = (configObject, configurationFunctions) => ({
   type: SET_DIMENSIONS,
   dimensions: configObject.dimensions.map(dimension =>
-    dimensionFactory(dimension, configFunctions)
+    dimensionFactory(dimension, configurationFunctions)
   )
 });
 
-export const setMeasures = (configObject, configFunctions) => ({
+export const setMeasures = (configObject, configurationFunctions) => ({
   type: SET_MEASURES,
   measures: configObject.measures.map(measure =>
-    measureFactory(measure, configFunctions)
+    measureFactory(measure, configurationFunctions)
   )
 });
 export const setConfigProperty = (configObject, property, defaultValue) => ({

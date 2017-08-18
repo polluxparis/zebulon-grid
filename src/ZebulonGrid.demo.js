@@ -12,8 +12,8 @@ import {
   basicConfig,
   basicConfig2
 } from './utils/mock';
-import { configFunctions } from './utils/configFunctions';
-import { externalFunctions } from './utils/externalFunctions';
+import { configurationFunctions } from './utils/configurationFunctions';
+import { menuFunctions } from './utils/menuFunctions';
 
 class ZebulonGridDemo extends Component {
   state = { focusCell: [] };
@@ -22,7 +22,7 @@ class ZebulonGridDemo extends Component {
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
   setConfig = () =>
-    this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
+    this.grid.applyConfigToStore(basicConfig2, getMockDatasource2(1, 10, 10));
   render() {
     return (
       <div>
@@ -69,8 +69,8 @@ class ZebulonGridDemo extends Component {
               <ZebulonGrid
                 config={basicConfig}
                 data={this.data}
-                externalFunctions={externalFunctions}
-                configFunctions={configFunctions}
+                menuFunctions={menuFunctions}
+                configurationFunctions={configurationFunctions}
                 height={height}
                 width={width}
                 ref={ref => {
@@ -82,7 +82,6 @@ class ZebulonGridDemo extends Component {
               />}
           </AutoSizer>
         </ResizableBox>
-
       </div>
     );
   }

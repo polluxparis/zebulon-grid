@@ -9,7 +9,7 @@ import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { createStore } from 'redux';
-import PivotGrid, { reducer, setConfig } from './pivotGrid';
+import PivotGrid, { reducer, applyConfigToStore } from './pivotGrid';
 // import reducer from './reducers';
 // import { MEASURE_ID } from './pivotGrid/constants';
 
@@ -22,8 +22,8 @@ import {
   basicConfig,
   basicConfig2
 } from './utils/mock';
-import { configFunctions } from './utils/configFunctions';
-import { externalFunctions } from './utils/externalFunctions';
+import { configurationFunctions } from './utils/configurationFunctions';
+import { menuFunctions } from './utils/menuFunctions';
 import './App.css';
 //
 class PivotGridDemo extends Component {
@@ -40,14 +40,14 @@ class PivotGridDemo extends Component {
     // _setData(store, data);
     const data = getMockDatasource(1, 100, 100);
     // const data = getObservableError();
-    setConfig(store, basicConfig, configFunctions, data);
+    applyConfigToStore(store, basicConfig, configurationFunctions, data);
     this.state = { store };
   }
 
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
   setConfig = () =>
-    this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
+    this.grid.applyConfigToStore(basicConfig2, getMockDatasource2(1, 10, 10));
   // pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10))
 
   // focusCell = () => {
@@ -119,9 +119,7 @@ class PivotGridDemo extends Component {
             Collapse or expand button to hide or show attribute dimensions (in
             Italic).
           </div>
-          <div>
-            Right click to sort, filter, remove or add a dimension.
-          </div>
+          <div>Right click to sort, filter, remove or add a dimension.</div>
           <div> Column or row headers: </div>
           <div> Click: select children headers columns or rows.</div>
           <div>
@@ -137,8 +135,8 @@ class PivotGridDemo extends Component {
                 {({ height, width }) =>
                   <PivotGrid
                     id={0}
-                    externalFunctions={externalFunctions}
-                    configFunctions={configFunctions}
+                    menuFunctions={menuFunctions}
+                    configurationFunctions={configurationFunctions}
                     height={height}
                     width={width}
                     drilldown={cell => {

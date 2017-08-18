@@ -42,14 +42,19 @@ export const setData = (store, data) => {
     );
   }
 };
-export const setConfig = (store, config, configFunctions, data) => {
+export const applyConfigToStore = (
+  store,
+  config,
+  configurationFunctions,
+  data
+) => {
   if (!isNullOrUndefined(data)) {
     setData(store, data);
   }
   config.dimensions.push({ id: MEASURE_ID, caption: '' });
-  store.dispatch(setDimensions(config, configFunctions));
+  store.dispatch(setDimensions(config, configurationFunctions));
 
-  store.dispatch(setMeasures(config, configFunctions));
+  store.dispatch(setMeasures(config, configurationFunctions));
 
   store.dispatch(setConfigProperty(config, 'measureHeadersAxis', 'columns'));
   store.dispatch(setConfigProperty(config, 'height', 600));
@@ -90,7 +95,7 @@ export const setConfig = (store, config, configFunctions, data) => {
 };
 
 // initialisation of dimensions from configuration
-export function dimensionFactory(dimensionConfig, configFunctions) {
+export function dimensionFactory(dimensionConfig, configurationFunctions) {
   const {
     id,
     caption,
@@ -101,7 +106,7 @@ export function dimensionFactory(dimensionConfig, configFunctions) {
     subTotal,
     attributeParents
   } = dimensionConfig;
-  const { formats, accessors, sorts } = configFunctions;
+  const { formats, accessors, sorts } = configurationFunctions;
   const dimSort = !isNullOrUndefined(sort)
     ? {
         direction: sort.direction,
@@ -141,12 +146,12 @@ export function dimensionFactory(dimensionConfig, configFunctions) {
   };
 }
 // initialisation of measures from configuration
-export function measureFactory(measureConfig, configFunctions) {
+export function measureFactory(measureConfig, configurationFunctions) {
   const {
     formats,
     accessors,
     customAggregations = aggregations
-  } = configFunctions;
+  } = configurationFunctions;
   const {
     id,
     caption,

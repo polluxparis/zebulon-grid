@@ -105,7 +105,7 @@ class DataCells extends PureComponent {
     return {
       ...props,
       dimensions: this.props.dimensions,
-      externalFunctions: this.props.externalFunctions,
+      menuFunctions: this.props.menuFunctions,
       filters: this.props.filters,
       zoom: this.props.zoom
     };
@@ -118,18 +118,18 @@ class DataCells extends PureComponent {
           rowIndex: data.rowIndex
         });
       } else if (data.functionType === 'cell') {
-        this.props.externalFunctions.dataCellFunctions[data.action].function(
+        this.props.menuFunctions.dataCellFunctions[data.action].function(
           this.props.getCellInfos({
             columnIndex: data.columnIndex,
             rowIndex: data.rowIndex
           })
         );
       } else if (data.functionType === 'range') {
-        this.props.externalFunctions.rangeFunctions[data.action].function(
+        this.props.menuFunctions.rangeFunctions[data.action].function(
           this.props.getRangeInfos(this.props.selectedRange)
         );
       } else if (data.functionType === 'function') {
-        this.props.externalFunctions.functions[data.action].function();
+        this.props.menuFunctions.functions[data.action].function();
       }
     }
   };
