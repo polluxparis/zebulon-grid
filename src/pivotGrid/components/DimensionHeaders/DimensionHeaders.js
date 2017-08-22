@@ -67,34 +67,6 @@ class DimensionHeaders extends Component {
             height: crossPositions[AxisType.COLUMNS][dimension.id].size
           };
         }
-        if (dimension.id === 'toto') {
-          console.log({
-            key: `dimension-header-${dimension.id}`,
-            left: positions.left,
-            top: positions.top,
-            width: positions.width,
-            height: positions.height,
-            dimensionId: dimension.id,
-            dimensionIndex: index,
-            sortDirection: dimension.sort.direction,
-            caption: dimension.caption,
-            axis: axis,
-            crossDimensionId: lastCrossDimensionId,
-            isNotCollapsible: isNotCollapsible,
-            isCollapsed: dimension.isCollapsed || false,
-            previewSizes: previewSizes,
-            gridId: gridId,
-            toggleCollapseDimension: toggleCollapseDimension,
-            toggleSortOrder: toggleSortOrder,
-            moveDimension: moveDimension,
-            getDimensionKeys: getDimensionKeys,
-            expandCollapseAll: expandCollapseAll,
-            isDropTarget: true,
-            isAttribute: dimension.isAttribute,
-            collectMenu: this.collectMenu,
-            isFiltered: !isNullOrUndefined(this.props.filters[dimension.id])
-          });
-        }
         headers.push(
           <DimensionHeader
             key={`dimension-header-${dimension.id}`}

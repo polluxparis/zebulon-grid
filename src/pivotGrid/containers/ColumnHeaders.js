@@ -56,7 +56,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
-    // dispatch(selectCell(null));
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId)),

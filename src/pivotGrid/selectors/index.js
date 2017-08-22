@@ -50,7 +50,8 @@ import {
 import {
   selectedRangeSelector,
   getSelectedColumnRangeSelector,
-  getSelectedRowRangeSelector
+  getSelectedRowRangeSelector,
+  copySelector
 } from './selection.selector';
 
 export {
@@ -95,5 +96,6 @@ export {
   getColumnDimensionHeightSelector,
   getRowDimensionWidthSelector,
   getColumnWidthSelector,
-  getRowHeightSelector
+  getRowHeightSelector,
+  copySelector
 };

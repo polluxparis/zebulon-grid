@@ -4,16 +4,12 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import PivotGrid from '../components/PivotGrid/PivotGrid';
 import {
-  activatedMeasuresSelector,
-  columnDimensionsSelector,
   columnLeavesSelector,
   defaultCellSizesSelector,
-  getCellDimensionInfosSelector,
-  getCellValueSelector,
   getLayoutSelector,
-  rowDimensionsSelector,
   rowLeavesSelector,
-  selectedRangeSelector
+  selectedRangeSelector,
+  copySelector
 } from '../selectors';
 import {
   updateCellSize,
@@ -22,15 +18,10 @@ import {
   selectCell,
   zoom
 } from '../actions';
-import copy from '../services/copyService';
 
 const mapStateToProps = state => {
   const rowLeaves = rowLeavesSelector(state);
   const columnLeaves = columnLeavesSelector(state);
-  const rowDimensions = rowDimensionsSelector(state);
-  const columnDimensions = columnDimensionsSelector(state);
-  const measures = activatedMeasuresSelector(state);
-  const getCellValue = getCellValueSelector(state);
   return {
     status: state.status,
     width: state.config.width,
@@ -41,17 +32,7 @@ const mapStateToProps = state => {
     rowLeaves,
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.config.zoom,
-    copy: selectedRange =>
-      copy({
-        selectedRange,
-        columnLeaves,
-        rowLeaves,
-        rowDimensions,
-        columnDimensions,
-        measures,
-        getCellValue,
-        getCellDimensionInfos: getCellDimensionInfosSelector(state)
-      })
+    copy: copySelector(state)
   };
 };
 

@@ -13,17 +13,17 @@ class DataCells extends PureComponent {
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
   }
-  shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.zoom !== this.props.zoom ||
-      nextProps.sizes !== this.props.sizes ||
-      nextProps.rowLeaves !== this.props.rowLeaves ||
-      nextProps.columnLeaves !== this.props.columnLeaves ||
-      nextProps.selectedRange !== this.props.selectedRange ||
-      nextProps.height !== this.props.height ||
-      nextProps.width !== this.props.width
-    );
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return (
+  //     nextProps.zoom !== this.props.zoom ||
+  //     nextProps.sizes !== this.props.sizes ||
+  //     nextProps.rowLeaves !== this.props.rowLeaves ||
+  //     nextProps.columnLeaves !== this.props.columnLeaves ||
+  //     nextProps.selectedRange !== this.props.selectedRange ||
+  //     nextProps.height !== this.props.height ||
+  //     nextProps.width !== this.props.width
+  //   );
+  // }
 
   componentDidUpdate(prevProps) {
     if (
@@ -226,7 +226,6 @@ class DataCells extends PureComponent {
       rowLeaves
     } = this.props;
     this.valuesCache = {};
-
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}

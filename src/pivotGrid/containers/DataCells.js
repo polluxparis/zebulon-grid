@@ -6,8 +6,8 @@ import {
   rowLeavesSelector,
   getLayoutSelector,
   columnLeavesSelector,
-  getCellWidthByKeySelector,
-  getCellHeightByKeySelector,
+  getColumnWidthSelector,
+  getRowHeightSelector,
   getCellValueSelector,
   getCellInfosSelector,
   getRangeInfosSelector,
@@ -33,10 +33,8 @@ const mapStateToProps = (state, ownProps) => {
     dimensions: dimensionsSelector(state),
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
-    getColumnWidth: ({ index }) =>
-      getCellWidthByKeySelector(state)(columnLeaves[index].key),
-    getRowHeight: ({ index }) =>
-      getCellHeightByKeySelector(state)(rowLeaves[index].key),
+    getColumnWidth: getColumnWidthSelector(state),
+    getRowHeight: getRowHeightSelector(state),
     height: dataCellsHeightSelector(state),
     rowCount: getLayoutSelector(state).rowVerticalCount,
     measures,

@@ -167,7 +167,7 @@ class PivotGrid extends Component {
       // Works only if the grid is focused
       this.modifierKeyIsPressed
     ) {
-      this.props.copy(this.props.selectedRange);
+      this.props.copy();
     }
   };
 
