@@ -17,7 +17,7 @@ import {
   toAccessorFunction
 } from './generic';
 import { MEASURE_ID } from '../constants';
-import * as aggregations from './Aggregation';
+import * as aggregations from './aggregation';
 export const setData = (store, data) => {
   store.dispatch(fetchData());
   if (Array.isArray(data)) {

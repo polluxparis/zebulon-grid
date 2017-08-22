@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import { ZebulonGrid } from './pivotGrid';
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-// import Filter from './pivotGrid/containers/Filter';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import {
@@ -22,7 +21,7 @@ class ZebulonGridDemo extends Component {
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
   setConfig = () =>
-    this.grid.applyConfigToStore(basicConfig2, getMockDatasource2(1, 10, 10));
+    this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
   render() {
     return (
       <div>

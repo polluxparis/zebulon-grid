@@ -20,7 +20,6 @@ import {
 import {
   toggleCollapse,
   selectRange,
-  // selectCell,
   moveDimension,
   toggleMeasure
 } from '../actions';

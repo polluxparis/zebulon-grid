@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-// import Checkbox from 'rc-checkbox';
 import { Provider } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-// import Filter from './pivotGrid/containers/Filter';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { createStore } from 'redux';
-import PivotGrid, { reducer, applyConfigToStore } from './pivotGrid';
-// import reducer from './reducers';
-// import { MEASURE_ID } from './pivotGrid/constants';
+import PivotGrid, { reducer, applyConfigToStore, actions } from './pivotGrid';
 
 // custom functions and mock dataset
 import {
@@ -44,58 +40,32 @@ class PivotGridDemo extends Component {
     this.state = { store };
   }
 
-  setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
-  pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10));
-  setConfig = () =>
-    this.grid.applyConfigToStore(basicConfig2, getMockDatasource2(1, 10, 10));
-  // pushData = () => this.grid.pushData(getMockDatasource(1, 10, 10))
+  pushData = () => {
+    this.state.store.dispatch(actions.pushData(getMockDatasource(1, 10, 10)));
+  };
 
-  // focusCell = () => {
-  //   const getCell = id => ({
-  //     dimensions: [
-  //       {
-  //         cell: { caption: '0', id: '0' },
-  //         dimension: { caption: 'Tutu', id: 'tutu' },
-  //         axis: 'rows',
-  //         index: 1
-  //       },
-  //       {
-  //         cell: { caption: `toto ${id}`, id },
-  //         dimension: { caption: 'Toto', id: 'toto' },
-  //         axis: 'rows',
-  //         index: 0
-  //       },
-  //       {
-  //         cell: { caption: 'titi 0', id: 'titi 0' },
-  //         dimension: { caption: 'Titi', id: 'titi' },
-  //         axis: 'columns',
-  //         index: 0
-  //       }
-  //     ],
-  //     measure: {
-  //       id: 'qty',
-  //       axis: 'columns'
-  //     }
-  //   });
-  //   k = (k + 1) % 3;
-  //   if (k === 0) {
-  //     this.setState({ focusCells: [] });
-  //   } else {
-  //     this.setState({
-  //       focusCells: [...Array(k).keys()].map(id => getCell(id))
-  //     });
-  //   }
-  // };
-
-  // handleClickMenu = (e, data) => console.log(`Clicked on menu ${data.item}`);
   render() {
     return (
       <Provider store={this.state.store}>
         <div>
+
+          <ResizableBox height={basicConfig.height} width={basicConfig.width}>
+            <AutoSizer>
+              {({ height, width }) =>
+                <PivotGrid
+                  id={0}
+                  menuFunctions={menuFunctions}
+                  configurationFunctions={configurationFunctions}
+                  height={height}
+                  width={width}
+                  drilldown={cell => {
+                    console.log('drilldown', cell);
+                  }}
+                />}
+            </AutoSizer>
+          </ResizableBox>
           <div>
-            <button onClick={this.setData}>set data</button>
-            <button onClick={this.pushData}>push data</button>
-            <button onClick={this.setConfig}>set config</button>
+            <button onClick={this.pushData}>Push data</button>
           </div>
           <div>
             Ctrl A : select all, Ctrl + : zoom in, Ctrl - : zoom out, Shift Up,
@@ -128,23 +98,6 @@ class PivotGridDemo extends Component {
           </div>
           <div>
             Right and bottom handle drag and drop to resize rows or columns.
-          </div>
-          <div>
-            <ResizableBox height={basicConfig.height} width={basicConfig.width}>
-              <AutoSizer>
-                {({ height, width }) =>
-                  <PivotGrid
-                    id={0}
-                    menuFunctions={menuFunctions}
-                    configurationFunctions={configurationFunctions}
-                    height={height}
-                    width={width}
-                    drilldown={cell => {
-                      console.log('drilldown', cell);
-                    }}
-                  />}
-              </AutoSizer>
-            </ResizableBox>
           </div>
         </div>
       </Provider>

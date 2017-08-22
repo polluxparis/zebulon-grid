@@ -20,7 +20,9 @@
     "fps-measurer": "^0.0.2",
     "postcss-cli": "^2.6.0",
     "prettier": "^1.4.4",
+    "react": "^15.6.1",
     "react-addons-perf": "^15.4.2",
+    "react-dom": "^15.6.1",
     "react-resizable": "^1.6.0",
     "react-scripts": "^1.0.7",
     "react-test-renderer": "^15.5.4",
@@ -30,13 +32,14 @@
   "dependencies": {
     "babel-runtime": "^6.23.0",
     "classnames": "^2.2.5",
+    "gh-pages": "^1.0.0",
     "object.values": "^1.0.4",
     "react-contextmenu": "^2.6.3",
     "react-dnd": "^2.4.0",
     "react-dnd-html5-backend": "^2.4.1",
     "react-redux": "^5.0.4",
     "react-virtualized": "^9.8.0",
-    "react-virtualized-checkbox": "^2.1.2",
+    "react-virtualized-checkbox": "^3.0.1",
     "redux": "^3.6.0",
     "reselect": "^2.5.4"
   },
@@ -53,8 +56,8 @@
     "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "peerDependencies": {
-    "react-dom": "^15.6.1",
-    "react": "^15.6.1"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "babel": {
     "presets": [
