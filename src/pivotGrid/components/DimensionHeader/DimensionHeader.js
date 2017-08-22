@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 
 import InnerHeader from '../InnerHeader/InnerHeader';
@@ -7,7 +7,7 @@ import ResizeHandle from '../ResizeHandle/ResizeHandle';
 import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from '../../constants';
 import { ContextMenuTrigger } from 'react-contextmenu';
 
-class DimensionHeader extends Component {
+class DimensionHeader extends PureComponent {
   handleClickCollapse = e => {
     if (e.button === 0) {
       const { toggleCollapseDimension, dimensionId } = this.props;
