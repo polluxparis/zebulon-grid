@@ -12,18 +12,18 @@ class Headers extends PureComponent {
       this.cellCache = {};
     }
   };
-  shouldComponentUpdate = nextProps => {
-    return (
-      nextProps.height !== this.props.height ||
-      nextProps.width !== this.props.width ||
-      nextProps.zoom !== this.props.zoom ||
-      nextProps.leaves !== this.props.leaves ||
-      (nextProps.scrollTop !== this.props.scrollTop &&
-        this.props.axisType === AxisType.ROWS) ||
-      (nextProps.scrollLeft !== this.props.scrollLeft &&
-        this.props.axisType === AxisType.COLUMNS)
-    );
-  };
+  // shouldComponentUpdate = nextProps => {
+  //   return (
+  //     nextProps.height !== this.props.height ||
+  //     nextProps.width !== this.props.width ||
+  //     nextProps.zoom !== this.props.zoom ||
+  //     nextProps.leaves !== this.props.leaves ||
+  //     (nextProps.scrollTop !== this.props.scrollTop &&
+  //       this.props.axisType === AxisType.ROWS) ||
+  //     (nextProps.scrollLeft !== this.props.scrollLeft &&
+  //       this.props.axisType === AxisType.COLUMNS)
+  //   );
+  // };
 
   componentDidUpdate = prevProps => {
     if (

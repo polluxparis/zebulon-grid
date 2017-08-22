@@ -35,16 +35,34 @@ export const getCellWidthByKeySelector = createSelector(
   }
 );
 
-export const getRowHeight = createSelector(
+// export const getColumnWidthSelector = createSelector(
+//   [getCellWidthByKeySelector, columnLeavesSelector],
+//   (getCellWidthByKey, columnLeaves) => ({ index }) =>
+//     getCellWidthByKey(columnLeaves[index].key)
+// );
+
+export const getRowHeightSelector = createSelector(
   [getCellHeightByKeySelector, rowLeavesSelector],
   (getCellHeightByKeySelector, rowLeaves) => ({ index }) =>
     getCellHeightByKeySelector(rowLeaves[index].key)
 );
 
-export const getColumnWidth = createSelector(
+export const getColumnWidthSelector = createSelector(
   [getCellWidthByKeySelector, columnLeavesSelector],
   (getCellWidthByKeySelector, columnLeaves) => ({ index }) =>
     getCellWidthByKeySelector(columnLeaves[index].key)
+);
+
+export const getColumnDimensionHeightSelector = createSelector(
+  [getCellHeightByKeySelector, columnDimensionsSelector],
+  (getCellHeightByKey, columnDimensions) => ({ index }) =>
+    getCellHeightByKey(columnDimensions[index].id)
+);
+
+export const getRowDimensionWidthSelector = createSelector(
+  [getCellWidthByKeySelector, rowDimensionsSelector],
+  (getCellWidthByKey, rowDimensions) => ({ index }) =>
+    getCellWidthByKey(rowDimensions[index].id)
 );
 
 const calculateCrossPositions = (dimensions, getCellSizeByKey) => {

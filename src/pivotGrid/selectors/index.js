@@ -22,7 +22,11 @@ import {
   getLastChildWidthSelector,
   getLastChildHeightSelector,
   dataCellsHeightSelector,
-  dataCellsWidthSelector
+  dataCellsWidthSelector,
+  getColumnDimensionHeightSelector,
+  getRowDimensionWidthSelector,
+  getColumnWidthSelector,
+  getRowHeightSelector
 } from './sizes.selector';
 import {
   activatedMeasuresSelector,
@@ -49,39 +53,47 @@ import {
   getSelectedRowRangeSelector
 } from './selection.selector';
 
-export { getLayoutSelector };
-export { defaultCellSizesSelector };
-export { columnHeadersSelector };
-export { rowHeadersSelector };
-export { columnLeavesSelector };
-export { rowLeavesSelector };
-export { columnsWidthSelector };
-export { activatedMeasuresSelector };
-export { getAxisActivatedMeasuresSelector };
-export { rowDimensionsSelector };
-export { dimensionsSelector };
-export { columnDimensionsSelector };
-export { availableDimensionsSelector };
-export { availableMeasuresSelector };
-export { crossPositionsSelector };
-export { rowsHeightSelector };
-export { rowHeadersWidthSelector };
-export { columnHeadersWidthSelector };
-export { previewSizesSelector };
-export { getLastChildWidthSelector };
-export { getLastChildHeightSelector };
-export { columnsVisibleWidthSelector };
-export { rowsVisibleHeightSelector };
-export { getCellValueSelector, getCellInfosSelector, getRangeInfosSelector };
-export { dataCellsHeightSelector };
-export { dataCellsWidthSelector };
-export { getDimensionValuesSelector };
-export { dimensionFiltersSelector };
-export { filteredDataSelector };
-export { getCellDimensionInfosSelector };
-export { getCellHeightByKeySelector };
-export { getCellWidthByKeySelector };
-export { selectedRangeSelector };
-export { getSelectedColumnRangeSelector };
-export { getSelectedRowRangeSelector };
-export { getDimensionKeysSelector };
+export {
+  getLayoutSelector,
+  defaultCellSizesSelector,
+  columnHeadersSelector,
+  rowHeadersSelector,
+  columnLeavesSelector,
+  rowLeavesSelector,
+  columnsWidthSelector,
+  activatedMeasuresSelector,
+  getAxisActivatedMeasuresSelector,
+  rowDimensionsSelector,
+  dimensionsSelector,
+  columnDimensionsSelector,
+  availableDimensionsSelector,
+  availableMeasuresSelector,
+  crossPositionsSelector,
+  rowsHeightSelector,
+  rowHeadersWidthSelector,
+  columnHeadersWidthSelector,
+  previewSizesSelector,
+  getLastChildWidthSelector,
+  getLastChildHeightSelector,
+  columnsVisibleWidthSelector,
+  rowsVisibleHeightSelector,
+  getCellValueSelector,
+  getCellInfosSelector,
+  getRangeInfosSelector,
+  dataCellsHeightSelector,
+  dataCellsWidthSelector,
+  getDimensionValuesSelector,
+  dimensionFiltersSelector,
+  filteredDataSelector,
+  getCellDimensionInfosSelector,
+  getCellHeightByKeySelector,
+  getCellWidthByKeySelector,
+  selectedRangeSelector,
+  getSelectedColumnRangeSelector,
+  getSelectedRowRangeSelector,
+  getDimensionKeysSelector,
+  getColumnDimensionHeightSelector,
+  getRowDimensionWidthSelector,
+  getColumnWidthSelector,
+  getRowHeightSelector
+};

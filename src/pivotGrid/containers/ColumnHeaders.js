@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { AxisType } from '../constants';
 import {
   getCellWidthByKeySelector,
-  getCellHeightByKeySelector,
+  getColumnWidthSelector,
   columnDimensionsSelector,
   columnHeadersWidthSelector,
   getLastChildWidthSelector,
@@ -15,7 +15,8 @@ import {
   filteredDataSelector,
   getSelectedColumnRangeSelector,
   crossPositionsSelector,
-  availableMeasuresSelector
+  availableMeasuresSelector,
+  getColumnDimensionHeightSelector
 } from '../selectors';
 import {
   toggleCollapse,
@@ -26,7 +27,6 @@ import {
 import Headers from '../components/Headers/Headers';
 
 const mapStateToProps = (state, ownProps) => {
-  const columnDimensions = columnDimensionsSelector(state);
   const leaves = columnLeavesSelector(state);
   return {
     axisType: AxisType.COLUMNS,
@@ -35,17 +35,15 @@ const mapStateToProps = (state, ownProps) => {
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     availableMeasures: availableMeasuresSelector(state),
     columnCount: getLayoutSelector(state).columnHorizontalCount,
-    getColumnWidth: ({ index }) =>
-      getCellWidthByKeySelector(state)(leaves[index].key),
-    getRowHeight: ({ index }) =>
-      getCellHeightByKeySelector(state)(columnDimensions[index].id),
+    getColumnWidth: getColumnWidthSelector(state),
+    getRowHeight: getColumnDimensionHeightSelector(state),
     getSizeByKey: getCellWidthByKeySelector(state),
     crossPositions: crossPositionsSelector(state)[AxisType.COLUMNS],
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: previewSizesSelector(state),
     rowCount: getLayoutSelector(state).columnVerticalCount,
-    getLastChildSize: header => getLastChildWidthSelector(state)(header),
+    getLastChildSize: getLastChildWidthSelector(state),
     leaves,
     sizes: state.sizes,
     gridId: ownProps.gridId,

@@ -5,7 +5,6 @@ import {
   getLastChildHeightSelector,
   getLayoutSelector,
   previewSizesSelector,
-  getCellWidthByKeySelector,
   getCellHeightByKeySelector,
   rowLeavesSelector,
   getAxisActivatedMeasuresSelector,
@@ -15,7 +14,9 @@ import {
   rowsVisibleHeightSelector,
   rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  crossPositionsSelector
+  crossPositionsSelector,
+  getRowDimensionWidthSelector,
+  getRowHeightSelector
 } from '../selectors';
 import Headers from '../components/Headers/Headers';
 import {
@@ -26,7 +27,6 @@ import {
 } from '../actions';
 
 const mapStateToProps = (state, ownProps) => {
-  const rowDimensions = rowDimensionsSelector(state);
   const leaves = rowLeavesSelector(state);
 
   return {
@@ -36,17 +36,15 @@ const mapStateToProps = (state, ownProps) => {
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     availableMeasures: availableMeasuresSelector(state),
     columnCount: getLayoutSelector(state).rowHorizontalCount,
-    getColumnWidth: ({ index }) =>
-      getCellWidthByKeySelector(state)(rowDimensions[index].id),
-    getRowHeight: ({ index }) =>
-      getCellHeightByKeySelector(state)(leaves[index].key),
+    getColumnWidth: getRowDimensionWidthSelector(state),
+    getRowHeight: getRowHeightSelector(state),
     getSizeByKey: getCellHeightByKeySelector(state),
     crossPositions: crossPositionsSelector(state)[AxisType.ROWS],
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: previewSizesSelector(state),
     rowCount: getLayoutSelector(state).rowVerticalCount,
-    getLastChildSize: header => getLastChildHeightSelector(state)(header),
+    getLastChildSize: getLastChildHeightSelector(state),
     leaves,
     sizes: state.sizes,
     gridId: ownProps.gridId,
