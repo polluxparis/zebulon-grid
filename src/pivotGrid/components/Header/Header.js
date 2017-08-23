@@ -36,8 +36,6 @@ class Header extends Component {
     const {
       axis,
       dimensionId,
-      // dimensionKey,
-      // measureIndex,
       gridId,
       header,
       caption,

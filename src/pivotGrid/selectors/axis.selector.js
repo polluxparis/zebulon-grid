@@ -92,7 +92,13 @@ function buildHeaders(
   let header;
   // Root node
   if (node.id === ROOT_ID) {
-    header = { id: ROOT_ID, orderedChildrenIds: [] };
+    header = {
+      id: ROOT_ID,
+      type: HeaderType.GRAND_TOTAL,
+      parent: null,
+      dataIndexes: undefined,
+      orderedChildrenIds: []
+    };
   } else {
     const currentDimension = dimensions[depth];
     const row = data[dataIndexes[0]];
@@ -260,7 +266,7 @@ export const columnLeavesSelector = createSelector(
   getLeaves
 );
 
-export const getLayoutSelector = createSelector(
+export const layoutSelector = createSelector(
   [
     rowLeavesSelector,
     columnLeavesSelector,

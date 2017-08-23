@@ -7,16 +7,15 @@ const getAxisDimensions = (axis, dimensions, collapses) => {
     .map(id => {
       const dimension = dimensions[id];
       if (
-				dimension.attributeParents.includes(prevDimension.id) ||
-				(dimension.attributeParents.includes(
-					prevDimension.isAttributeOf
-				) &&
+        dimension.attributeParents.includes(prevDimension.id) ||
+        (dimension.attributeParents.includes(prevDimension.isAttributeOf) &&
           prevDimension.isAttribute)
       ) {
         dimension.isAttribute = true;
-				dimension.isAttributeOf =
-					prevDimension.isAttributeOf || prevDimension.id;
+        dimension.isAttributeOf =
+          prevDimension.isAttributeOf || prevDimension.id;
         dimension.isCollapsed = prevDimension.isCollapsed;
+        prevDimension.hasAttribute = !prevDimension.isAttribute;
       } else {
         dimension.isCollapsed = collapses[dimension.id];
         dimension.isAttribute = false;

@@ -4,6 +4,27 @@ import { AxisType, MEASURE_ID, ROOT_ID } from '../../constants';
 import DimensionHeader from '../DimensionHeader/DimensionHeader';
 import { isNullOrUndefined } from '../../utils/generic';
 class DimensionHeaders extends Component {
+  componentDidMount() {
+    this.setCollapsibles();
+  }
+  componentDidUpdate() {
+    this.setCollapsibles();
+  }
+  setCollapsibles = () => {
+    const getAxisCollapsibles = dimensions =>
+      dimensions.reduceRight((acc, dim, index) => {
+        let res;
+        if (dim.isAttribute || dim.id === MEASURE_ID) {
+          res = 0;
+        } else {
+          res = Object.values(acc).some(el => el >= 1) ? 2 : 1;
+        }
+        return { ...acc, [dim.id]: res };
+      }, {});
+    const columnCollapsibles = getAxisCollapsibles(this.props.columnDimensions);
+    const rowCollapsibles = getAxisCollapsibles(this.props.rowDimensions);
+    this.collapsibles = { ...columnCollapsibles, ...rowCollapsibles };
+  };
   // -----------------------------------------------------
   collectMenu = props => {
     return {
@@ -11,13 +32,7 @@ class DimensionHeaders extends Component {
       availableDimensions: this.props.availableDimensions,
       direction: props.sortDirection === 'asc' ? 'descending' : 'ascending',
       dimensionFilter: this.props.filters[props.dimensionId],
-      isNotCollapsible:
-        props.isAttribute ||
-          props.index ===
-            (props.axis === AxisType.COLUMNS
-              ? this.props.columnDimensions.length
-              : this.props.rowDimensions.length) -
-              1
+      isNotCollapsible: this.collapsibles[props.dimensionId] < 2
     };
   };
   // ---------------------------------------------------
@@ -35,19 +50,12 @@ class DimensionHeaders extends Component {
       width
     } = this.props;
     const headers = [];
+
     dimensions.forEach((dimension, index) => {
       if (
         (dimension.id !== MEASURE_ID || lastCrossDimensionId === ROOT_ID) &&
         dimension.id !== ROOT_ID
       ) {
-        const isNotCollapsible =
-          !dimension.isCollapsed &&
-          (dimension.isAttribute ||
-            index >=
-              dimensions.length -
-                1 -
-                (dimensions[dimensions.length - 1].id === MEASURE_ID) ||
-            !dimensions[index + 1].isAttribute);
         let positions;
         if (axis === AxisType.ROWS) {
           positions = {
@@ -80,7 +88,7 @@ class DimensionHeaders extends Component {
             caption={dimension.caption}
             axis={axis}
             crossDimensionId={lastCrossDimensionId}
-            isNotCollapsible={isNotCollapsible}
+            isNotCollapsible={!dimension.hasAttribute}
             isCollapsed={dimension.isCollapsed || false}
             previewSizes={previewSizes}
             gridId={gridId}

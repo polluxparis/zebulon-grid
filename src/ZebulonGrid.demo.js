@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ZebulonGrid } from './pivotGrid';
+import ZebulonGrid from './pivotGrid';
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';

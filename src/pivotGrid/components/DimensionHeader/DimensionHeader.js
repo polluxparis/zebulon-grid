@@ -38,7 +38,9 @@ class DimensionHeader extends PureComponent {
           data.newDimensionId,
           toAxis(AxisType.DIMENSION),
           toAxis(data.axis),
-          data.index + 1
+          // Add dimension after dimension which opened the context menu
+          // except if it's the measures dimension. In this case, add before
+          data.dimensionId === MEASURE_ID ? data.index : data.index + 1
         );
       }
       if (data.action === 'sort') {
@@ -154,6 +156,7 @@ class DimensionHeader extends PureComponent {
         onItemClick={this.handleClickMenu}
         type={'dimension-header'}
         axis={axis}
+        isNotCollapsible={isNotCollapsible}
         dimensionId={dimensionId}
         sortDirection={sortDirection}
         caption={caption}

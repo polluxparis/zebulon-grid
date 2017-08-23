@@ -6,7 +6,7 @@ import PivotGrid from '../components/PivotGrid/PivotGrid';
 import {
   columnLeavesSelector,
   defaultCellSizesSelector,
-  getLayoutSelector,
+  layoutSelector,
   rowLeavesSelector,
   selectedRangeSelector,
   copySelector
@@ -25,7 +25,7 @@ const mapStateToProps = state => {
   return {
     status: state.status,
     width: state.config.width,
-    layout: getLayoutSelector(state),
+    layout: layoutSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
     sizes: state.sizes,
     columnLeaves,
@@ -99,10 +99,10 @@ const mergeProps = (
   ...ownProps
 });
 
-export const PivotGridWithoutDndContext = connect(
+export const GridWithoutStoreAndDndContext = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
 )(PivotGrid);
 
-export default DragDropContext(HTML5Backend)(PivotGridWithoutDndContext);
+export default DragDropContext(HTML5Backend)(GridWithoutStoreAndDndContext);

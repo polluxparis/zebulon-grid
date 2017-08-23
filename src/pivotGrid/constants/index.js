@@ -1,8 +1,6 @@
 export const MEASURE_ID = '__measures__';
 export const TOTAL_ID = '__total__';
 
-export const ALL = '__all__';
-
 export const KEY_SEPARATOR = '-/-';
 export const AXIS_SEPARATOR = '-//-';
 
@@ -11,38 +9,38 @@ export const EMPTY_ID = '__EMPTY_ID__';
 
 // Headers
 export const HeaderType = {
-	MEASURE: 1, // measure header
-	DIMENSION: 2, // dimension value (leaf)
-	DIMENSION_HEADER: 3, // dimension header
-	GRAND_TOTAL: 4
+  MEASURE: 1, // measure header
+  DIMENSION: 2, // dimension value (leaf)
+  DIMENSION_HEADER: 3, // dimension header
+  GRAND_TOTAL: 4
 };
 
 // Axis
 export const AxisType = {
-	COLUMNS: 1,
-	ROWS: 2,
-	MEASURE: 3,
-	DIMENSION: 4,
-	DATACELL: 5
+  COLUMNS: 1,
+  ROWS: 2,
+  MEASURE: 3,
+  DIMENSION: 4,
+  DATACELL: 5
 };
 
 export function toAxis(axisType) {
-	switch (axisType) {
-		case AxisType.COLUMNS:
-			return 'columns';
-		case AxisType.ROWS:
-			return 'rows';
-		case AxisType.MEASURES:
-			return 'measures';
-		case AxisType.DIMENSION:
-			return 'dimensions';
-		default:
-			return '__AXIS_TYPE_UNKNOWN__';
-	}
+  switch (axisType) {
+    case AxisType.COLUMNS:
+      return 'columns';
+    case AxisType.ROWS:
+      return 'rows';
+    case AxisType.MEASURES:
+      return 'measures';
+    case AxisType.DIMENSION:
+      return 'dimensions';
+    default:
+      return '__AXIS_TYPE_UNKNOWN__';
+  }
 }
 
 export function toAxisType(axis) {
-	return AxisType[axis.toUpperCase()];
+  return AxisType[axis.toUpperCase()];
 }
 
 // ACTIONS

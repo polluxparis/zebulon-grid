@@ -94,7 +94,16 @@ const innerHeader = ({
       />
     );
   } else {
-    collapsedIcon = <div> </div>;
+    collapsedIcon = (
+      <div
+        style={{
+          height: '1em',
+          width: '1em',
+          marginTop: '0.1em',
+          marginRight: '0.1em'
+        }}
+      />
+    );
   }
   let header = (
     <div style={{ width: 'inherit' }} onClick={handleClick}>

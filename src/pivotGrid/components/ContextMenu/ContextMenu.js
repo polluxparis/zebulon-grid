@@ -13,25 +13,45 @@ import Filter from '../../containers/Filter';
 const DimensionMenu = (id, trigger) => {
   const isNotCollapsible = trigger.isNotCollapsible;
   const isAddDimensionDisable = trigger.availableDimensions.length === 0;
+  const addDimensionSubMenu = (
+    <SubMenu title="Add dimension" disabled={isAddDimensionDisable}>
+      {trigger.availableDimensions.map(dimension =>
+        <MenuItem
+          key={dimension.id}
+          onClick={trigger.onItemClick}
+          data={{ action: 'add', newDimensionId: dimension.id }}
+        >
+          {dimension.caption}
+        </MenuItem>
+      )}
+    </SubMenu>
+  );
+  if (trigger.dimensionId === MEASURE_ID) {
+    return <ReactContextMenu id={id}>{addDimensionSubMenu}</ReactContextMenu>;
+  }
   return (
     <ReactContextMenu id={id}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
         {`Sort  ${trigger.direction} `}
       </MenuItem>
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: 'expand all' }}
-        disabled={isNotCollapsible}
-      >
-        Expand all
-      </MenuItem>
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: 'collapse all' }}
-        disabled={isNotCollapsible}
-      >
-        Collapse all
-      </MenuItem>
+      {isNotCollapsible
+        ? null
+        : <div>
+            <MenuItem
+              onClick={trigger.onItemClick}
+              data={{ action: 'expand all' }}
+              disabled={isNotCollapsible}
+            >
+              Expand all
+            </MenuItem>
+            <MenuItem
+              onClick={trigger.onItemClick}
+              data={{ action: 'collapse all' }}
+              disabled={isNotCollapsible}
+            >
+              Collapse all
+            </MenuItem>
+          </div>}
       <SubMenu
         title="Filter"
         style={
@@ -49,16 +69,7 @@ const DimensionMenu = (id, trigger) => {
         Remove
       </MenuItem>
 
-      <SubMenu title="Add dimension" disabled={isAddDimensionDisable}>
-        {trigger.availableDimensions.map(dimension =>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: 'add', newDimensionId: dimension.id }}
-          >
-            {dimension.caption}
-          </MenuItem>
-        )}
-      </SubMenu>
+      {addDimensionSubMenu}
     </ReactContextMenu>
   );
 };

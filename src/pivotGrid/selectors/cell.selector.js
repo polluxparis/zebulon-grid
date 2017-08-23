@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { isNullOrUndefined, twoArraysIntersect, range } from '../utils/generic';
+import { isNullOrUndefined, isUndefined, range } from '../utils/generic';
+import { intersectDataIndexes } from '../utils/headers';
 import { filteredDataSelector } from './data.selector';
 import {
   activatedMeasuresSelector,
@@ -7,7 +8,7 @@ import {
   columnDimensionsSelector
 } from './dimensions.selector';
 import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
-import { ALL, MEASURE_ID, HeaderType } from '../constants';
+import { MEASURE_ID, HeaderType } from '../constants';
 
 const cellValue = (
   data,
@@ -16,8 +17,9 @@ const cellValue = (
   columnDataIndexes,
   aggregation = () => null
 ) => {
-  const intersection = twoArraysIntersect(rowDataIndexes, columnDataIndexes);
-  const intersectionArray = intersection === ALL
+  const intersection = intersectDataIndexes(rowDataIndexes, columnDataIndexes);
+  // Root headers have undefined data indexes
+  const intersectionArray = isUndefined(intersection)
     ? range(0, data.length - 1)
     : intersection;
   // Remove rows for which the accessor gives a null or undefined value
@@ -171,7 +173,7 @@ export const getCellInfosSelector = createSelector(
         measures
       )
     );
-    const usedData = twoArraysIntersect(
+    const usedData = intersectDataIndexes(
       rowLeaf.dataIndexes,
       columnLeaf.dataIndexes
     ).map(x => data[x]);
@@ -275,7 +277,7 @@ export const getRangeInfosSelector = createSelector(
         );
         values[columnIndex][rowIndex] = value;
 
-        // const usedData = twoArraysIntersect(
+        // const usedData = intersectDataIndexes(
         //   rowLeaf.dataIndexes,
         //   columnLeaf.dataIndexes
         // ).map(x => data[x]);

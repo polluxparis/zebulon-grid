@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { AxisType } from '../constants';
 import {
   getLastChildHeightSelector,
-  getLayoutSelector,
+  layoutSelector,
   previewSizesSelector,
   getCellHeightByKeySelector,
   rowLeavesSelector,
@@ -35,7 +35,7 @@ const mapStateToProps = (state, ownProps) => {
     dimensions: rowDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     availableMeasures: availableMeasuresSelector(state),
-    columnCount: getLayoutSelector(state).rowHorizontalCount,
+    columnCount: layoutSelector(state).rowHorizontalCount,
     getColumnWidth: getRowDimensionWidthSelector(state),
     getRowHeight: getRowHeightSelector(state),
     getSizeByKey: getCellHeightByKeySelector(state),
@@ -43,7 +43,7 @@ const mapStateToProps = (state, ownProps) => {
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: previewSizesSelector(state),
-    rowCount: getLayoutSelector(state).rowVerticalCount,
+    rowCount: layoutSelector(state).rowVerticalCount,
     getLastChildSize: getLastChildHeightSelector(state),
     leaves,
     sizes: state.sizes,

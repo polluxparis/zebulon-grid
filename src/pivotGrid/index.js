@@ -1,16 +1,16 @@
-import PivotGrid, { PivotGridWithoutDndContext } from './containers/PivotGrid';
 import ZebulonGrid from './ZebulonGrid';
+import GridWithoutStore, { GridWithoutStoreAndDndContext } from './containers/PivotGrid';
 import reducer from './reducers';
 import * as actions from './actions';
 import { applyConfigToStore } from './utils/configuration';
 
-// Import polyfills
+// Import polyfills for IE11 compatibility
 import './utils/polyfill';
 
-export default PivotGrid;
+export default ZebulonGrid;
 export {
-  PivotGridWithoutDndContext,
-  ZebulonGrid,
+  GridWithoutStoreAndDndContext,
+  GridWithoutStore,
   reducer,
   actions,
   applyConfigToStore

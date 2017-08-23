@@ -7,7 +7,12 @@ import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
 import 'react-resizable/css/styles.css';
 import { ResizableBox } from 'react-resizable';
 import { createStore } from 'redux';
-import PivotGrid, { reducer, applyConfigToStore, actions } from './pivotGrid';
+import {
+  GridWithoutStore,
+  reducer,
+  applyConfigToStore,
+  actions
+} from './pivotGrid';
 
 // custom functions and mock dataset
 import {
@@ -52,7 +57,7 @@ class PivotGridDemo extends Component {
           <ResizableBox height={basicConfig.height} width={basicConfig.width}>
             <AutoSizer>
               {({ height, width }) =>
-                <PivotGrid
+                <GridWithoutStore
                   id={0}
                   menuFunctions={menuFunctions}
                   configurationFunctions={configurationFunctions}

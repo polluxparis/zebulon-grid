@@ -4,7 +4,7 @@ import {
   dataCellsWidthSelector,
   dataCellsHeightSelector,
   rowLeavesSelector,
-  getLayoutSelector,
+  layoutSelector,
   columnLeavesSelector,
   getColumnWidthSelector,
   getRowHeightSelector,
@@ -25,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
   const getCellValue = getCellValueSelector(state);
   const selectedRange = selectedRangeSelector(state);
   return {
-    columnCount: getLayoutSelector(state).columnHorizontalCount,
+    columnCount: layoutSelector(state).columnHorizontalCount,
     columnLeaves,
     filters: state.filters,
     selectedRange,
@@ -36,7 +36,7 @@ const mapStateToProps = (state, ownProps) => {
     getColumnWidth: getColumnWidthSelector(state),
     getRowHeight: getRowHeightSelector(state),
     height: dataCellsHeightSelector(state),
-    rowCount: getLayoutSelector(state).rowVerticalCount,
+    rowCount: layoutSelector(state).rowVerticalCount,
     measures,
     rowLeaves,
     sizes: state.sizes,

@@ -31,15 +31,18 @@ export default (state = { rows: [], columns: [], dimensions: [] }, action) => {
         id,
         ...state[oldAxis].slice(newPosition)
       ];
-      if (oldPosition < newPosition) {
-        positionToRemove = oldPosition;
-      } else {
-        positionToRemove = oldPosition + 1;
+      if (oldPosition > -1) {
+        // in this case, we need to remove the value at old position
+        if (oldPosition < newPosition) {
+          positionToRemove = oldPosition;
+        } else {
+          positionToRemove = oldPosition + 1;
+        }
+        newAxisValue = [
+          ...newAxisValue.slice(0, positionToRemove),
+          ...newAxisValue.slice(positionToRemove + 1)
+        ];
       }
-      newAxisValue = [
-        ...newAxisValue.slice(0, positionToRemove),
-        ...newAxisValue.slice(positionToRemove + 1)
-      ];
       return { ...state, [newAxis]: newAxisValue };
     case SET_AXIS:
       return { ...state, ...axis };

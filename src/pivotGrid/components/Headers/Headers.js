@@ -2,7 +2,13 @@ import React, { PureComponent } from 'react';
 import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
 import classnames from 'classnames';
 
-import { MEASURE_ID, ROOT_ID, HeaderType, AxisType } from '../../constants';
+import {
+  MEASURE_ID,
+  ROOT_ID,
+  TOTAL_ID,
+  HeaderType,
+  AxisType
+} from '../../constants';
 import HeaderComponent from '../Header/Header';
 import { isNull } from '../../utils/generic';
 import { getLeaves } from '../../utils/headers';
@@ -12,18 +18,6 @@ class Headers extends PureComponent {
       this.cellCache = {};
     }
   };
-  // shouldComponentUpdate = nextProps => {
-  //   return (
-  //     nextProps.height !== this.props.height ||
-  //     nextProps.width !== this.props.width ||
-  //     nextProps.zoom !== this.props.zoom ||
-  //     nextProps.leaves !== this.props.leaves ||
-  //     (nextProps.scrollTop !== this.props.scrollTop &&
-  //       this.props.axisType === AxisType.ROWS) ||
-  //     (nextProps.scrollLeft !== this.props.scrollLeft &&
-  //       this.props.axisType === AxisType.COLUMNS)
-  //   );
-  // };
 
   componentDidUpdate = prevProps => {
     if (
@@ -65,10 +59,10 @@ class Headers extends PureComponent {
       measures,
       data,
       axisType,
-      toggleCollapse,
       selectAxis,
       moveDimension,
       toggleMeasure,
+      toggleCollapse,
       getSizeByKey,
       crossPositions
     } = this.props;
@@ -121,6 +115,49 @@ class Headers extends PureComponent {
     }
     collapsedSizes.reverse();
 
+    // no dimension is on the axis ==> Total header
+    if (correctStopIndex === 0) {
+      const header = leaves[0];
+      header.key = TOTAL_ID;
+      const main = sizeAndPositionManager.getSizeAndPositionOfCell(0);
+      const cross = crossPositions[ROOT_ID];
+
+      let positionStyle;
+      if (axisType === AxisType.ROWS) {
+        positionStyle = {
+          position: 'absolute',
+          left: cross.position,
+          top: 0,
+          height: main.size,
+          width: cross.size
+        };
+      } else {
+        positionStyle = {
+          position: 'absolute',
+          left: 0,
+          top: cross.position,
+          height: cross.size,
+          width: main.size
+        };
+      }
+      renderedCells.push(
+        <HeaderComponent
+          key={`header-${header.key}`}
+          axis={axisType}
+          header={header}
+          caption={'Total'}
+          positionStyle={positionStyle}
+          span={1}
+          previewSizes={previewSizes}
+          dimensionId={ROOT_ID}
+          isNotCollapsible={true}
+          isCollapsed={false}
+          isAffixManaged={false}
+          gridId={gridId}
+          isDropTarget={false}
+        />
+      );
+    }
     // Loop on leaves
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
@@ -207,10 +244,10 @@ class Headers extends PureComponent {
             isCollapsed={header.isCollapsed}
             isAffixManaged={index === startIndex && isAffixManaged}
             gridId={gridId}
-            toggleCollapse={toggleCollapse}
             selectAxis={selectAxis}
             moveDimension={moveDimension}
             toggleMeasure={toggleMeasure}
+            toggleCollapse={toggleCollapse}
             isDropTarget={isDropTarget}
             collectMenu={this.collectMenu}
           />

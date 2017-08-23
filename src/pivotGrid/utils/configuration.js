@@ -131,7 +131,7 @@ export function dimensionFactory(dimensionConfig, configurationFunctions) {
       };
   return {
     id,
-    caption: id === MEASURE_ID ? '' : caption || id,
+    caption: id === MEASURE_ID ? 'Measures' : caption || id,
     keyAccessor: toAccessorFunction(accessors[keyAccessor] || keyAccessor),
     labelAccessor: toAccessorFunction(
       accessors[labelAccessor] ||
