@@ -6,14 +6,11 @@ export const addFilter = (
   term,
   staticValue,
   excludeStatic
-) => {
-  const a = 1;
-  return {
-    type: ADD_FILTER,
-    filter: { dimensionId, operator, term, staticValue, excludeStatic },
-    dimension: dimensionId
-  };
-};
+) => ({
+  type: ADD_FILTER,
+  filter: { dimensionId, operator, term, staticValue, excludeStatic },
+  dimension: dimensionId
+});
 
 export const deleteFilter = dimensionId => ({
   type: DELETE_FILTER,
