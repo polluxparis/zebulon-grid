@@ -1,10 +1,16 @@
 {
   "name": "zebulon-grid",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "homepage": ".",
   "license": "MIT",
   "description": "Pivot grid written in React",
-  "tags": ["pivot table", "pivot grid", "pivot", "react", "javascript"],
+  "tags": [
+    "pivot table",
+    "pivot grid",
+    "pivot",
+    "react",
+    "javascript"
+  ],
   "author": "Emile Bres <emile.bres@gmail.com>",
   "main": "lib/index.js",
   "devDependencies": {
@@ -60,10 +66,15 @@
     "react-dom": "^15.6.1"
   },
   "babel": {
-    "presets": ["react-app"]
+    "presets": [
+      "react-app"
+    ]
   },
   "eslintConfig": {
-    "extends": ["react-app", "prettier"],
+    "extends": [
+      "react-app",
+      "prettier"
+    ],
     "env": {
       "browser": true,
       "jest": true
