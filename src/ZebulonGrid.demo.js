@@ -20,14 +20,30 @@ class ZebulonGridDemo extends Component {
 
   setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
-  setConfig = () =>
-    this.grid.setConfig(basicConfig2, getMockDatasource2(1, 10, 10));
   render() {
     return (
       <div>
-        <button onClick={this.setData}>set data</button>
-        <button onClick={this.pushData}>push data</button>
-        <button onClick={this.setConfig}>set config</button>
+        <button onClick={this.setData}>Set new data</button>
+        <button onClick={this.pushData}>Push data</button>
+        <ResizableBox height={basicConfig.height} width={basicConfig.width}>
+          <AutoSizer>
+            {({ height, width }) =>
+              <ZebulonGrid
+                config={basicConfig}
+                data={this.data}
+                menuFunctions={menuFunctions}
+                configurationFunctions={configurationFunctions}
+                height={height}
+                width={width}
+                ref={ref => {
+                  this.grid = ref;
+                }}
+                /* eslint-disable no-console */
+                drilldown={cellInfos => console.log('drilldown', cellInfos)}
+                /* eslint-enable */
+              />}
+          </AutoSizer>
+        </ResizableBox>
         <div>
           <div>
             Ctrl A : select all, Ctrl + : zoom in, Ctrl - : zoom out, Shift Up,
@@ -62,25 +78,6 @@ class ZebulonGridDemo extends Component {
             Right and bottom handle drag and drop to resize rows or columns.
           </div>
         </div>
-        <ResizableBox height={basicConfig.height} width={basicConfig.width}>
-          <AutoSizer>
-            {({ height, width }) =>
-              <ZebulonGrid
-                config={basicConfig}
-                data={this.data}
-                menuFunctions={menuFunctions}
-                configurationFunctions={configurationFunctions}
-                height={height}
-                width={width}
-                ref={ref => {
-                  this.grid = ref;
-                }}
-                /* eslint-disable no-console */
-                drilldown={cellInfos => console.log('drilldown', cellInfos)}
-                /* eslint-enable */
-              />}
-          </AutoSizer>
-        </ResizableBox>
       </div>
     );
   }

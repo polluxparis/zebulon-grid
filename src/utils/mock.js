@@ -194,13 +194,13 @@ export const basicConfig2 = {
       id: 'toto att 0',
       caption: 'toto 0',
       keyAccessor: 'toto_0',
-      attributeParents: ['toto']
+      attributeParents: ['toto2']
     },
     {
       id: 'toto att 1',
       caption: 'toto 1',
       keyAccessor: 'toto_1',
-      attributeParents: ['toto'],
+      attributeParents: ['toto2'],
       format: 'id'
     }
   ],
