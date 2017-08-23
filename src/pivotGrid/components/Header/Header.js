@@ -82,7 +82,7 @@ class Header extends Component {
 
     const head = (
       <div
-        className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
+        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
         style={{
           boxSizing: 'border-box',
           overflow: 'hidden',

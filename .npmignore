@@ -9,3 +9,4 @@ docs
 config
 webpack.config.umd.js
 yarn.lock
+*.sublime-*

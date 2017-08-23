@@ -111,7 +111,7 @@ const innerHeader = ({
     </div>
   );
   header = (
-    <div className="pivotgrid-header-inner" style={computedStyle}>
+    <div className="zebulon-grid-header-inner" style={computedStyle}>
       {collapsedIcon}
       {header}
     </div>

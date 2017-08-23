@@ -92,12 +92,12 @@ class DimensionHeader extends PureComponent {
     }
 
     const className = classNames({
-      'pivotgrid-cell': true,
-      'pivotgrid-dimension-header': true,
-      'pivotgrid-dimension-header-column': axis === AxisType.COLUMNS,
-      'pivotgrid-dimension-header-row': axis === AxisType.ROWS,
-      'pivotgrid-dimension-attribute-header': isAttribute,
-      'pivotgrid-dimension-filtered-header': isFiltered
+      'zebulon-grid-cell': true,
+      'zebulon-grid-dimension-header': true,
+      'zebulon-grid-dimension-header-column': axis === AxisType.COLUMNS,
+      'zebulon-grid-dimension-header-row': axis === AxisType.ROWS,
+      'zebulon-grid-dimension-attribute-header': isAttribute,
+      'zebulon-grid-dimension-filtered-header': isFiltered
     });
     let header = (
       <div

@@ -229,7 +229,7 @@ class DataCells extends PureComponent {
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
-        className="pivotgrid-data-cells"
+        className="zebulon-grid-data-cells"
         columnCount={columnLeaves.length}
         columnWidth={getColumnWidth}
         height={height}

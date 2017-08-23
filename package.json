@@ -1,11 +1,12 @@
 {
   "name": "zebulon-grid",
-  "version": "1.8.5",
+  "version": "1.0.0",
   "homepage": ".",
   "license": "MIT",
-  "description": "Pivot table javascript library",
+  "description": "Pivot grid written in React",
+  "tags": ["pivot table", "pivot grid", "pivot", "react", "javascript"],
   "author": "Emile Bres <emile.bres@gmail.com>",
-  "main": "lib/commonjs/index.js",
+  "main": "lib/index.js",
   "devDependencies": {
     "autoprefixer": "6.7.2",
     "babel-cli": "6.23.0",
@@ -27,12 +28,11 @@
     "react-scripts": "^1.0.7",
     "react-test-renderer": "^15.5.4",
     "reselect-change-memoize": "^1.1.0",
+    "gh-pages": "^1.0.0",
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "babel-runtime": "^6.23.0",
     "classnames": "^2.2.5",
-    "gh-pages": "^1.0.0",
     "object.values": "^1.0.4",
     "react-contextmenu": "^2.6.3",
     "react-dnd": "^2.4.0",
@@ -52,7 +52,7 @@
     "build:test": "REACT_APP_PIVOTGRID_ENV=fps-test npm run build",
     "compile": "npm run lint && npm run compile:js &&npm run compile:css",
     "lint": "eslint src/**/*.js",
-    "compile:js": "rimraf lib/commonjs && cross-env NODE_ENV=production babel src/pivotGrid -d lib/commonjs --presets es2015,react-app --ignore test.js",
+    "compile:js": "rimraf lib && cross-env NODE_ENV=production babel src/pivotGrid -d lib --presets es2015,react-app --ignore test.js",
     "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "peerDependencies": {
@@ -60,15 +60,10 @@
     "react-dom": "^15.6.1"
   },
   "babel": {
-    "presets": [
-      "react-app"
-    ]
+    "presets": ["react-app"]
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "prettier"
-    ],
+    "extends": ["react-app", "prettier"],
     "env": {
       "browser": true,
       "jest": true

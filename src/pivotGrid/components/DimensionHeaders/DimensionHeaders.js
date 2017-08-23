@@ -147,7 +147,7 @@ class DimensionHeaders extends Component {
           width,
           overflow: 'hidden'
         }}
-        className="pivotgrid-dimension-headers"
+        className="zebulon-grid-dimension-headers"
         onMouseDown={this.handleMouseDown}
       >
         {headers}

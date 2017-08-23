@@ -316,7 +316,7 @@ class PivotGrid extends Component {
                   scrollTop
                 }) =>
                   <div
-                    className="pivotgrid-pivotgrid"
+                    className="zebulon-grid-zebulon-grid"
                     style={{ fontSize: `${zoomValue * 100}%` }}
                   >
                     <div style={{ display: 'flex' }}>

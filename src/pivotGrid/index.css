@@ -1,23 +1,23 @@
-.pivotgrid-cell {
+.zebulon-grid-cell {
   user-select: none;
   cursor: default;
   border: solid lightgrey thin;
 }
 
-.pivotgrid-data-cell-highlighted {
+.zebulon-grid-data-cell-highlighted {
   animation-name: anim-info-updated;
   animation-duration: 1s;
 }
 
-.pivotgrid-column-headers {
+.zebulon-grid-column-headers {
   outline: none;
 }
 
-.pivotgrid-row-headers {
+.zebulon-grid-row-headers {
   outline: none;
 }
 
-.pivotgrid-data-cells {
+.zebulon-grid-data-cells {
   outline: none;
 }
 
@@ -30,51 +30,51 @@
   }
 }
 
-.pivotgrid-header {
+.zebulon-grid-header {
   background-color: #eef8fb;
 }
 
-.pivotgrid-header-inner {
+.zebulon-grid-header-inner {
   margin: 0.2em;
   margin-left: '0.5em';
 }
 
-.pivotgrid-dimension-headers {
+.zebulon-grid-dimension-headers {
 }
 
-.pivotgrid-dimension-header {
+.zebulon-grid-dimension-header {
   background-color: #fafad2;
 }
-.pivotgrid-dimension-header-row {
+.zebulon-grid-dimension-header-row {
   border-bottom: solid .07em;
 }
-.pivotgrid-dimension-header-column {
+.zebulon-grid-dimension-header-column {
   border-right: solid .07em;
 }
-.pivotgrid-dimension-attribute-header {
+.zebulon-grid-dimension-attribute-header {
   font-style: italic;
 }
-.pivotgrid-dimension-filtered-header {
+.zebulon-grid-dimension-filtered-header {
   font-weight: bold;
 }
-.pivotgrid-dimension-header-inner {
+.zebulon-grid-dimension-header-inner {
   margin: 0.2em;
   margin-left: '0.5em';
 }
 
-.pivotgrid-data-cell {
+.zebulon-grid-data-cell {
   text-align: right;
 }
 
-.pivotgrid-data-cell-uneven {
+.zebulon-grid-data-cell-uneven {
   background-color: rgb(230, 230, 230);
 }
 
-.pivotgrid-data-cell-even {
+.zebulon-grid-data-cell-even {
   background-color: white;
 }
 
-.pivotgrid-data-cell-selected {
+.zebulon-grid-data-cell-selected {
   background-color: lightcyan;
 }
 

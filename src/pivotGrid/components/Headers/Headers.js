@@ -273,14 +273,13 @@ class Headers extends PureComponent {
     return (
       <div
         className={classnames({
-          'pivotgrid-column-headers': axisType === AxisType.COLUMNS,
-          'pivotgrid-row-headers': axisType === AxisType.ROWS
+          'zebulon-grid-column-headers': axisType === AxisType.COLUMNS,
+          'zebulon-grid-row-headers': axisType === AxisType.ROWS
         })}
       >
         <ReactVirtualizedGrid
           cellRangeRenderer={this.headersRenderer}
           cellRenderer={function mock() {}}
-          // className="pivotgrid-row-headers"
           // The position of inner style was set to static in react-virtualized 9.2.3
           // This broke the grid because the height of the inner container was not reset
           // when the height prop changed
