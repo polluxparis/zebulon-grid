@@ -116,7 +116,7 @@ class Headers extends PureComponent {
     collapsedSizes.reverse();
 
     // no dimension is on the axis ==> Total header
-    if (correctStopIndex === 0) {
+    if (leaves[0].id === ROOT_ID) {
       const header = leaves[0];
       header.key = TOTAL_ID;
       const main = sizeAndPositionManager.getSizeAndPositionOfCell(0);
