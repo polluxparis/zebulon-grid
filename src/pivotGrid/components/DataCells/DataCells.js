@@ -13,17 +13,6 @@ class DataCells extends PureComponent {
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
   }
-  // shouldComponentUpdate(nextProps) {
-  //   return (
-  //     nextProps.zoom !== this.props.zoom ||
-  //     nextProps.sizes !== this.props.sizes ||
-  //     nextProps.rowLeaves !== this.props.rowLeaves ||
-  //     nextProps.columnLeaves !== this.props.columnLeaves ||
-  //     nextProps.selectedRange !== this.props.selectedRange ||
-  //     nextProps.height !== this.props.height ||
-  //     nextProps.width !== this.props.width
-  //   );
-  // }
 
   componentDidUpdate(prevProps) {
     if (
@@ -136,7 +125,6 @@ class DataCells extends PureComponent {
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getCellValue,
-      // customFunctions,
       rowLeaves,
       columnLeaves,
       measures,
@@ -223,7 +211,8 @@ class DataCells extends PureComponent {
       scrollToRow,
       onSectionRendered,
       columnLeaves,
-      rowLeaves
+      rowLeaves,
+      selectedRange
     } = this.props;
     this.valuesCache = {};
     return (
@@ -242,6 +231,7 @@ class DataCells extends PureComponent {
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}
+        selectedRange={selectedRange}
         width={width}
       />
     );
