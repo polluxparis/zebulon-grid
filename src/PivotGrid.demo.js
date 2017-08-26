@@ -13,7 +13,6 @@ import {
   applyConfigToStore,
   actions
 } from './pivotGrid';
-
 // custom functions and mock dataset
 import {
   getMockDatasource,
@@ -26,6 +25,8 @@ import {
 import { configurationFunctions } from './utils/configurationFunctions';
 import { menuFunctions } from './utils/menuFunctions';
 import './App.css';
+console.log(actions);
+
 //
 class PivotGridDemo extends Component {
   constructor(props) {
@@ -53,7 +54,6 @@ class PivotGridDemo extends Component {
     return (
       <Provider store={this.state.store}>
         <div>
-
           <ResizableBox height={basicConfig.height} width={basicConfig.width}>
             <AutoSizer>
               {({ height, width }) =>

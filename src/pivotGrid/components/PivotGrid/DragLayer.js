@@ -18,10 +18,7 @@ class CustomDragLayer extends Component {
   }
 
   getItemPosition() {
-    const {
-      clientOffset,
-      item
-    } = this.props;
+    const { clientOffset, item } = this.props;
     if (!clientOffset) {
       return {
         display: 'none'
