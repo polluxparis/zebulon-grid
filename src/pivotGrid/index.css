@@ -1,3 +1,6 @@
+.zebulon-grid-zebulon-grid {
+  font-family: sans-serif;
+}
 .zebulon-grid-cell {
   user-select: none;
   cursor: default;
@@ -95,7 +98,7 @@
 .react-contextmenu.react-contextmenu--visible {
   opacity: 1;
   pointer-events: auto;
-  z-index: 4;
+  z-index: 3;
 }
 
 .react-contextmenu-item {

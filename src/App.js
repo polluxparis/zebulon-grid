@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PivotGridDemo from './PivotGrid.demo';
-import ZebulonGridDemo from './ZebulonGrid.demo';
+import React, { Component } from "react";
+import PivotGridDemo from "./PivotGrid.demo";
+import ZebulonGridDemo from "./ZebulonGrid.demo";
 
 class App extends Component {
   constructor() {
     super();
-    this.state = { demo: 'zebulonGrid' };
+    this.state = { demo: "pivotGrid" };
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
@@ -13,9 +13,9 @@ class App extends Component {
   }
   render() {
     let grid = null;
-    if (this.state.demo === 'pivotGrid') {
+    if (this.state.demo === "pivotGrid") {
       grid = <PivotGridDemo />;
-    } else if (this.state.demo === 'zebulonGrid') {
+    } else if (this.state.demo === "zebulonGrid") {
       grid = <ZebulonGridDemo />;
     }
     return (

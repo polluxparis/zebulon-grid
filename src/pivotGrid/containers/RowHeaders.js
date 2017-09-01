@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import { AxisType } from '../constants';
+import { AxisType } from "../constants";
 import {
   getLastChildHeightSelector,
   layoutSelector,
@@ -17,14 +17,15 @@ import {
   crossPositionsSelector,
   getRowDimensionWidthSelector,
   getRowHeightSelector
-} from '../selectors';
-import Headers from '../components/Headers/Headers';
+} from "../selectors";
+import Headers from "../components/Headers/Headers";
 import {
   toggleCollapse,
   selectRange,
   moveDimension,
+  moveMeasure,
   toggleMeasure
-} from '../actions';
+} from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
   const leaves = rowLeavesSelector(state);
@@ -62,15 +63,22 @@ const mapDispatchToProps = dispatch => ({
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) =>
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position)),
+  moveMeasure: measures => (measureId, measureToId) => {
+    dispatch(
+      moveMeasure(measureId, Object.keys(measures).indexOf(measureToId))
+    );
+  },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId))
 });
 
 const mergeProps = (
-  { getSelectedRowRange, ...restStateProps },
-  { selectAxis, ...restDispatchProps },
+  { getSelectedRowRange, measures, ...restStateProps },
+  { selectAxis, moveMeasure, ...restDispatchProps },
   ownProps
 ) => ({
   selectAxis: selectAxis(getSelectedRowRange),
+  moveMeasure: moveMeasure(measures),
+  measures,
   ...restStateProps,
   ...restDispatchProps,
   ...ownProps

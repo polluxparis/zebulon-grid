@@ -1,6 +1,14 @@
-import { MOVE_DIMENSION, SET_AXIS } from '../constants';
-import { isNullOrUndefined } from '../utils/generic';
-export default (state = { rows: [], columns: [], dimensions: [] }, action) => {
+import {
+  MOVE_DIMENSION,
+  MOVE_MEASURE,
+  TOGGLE_MEASURE,
+  SET_AXIS
+} from "../constants";
+import { isNullOrUndefined } from "../utils/generic";
+export default (
+  state = { rows: [], columns: [], dimensions: [], measures: [] },
+  action
+) => {
   const { type, id, position, oldAxis, newAxis, axis } = action;
   let newAxisValue;
   let oldAxisValue;
@@ -44,6 +52,38 @@ export default (state = { rows: [], columns: [], dimensions: [] }, action) => {
         ];
       }
       return { ...state, [newAxis]: newAxisValue };
+    case MOVE_MEASURE:
+      if (isNullOrUndefined(newPosition)) {
+        newPosition = state.measures.length;
+      }
+      oldPosition = state.measures.indexOf(id);
+      if (oldPosition === newPosition) {
+        return state;
+      }
+      newAxisValue = [
+        ...state.measures.slice(0, Math.max(oldPosition, 0)),
+        ...state.measures.slice(oldPosition + 1)
+      ];
+
+      newAxisValue = [
+        ...newAxisValue.slice(0, newPosition),
+        id,
+        ...newAxisValue.slice(newPosition)
+      ];
+      return { ...state, measures: newAxisValue };
+    case TOGGLE_MEASURE:
+      oldPosition = state.measures.indexOf(id);
+      if (oldPosition > -1) {
+        return {
+          ...state,
+          measures: [
+            ...state.measures.slice(0, oldPosition),
+            ...state.measures.slice(oldPosition + 1)
+          ]
+        };
+      } else {
+        return { ...state, measures: [...state.measures, id] };
+      }
     case SET_AXIS:
       return { ...state, ...axis };
     default:

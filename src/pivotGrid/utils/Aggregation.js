@@ -56,6 +56,17 @@ export function weighted_avg(accessor, intersection, data) {
   }
   return wavg[0] / wavg[1];
 }
+export function delta(accessor, intersection, data) {
+  let values = [0, 0];
+  const len = intersection.length;
+  if (len > 0) {
+    forEachIntersection(accessor, intersection, data, val => {
+      values[0] += val[0];
+      values[1] += val[1];
+    });
+  }
+  return values[0] - values[1];
+}
 export function prod(accessor, intersection, data) {
   let prod = null;
   const len = intersection.length;

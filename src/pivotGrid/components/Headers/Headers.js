@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
-import classnames from 'classnames';
+import React, { PureComponent } from "react";
+import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
+import classnames from "classnames";
 
 import {
   MEASURE_ID,
@@ -8,10 +8,10 @@ import {
   TOTAL_ID,
   HeaderType,
   AxisType
-} from '../../constants';
-import HeaderComponent from '../Header/Header';
-import { isNull } from '../../utils/generic';
-import { getLeaves } from '../../utils/headers';
+} from "../../constants";
+import HeaderComponent from "../Header/Header";
+import { isNull } from "../../utils/generic";
+import { getLeaves } from "../../utils/headers";
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
     if (nextProps.headers !== this.props.headers) {
@@ -62,6 +62,7 @@ class Headers extends PureComponent {
       selectAxis,
       moveDimension,
       toggleMeasure,
+      moveMeasure,
       toggleCollapse,
       getSizeByKey,
       crossPositions
@@ -125,7 +126,7 @@ class Headers extends PureComponent {
       let positionStyle;
       if (axisType === AxisType.ROWS) {
         positionStyle = {
-          position: 'absolute',
+          position: "absolute",
           left: cross.position,
           top: 0,
           height: main.size,
@@ -133,7 +134,7 @@ class Headers extends PureComponent {
         };
       } else {
         positionStyle = {
-          position: 'absolute',
+          position: "absolute",
           left: 0,
           top: cross.position,
           height: cross.size,
@@ -144,8 +145,9 @@ class Headers extends PureComponent {
         <HeaderComponent
           key={`header-${header.key}`}
           axis={axisType}
+          index={null}
           header={header}
-          caption={'Total'}
+          caption={"Total"}
           positionStyle={positionStyle}
           span={1}
           previewSizes={previewSizes}
@@ -205,7 +207,7 @@ class Headers extends PureComponent {
         let positionStyle;
         if (axisType === AxisType.ROWS) {
           positionStyle = {
-            position: 'absolute',
+            position: "absolute",
             left: cross.position,
             top: mainOffset,
             height: mainSize,
@@ -213,7 +215,7 @@ class Headers extends PureComponent {
           };
         } else {
           positionStyle = {
-            position: 'absolute',
+            position: "absolute",
             left: mainOffset,
             top: cross.position,
             height: cross.size + collapsedSize,
@@ -225,12 +227,16 @@ class Headers extends PureComponent {
           dimension.isAttribute ||
           header.depth >= lastNotMeasureDimensionIndex ||
           (!header.isCollapsed && span === measuresCount);
-        const isDropTarget = dimension.id === MEASURE_ID && header.depth === 0;
+        const isDropTarget =
+          dimension.id === MEASURE_ID &&
+          (header.depth === 0 || measuresCount > 1);
         // read parents (but only once)
         renderedCells.push(
           <HeaderComponent
             key={`header-${header.key}`}
             axis={axisType}
+            index={HeaderType.MEASURE && measuresCount > 1 ? 0 : null}
+            measureId={HeaderType.MEASURE ? header.id : null}
             header={header}
             caption={caption}
             positionStyle={positionStyle}
@@ -247,6 +253,7 @@ class Headers extends PureComponent {
             selectAxis={selectAxis}
             moveDimension={moveDimension}
             toggleMeasure={toggleMeasure}
+            moveMeasure={moveMeasure}
             toggleCollapse={toggleCollapse}
             isDropTarget={isDropTarget}
             collectMenu={this.collectMenu}
@@ -273,8 +280,8 @@ class Headers extends PureComponent {
     return (
       <div
         className={classnames({
-          'zebulon-grid-column-headers': axisType === AxisType.COLUMNS,
-          'zebulon-grid-row-headers': axisType === AxisType.ROWS
+          "zebulon-grid-column-headers": axisType === AxisType.COLUMNS,
+          "zebulon-grid-row-headers": axisType === AxisType.ROWS
         })}
       >
         <ReactVirtualizedGrid
@@ -284,7 +291,7 @@ class Headers extends PureComponent {
           // This broke the grid because the height of the inner container was not reset
           // when the height prop changed
           // This is a workaround
-          containerStyle={{ position: 'static' }}
+          containerStyle={{ position: "static" }}
           height={height}
           width={width}
           rowCount={rowCount}
@@ -300,9 +307,9 @@ class Headers extends PureComponent {
           // We set overflowX and overflowY and not overflow
           // because react-virtualized sets them during render
           style={{
-            overflowX: 'hidden',
-            overflowY: 'hidden',
-            outline: 'none'
+            overflowX: "hidden",
+            overflowY: "hidden",
+            outline: "none"
           }}
         />
       </div>

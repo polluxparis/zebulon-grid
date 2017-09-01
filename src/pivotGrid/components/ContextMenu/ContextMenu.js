@@ -27,10 +27,14 @@ const DimensionMenu = (id, trigger) => {
     </SubMenu>
   );
   if (trigger.dimensionId === MEASURE_ID) {
-    return <ReactContextMenu id={id}>{addDimensionSubMenu}</ReactContextMenu>;
+    return (
+      <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
+        {addDimensionSubMenu}
+      </ReactContextMenu>
+    );
   }
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
         {`Sort  ${trigger.direction} `}
       </MenuItem>
@@ -77,7 +81,7 @@ const DimensionMenu = (id, trigger) => {
 const MeasureMenu = (id, trigger) => {
   const isDisabled = trigger.availableMeasures.length === 0;
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'move' }}>
         Move measures
       </MenuItem>
@@ -134,12 +138,12 @@ const DataCellMenu = (id, trigger) => {
     externalMenu('function', fct[externalFunction], trigger.onItemClick)
   );
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'drilldown' }}>
         DrillDown
       </MenuItem>
       <SubMenu title="Cell">
-        {cellFunctions}
+        {cellFunctions}e
       </SubMenu>
       <SubMenu title="Range">
         {rangeFunctions}
@@ -176,7 +180,11 @@ const DataCellMenu = (id, trigger) => {
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id}>''</ReactContextMenu>;
+    return (
+      <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
+        ''
+      </ReactContextMenu>
+    );
   }
 
   if (trigger.type === 'dimension-header') {

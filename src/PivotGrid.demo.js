@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import React, { Component } from "react";
+import { Provider } from "react-redux";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-import 'react-resizable/css/styles.css';
-import { ResizableBox } from 'react-resizable';
-import { createStore } from 'redux';
+import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
+import "react-resizable/css/styles.css";
+import { ResizableBox } from "react-resizable";
+import { createStore } from "redux";
 import {
   GridWithoutStore,
   reducer,
   applyConfigToStore,
   actions
-} from './pivotGrid';
+} from "./pivotGrid";
 // custom functions and mock dataset
 import {
   getMockDatasource,
@@ -21,10 +21,10 @@ import {
   getObservableError,
   basicConfig,
   basicConfig2
-} from './utils/mock';
-import { configurationFunctions } from './utils/configurationFunctions';
-import { menuFunctions } from './utils/menuFunctions';
-import './App.css';
+} from "./utils/mock";
+import { configurationFunctions } from "./utils/configurationFunctions";
+import { menuFunctions } from "./utils/menuFunctions";
+import "./App.css";
 console.log(actions);
 
 //
@@ -46,9 +46,8 @@ class PivotGridDemo extends Component {
     this.state = { store };
   }
 
-  pushData = () => {
+  pushData = () =>
     this.state.store.dispatch(actions.pushData(getMockDatasource(1, 10, 10)));
-  };
 
   render() {
     return (
@@ -64,7 +63,7 @@ class PivotGridDemo extends Component {
                   height={height}
                   width={width}
                   drilldown={cell => {
-                    console.log('drilldown', cell);
+                    console.log("drilldown", cell);
                   }}
                 />}
             </AutoSizer>

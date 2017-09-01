@@ -4,7 +4,7 @@ import {
   ZOOM_OUT,
   MOVE_DIMENSION,
   MEASURE_ID
-} from '../constants';
+} from "../constants";
 
 function getNextZoom(previousZoom, zoomIn) {
   const zoomValues = [

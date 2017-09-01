@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import ZebulonGrid from './pivotGrid';
-import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
-import 'react-resizable/css/styles.css';
-import { ResizableBox } from 'react-resizable';
+import ZebulonGrid from "./pivotGrid";
+import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
+import "react-resizable/css/styles.css";
+import { ResizableBox } from "react-resizable";
 import {
   getMockDatasource,
   getMockDatasource2,
   getPromiseMockDatasource,
   basicConfig,
   basicConfig2
-} from './utils/mock';
-import { configurationFunctions } from './utils/configurationFunctions';
-import { menuFunctions } from './utils/menuFunctions';
+} from "./utils/mock";
+import { configurationFunctions } from "./utils/configurationFunctions";
+import { menuFunctions } from "./utils/menuFunctions";
 
 class ZebulonGridDemo extends Component {
   state = { focusCell: [] };
@@ -39,7 +39,7 @@ class ZebulonGridDemo extends Component {
                   this.grid = ref;
                 }}
                 /* eslint-disable no-console */
-                drilldown={cellInfos => console.log('drilldown', cellInfos)}
+                drilldown={cellInfos => console.log("drilldown", cellInfos)}
                 /* eslint-enable */
               />}
           </AutoSizer>

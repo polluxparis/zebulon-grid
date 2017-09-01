@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import React, { Component } from "react";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
 
-import PivotGrid from './containers/PivotGrid';
-import reducer from './reducers';
-import { applyConfigToStore, setData } from './utils/configuration';
-import * as actions from './actions';
+import PivotGrid from "./containers/PivotGrid";
+import reducer from "./reducers";
+import { applyConfigToStore, setData } from "./utils/configuration";
+import * as actions from "./actions";
 
 class ZebulonGrid extends Component {
   componentWillMount() {
@@ -23,9 +23,10 @@ class ZebulonGrid extends Component {
         this.state.configurationFunctions,
         nextProps.data
       );
+    } else if (this.props.data !== nextProps.data) {
+      setData(this.state.store, nextProps.data);
     }
   }
-
   render() {
     const { store, menuFunctions } = this.state;
 
@@ -51,10 +52,13 @@ Object.keys(actions).forEach(action => {
   };
   /* eslint-enable */
 });
-ZebulonGrid.prototype['setData'] = function(data) {
+ZebulonGrid.prototype["setData"] = function(data) {
   setData(this.state.store, data);
 };
-ZebulonGrid.prototype['setConfig'] = function(config, data) {
+ZebulonGrid.prototype["getStore"] = function() {
+  return this.state.store.getState();
+};
+ZebulonGrid.prototype["setConfig"] = function(config, data) {
   applyConfigToStore(
     this.state.store,
     config,

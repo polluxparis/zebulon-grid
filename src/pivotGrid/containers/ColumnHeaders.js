@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import { AxisType } from '../constants';
+import { AxisType } from "../constants";
 import {
   getCellWidthByKeySelector,
   getColumnWidthSelector,
@@ -17,14 +17,15 @@ import {
   crossPositionsSelector,
   availableMeasuresSelector,
   getColumnDimensionHeightSelector
-} from '../selectors';
+} from "../selectors";
 import {
   toggleCollapse,
   selectRange,
   moveDimension,
+  moveMeasure,
   toggleMeasure
-} from '../actions';
-import Headers from '../components/Headers/Headers';
+} from "../actions";
+import Headers from "../components/Headers/Headers";
 
 const mapStateToProps = (state, ownProps) => {
   const leaves = columnLeavesSelector(state);
@@ -58,6 +59,11 @@ const mapDispatchToProps = dispatch => ({
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   },
+  moveMeasure: measures => (measureId, measureToId) => {
+    dispatch(
+      moveMeasure(measureId, Object.keys(measures).indexOf(measureToId))
+    );
+  },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId)),
   selectAxis: getSelectedColumnRange => header => {
     const selectedRange = getSelectedColumnRange(header);
@@ -66,11 +72,13 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (
-  { getSelectedColumnRange, ...restStateProps },
-  { selectAxis, ...restDispatchProps },
+  { getSelectedColumnRange, measures, ...restStateProps },
+  { selectAxis, moveMeasure, ...restDispatchProps },
   ownProps
 ) => ({
   selectAxis: selectAxis(getSelectedColumnRange),
+  moveMeasure: moveMeasure(measures),
+  measures,
   ...restStateProps,
   ...restDispatchProps,
   ...ownProps

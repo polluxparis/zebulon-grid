@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import { ROOT_ID } from '../constants';
+import { ROOT_ID } from "../constants";
 const getAxisDimensions = (axis, dimensions, collapses) => {
   let prevDimension = { id: ROOT_ID };
   return axis
@@ -57,17 +57,16 @@ export const dimensionsSelector = createSelector(
 const measuresSelector = state => state.measures;
 
 export const activatedMeasuresSelector = createSelector(
-  [measuresSelector],
-  measures =>
-    Object.keys(measures)
+  [measuresSelector, state => state.axis.measures],
+  (measures, activatedMeasures) =>
+    activatedMeasures
       .map(id => measures[id])
-      .filter(measure => measure.activated)
       .reduce((acc, mea) => ({ ...acc, [mea.id]: mea }), {})
 );
 export const availableMeasuresSelector = createSelector(
-  [measuresSelector],
-  measures =>
+  [measuresSelector, state => state.axis.measures],
+  (measures, activatedMeasures) =>
     Object.keys(measures)
       .map(id => measures[id])
-      .filter(measure => !measure.activated)
+      .filter(measure => !activatedMeasures.includes(measure.id))
 );

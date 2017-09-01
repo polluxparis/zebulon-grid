@@ -1,12 +1,12 @@
-import { createSelector } from 'reselect';
-import { filteredDataSelector } from './data.selector';
+import { createSelector } from "reselect";
+import { filteredDataSelector } from "./data.selector";
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
   activatedMeasuresSelector
-} from './dimensions.selector';
-import { isNull, isNullOrUndefined } from '../utils/generic';
-import { getLeaves } from '../utils/headers';
+} from "./dimensions.selector";
+import { isNull, isNullOrUndefined } from "../utils/generic";
+import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
   EMPTY_ID,
@@ -14,7 +14,7 @@ import {
   HeaderType,
   AxisType,
   toAxisType
-} from '../constants';
+} from "../constants";
 
 export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
@@ -174,7 +174,7 @@ function buildHeaders(
       }
       orderedChildrenMap.sort(sortFunction);
       header.orderedChildrenIds = orderedChildrenMap.map(obj => obj.id);
-      if (childrenDimension.sort.direction === 'desc') {
+      if (childrenDimension.sort.direction === "desc") {
         header.orderedChildrenIds.reverse();
       }
     }
@@ -289,9 +289,10 @@ export const getDimensionKeys = (
   parent,
   isCollapsed
 ) => {
-  const key = depth !== -1 && parent.id !== ROOT_ID
-    ? `${parent.key}-/-${node.id}`
-    : String(node.id);
+  const key =
+    depth !== -1 && parent.id !== ROOT_ID
+      ? `${parent.key}-/-${node.id}`
+      : String(node.id);
   let keys = {};
   if (dimensionDepth === depth) {
     keys = { [key]: isCollapsed };

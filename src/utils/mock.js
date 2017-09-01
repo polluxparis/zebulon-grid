@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies*/
-import { Observable } from 'rx-lite';
+import { Observable } from "rx-lite";
 /* eslint-enable */
 // import * as 'from' './Format';
 
@@ -56,28 +56,28 @@ export function getObservableMockDatasource(interval) {
     getMockDatasource(),
     [
       {
-        toto: '0',
-        toto_lb: 'toto 0',
+        toto: "0",
+        toto_lb: "toto 0",
         qty: 100,
         amt: 100,
-        titi: 'titi 0',
-        tutu: '1'
+        titi: "titi 0",
+        tutu: "1"
       },
       {
-        toto: '0',
-        toto_lb: 'toto 0',
+        toto: "0",
+        toto_lb: "toto 0",
         qty: 100,
         amt: 100,
-        titi: 'titi 0',
-        tutu: '0'
+        titi: "titi 0",
+        tutu: "0"
       }
     ],
-    { toto: '0', toto_lb: 'toto 0', qty: 1, amt: 2, titi: 'titi 0', tutu: '1' }
+    { toto: "0", toto_lb: "toto 0", qty: 1, amt: 2, titi: "titi 0", tutu: "1" }
   ];
   return Observable.interval(interval || 100).take(3).map(i => data[i]);
 }
 export function getObservableError() {
-  return Observable.throw(new Error('titi'));
+  return Observable.throw(new Error("titi"));
 }
 export const getPromiseMockDatasource = (
   dataRepetition = 1,
@@ -93,7 +93,7 @@ export const getPromiseMockDatasource = (
   return p;
 };
 export const basicConfig = {
-  measureHeadersAxis: 'columns',
+  measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -101,69 +101,69 @@ export const basicConfig = {
 
   dimensions: [
     {
-      id: 'toto',
-      caption: 'Toto',
-      keyAccessor: 'toto',
-      labelAccessor: 'toto_lb',
+      id: "toto",
+      caption: "Toto",
+      keyAccessor: "toto",
+      labelAccessor: "toto_lb",
       sort: {
-        keyAccessor: 'toto_lb'
+        keyAccessor: "toto_lb"
       }
     },
     {
-      id: 'titi',
-      caption: 'Titi',
-      keyAccessor: 'titi'
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi"
     },
     {
-      id: 'tutu',
-      caption: 'Tutu',
-      keyAccessor: 'tutu',
-      format: 'id'
+      id: "tutu",
+      caption: "Tutu",
+      keyAccessor: "tutu",
+      format: "id"
     },
     {
-      id: 'toto att 0',
-      caption: 'toto 0',
-      keyAccessor: 'toto_0',
-      attributeParents: ['toto']
+      id: "toto att 0",
+      caption: "toto 0",
+      keyAccessor: "toto_0",
+      attributeParents: ["toto"]
     },
     {
-      id: 'toto att 1',
-      caption: 'toto 1',
-      keyAccessor: 'toto_1',
-      attributeParents: ['toto'],
-      format: 'id'
+      id: "toto att 1",
+      caption: "toto 1",
+      keyAccessor: "toto_1",
+      attributeParents: ["toto"],
+      format: "id"
     }
   ],
   measures: [
     {
-      valueAccessor: 'qty',
-      id: 'qty',
-      caption: 'Quantity',
-      format: 'quantity',
-      aggregation: 'sum'
+      valueAccessor: "qty",
+      id: "qty",
+      caption: "Quantity",
+      format: "quantity",
+      aggregation: "sum"
     },
     {
-      valueAccessor: 'amt',
-      id: 'amt',
-      caption: 'Amount',
-      aggregation: 'sum',
-      aggregationCaption: 'whatever',
-      format: 'amount'
+      valueAccessor: "amt",
+      id: "amt",
+      caption: "Amount",
+      aggregation: "sum",
+      aggregationCaption: "whatever",
+      format: "amount"
     },
     {
-      id: 'price',
-      caption: 'Price',
-      aggregation: 'weighted_avg',
-      valueAccessor: 'price',
-      format: 'price'
+      id: "price",
+      caption: "Price",
+      aggregation: "weighted_avg",
+      valueAccessor: "price",
+      format: "price"
     }
   ],
-  columns: ['titi'],
-  rows: ['toto', 'toto att 0', 'toto att 1', 'tutu'],
-  activeMeasures: ['qty', 'amt', 'price']
+  columns: ["titi"],
+  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
+  activeMeasures: ["qty", "amt", "price"]
 };
 export const basicConfig2 = {
-  measureHeadersAxis: 'columns',
+  measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -171,64 +171,64 @@ export const basicConfig2 = {
 
   dimensions: [
     {
-      id: 'toto2',
-      caption: 'Toto',
-      keyAccessor: 'toto2',
-      labelAccessor: 'toto_lb',
+      id: "toto2",
+      caption: "Toto",
+      keyAccessor: "toto2",
+      labelAccessor: "toto_lb",
       sort: {
-        keyAccessor: 'toto_lb'
+        keyAccessor: "toto_lb"
       }
     },
     {
-      id: 'titi',
-      caption: 'Titi',
-      keyAccessor: 'titi'
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi"
     },
     {
-      id: 'tutu',
-      caption: 'Tutu',
-      keyAccessor: 'tutu',
-      format: 'id'
+      id: "tutu",
+      caption: "Tutu",
+      keyAccessor: "tutu",
+      format: "id"
     },
     {
-      id: 'toto att 0',
-      caption: 'toto 0',
-      keyAccessor: 'toto_0',
-      attributeParents: ['toto2']
+      id: "toto att 0",
+      caption: "toto 0",
+      keyAccessor: "toto_0",
+      attributeParents: ["toto2"]
     },
     {
-      id: 'toto att 1',
-      caption: 'toto 1',
-      keyAccessor: 'toto_1',
-      attributeParents: ['toto2'],
-      format: 'id'
+      id: "toto att 1",
+      caption: "toto 1",
+      keyAccessor: "toto_1",
+      attributeParents: ["toto2"],
+      format: "id"
     }
   ],
   measures: [
     {
-      valueAccessor: 'qty',
-      id: 'qty',
-      caption: 'Quantity',
-      format: 'quantity',
-      aggregation: 'sum'
+      valueAccessor: "qty",
+      id: "qty",
+      caption: "Quantity",
+      format: "quantity",
+      aggregation: "sum"
     },
     {
-      valueAccessor: 'amt',
-      id: 'amt',
-      caption: 'Amount',
-      aggregation: 'sum',
-      aggregationCaption: 'whatever',
-      format: 'amount'
+      valueAccessor: "amt",
+      id: "amt",
+      caption: "Amount",
+      aggregation: "sum",
+      aggregationCaption: "whatever",
+      format: "amount"
     },
     {
-      id: 'price',
-      caption: 'Price',
-      aggregation: 'weighted_avg',
-      valueAccessor: 'price',
-      format: 'price'
+      id: "price",
+      caption: "Price",
+      aggregation: "weighted_avg",
+      valueAccessor: "price",
+      format: "price"
     }
   ],
-  columns: ['titi'],
-  rows: ['toto2', 'toto att 0', 'toto att 1', 'tutu'],
-  activeMeasures: ['qty', 'amt', 'price']
+  columns: ["titi"],
+  rows: ["toto2", "toto att 0", "toto att 1", "tutu"],
+  activeMeasures: ["qty", "amt", "price"]
 };

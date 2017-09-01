@@ -1,8 +1,8 @@
-import { connect } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { connect } from "react-redux";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-import PivotGrid from '../components/PivotGrid/PivotGrid';
+import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
   columnLeavesSelector,
   defaultCellSizesSelector,
@@ -10,14 +10,14 @@ import {
   rowLeavesSelector,
   selectedRangeSelector,
   copySelector
-} from '../selectors';
+} from "../selectors";
 import {
   updateCellSize,
   setConfigProperty,
   selectRange,
   selectCell,
   zoom
-} from '../actions';
+} from "../actions";
 
 const mapStateToProps = state => {
   const rowLeaves = rowLeavesSelector(state);
@@ -55,8 +55,8 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, 'height'));
-    if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+    if (height) dispatch(setConfigProperty({ height, width }, "height"));
+    if (width) dispatch(setConfigProperty({ height, width }, "width"));
   },
   selectRange: selectedRange => {
     dispatch(selectRange(selectedRange));

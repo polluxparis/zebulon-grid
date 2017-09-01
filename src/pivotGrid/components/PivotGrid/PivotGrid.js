@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { ScrollSync } from 'react-virtualized/dist/commonjs/ScrollSync';
-import { ArrowKeyStepper } from 'react-virtualized/dist/commonjs/ArrowKeyStepper';
-import { DropTarget } from 'react-dnd';
-import { connectMenu } from 'react-contextmenu';
-import ContextMenu from '../ContextMenu/ContextMenu';
+import React, { Component } from "react";
+import { ScrollSync } from "react-virtualized/dist/commonjs/ScrollSync";
+import { ArrowKeyStepper } from "react-virtualized/dist/commonjs/ArrowKeyStepper";
+import { DropTarget } from "react-dnd";
+import { connectMenu } from "react-contextmenu";
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 // import ArrowKeyStepper from '../../containers/ArrowKeyStepper';
-import DataCells from '../../containers/DataCells';
-import DimensionHeaders from '../../containers/DimensionHeaders';
-import ColumnHeaders from '../../containers/ColumnHeaders';
-import RowHeaders from '../../containers/RowHeaders';
-import DragLayer from './DragLayer';
-import { isEmpty, isNull } from '../../utils/generic';
-import { ZOOM_IN, ZOOM_OUT } from '../../constants';
+import DataCells from "../../containers/DataCells";
+import DimensionHeaders from "../../containers/DimensionHeaders";
+import ColumnHeaders from "../../containers/ColumnHeaders";
+import RowHeaders from "../../containers/RowHeaders";
+import DragLayer from "./DragLayer";
+import { isEmpty, isNull } from "../../utils/generic";
+import { ZOOM_IN, ZOOM_OUT } from "../../constants";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -92,11 +92,11 @@ class PivotGrid extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('copy', this.handleCopy);
+    document.addEventListener("copy", this.handleCopy);
   }
 
   componentDidUnMount() {
-    document.removeEventListener('copy', this.handleCopy);
+    document.removeEventListener("copy", this.handleCopy);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -189,14 +189,14 @@ class PivotGrid extends Component {
       }
       // ctrl + -> zoom in
       // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-      if (e.key === '+' || e.key === '=') {
+      if (e.key === "+" || e.key === "=") {
         this.props.zoom(ZOOM_IN);
 
         e.preventDefault();
       }
       // ctrl - -> zoom out
       // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-      if (e.key === '-' || e.key === '_') {
+      if (e.key === "-" || e.key === "_") {
         this.props.zoom(ZOOM_OUT);
         e.preventDefault();
       }
@@ -280,19 +280,27 @@ class PivotGrid extends Component {
     if (this.props.status.loading) {
       grid = <div>Loading data...</div>;
     } else if (this.props.status.error) {
-      grid = (
-        <div style={{ color: 'red' }}>
-          <p>Error loading data</p>
-          {this.props.status.error.message}
-        </div>
-      );
+      if (this.props.status.error.message === "No rows retrieved") {
+        grid = <div style={{ width: "max-content" }}>No rows retrieved</div>;
+      } else {
+        grid = (
+          <div style={{ color: "red", width: "max-content" }}>
+            <p>
+              {this.props.status.error.type}
+            </p>
+            <p>
+              {this.props.status.error.message}
+            </p>
+          </div>
+        );
+      }
     } else {
       const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
         <div
-          style={{ width, position: 'relative' }}
+          style={{ width, position: "relative" }}
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleKeyUp}
         >
@@ -319,7 +327,7 @@ class PivotGrid extends Component {
                     className="zebulon-grid-zebulon-grid"
                     style={{ fontSize: `${zoomValue * 100}%` }}
                   >
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: "flex" }}>
                       <DimensionHeaders gridId={gridId} />
                       <ColumnHeaders
                         gridId={gridId}
@@ -327,7 +335,7 @@ class PivotGrid extends Component {
                         scrollTop={0}
                       />
                     </div>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: "flex" }}>
                       <RowHeaders
                         scrollTop={scrollTop}
                         scrollLeft={0}

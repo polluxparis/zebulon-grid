@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
-import classNames from 'classnames';
+import React, { PureComponent } from "react";
+import classNames from "classnames";
 
-import InnerHeader from '../InnerHeader/InnerHeader';
-import ResizeHandle from '../ResizeHandle/ResizeHandle';
+import InnerHeader from "../InnerHeader/InnerHeader";
+import ResizeHandle from "../ResizeHandle/ResizeHandle";
 
-import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from '../../constants';
-import { ContextMenuTrigger } from 'react-contextmenu';
+import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from "../../constants";
+import { ContextMenuTrigger } from "react-contextmenu";
 
 class DimensionHeader extends PureComponent {
   handleClickCollapse = e => {
@@ -26,14 +26,14 @@ class DimensionHeader extends PureComponent {
 
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      if (data.action === 'remove') {
+      if (data.action === "remove") {
         this.props.moveDimension(
           data.dimensionId,
           toAxis(data.axis),
           toAxis(AxisType.DIMENSION)
         );
       }
-      if (data.action === 'add') {
+      if (data.action === "add") {
         this.props.moveDimension(
           data.newDimensionId,
           toAxis(AxisType.DIMENSION),
@@ -43,18 +43,18 @@ class DimensionHeader extends PureComponent {
           data.dimensionId === MEASURE_ID ? data.index : data.index + 1
         );
       }
-      if (data.action === 'sort') {
+      if (data.action === "sort") {
         this.props.toggleSortOrder(data.dimensionId);
       }
-      if (data.action === 'expand all') {
+      if (data.action === "expand all") {
         const keys = this.props.getDimensionKeys(data.axis, data.index, false);
         this.props.expandCollapseAll(data.axis, keys);
       }
-      if (data.action === 'collapse all') {
+      if (data.action === "collapse all") {
         const keys = this.props.getDimensionKeys(data.axis, data.index, true);
         this.props.expandCollapseAll(data.axis, keys);
       }
-      if (data.action === 'filter') {
+      if (data.action === "filter") {
       }
     }
   };
@@ -92,26 +92,25 @@ class DimensionHeader extends PureComponent {
     }
 
     const className = classNames({
-      'zebulon-grid-cell': true,
-      'zebulon-grid-dimension-header': true,
-      'zebulon-grid-dimension-header-column': axis === AxisType.COLUMNS,
-      'zebulon-grid-dimension-header-row': axis === AxisType.ROWS,
-      'zebulon-grid-dimension-attribute-header': isAttribute,
-      'zebulon-grid-dimension-filtered-header': isFiltered
+      "zebulon-grid-cell": true,
+      "zebulon-grid-dimension-header": true,
+      "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
+      "zebulon-grid-dimension-header-row": axis === AxisType.ROWS,
+      "zebulon-grid-dimension-attribute-header": isAttribute,
+      "zebulon-grid-dimension-filtered-header": isFiltered
     });
     let header = (
       <div
         key={`fixed-dim-${dimensionId}`}
         className={className}
         style={{
-          position: 'absolute',
+          position: "absolute",
           left,
           top,
           width,
           height,
-          zIndex: 3,
-          boxSizing: 'border-box',
-          display: 'flex'
+          boxSizing: "border-box",
+          display: "flex"
         }}
         onClick={this.handleClickMenu}
       >
@@ -144,7 +143,6 @@ class DimensionHeader extends PureComponent {
           axis={AxisType.COLUMNS}
           previewSize={previewSizes.width}
         />
-
       </div>
     );
 
@@ -154,7 +152,7 @@ class DimensionHeader extends PureComponent {
         holdToDisplay={-1}
         collect={collectMenu}
         onItemClick={this.handleClickMenu}
-        type={'dimension-header'}
+        type={"dimension-header"}
         axis={axis}
         isNotCollapsible={isNotCollapsible}
         dimensionId={dimensionId}
@@ -162,7 +160,7 @@ class DimensionHeader extends PureComponent {
         caption={caption}
         index={dimensionIndex}
         isAttribute={isAttribute}
-        style={{ width: 'inherit' }}
+        style={{ width: "inherit" }}
       >
         {header}
       </ContextMenuTrigger>

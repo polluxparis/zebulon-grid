@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { DragLayer } from 'react-dnd';
+import React, { Component } from "react";
+import { DragLayer } from "react-dnd";
 
 const collectDragLayer = monitor => ({
   item: monitor.getItem(),
@@ -21,13 +21,13 @@ class CustomDragLayer extends Component {
     const { clientOffset, item } = this.props;
     if (!clientOffset) {
       return {
-        display: 'none'
+        display: "none"
       };
     }
     let x;
     let y;
     const gridRect = this.element.getBoundingClientRect();
-    if (item.position === 'right') {
+    if (item.position === "right") {
       y = 0;
       // Keep hint bar inside the grid
       x = Math.min(Math.max(clientOffset.x - gridRect.left, 0), gridRect.width);
@@ -49,13 +49,13 @@ class CustomDragLayer extends Component {
     let resizeBar;
     if (
       !this.props.item ||
-      this.props.itemType.substring(0, 18) !== 'cell-resize-handle' ||
+      this.props.itemType.substring(0, 18) !== "cell-resize-handle" ||
       this.props.item.gridId !== this.props.gridId
     ) {
       resizeBar = null;
     } else {
       const { position, previewSize } = this.props.item;
-      if (position === 'right') {
+      if (position === "right") {
         width = 2;
         height = previewSize;
       } else {
@@ -65,10 +65,10 @@ class CustomDragLayer extends Component {
       resizeBar = (
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             height,
             width,
-            backgroundColor: 'grey',
+            backgroundColor: "grey",
             ...this.getItemPosition()
           }}
         />
@@ -82,15 +82,15 @@ class CustomDragLayer extends Component {
         style={
           this.props.isDragging
             ? {
-                position: 'absolute',
-                pointerEvents: 'none',
+                position: "absolute",
+                pointerEvents: "none",
                 zIndex: 100,
                 left: 0,
                 top: 0,
-                width: '100%',
-                height: '100%'
+                width: "100%",
+                height: "100%"
               }
-            : { display: 'none' }
+            : { display: "none" }
         }
       >
         {resizeBar}
