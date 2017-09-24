@@ -1,9 +1,11 @@
-import { SET_DIMENSIONS, CHANGE_SORT_ORDER } from '../constants';
+import { SET_DIMENSIONS, CHANGE_SORT_ORDER, FETCH_DATA } from "../constants";
 
 export default (state = {}, action) => {
   const { type, dimensions, key } = action;
   let sort;
   switch (type) {
+    case FETCH_DATA:
+      return {};
     case SET_DIMENSIONS:
       return dimensions.reduce(
         (acc, dimension) => ({ ...acc, [dimension.id]: dimension }),
@@ -13,10 +15,10 @@ export default (state = {}, action) => {
       let dimension = state[key];
       sort = dimension.sort;
       sort.sortedBy = null;
-      if (sort.direction === 'desc') {
-        sort.direction = 'asc';
+      if (sort.direction === "desc") {
+        sort.direction = "asc";
       } else {
-        sort.direction = 'desc';
+        sort.direction = "desc";
       }
       const dimensionsSort = { [key]: { ...dimension, sort } };
       if (dimension.isAttribute) {
