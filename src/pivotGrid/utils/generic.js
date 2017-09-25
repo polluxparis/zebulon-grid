@@ -97,32 +97,6 @@ export function findInArray(array, predicate) {
   return undefined;
 }
 
-export function twoArraysIntersect(arg0, arg1) {
-  if (isUndefined(arg0)) {
-    return arg1;
-  } else if (isUndefined(arg1)) {
-    return arg0;
-  } else {
-    const n = arg0.length;
-    const m = arg1.length;
-    let i = 0;
-    let j = 0;
-    const res = [];
-    while (i < n && j < m) {
-      if (arg0[i] > arg1[j]) {
-        j += 1;
-      } else if (arg0[i] < arg1[j]) {
-        i += 1;
-      } else {
-        res.push(arg0[i]);
-        i += 1;
-        j += 1;
-      }
-    }
-    return res;
-  }
-}
-
 export function isInRange(
   { columnIndex, rowIndex },
   { columnIndex: columnIndexStart, rowIndex: rowIndexStart },

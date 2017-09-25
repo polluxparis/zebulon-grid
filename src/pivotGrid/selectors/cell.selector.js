@@ -1,13 +1,14 @@
-import { createSelector } from 'reselect';
-import { isNullOrUndefined, twoArraysIntersect, range } from '../utils/generic';
-import { filteredDataSelector } from './data.selector';
+import { createSelector } from "reselect";
+import { isNullOrUndefined, isUndefined, range } from "../utils/generic";
+import { intersectDataIndexes } from "../utils/headers";
+import { filteredDataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
   columnDimensionsSelector
-} from './dimensions.selector';
-import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
-import { ALL, MEASURE_ID, HeaderType } from '../constants';
+} from "./dimensions.selector";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
+import { MEASURE_ID, HeaderType } from "../constants";
 
 const cellValue = (
   data,
@@ -16,8 +17,9 @@ const cellValue = (
   columnDataIndexes,
   aggregation = () => null
 ) => {
-  const intersection = twoArraysIntersect(rowDataIndexes, columnDataIndexes);
-  const intersectionArray = intersection === ALL
+  const intersection = intersectDataIndexes(rowDataIndexes, columnDataIndexes);
+  // Root headers have undefined data indexes
+  const intersectionArray = isUndefined(intersection)
     ? range(0, data.length - 1)
     : intersection;
   // Remove rows for which the accessor gives a null or undefined value
@@ -86,7 +88,7 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
         axis,
         dimension: {
           id: dimension.id,
-          caption: 'measures',
+          caption: "measures",
           isCollapsed: false
         },
         cell: { id: l.id, caption: measures[l.id].caption }
@@ -158,7 +160,7 @@ export const getCellInfosSelector = createSelector(
     dimensions = cellDimensionInfos(
       data,
       rowDimensions,
-      'rows',
+      "rows",
       rowLeaf,
       measures
     );
@@ -166,12 +168,12 @@ export const getCellInfosSelector = createSelector(
       cellDimensionInfos(
         data,
         columnDimensions,
-        'columns',
+        "columns",
         columnLeaf,
         measures
       )
     );
-    const usedData = twoArraysIntersect(
+    const usedData = intersectDataIndexes(
       rowLeaf.dataIndexes,
       columnLeaf.dataIndexes
     ).map(x => data[x]);
@@ -197,6 +199,13 @@ export const getRangeInfosSelector = createSelector(
     columnDimensions,
     measureHeadersAxis
   ) => rg => {
+    if (
+      isNullOrUndefined(rg) ||
+      isNullOrUndefined(rg.selectedCellStart) ||
+      isNullOrUndefined(rg.selectedCellEnd)
+    ) {
+      return {};
+    }
     const range = {
       selectedCellStart: {
         rowIndex: Math.min(
@@ -229,7 +238,7 @@ export const getRangeInfosSelector = createSelector(
       rows[index] = cellDimensionInfos(
         data,
         rowDimensions,
-        'rows',
+        "rows",
         rowLeaf,
         measures
       );
@@ -244,7 +253,7 @@ export const getRangeInfosSelector = createSelector(
       columns[index] = cellDimensionInfos(
         data,
         columnDimensions,
-        'columns',
+        "columns",
         columnLeaf,
         measures
       );
@@ -263,9 +272,10 @@ export const getRangeInfosSelector = createSelector(
         rowIndex += 1
       ) {
         const rowLeaf = rowLeaves[rowIndex];
-        const measure = rowLeaf.type === HeaderType.MEASURE
-          ? measures[rowLeaf.id]
-          : measures[columnLeaf.id];
+        const measure =
+          rowLeaf.type === HeaderType.MEASURE
+            ? measures[rowLeaf.id]
+            : measures[columnLeaf.id];
         const value = cellValue(
           data,
           measure.valueAccessor,
@@ -275,7 +285,7 @@ export const getRangeInfosSelector = createSelector(
         );
         values[columnIndex][rowIndex] = value;
 
-        // const usedData = twoArraysIntersect(
+        // const usedData = intersectDataIndexes(
         //   rowLeaf.dataIndexes,
         //   columnLeaf.dataIndexes
         // ).map(x => data[x]);

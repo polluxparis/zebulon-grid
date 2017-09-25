@@ -3,8 +3,9 @@ import {
   ZOOM_IN,
   ZOOM_OUT,
   MOVE_DIMENSION,
-  MEASURE_ID
-} from '../constants';
+  MEASURE_ID,
+  FETCH_DATA
+} from "../constants";
 
 function getNextZoom(previousZoom, zoomIn) {
   const zoomValues = [
@@ -39,6 +40,8 @@ export default (state = {}, action) => {
   const { type, property, value, id, oldAxis, newAxis } = action;
 
   switch (type) {
+    case FETCH_DATA:
+      return {};
     case MOVE_DIMENSION:
       if (id === MEASURE_ID && oldAxis !== newAxis) {
         return { ...state, measureHeadersAxis: newAxis };

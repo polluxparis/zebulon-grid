@@ -1,6 +1,6 @@
 import { getCellInfosSelector, getCellValue } from './cell.selector';
 import { getMockDatasource } from '../../utils/mock';
-import { sum } from '../Aggregation';
+import { sum } from '../aggregation';
 
 describe('cells infos are computed correctly', () => {
   const cell = {

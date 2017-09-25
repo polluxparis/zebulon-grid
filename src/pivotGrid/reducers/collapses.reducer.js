@@ -1,7 +1,11 @@
-import { EXPAND_COLLAPSE, EXPAND_COLLAPSE_ALL } from '../constants';
+import {
+  EXPAND_COLLAPSE,
+  EXPAND_COLLAPSE_ALL,
+  SET_COLLAPSES
+} from "../constants";
 
 export default (state = { rows: {}, columns: {}, dimensions: {} }, action) => {
-  const { type, axis, key, keys } = action;
+  const { type, axis, key, keys, collapses } = action;
   switch (type) {
     case EXPAND_COLLAPSE:
       return {
@@ -18,6 +22,11 @@ export default (state = { rows: {}, columns: {}, dimensions: {} }, action) => {
           ...state[axis],
           ...keys
         }
+      };
+    case SET_COLLAPSES:
+      return {
+        ...state,
+        ...collapses
       };
     default:
       return state;

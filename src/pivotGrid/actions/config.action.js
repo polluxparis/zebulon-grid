@@ -1,26 +1,27 @@
-import { dimensionFactory, measureFactory } from '../utils/setConfig';
+import { dimensionFactory, measureFactory } from "../utils/configuration";
 import {
   SET_AXIS,
   SET_DIMENSIONS,
   SET_MEASURES,
   SET_CONFIG_PROPERTY,
   TOGGLE_MEASURE,
+  MOVE_MEASURE,
   MOVE_DIMENSION,
   ZOOM_IN,
   ZOOM_OUT
-} from '../constants';
+} from "../constants";
 
-export const setDimensions = (configObject, configFunctions) => ({
+export const setDimensions = (configObject, configurationFunctions) => ({
   type: SET_DIMENSIONS,
   dimensions: configObject.dimensions.map(dimension =>
-    dimensionFactory(dimension, configFunctions)
+    dimensionFactory(dimension, configurationFunctions)
   )
 });
 
-export const setMeasures = (configObject, configFunctions) => ({
+export const setMeasures = (configObject, configurationFunctions) => ({
   type: SET_MEASURES,
   measures: configObject.measures.map(measure =>
-    measureFactory(measure, configFunctions)
+    measureFactory(measure, configurationFunctions)
   )
 });
 export const setConfigProperty = (configObject, property, defaultValue) => ({
@@ -33,7 +34,11 @@ export const toggleMeasure = measureId => ({
   type: TOGGLE_MEASURE,
   id: measureId
 });
-
+export const moveMeasure = (measureId, position) => ({
+  type: MOVE_MEASURE,
+  id: measureId,
+  position
+});
 export const moveDimension = (dimensionId, oldAxis, newAxis, position) => ({
   type: MOVE_DIMENSION,
   id: dimensionId,

@@ -8,7 +8,6 @@ import {
   crossPositionsSelector,
   previewSizesSelector,
   availableDimensionsSelector,
-  getDimensionValuesSelector,
   getDimensionKeysSelector
 } from '../selectors';
 import DimensionHeaders from '../components/DimensionHeaders/DimensionHeaders';
@@ -25,8 +24,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     columnDimensions,
     rowDimensions,
-    getDimensionKeys: (axis, depth, isCollapsed) =>
-      getDimensionKeysSelector(state)(axis, depth, isCollapsed),
+    getDimensionKeys: getDimensionKeysSelector(state),
     filters: state.filters,
     availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),

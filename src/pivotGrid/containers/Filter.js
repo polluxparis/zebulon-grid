@@ -6,9 +6,13 @@ import { getDimensionValuesSelector } from '../selectors';
 import { addFilter, deleteFilter } from '../actions';
 
 const Filter = ({ items, onOk }) =>
-  <div style={{ height: 400 }}>
-    <VirtualizedCheckbox items={items} onOk={onOk} valueKey="key" />
-  </div>;
+  <VirtualizedCheckbox
+    items={items}
+    onOk={onOk}
+    rowHeight={20}
+    width={130}
+    height={400}
+  />;
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -16,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onOk: (checkedAll, filterKeys) => {
+  onOk: (filterKeys, checkedAll) => {
     if (checkedAll) {
       dispatch(deleteFilter(ownProps.dimensionId));
     } else {

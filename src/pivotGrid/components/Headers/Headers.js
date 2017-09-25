@@ -1,28 +1,23 @@
-import React, { PureComponent } from 'react';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
-import classnames from 'classnames';
+import React, { PureComponent } from "react";
+import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
+import classnames from "classnames";
 
-import { MEASURE_ID, ROOT_ID, HeaderType, AxisType } from '../../constants';
-import HeaderComponent from '../Header/Header';
-import { isNull } from '../../utils/generic';
-import { getLeaves } from '../../utils/headers';
+import {
+  MEASURE_ID,
+  ROOT_ID,
+  TOTAL_ID,
+  HeaderType,
+  AxisType
+} from "../../constants";
+import HeaderComponent from "../Header/Header";
+import { isNull } from "../../utils/generic";
+import { getLeaves } from "../../utils/headers";
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
     if (nextProps.headers !== this.props.headers) {
       this.cellCache = {};
     }
   };
-  shouldComponentUpdate = nextProps =>
-    (nextProps.height !== this.props.height &&
-      this.props.axisType === AxisType.ROWS) ||
-    (nextProps.getColumnWidth !== this.props.width &&
-      this.props.axisType === AxisType.COLUMNS) ||
-    nextProps.zoom !== this.props.zoom ||
-    nextProps.leaves !== this.props.leaves ||
-    (nextProps.scrollTop !== this.props.scrollTop &&
-      this.props.axisType === AxisType.ROWS) ||
-    (nextProps.scrollLeft !== this.props.scrollLeft &&
-      this.props.axisType === AxisType.COLUMNS);
 
   componentDidUpdate = prevProps => {
     if (
@@ -64,10 +59,11 @@ class Headers extends PureComponent {
       measures,
       data,
       axisType,
-      toggleCollapse,
       selectAxis,
       moveDimension,
       toggleMeasure,
+      moveMeasure,
+      toggleCollapse,
       getSizeByKey,
       crossPositions
     } = this.props;
@@ -120,6 +116,50 @@ class Headers extends PureComponent {
     }
     collapsedSizes.reverse();
 
+    // no dimension is on the axis ==> Total header
+    if (leaves[0].id === ROOT_ID) {
+      const header = leaves[0];
+      header.key = TOTAL_ID;
+      const main = sizeAndPositionManager.getSizeAndPositionOfCell(0);
+      const cross = crossPositions[ROOT_ID];
+
+      let positionStyle;
+      if (axisType === AxisType.ROWS) {
+        positionStyle = {
+          position: "absolute",
+          left: cross.position,
+          top: 0,
+          height: main.size,
+          width: cross.size
+        };
+      } else {
+        positionStyle = {
+          position: "absolute",
+          left: 0,
+          top: cross.position,
+          height: cross.size,
+          width: main.size
+        };
+      }
+      renderedCells.push(
+        <HeaderComponent
+          key={`header-${header.key}`}
+          axis={axisType}
+          index={null}
+          header={header}
+          caption={"Total"}
+          positionStyle={positionStyle}
+          span={1}
+          previewSizes={previewSizes}
+          dimensionId={ROOT_ID}
+          isNotCollapsible={true}
+          isCollapsed={false}
+          isAffixManaged={false}
+          gridId={gridId}
+          isDropTarget={false}
+        />
+      );
+    }
     // Loop on leaves
     for (let index = startIndex; index <= correctStopIndex; index += 1) {
       header = leaves[index];
@@ -167,7 +207,7 @@ class Headers extends PureComponent {
         let positionStyle;
         if (axisType === AxisType.ROWS) {
           positionStyle = {
-            position: 'absolute',
+            position: "absolute",
             left: cross.position,
             top: mainOffset,
             height: mainSize,
@@ -175,7 +215,7 @@ class Headers extends PureComponent {
           };
         } else {
           positionStyle = {
-            position: 'absolute',
+            position: "absolute",
             left: mainOffset,
             top: cross.position,
             height: cross.size + collapsedSize,
@@ -187,12 +227,16 @@ class Headers extends PureComponent {
           dimension.isAttribute ||
           header.depth >= lastNotMeasureDimensionIndex ||
           (!header.isCollapsed && span === measuresCount);
-        const isDropTarget = dimension.id === MEASURE_ID && header.depth === 0;
+        const isDropTarget =
+          dimension.id === MEASURE_ID &&
+          (header.depth === 0 || measuresCount > 1);
         // read parents (but only once)
         renderedCells.push(
           <HeaderComponent
             key={`header-${header.key}`}
             axis={axisType}
+            index={HeaderType.MEASURE && measuresCount > 1 ? 0 : null}
+            measureId={HeaderType.MEASURE ? header.id : null}
             header={header}
             caption={caption}
             positionStyle={positionStyle}
@@ -206,10 +250,11 @@ class Headers extends PureComponent {
             isCollapsed={header.isCollapsed}
             isAffixManaged={index === startIndex && isAffixManaged}
             gridId={gridId}
-            toggleCollapse={toggleCollapse}
             selectAxis={selectAxis}
             moveDimension={moveDimension}
             toggleMeasure={toggleMeasure}
+            moveMeasure={moveMeasure}
+            toggleCollapse={toggleCollapse}
             isDropTarget={isDropTarget}
             collectMenu={this.collectMenu}
           />
@@ -235,19 +280,18 @@ class Headers extends PureComponent {
     return (
       <div
         className={classnames({
-          'pivotgrid-column-headers': axisType === AxisType.COLUMNS,
-          'pivotgrid-row-headers': axisType === AxisType.ROWS
+          "zebulon-grid-column-headers": axisType === AxisType.COLUMNS,
+          "zebulon-grid-row-headers": axisType === AxisType.ROWS
         })}
       >
         <ReactVirtualizedGrid
           cellRangeRenderer={this.headersRenderer}
           cellRenderer={function mock() {}}
-          // className="pivotgrid-row-headers"
           // The position of inner style was set to static in react-virtualized 9.2.3
           // This broke the grid because the height of the inner container was not reset
           // when the height prop changed
           // This is a workaround
-          containerStyle={{ position: 'static' }}
+          containerStyle={{ position: "static" }}
           height={height}
           width={width}
           rowCount={rowCount}
@@ -263,9 +307,9 @@ class Headers extends PureComponent {
           // We set overflowX and overflowY and not overflow
           // because react-virtualized sets them during render
           style={{
-            overflowX: 'hidden',
-            overflowY: 'hidden',
-            outline: 'none'
+            overflowX: "hidden",
+            overflowY: "hidden",
+            outline: "none"
           }}
         />
       </div>

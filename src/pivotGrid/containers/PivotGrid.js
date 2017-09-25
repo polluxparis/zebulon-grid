@@ -1,57 +1,38 @@
-import { connect } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { connect } from "react-redux";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-import PivotGrid from '../components/PivotGrid/PivotGrid';
+import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
-  activatedMeasuresSelector,
-  columnDimensionsSelector,
   columnLeavesSelector,
   defaultCellSizesSelector,
-  getCellDimensionInfosSelector,
-  getCellValueSelector,
-  getLayoutSelector,
-  rowDimensionsSelector,
+  layoutSelector,
   rowLeavesSelector,
-  selectedRangeSelector
-} from '../selectors';
+  selectedRangeSelector,
+  copySelector
+} from "../selectors";
 import {
   updateCellSize,
   setConfigProperty,
   selectRange,
   selectCell,
   zoom
-} from '../actions';
-import copy from '../services/copyService';
+} from "../actions";
 
 const mapStateToProps = state => {
   const rowLeaves = rowLeavesSelector(state);
   const columnLeaves = columnLeavesSelector(state);
-  const rowDimensions = rowDimensionsSelector(state);
-  const columnDimensions = columnDimensionsSelector(state);
-  const measures = activatedMeasuresSelector(state);
-  const getCellValue = getCellValueSelector(state);
   return {
     status: state.status,
     width: state.config.width,
-    layout: getLayoutSelector(state),
+    layout: layoutSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
     sizes: state.sizes,
     columnLeaves,
     rowLeaves,
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.config.zoom,
-    copy: selectedRange =>
-      copy({
-        selectedRange,
-        columnLeaves,
-        rowLeaves,
-        rowDimensions,
-        columnDimensions,
-        measures,
-        getCellValue,
-        getCellDimensionInfos: getCellDimensionInfosSelector(state)
-      })
+    copy: copySelector(state)
   };
 };
 
@@ -74,8 +55,8 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, 'height'));
-    if (width) dispatch(setConfigProperty({ height, width }, 'width'));
+    if (height) dispatch(setConfigProperty({ height, width }, "height"));
+    if (width) dispatch(setConfigProperty({ height, width }, "width"));
   },
   selectRange: selectedRange => {
     dispatch(selectRange(selectedRange));
@@ -118,10 +99,10 @@ const mergeProps = (
   ...ownProps
 });
 
-export const PivotGridWithoutDndContext = connect(
+export const GridWithoutStoreAndDndContext = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
 )(PivotGrid);
 
-export default DragDropContext(HTML5Backend)(PivotGridWithoutDndContext);
+export default DragDropContext(HTML5Backend)(GridWithoutStoreAndDndContext);

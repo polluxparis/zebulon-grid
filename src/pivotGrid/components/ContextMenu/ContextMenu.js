@@ -13,25 +13,49 @@ import Filter from '../../containers/Filter';
 const DimensionMenu = (id, trigger) => {
   const isNotCollapsible = trigger.isNotCollapsible;
   const isAddDimensionDisable = trigger.availableDimensions.length === 0;
+  const addDimensionSubMenu = (
+    <SubMenu title="Add dimension" disabled={isAddDimensionDisable}>
+      {trigger.availableDimensions.map(dimension =>
+        <MenuItem
+          key={dimension.id}
+          onClick={trigger.onItemClick}
+          data={{ action: 'add', newDimensionId: dimension.id }}
+        >
+          {dimension.caption}
+        </MenuItem>
+      )}
+    </SubMenu>
+  );
+  if (trigger.dimensionId === MEASURE_ID) {
+    return (
+      <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
+        {addDimensionSubMenu}
+      </ReactContextMenu>
+    );
+  }
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'sort' }}>
         {`Sort  ${trigger.direction} `}
       </MenuItem>
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: 'expand all' }}
-        disabled={isNotCollapsible}
-      >
-        Expand all
-      </MenuItem>
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: 'collapse all' }}
-        disabled={isNotCollapsible}
-      >
-        Collapse all
-      </MenuItem>
+      {isNotCollapsible
+        ? null
+        : <div>
+            <MenuItem
+              onClick={trigger.onItemClick}
+              data={{ action: 'expand all' }}
+              disabled={isNotCollapsible}
+            >
+              Expand all
+            </MenuItem>
+            <MenuItem
+              onClick={trigger.onItemClick}
+              data={{ action: 'collapse all' }}
+              disabled={isNotCollapsible}
+            >
+              Collapse all
+            </MenuItem>
+          </div>}
       <SubMenu
         title="Filter"
         style={
@@ -49,16 +73,7 @@ const DimensionMenu = (id, trigger) => {
         Remove
       </MenuItem>
 
-      <SubMenu title="Add dimension" disabled={isAddDimensionDisable}>
-        {trigger.availableDimensions.map(dimension =>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: 'add', newDimensionId: dimension.id }}
-          >
-            {dimension.caption}
-          </MenuItem>
-        )}
-      </SubMenu>
+      {addDimensionSubMenu}
     </ReactContextMenu>
   );
 };
@@ -66,7 +81,7 @@ const DimensionMenu = (id, trigger) => {
 const MeasureMenu = (id, trigger) => {
   const isDisabled = trigger.availableMeasures.length === 0;
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'move' }}>
         Move measures
       </MenuItem>
@@ -110,52 +125,32 @@ const externalMenu = (functionType, externalFunction, onClick) => {
   }
 };
 const DataCellMenu = (id, trigger) => {
-  let fct = trigger.externalFunctions.dataCellFunctions;
-  const externalCellFunctions = Object.keys(fct).map(externalFunction =>
+  let fct = trigger.menuFunctions.dataCellFunctions;
+  const cellFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('cell', fct[externalFunction], trigger.onItemClick)
   );
-  fct = trigger.externalFunctions.rangeFunctions;
-  const externalRangeFunctions = Object.keys(fct).map(externalFunction =>
+  fct = trigger.menuFunctions.rangeFunctions;
+  const rangeFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('range', fct[externalFunction], trigger.onItemClick)
   );
-  fct = trigger.externalFunctions.functions;
-  const externalFunctions = Object.keys(fct).map(externalFunction =>
+  fct = trigger.menuFunctions.gridFunctions;
+  const gridFunctions = Object.keys(fct).map(externalFunction =>
     externalMenu('function', fct[externalFunction], trigger.onItemClick)
   );
-  // const externalCellFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'cell' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
-  // fct = trigger.externalFunctions.rangeFunctions;
-  // const externalRangeFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'range' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
-  // fct = trigger.externalFunctions.functions;
-  // const externalFunctions = Object.keys(fct).map(externalFunction =>
-  //   <MenuItem
-  //     onClick={trigger.onItemClick}
-  //     data={{ action: fct[externalFunction].code, functionType: 'function' }}
-  //   >
-  //     {fct[externalFunction].caption}
-  //   </MenuItem>
-  // );
   return (
-    <ReactContextMenu id={id}>
+    <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
       <MenuItem onClick={trigger.onItemClick} data={{ action: 'drilldown' }}>
         DrillDown
       </MenuItem>
-      {externalCellFunctions}
-      {externalRangeFunctions}
-      {externalFunctions}
+      <SubMenu title="Cell">
+        {cellFunctions}e
+      </SubMenu>
+      <SubMenu title="Range">
+        {rangeFunctions}
+      </SubMenu>
+      <SubMenu title="Grid">
+        {gridFunctions}
+      </SubMenu>
       <SubMenu title="Filters">
         {trigger.dimensions
           .filter(dimension => dimension.id !== MEASURE_ID)
@@ -185,7 +180,11 @@ const DataCellMenu = (id, trigger) => {
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id}>''</ReactContextMenu>;
+    return (
+      <ReactContextMenu id={id} onShow={e => console.log('show', e, this)}>
+        ''
+      </ReactContextMenu>
+    );
   }
 
   if (trigger.type === 'dimension-header') {

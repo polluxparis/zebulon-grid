@@ -1,11 +1,10 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import { AxisType } from '../constants';
+import { AxisType } from "../constants";
 import {
   getLastChildHeightSelector,
-  getLayoutSelector,
+  layoutSelector,
   previewSizesSelector,
-  getCellWidthByKeySelector,
   getCellHeightByKeySelector,
   rowLeavesSelector,
   getAxisActivatedMeasuresSelector,
@@ -15,18 +14,20 @@ import {
   rowsVisibleHeightSelector,
   rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  crossPositionsSelector
-} from '../selectors';
-import Headers from '../components/Headers/Headers';
+  crossPositionsSelector,
+  getRowDimensionWidthSelector,
+  getRowHeightSelector
+} from "../selectors";
+import Headers from "../components/Headers/Headers";
 import {
   toggleCollapse,
   selectRange,
   moveDimension,
+  moveMeasure,
   toggleMeasure
-} from '../actions';
+} from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const rowDimensions = rowDimensionsSelector(state);
   const leaves = rowLeavesSelector(state);
 
   return {
@@ -35,18 +36,16 @@ const mapStateToProps = (state, ownProps) => {
     dimensions: rowDimensionsSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     availableMeasures: availableMeasuresSelector(state),
-    columnCount: getLayoutSelector(state).rowHorizontalCount,
-    getColumnWidth: ({ index }) =>
-      getCellWidthByKeySelector(state)(rowDimensions[index].id),
-    getRowHeight: ({ index }) =>
-      getCellHeightByKeySelector(state)(leaves[index].key),
+    columnCount: layoutSelector(state).rowHorizontalCount,
+    getColumnWidth: getRowDimensionWidthSelector(state),
+    getRowHeight: getRowHeightSelector(state),
     getSizeByKey: getCellHeightByKeySelector(state),
     crossPositions: crossPositionsSelector(state)[AxisType.ROWS],
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: previewSizesSelector(state),
-    rowCount: getLayoutSelector(state).rowVerticalCount,
-    getLastChildSize: header => getLastChildHeightSelector(state)(header),
+    rowCount: layoutSelector(state).rowVerticalCount,
+    getLastChildSize: getLastChildHeightSelector(state),
     leaves,
     sizes: state.sizes,
     gridId: ownProps.gridId,
@@ -64,15 +63,22 @@ const mapDispatchToProps = dispatch => ({
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) =>
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position)),
+  moveMeasure: measures => (measureId, measureToId) => {
+    dispatch(
+      moveMeasure(measureId, Object.keys(measures).indexOf(measureToId))
+    );
+  },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId))
 });
 
 const mergeProps = (
-  { getSelectedRowRange, ...restStateProps },
-  { selectAxis, ...restDispatchProps },
+  { getSelectedRowRange, measures, ...restStateProps },
+  { selectAxis, moveMeasure, ...restDispatchProps },
   ownProps
 ) => ({
   selectAxis: selectAxis(getSelectedRowRange),
+  moveMeasure: moveMeasure(measures),
+  measures,
   ...restStateProps,
   ...restDispatchProps,
   ...ownProps

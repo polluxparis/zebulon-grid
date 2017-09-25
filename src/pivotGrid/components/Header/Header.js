@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { AxisType, toAxis, MEASURE_ID } from '../../constants';
-import ResizeHandle from '../ResizeHandle/ResizeHandle';
-import InnerHeader from '../InnerHeader/InnerHeader';
-import { ContextMenuTrigger } from 'react-contextmenu';
+import { AxisType, toAxis, MEASURE_ID } from "../../constants";
+import ResizeHandle from "../ResizeHandle/ResizeHandle";
+import InnerHeader from "../InnerHeader/InnerHeader";
+import { ContextMenuTrigger } from "react-contextmenu";
 class Header extends Component {
   handleClickCollapse = () => {
     const { toggleCollapse, header } = this.props;
@@ -15,7 +15,7 @@ class Header extends Component {
 
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      if (data.action === 'move') {
+      if (data.action === "move") {
         this.props.moveDimension(
           MEASURE_ID,
           toAxis(data.axis),
@@ -24,10 +24,10 @@ class Header extends Component {
           )
         );
       }
-      if (data.action === 'remove') {
+      if (data.action === "remove") {
         this.props.toggleMeasure(data.measureId);
       }
-      if (data.action === 'add') {
+      if (data.action === "add") {
         this.props.toggleMeasure(data.newMeasureId);
       }
     }
@@ -35,9 +35,9 @@ class Header extends Component {
   render() {
     const {
       axis,
+      index,
+      measureId,
       dimensionId,
-      // dimensionKey,
-      // measureIndex,
       gridId,
       header,
       caption,
@@ -49,6 +49,7 @@ class Header extends Component {
       isCollapsed,
       isAffixManaged,
       moveDimension,
+      moveMeasure,
       collectMenu,
       isDropTarget
     } = this.props;
@@ -81,22 +82,21 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
-
     const head = (
       <div
-        className="pivotgrid-cell pivotgrid-header pivotgrid-column-header"
+        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
         style={{
-          boxSizing: 'border-box',
-          overflow: 'hidden',
-          zIndex: 1,
-          display: 'flex',
+          boxSizing: "border-box",
+          overflow: "hidden",
+          display: "flex",
           ...style
         }}
       >
         <InnerHeader
           axis={axis}
           id={dimensionId}
-          index={null}
+          measureId={measureId}
+          index={index}
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
@@ -104,6 +104,7 @@ class Header extends Component {
           handleClick={this.handleClick}
           handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
+          moveMeasure={moveMeasure}
           isDropTarget={isDropTarget}
           gridId={gridId}
         />
@@ -139,7 +140,7 @@ class Header extends Component {
           dimensionId={dimensionId}
           measureId={header.id}
           caption={caption}
-          style={{ width: 'inherit' }}
+          style={{ width: "inherit" }}
         >
           {head}
         </ContextMenuTrigger>

@@ -13,17 +13,6 @@ class DataCells extends PureComponent {
   componentWillReceiveProps() {
     this.setState({ valuesCache: this.valuesCache });
   }
-  shouldComponentUpdate(nextProps) {
-    return (
-      nextProps.zoom !== this.props.zoom ||
-      nextProps.sizes !== this.props.sizes ||
-      nextProps.rowLeaves !== this.props.rowLeaves ||
-      nextProps.columnLeaves !== this.props.columnLeaves ||
-      nextProps.selectedRange !== this.props.selectedRange ||
-      nextProps.height !== this.props.height ||
-      nextProps.width !== this.props.width
-    );
-  }
 
   componentDidUpdate(prevProps) {
     if (
@@ -105,7 +94,7 @@ class DataCells extends PureComponent {
     return {
       ...props,
       dimensions: this.props.dimensions,
-      externalFunctions: this.props.externalFunctions,
+      menuFunctions: this.props.menuFunctions,
       filters: this.props.filters,
       zoom: this.props.zoom
     };
@@ -118,25 +107,24 @@ class DataCells extends PureComponent {
           rowIndex: data.rowIndex
         });
       } else if (data.functionType === 'cell') {
-        this.props.externalFunctions.dataCellFunctions[data.action].function(
+        this.props.menuFunctions.dataCellFunctions[data.action].function(
           this.props.getCellInfos({
             columnIndex: data.columnIndex,
             rowIndex: data.rowIndex
           })
         );
       } else if (data.functionType === 'range') {
-        this.props.externalFunctions.rangeFunctions[data.action].function(
+        this.props.menuFunctions.rangeFunctions[data.action].function(
           this.props.getRangeInfos(this.props.selectedRange)
         );
       } else if (data.functionType === 'function') {
-        this.props.externalFunctions.functions[data.action].function();
+        this.props.menuFunctions.functions[data.action].function();
       }
     }
   };
   cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const {
       getCellValue,
-      // customFunctions,
       rowLeaves,
       columnLeaves,
       measures,
@@ -223,14 +211,14 @@ class DataCells extends PureComponent {
       scrollToRow,
       onSectionRendered,
       columnLeaves,
-      rowLeaves
+      rowLeaves,
+      selectedRange
     } = this.props;
     this.valuesCache = {};
-
     return (
       <ReactVirtualizedGrid
         cellRenderer={this.cellRenderer}
-        className="pivotgrid-data-cells"
+        className="zebulon-grid-data-cells"
         columnCount={columnLeaves.length}
         columnWidth={getColumnWidth}
         height={height}
@@ -243,6 +231,7 @@ class DataCells extends PureComponent {
         onSectionRendered={onSectionRendered}
         scrollToColumn={scrollToColumn}
         scrollToRow={scrollToRow}
+        selectedRange={selectedRange}
         width={width}
       />
     );

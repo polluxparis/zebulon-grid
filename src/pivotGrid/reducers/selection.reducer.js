@@ -1,4 +1,4 @@
-import { SELECT_RANGE, MOVE_DIMENSION } from '../constants';
+import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA } from "../constants";
 
 export default (
   state = {
@@ -10,6 +10,7 @@ export default (
 ) => {
   const { type, selectedRange } = action;
   switch (type) {
+    case FETCH_DATA:
     case MOVE_DIMENSION:
       return {
         ...state,

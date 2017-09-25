@@ -1,4 +1,4 @@
-import { UPDATE_CELL_SIZE } from '../constants';
+import { UPDATE_CELL_SIZE, SET_SIZES } from "../constants";
 
 export default (
   state = {
@@ -16,6 +16,11 @@ export default (
           ...state[direction],
           ...sizes
         }
+      };
+    case SET_SIZES:
+      return {
+        ...state,
+        ...sizes
       };
     default:
       return state;

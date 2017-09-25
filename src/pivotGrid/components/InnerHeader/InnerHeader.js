@@ -1,24 +1,28 @@
-import React from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import { isNullOrUndefined } from '../../utils/generic';
-import { MEASURE_ID, ROOT_ID, toAxis, AxisType } from '../../constants';
-import { rightArrow, downArrow } from '../../icons';
+import React from "react";
+import { DragSource, DropTarget } from "react-dnd";
+import { isNullOrUndefined } from "../../utils/generic";
+import { MEASURE_ID, ROOT_ID, toAxis, AxisType } from "../../constants";
+import { rightArrow, downArrow } from "../../icons";
 
 // -------------------------------
 const headerSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
     let newAxis, index;
-    if (props.id === MEASURE_ID || props.id === ROOT_ID) {
-      newAxis = toAxis(
-        handle.axis === AxisType.ROWS ? AxisType.COLUMNS : AxisType.ROWS
-      );
-      index = 0;
+    if (props.id === MEASURE_ID && handle.id === MEASURE_ID) {
+      props.moveMeasure(handle.measureId, props.measureId);
     } else {
-      newAxis = toAxis(props.axis);
-      index = props.index + 1;
+      if (props.id === MEASURE_ID || props.id === ROOT_ID) {
+        newAxis = toAxis(
+          handle.axis === AxisType.ROWS ? AxisType.COLUMNS : AxisType.ROWS
+        );
+        index = 0;
+      } else {
+        newAxis = toAxis(props.axis);
+        index = props.index + 1;
+      }
+      props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
     }
-    props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
   }
 };
 const InnerHeaderSpec = {
@@ -26,6 +30,7 @@ const InnerHeaderSpec = {
     return {
       axis: props.axis,
       id: props.id,
+      measureId: props.measureId,
       gridId: props.gridId,
       index: props.index,
       previewSize: props.previewSize
@@ -46,6 +51,8 @@ const collectDropTarget = connect => ({
 const innerHeader = ({
   axis,
   id,
+  measureId,
+  key,
   index,
   caption,
   isNotCollapsible,
@@ -53,16 +60,17 @@ const innerHeader = ({
   handleClick,
   handleClickCollapse,
   moveDimension,
+  moveMeasure,
   connectDragSource,
   connectDropTarget,
   isDropTarget,
   gridId
 }) => {
   const computedStyle = {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    display: 'flex',
-    width: 'inherit'
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    display: "flex",
+    width: "inherit"
   };
   let collapsedIcon;
   if (!isCollapsed && !isNotCollapsible) {
@@ -70,11 +78,11 @@ const innerHeader = ({
       <div
         style={{
           background: downArrow,
-          backgroundSize: 'cover',
-          height: '1em',
-          width: '1em',
-          marginTop: '0.1em',
-          marginRight: '0.1em'
+          backgroundSize: "cover",
+          height: "1em",
+          width: "1em",
+          marginTop: "0.1em",
+          marginRight: "0.1em"
         }}
         onClick={handleClickCollapse}
       />
@@ -84,25 +92,34 @@ const innerHeader = ({
       <div
         style={{
           background: rightArrow,
-          backgroundSize: 'cover',
-          height: '1em',
-          width: '1em',
-          marginTop: '0.1em',
-          marginRight: '0.1em'
+          backgroundSize: "cover",
+          height: "1em",
+          width: "1em",
+          marginTop: "0.1em",
+          marginRight: "0.1em"
         }}
         onClick={handleClickCollapse}
       />
     );
   } else {
-    collapsedIcon = <div> </div>;
+    collapsedIcon = (
+      <div
+        style={{
+          height: "1em",
+          width: "1em",
+          marginTop: "0.1em",
+          marginRight: "0.1em"
+        }}
+      />
+    );
   }
   let header = (
-    <div style={{ width: 'inherit' }} onClick={handleClick}>
+    <div style={{ width: "inherit" }} onClick={handleClick}>
       {caption}
     </div>
   );
   header = (
-    <div className="pivotgrid-header-inner" style={computedStyle}>
+    <div className="zebulon-grid-header-inner" style={computedStyle}>
       {collapsedIcon}
       {header}
     </div>

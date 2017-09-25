@@ -37,13 +37,17 @@ export default class DataCell extends PureComponent {
       overflow: 'hidden'
     };
 
-    const className = classnames('pivotgrid-cell', 'pivotgrid-data-cell', {
-      'pivotgrid-data-cell-even': !(rowIndex % 2),
-      'pivotgrid-data-cell-uneven': rowIndex % 2,
-      'pivotgrid-data-cell-highlighted': valueHasChanged,
-      'pivotgrid-data-cell-selected': selected,
-      'pivotgrid-data-cell-focused': focused
-    });
+    const className = classnames(
+      'zebulon-grid-cell',
+      'zebulon-grid-data-cell',
+      {
+        'zebulon-grid-data-cell-even': !(rowIndex % 2),
+        'zebulon-grid-data-cell-uneven': rowIndex % 2,
+        'zebulon-grid-data-cell-highlighted': valueHasChanged,
+        'zebulon-grid-data-cell-selected': selected,
+        'zebulon-grid-data-cell-focused': focused
+      }
+    );
 
     return (
       <ContextMenuTrigger

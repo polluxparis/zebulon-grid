@@ -1,12 +1,12 @@
-import { createSelector } from 'reselect';
-import { filteredDataSelector } from './data.selector';
+import { createSelector } from "reselect";
+import { filteredDataSelector } from "./data.selector";
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
   activatedMeasuresSelector
-} from './dimensions.selector';
-import { isNull, isNullOrUndefined } from '../utils/generic';
-import { getLeaves } from '../utils/headers';
+} from "./dimensions.selector";
+import { isNull, isNullOrUndefined } from "../utils/generic";
+import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
   EMPTY_ID,
@@ -14,7 +14,7 @@ import {
   HeaderType,
   AxisType,
   toAxisType
-} from '../constants';
+} from "../constants";
 
 export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
@@ -92,7 +92,13 @@ function buildHeaders(
   let header;
   // Root node
   if (node.id === ROOT_ID) {
-    header = { id: ROOT_ID, orderedChildrenIds: [] };
+    header = {
+      id: ROOT_ID,
+      type: HeaderType.GRAND_TOTAL,
+      parent: null,
+      dataIndexes: undefined,
+      orderedChildrenIds: []
+    };
   } else {
     const currentDimension = dimensions[depth];
     const row = data[dataIndexes[0]];
@@ -168,7 +174,7 @@ function buildHeaders(
       }
       orderedChildrenMap.sort(sortFunction);
       header.orderedChildrenIds = orderedChildrenMap.map(obj => obj.id);
-      if (childrenDimension.sort.direction === 'desc') {
+      if (childrenDimension.sort.direction === "desc") {
         header.orderedChildrenIds.reverse();
       }
     }
@@ -260,7 +266,7 @@ export const columnLeavesSelector = createSelector(
   getLeaves
 );
 
-export const getLayoutSelector = createSelector(
+export const layoutSelector = createSelector(
   [
     rowLeavesSelector,
     columnLeavesSelector,
@@ -283,9 +289,10 @@ export const getDimensionKeys = (
   parent,
   isCollapsed
 ) => {
-  const key = depth !== -1 && parent.id !== ROOT_ID
-    ? `${parent.key}-/-${node.id}`
-    : String(node.id);
+  const key =
+    depth !== -1 && parent.id !== ROOT_ID
+      ? `${parent.key}-/-${node.id}`
+      : String(node.id);
   let keys = {};
   if (dimensionDepth === depth) {
     keys = { [key]: isCollapsed };
