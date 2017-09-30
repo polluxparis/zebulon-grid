@@ -2,23 +2,13 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  getLastChildHeightSelector,
-  layoutSelector,
   previewSizesSelector,
-  getCellHeightByKeySelector,
-  rowLeavesSelector,
-  getAxisActivatedMeasuresSelector,
-  availableMeasuresSelector,
-  filteredDataSelector,
-  rowDimensionsSelector,
   rowsVisibleHeightSelector,
   rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  crossPositionsSelector,
-  getRowDimensionWidthSelector,
-  getRowHeightSelector
+  rowHeadersPositionsSelector
 } from "../selectors";
-import Headers from "../components/Headers/Headers";
+import Headers from "../components/Headers/Headers2";
 import {
   toggleCollapse,
   selectRange,
@@ -28,28 +18,21 @@ import {
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const leaves = rowLeavesSelector(state);
-
+  const headers = rowHeadersPositionsSelector(state);
   return {
     axisType: AxisType.ROWS,
-    data: filteredDataSelector(state),
-    dimensions: rowDimensionsSelector(state),
-    measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
-    availableMeasures: availableMeasuresSelector(state),
-    columnCount: layoutSelector(state).rowHorizontalCount,
-    getColumnWidth: getRowDimensionWidthSelector(state),
-    getRowHeight: getRowHeightSelector(state),
-    getSizeByKey: getCellHeightByKeySelector(state),
-    crossPositions: crossPositionsSelector(state)[AxisType.ROWS],
     height: rowsVisibleHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: previewSizesSelector(state),
-    rowCount: layoutSelector(state).rowVerticalCount,
-    getLastChildSize: getLastChildHeightSelector(state),
-    leaves,
-    sizes: state.sizes,
+
+    // getLastChildSize: getLastChildHeightSelector(state),
+    rowCount: headers.headers.length,
+    columnCount: headers.depth,
+    rowsSize: headers.size,
+    columnsSize: headers.crossSize,
     gridId: ownProps.gridId,
-    getSelectedRowRange: getSelectedRowRangeSelector(state)
+    getSelectedRowRange: getSelectedRowRangeSelector(state),
+    headers: headers.headers
   };
 };
 

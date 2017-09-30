@@ -10,7 +10,7 @@ import DataCells from "../../containers/DataCells";
 import DimensionHeaders from "../../containers/DimensionHeaders";
 import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
-import DragLayer from "./DragLayer";
+// import DragLayer from "./DragLayer";
 import { isEmpty, isNull } from "../../utils/generic";
 import { ZOOM_IN, ZOOM_OUT } from "../../constants";
 // import * as actions from '../../actions';
@@ -84,8 +84,7 @@ import { ZOOM_IN, ZOOM_OUT } from "../../constants";
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
-    this.scrollToRow = 0;
-    this.scrollToColumn = 0;
+    this.state = { scrollToRow: 0, scrollToColumn: 0 };
     this.focusCellKeys = [];
     // this.handleScrollToChange = this.handleScrollToChange.bind(this);
     // this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -160,6 +159,7 @@ class PivotGrid extends Component {
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
+    this.scrollChange = false;
   }
 
   handleCopy = () => {
@@ -219,7 +219,6 @@ class PivotGrid extends Component {
 
   handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
     const selectedRange = this.props.selectedRange;
-
     if (this.shiftKeyIsPressed) {
       // after column selection
       if (isNull(selectedRange.focusedCell.rowIndex)) {
@@ -260,9 +259,15 @@ class PivotGrid extends Component {
         rowIndex: scrollToRow
       });
     }
+
+    this.scrollChange = !(
+      this.scrollToRow === scrollToRow && this.scrollToColumn === scrollToColumn
+    );
     this.scrollToRow = scrollToRow;
     this.scrollToColumn = scrollToColumn;
   };
+  onScroll = (scrollToRow, scrollToColumn) =>
+    this.setState({ scrollToRow, scrollToColumn });
 
   render() {
     const {
@@ -285,12 +290,8 @@ class PivotGrid extends Component {
       } else {
         grid = (
           <div style={{ color: "red", width: "max-content" }}>
-            <p>
-              {this.props.status.error.type}
-            </p>
-            <p>
-              {this.props.status.error.message}
-            </p>
+            <p>{this.props.status.error.type}</p>
+            <p>{this.props.status.error.message}</p>
           </div>
         );
       }
@@ -304,7 +305,6 @@ class PivotGrid extends Component {
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleKeyUp}
         >
-          <DragLayer gridId={gridId} />
           <ArrowKeyStepper
             columnCount={columnHorizontalCount}
             mode="cells"
@@ -312,50 +312,55 @@ class PivotGrid extends Component {
             scrollToRow={this.scrollToRow}
             scrollToColumn={this.scrollToColumn}
             onScrollToChange={this.handleScrollToChange}
-            isControlled={true}
+            isControlled={false}
           >
-            {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
-              <ScrollSync>
-                {({
-                  clientHeight,
-                  clientWidth,
-                  onScroll,
-                  scrollLeft,
-                  scrollTop
-                }) =>
-                  <div
-                    className="zebulon-grid-zebulon-grid"
-                    style={{ fontSize: `${zoomValue * 100}%` }}
-                  >
-                    <div style={{ display: "flex" }}>
-                      <DimensionHeaders gridId={gridId} />
-                      <ColumnHeaders
-                        gridId={gridId}
-                        scrollLeft={scrollLeft}
-                        scrollTop={0}
-                      />
-                    </div>
-                    <div style={{ display: "flex" }}>
-                      <RowHeaders
-                        scrollTop={scrollTop}
-                        scrollLeft={0}
-                        gridId={gridId}
-                      />
-                      <DataCells
-                        onSectionRendered={onSectionRendered}
-                        scrollToColumn={scrollToColumn}
-                        scrollToRow={scrollToRow}
-                        onScroll={onScroll}
-                        drilldown={drilldown}
-                        menuFunctions={this.props.menuFunctions}
-                        clientHeight={clientHeight}
-                        clientWidth={clientWidth}
-                        gridId={gridId}
-                      />
-                    </div>
-                    <ConnectedMenu />
-                  </div>}
-              </ScrollSync>}
+            {({ onSectionRendered, scrollToColumn, scrollToRow }) => {
+              console.log("ArrowKeyStepper", scrollToColumn, scrollToRow);
+              return (
+                <div
+                  className="zebulon-grid-zebulon-grid"
+                  style={{ fontSize: `${zoomValue * 100}%` }}
+                >
+                  <div style={{ display: "flex" }}>
+                    <DimensionHeaders gridId={gridId} />
+                    <ColumnHeaders
+                      gridId={gridId}
+                      scrollToColumn={this.state.scrollToColumn}
+                      scrollToRow={0}
+                    />
+                  </div>
+                  <div style={{ display: "flex" }}>
+                    <RowHeaders
+                      gridId={gridId}
+                      scrollToColumn={0}
+                      scrollToRow={this.state.scrollToRow}
+                    />
+                    <DataCells
+                      // onSectionRendered={onSectionRendered}
+                      drilldown={drilldown}
+                      menuFunctions={this.props.menuFunctions}
+                      onScroll={this.onScroll}
+                      gridId={gridId}
+                      // clientHeight={clientHeight}
+                      // clientWidth={clientWidth}
+                      // scrollToRow={scrollToRow}
+                      // scrollLeft={scrollLeft}
+                      // scrollTop={scrollTop}
+                      // scrollLeft={scrollLeft}
+                      // scrollToRow={
+                      //   scrollToRow
+                      //   // this.scrollChange ? this.scrollToRow : undefined
+                      // }
+                      // scrollToColumn={
+                      //   scrollToColumn
+                      //   // this.scrollChange ? this.scrollToColumn : undefined
+                      // }
+                    />
+                  </div>
+                  <ConnectedMenu />
+                </div>
+              );
+            }}
           </ArrowKeyStepper>
         </div>
       );
@@ -392,3 +397,45 @@ export default DropTarget(
   gridSpec,
   collect
 )(PivotGrid);
+/*
+  <div
+                        className="zebulon-grid-zebulon-grid"
+                        style={{ fontSize: `${zoomValue * 100}%` }}
+                      >
+                        <div style={{ display: "flex" }}>
+                          <DimensionHeaders gridId={gridId} />
+                          <ColumnHeaders
+                            gridId={gridId}
+                            scrollLeft={scrollLeft}
+                            scrollTop={0}
+                          />
+                        </div>
+                        <div style={{ display: "flex" }}>
+                          <RowHeaders
+                            scrollTop={scrollTop}
+                            scrollLeft={0}
+                            gridId={gridId}
+                          />
+                          <DataCells
+                            onSectionRendered={onSectionRendered}
+                            drilldown={drilldown}
+                            menuFunctions={this.props.menuFunctions}
+                            onScroll={onScroll}
+                            gridId={gridId}
+                            clientHeight={clientHeight}
+                            clientWidth={clientWidth}
+                            scrollToRow={
+                              this.scrollChange ? this.scrollToRow : undefined
+                            }
+                            scrollToColumn={
+                              this.scrollChange ? (
+                                this.scrollToColumn
+                              ) : (
+                                undefined
+                              )
+                            }
+                          />
+                        </div>
+                        <ConnectedMenu />
+                      </div>
+      */

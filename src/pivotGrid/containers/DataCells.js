@@ -1,50 +1,45 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import {
   dataCellsWidthSelector,
   dataCellsHeightSelector,
-  rowLeavesSelector,
-  layoutSelector,
-  columnLeavesSelector,
-  getColumnWidthSelector,
-  getRowHeightSelector,
   getCellValueSelector,
   getCellInfosSelector,
   getRangeInfosSelector,
   activatedMeasuresSelector,
   selectedRangeSelector,
-  dimensionsSelector
-} from '../selectors';
-import DataCells from '../components/DataCells/DataCells';
-import { selectRange, selectCell } from '../actions';
+  columnHeadersPositionsSelector,
+  rowHeadersPositionsSelector
+} from "../selectors";
+import { DataCells2 } from "../components/DataCells/DataCells2";
+import { selectRange, selectCell } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const rowLeaves = rowLeavesSelector(state);
-  const columnLeaves = columnLeavesSelector(state);
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
   const selectedRange = selectedRangeSelector(state);
-  return {
-    columnCount: layoutSelector(state).columnHorizontalCount,
-    columnLeaves,
+  const columnHeaders = columnHeadersPositionsSelector(state);
+  const rowHeaders = rowHeadersPositionsSelector(state);
+  const props = {
+    measures,
     filters: state.filters,
     selectedRange,
     getCellValue,
-    dimensions: dimensionsSelector(state),
+    columnHeaders: columnHeaders.headers,
+    rowHeaders: rowHeaders.headers,
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
-    getColumnWidth: getColumnWidthSelector(state),
-    getRowHeight: getRowHeightSelector(state),
     height: dataCellsHeightSelector(state),
-    rowCount: layoutSelector(state).rowVerticalCount,
-    measures,
-    rowLeaves,
-    sizes: state.sizes,
     width: dataCellsWidthSelector(state),
-    zoom: state.config.zoom
+    rowsSize: rowHeaders.size,
+    columnsSize: columnHeaders.size
   };
+  if (ownProps.scroll) {
+    props.scrollToRow = ownProps.scroll.row;
+    props.scrollToColumn = ownProps.scroll.column;
+  }
+  return props;
 };
-
 const mapDispatchToProps = dispatch => ({
   selectRange: selectedRange => {
     dispatch(selectRange(selectedRange));
@@ -53,4 +48,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectCell(cell));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(DataCells);
+export default connect(mapStateToProps, mapDispatchToProps)(DataCells2);

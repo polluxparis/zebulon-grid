@@ -79,6 +79,7 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
+
 function buildHeaders(
   data,
   node,
@@ -153,6 +154,7 @@ function buildHeaders(
         sortKey: header.children[id].sortKey
       };
     });
+
     if (
       header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
     ) {

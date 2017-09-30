@@ -1,4 +1,4 @@
-import { PUSH_DATA, FETCH_SUCCESS, FETCH_DATA } from "../constants";
+import { PUSH_DATA, FETCH_SUCCESS } from "../constants";
 
 export default (state = [], action) => {
 	switch (action.type) {

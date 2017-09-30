@@ -8,25 +8,26 @@ const getData = state => state.data;
 export const filteredDataSelector = createSelector(
   [getData, getFilters, state => state.dimensions],
   (data, filtersObject, dimensions) => {
-    const filters = [
-      ...Object.keys(filtersObject).map(id => filtersObject[id])
-    ];
+    const filters = Object.keys(filtersObject).map(id => ({
+      dimension: dimensions[id],
+      values: Object.values(filtersObject[id].values)
+    }));
     if (filters.length === 0) {
       return data;
     }
     return data.filter(row =>
       filters.every(filter =>
-        pass(filter, dimensions[filter.dimensionId].keyAccessor(row))
+        pass(filter.values, filter.dimension.keyAccessor(row))
       )
     );
   }
 );
 
 export const getDimensionValuesSelector = createSelector(
-  [getData, getFilters, state => state.dimensions],
-  (data, filters, dimensions) => id => {
+  [getData, state => state.dimensions],
+  (data, dimensions) => id => {
     const dimension = dimensions[id];
-    const filter = filters[id] || {};
+    // const filter = filters[id] || {};
 
     let values = {};
     // We use data here instead of filteredData
@@ -38,10 +39,11 @@ export const getDimensionValuesSelector = createSelector(
         const label = String(dimension.labelAccessor(row));
         const sortKey = dimension.sort.keyAccessor(row);
         values[key] = {
-          key: key,
+          id: key,
           label: label,
-          sortKey: sortKey,
-          checked: pass(filter, key)
+          sortKey: sortKey
+          // checked: pass(filter, key)
+          // checked: filter[key] !== undefined
         };
       }
     }

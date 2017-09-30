@@ -2,21 +2,22 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  getCellWidthByKeySelector,
+  // getCellWidthByKeySelector,
   getColumnWidthSelector,
-  columnDimensionsSelector,
+  // columnDimensionsSelector,
   columnHeadersWidthSelector,
-  getLastChildWidthSelector,
+  // getLastChildWidthSelector,
   layoutSelector,
   columnsVisibleWidthSelector,
   previewSizesSelector,
-  columnLeavesSelector,
-  getAxisActivatedMeasuresSelector,
-  filteredDataSelector,
+  // columnLeavesSelector,
+  // getAxisActivatedMeasuresSelector,
+  // filteredDataSelector,
   getSelectedColumnRangeSelector,
-  crossPositionsSelector,
-  availableMeasuresSelector,
-  getColumnDimensionHeightSelector
+  // crossPositionsSelector,
+  // availableMeasuresSelector,
+  getColumnDimensionHeightSelector,
+  columnHeadersPositionsSelector
 } from "../selectors";
 import {
   toggleCollapse,
@@ -25,30 +26,22 @@ import {
   moveMeasure,
   toggleMeasure
 } from "../actions";
-import Headers from "../components/Headers/Headers";
+import Headers from "../components/Headers/Headers2";
 
 const mapStateToProps = (state, ownProps) => {
-  const leaves = columnLeavesSelector(state);
+  const headers = columnHeadersPositionsSelector(state);
   return {
     axisType: AxisType.COLUMNS,
-    data: filteredDataSelector(state),
-    dimensions: columnDimensionsSelector(state),
-    measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
-    availableMeasures: availableMeasuresSelector(state),
-    columnCount: layoutSelector(state).columnHorizontalCount,
-    getColumnWidth: getColumnWidthSelector(state),
-    getRowHeight: getColumnDimensionHeightSelector(state),
-    getSizeByKey: getCellWidthByKeySelector(state),
-    crossPositions: crossPositionsSelector(state)[AxisType.COLUMNS],
     height: columnHeadersWidthSelector(state),
     width: columnsVisibleWidthSelector(state),
     previewSizes: previewSizesSelector(state),
-    rowCount: layoutSelector(state).columnVerticalCount,
-    getLastChildSize: getLastChildWidthSelector(state),
-    leaves,
-    sizes: state.sizes,
     gridId: ownProps.gridId,
-    getSelectedColumnRange: getSelectedColumnRangeSelector(state)
+    getSelectedColumnRange: getSelectedColumnRangeSelector(state),
+    headers: headers.headers,
+    rowCount: headers.depth,
+    columnCount: headers.headers.length,
+    rowsSize: headers.crossSize,
+    columnsSize: headers.size
   };
 };
 

@@ -27,7 +27,7 @@ class ZebulonGridDemo extends Component {
         <button onClick={this.pushData}>Push data</button>
         <ResizableBox height={basicConfig.height} width={basicConfig.width}>
           <AutoSizer>
-            {({ height, width }) =>
+            {({ height, width }) => (
               <ZebulonGrid
                 config={basicConfig}
                 data={this.data}
@@ -41,7 +41,8 @@ class ZebulonGridDemo extends Component {
                 /* eslint-disable no-console */
                 drilldown={cellInfos => console.log("drilldown", cellInfos)}
                 /* eslint-enable */
-              />}
+              />
+            )}
           </AutoSizer>
         </ResizableBox>
         <div>

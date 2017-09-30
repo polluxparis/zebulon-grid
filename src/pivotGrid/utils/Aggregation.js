@@ -54,7 +54,7 @@ export function weighted_avg(accessor, intersection, data) {
       wavg[1] += val[1];
     });
   }
-  return wavg[0] / wavg[1];
+  return wavg[0] === 0 && wavg[1] === 0 ? null : wavg[0] / wavg[1];
 }
 export function delta(accessor, intersection, data) {
   let values = [0, 0];

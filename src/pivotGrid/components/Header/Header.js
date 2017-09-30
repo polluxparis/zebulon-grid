@@ -45,6 +45,7 @@ class Header extends Component {
       previewSizes,
       scrollLeft,
       scrollTop,
+      firstSize,
       isNotCollapsible,
       isCollapsed,
       isAffixManaged,
@@ -62,19 +63,17 @@ class Header extends Component {
     let offset;
     if (isAffixManaged) {
       if (axis === AxisType.COLUMNS) {
-        offset = scrollLeft - positionStyle.left;
-        style = {
-          ...style,
-          left: positionStyle.left + offset,
-          width: positionStyle.width - offset
-        };
+        offset = Math.min(
+          scrollLeft - positionStyle.left,
+          positionStyle.width - firstSize
+        );
+        style.paddingLeft = offset;
       } else {
-        offset = scrollTop - positionStyle.top;
-        style = {
-          ...style,
-          top: positionStyle.top + offset,
-          height: positionStyle.height - offset
-        };
+        offset = Math.min(
+          scrollTop - positionStyle.top,
+          positionStyle.height - firstSize
+        );
+        style.paddingTop = offset;
       }
     }
 

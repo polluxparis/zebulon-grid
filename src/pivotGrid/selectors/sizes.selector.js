@@ -1,12 +1,12 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import scrollbarSize from '../utils/scrollbarSize';
-import { ROOT_ID, AxisType } from '../constants';
-import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
+import scrollbarSize from "../utils/scrollbarSize";
+import { ROOT_ID, AxisType } from "../constants";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import {
   columnDimensionsSelector,
   rowDimensionsSelector
-} from './dimensions.selector';
+} from "./dimensions.selector";
 
 export const defaultCellSizesSelector = createSelector(
   [
@@ -169,11 +169,12 @@ export const rowsVisibleHeightSelector = createSelector(
     rowsHeightSelector,
     hasHorizontalScrollbar
   ],
-  (height, columnHeadersHeight, rowsHeight, hasScrollbar) =>
-    Math.min(
+  (height, columnHeadersHeight, rowsHeight, hasScrollbar) => {
+    return Math.min(
       height - columnHeadersHeight - (hasScrollbar ? scrollbarSize() : 0),
       rowsHeight
-    )
+    );
+  }
 );
 export const columnsVisibleWidthSelector = createSelector(
   [

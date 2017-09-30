@@ -6,7 +6,7 @@ import {
   rowLeavesSelector,
   getAxisActivatedMeasuresSelector,
   getDimensionKeysSelector
-} from './axis.selector';
+} from "./axis.selector";
 import {
   defaultCellSizesSelector,
   crossPositionsSelector,
@@ -27,7 +27,7 @@ import {
   getRowDimensionWidthSelector,
   getColumnWidthSelector,
   getRowHeightSelector
-} from './sizes.selector';
+} from "./sizes.selector";
 import {
   activatedMeasuresSelector,
   rowDimensionsSelector,
@@ -35,25 +35,28 @@ import {
   availableDimensionsSelector,
   availableMeasuresSelector,
   dimensionsSelector
-} from './dimensions.selector';
+} from "./dimensions.selector";
 import {
   getCellValueSelector,
   getCellInfosSelector,
   getCellDimensionInfosSelector,
   getRangeInfosSelector
-} from './cell.selector';
+} from "./cell.selector";
 import {
   getDimensionValuesSelector,
   dimensionFiltersSelector,
   filteredDataSelector
-} from './data.selector';
+} from "./data.selector";
 import {
   selectedRangeSelector,
   getSelectedColumnRangeSelector,
   getSelectedRowRangeSelector,
   copySelector
-} from './selection.selector';
-
+} from "./selection.selector";
+import {
+  columnHeadersPositionsSelector,
+  rowHeadersPositionsSelector
+} from "./headers.selector";
 export {
   layoutSelector,
   defaultCellSizesSelector,
@@ -97,5 +100,7 @@ export {
   getRowDimensionWidthSelector,
   getColumnWidthSelector,
   getRowHeightSelector,
-  copySelector
+  copySelector,
+  columnHeadersPositionsSelector,
+  rowHeadersPositionsSelector
 };
