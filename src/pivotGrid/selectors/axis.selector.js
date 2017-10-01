@@ -1,3 +1,7 @@
+///////////////////////////////////////////////////////////////////
+//  compute the axis header trees (rows and columns)
+///////////////////////////////////////////////////////////////////
+
 import { createSelector } from "reselect";
 import { filteredDataSelector } from "./data.selector";
 import {
@@ -268,22 +272,7 @@ export const columnLeavesSelector = createSelector(
   getLeaves
 );
 
-export const layoutSelector = createSelector(
-  [
-    rowLeavesSelector,
-    columnLeavesSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector
-  ],
-  (rowLeaves, columnLeaves, rowDimensions, columnDimensions) => {
-    return {
-      rowHorizontalCount: rowDimensions.length,
-      rowVerticalCount: rowLeaves.length,
-      columnHorizontalCount: columnLeaves.length,
-      columnVerticalCount: columnDimensions.length
-    };
-  }
-);
+// for expand and collapse all
 export const getDimensionKeys = (
   node,
   dimensionDepth,

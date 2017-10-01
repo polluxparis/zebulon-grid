@@ -2,22 +2,11 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  // getCellWidthByKeySelector,
-  getColumnWidthSelector,
-  // columnDimensionsSelector,
-  columnHeadersWidthSelector,
-  // getLastChildWidthSelector,
-  layoutSelector,
-  columnsVisibleWidthSelector,
+  dataCellsWidthSelector,
+  columnHeadersHeightSelector,
   previewSizesSelector,
-  // columnLeavesSelector,
-  // getAxisActivatedMeasuresSelector,
-  // filteredDataSelector,
   getSelectedColumnRangeSelector,
-  // crossPositionsSelector,
-  // availableMeasuresSelector,
-  getColumnDimensionHeightSelector,
-  columnHeadersPositionsSelector
+  columnHeadersPositionsAndSizesSelector
 } from "../selectors";
 import {
   toggleCollapse,
@@ -26,14 +15,14 @@ import {
   moveMeasure,
   toggleMeasure
 } from "../actions";
-import Headers from "../components/Headers/Headers2";
+import Headers from "../components/Headers/Headers";
 
 const mapStateToProps = (state, ownProps) => {
-  const headers = columnHeadersPositionsSelector(state);
+  const headers = columnHeadersPositionsAndSizesSelector(state);
   return {
     axisType: AxisType.COLUMNS,
-    height: columnHeadersWidthSelector(state),
-    width: columnsVisibleWidthSelector(state),
+    height: columnHeadersHeightSelector(state),
+    width: dataCellsWidthSelector(state),
     previewSizes: previewSizesSelector(state),
     gridId: ownProps.gridId,
     getSelectedColumnRange: getSelectedColumnRangeSelector(state),

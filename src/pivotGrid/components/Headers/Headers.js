@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
 import classnames from "classnames";
-
+import { ROOT_ID } from "../../constants";
 import {
   // MEASURE_ID,
   // ROOT_ID,
@@ -20,15 +20,15 @@ class Headers extends PureComponent {
     }
   };
 
-  componentDidUpdate = prevProps => {
-    if (
-      prevProps.sizes !== this.props.sizes ||
-      prevProps.dimensions !== this.props.dimensions ||
-      prevProps.zoom !== this.props.zoom
-    ) {
-    }
-    this.grid.recomputeGridSize();
-  };
+  // componentDidUpdate = prevProps => {
+  //   if (
+  //     prevProps.sizes !== this.props.sizes ||
+  //     prevProps.dimensions !== this.props.dimensions ||
+  //     prevProps.zoom !== this.props.zoom
+  //   ) {
+  //   }
+  //   this.grid.recomputeGridSize();
+  // };
   // shouldComponentUpdate = () => false;
 
   collectMenu = props => {
@@ -39,18 +39,23 @@ class Headers extends PureComponent {
     };
   };
 
-  headersRenderer = ({
-    rowStartIndex,
-    rowStopIndex,
-    // columnSizeAndPositionManager,
-    columnStartIndex,
-    columnStopIndex,
-    scrollTop,
-    scrollLeft,
-    verticalOffsetAdjustment,
-    horizontalOffsetAdjustment
-  }) => {
+  affixOffsets = firstHeader => {
+    const offsets = {};
+    const position = firstHeader.main.position;
+    let header = firstHeader;
+    while (header.parent.id !== ROOT_ID) {
+      header = header.parent;
+      offsets[header.depth] = position - header.main.position;
+    }
+    return offsets;
+  };
+
+  headersRenderer = () => {
     const {
+      scrollToRow,
+      scrollToColumn,
+      height,
+      width,
       headers,
       gridId,
       selectAxis,
@@ -61,36 +66,34 @@ class Headers extends PureComponent {
       axisType,
       previewSizes
     } = this.props;
-    const scroll = axisType === AxisType.ROWS ? scrollTop : scrollLeft;
     const startIndex =
-      axisType === AxisType.ROWS ? rowStartIndex : columnStartIndex;
-    const stopIndex =
-      axisType === AxisType.ROWS ? rowStopIndex : columnStopIndex;
-
-    const firstLeaf = headers[startIndex][0].header;
-    // const offsetAdjustment = scroll - firstLeaf.main.position;
-    const offsetAdjustment =
-      axisType === AxisType.ROWS
-        ? verticalOffsetAdjustment
-        : horizontalOffsetAdjustment;
-
-    const startRootIndex = firstLeaf.rootIndex;
-    const firstSize = firstLeaf.main.size;
-    // console.log("firstLeaf", firstLeaf, scrollTop, offsetAdjustment);
-    // const correctStopIndex = Math.min(stopIndex, headers.length - 1);
-    const renderedCells = [];
-    for (let i = startRootIndex; i <= stopIndex; i += 1) {
-      this.props.headers[i].map(header => {
+      axisType === AxisType.ROWS ? scrollToRow : scrollToColumn;
+    const firstHeader = headers[startIndex][0].header;
+    const maxSize = axisType === AxisType.ROWS ? height : width;
+    const firstPosition = firstHeader.main.position;
+    //  start looping from the root of the first leaf header
+    const startRootIndex = firstHeader.rootIndex;
+    // const firstSize = firstLeaf.main.size;
+    let size = 0;
+    let index = startRootIndex;
+    // calculate affix offset
+    const affix = this.affixOffsets(firstHeader);
+    const cells = [];
+    while (size < maxSize && index < headers.length) {
+      headers[index].map((header, i) => {
         const h = header.header;
+        // don't add headers not parent of the first leaf
         if (h.lastIndex >= startIndex) {
           const positionStyle = {
             position: "absolute",
             left:
-              axisType === AxisType.ROWS ? h.cross.position : h.main.position, // + offsetAdjustment,
+              axisType === AxisType.ROWS
+                ? h.cross.position
+                : h.main.position - firstPosition,
             top:
               axisType === AxisType.COLUMNS
                 ? h.cross.position
-                : h.main.position, // + offsetAdjustment,
+                : h.main.position - firstPosition,
             height: axisType === AxisType.ROWS ? h.main.size : h.cross.size,
             width: axisType === AxisType.COLUMNS ? h.main.size : h.cross.size
           };
@@ -99,7 +102,20 @@ class Headers extends PureComponent {
               ? (positionStyle.paddingRight = h.cross.collapsed)
               : (positionStyle.paddingBottom = h.cross.collapsed);
           }
-          renderedCells.push(
+          // affix management to keep labels on screen (except for leaves)
+          if (h.index < startIndex && header.isAffixManaged) {
+            // let offset;
+            if (axisType === AxisType.COLUMNS) {
+              // offset = Math.min(
+              //   scrollLeft - positionStyle.left,
+              //   positionStyle.width - firstSize
+              // );
+              positionStyle.paddingLeft = affix[h.depth];
+            } else {
+              positionStyle.paddingTop = affix[h.depth];
+            }
+          }
+          cells.push(
             <HeaderComponent
               key={`header-${h.key}`}
               header={h}
@@ -107,13 +123,12 @@ class Headers extends PureComponent {
               caption={header.caption}
               positionStyle={positionStyle}
               // span={header.span}
-              scrollLeft={scrollLeft}
-              scrollTop={scrollTop}
-              firstSize={firstSize}
+              // scrollLeft={scrollLeft}
+              // scrollTop={scrollTop}
+              // firstSize={firstSize}
               dimensionId={header.dimensionId}
               isNotCollapsible={header.isNotCollapsible}
               isCollapsed={header.header.isCollapsed}
-              isAffixManaged={h.index < startIndex && header.isAffixManaged}
               isDropTarget={header.isDropTarget}
               gridId={gridId}
               selectAxis={selectAxis}
@@ -125,324 +140,50 @@ class Headers extends PureComponent {
               previewSizes={previewSizes}
             />
           );
+          if (i === 0) {
+            size += h.main.size;
+          }
         }
       });
+      index++;
     }
-    return renderedCells;
-  };
-  // previewSizes={previewSizes}
-  // getLastChildSize={getLastChildSize}
-  // measureId={HeaderType.MEASURE ? header.id : null}
-  // header={header.header}
-  // index={HeaderType.MEASURE && measuresCount > 1 ? 0 : null}
-  // headersRenderer2 = ({
-  //   rowSizeAndPositionManager,
-  //   rowStartIndex,
-  //   rowStopIndex,
-  //   columnSizeAndPositionManager,
-  //   columnStartIndex,
-  //   columnStopIndex,
-  //   scrollTop,
-  //   scrollLeft,
-  //   verticalOffsetAdjustment,
-  //   horizontalOffsetAdjustment
-  // }) => {
-  //   const {
-  //     leaves,
-  //     previewSizes,
-  //     getLastChildSize,
-  //     getColumnWidth,
-  //     getRowHeight,
-  //     dimensions,
-  //     measures,
-  //     data,
-  //     axisType,
-  //     gridId,
-  //     selectAxis,
-  //     moveDimension,
-  //     toggleMeasure,
-  //     moveMeasure,
-  //     toggleCollapse,
-  //     getSizeByKey,
-  //     crossPositions
-  //   } = this.props;
-  //   const renderedCells = [];
-
-  //   let startIndex, stopIndex, sizeAndPositionManager, offsetAdjustment;
-  //   if (axisType === AxisType.ROWS) {
-  //     startIndex = rowStartIndex;
-  //     stopIndex = rowStopIndex;
-  //     sizeAndPositionManager = rowSizeAndPositionManager;
-  //     offsetAdjustment = verticalOffsetAdjustment;
-  //   } else {
-  //     startIndex = columnStartIndex;
-  //     stopIndex = columnStopIndex;
-  //     sizeAndPositionManager = columnSizeAndPositionManager;
-  //     offsetAdjustment = horizontalOffsetAdjustment;
-  //   }
-
-  //   // Because of the offset caused by the fixed headers,
-  //   // we have to make the cell count artificially higher.
-  //   // This ensures that we don't render inexistent headers.
-  //   const correctStopIndex = Math.min(stopIndex, leaves.length - 1);
-
-  //   const renderedHeaderKeys = {};
-
-  //   let header,
-  //     leafKey,
-  //     mainLeafOffset = 0,
-  //     collapsedSize = 0,
-  //     nextDimensionIsAttribute,
-  //     size;
-  //   const collapsedSizes = [];
-  //   const getSize = axisType === AxisType.ROWS ? getColumnWidth : getRowHeight;
-  //   const lastNotMeasureDimensionIndex =
-  //     dimensions.length - 1 - !isNull(measures);
-  //   const measuresCount = isNull(measures)
-  //     ? 1
-  //     : Object.keys(measures).length || 1;
-
-  //   // collapse management -> size of collapsed dimension until measures columns or end
-  //   for (let index = lastNotMeasureDimensionIndex; index >= 0; index -= 1) {
-  //     if (nextDimensionIsAttribute) {
-  //       collapsedSizes.push(0);
-  //     } else {
-  //       collapsedSizes.push(collapsedSize);
-  //     }
-  //     nextDimensionIsAttribute = dimensions[index].isAttribute;
-  //     size = getSize({ index: [index] });
-  //     collapsedSize += size;
-  //   }
-  //   collapsedSizes.reverse();
-
-  //   // no dimension is on the axis ==> Total header
-  //   if (leaves[0].id === ROOT_ID) {
-  //     const header = leaves[0];
-  //     header.key = TOTAL_ID;
-  //     const main = sizeAndPositionManager.getSizeAndPositionOfCell(0);
-  //     const cross = crossPositions[ROOT_ID];
-
-  //     let positionStyle;
-  //     if (axisType === AxisType.ROWS) {
-  //       positionStyle = {
-  //         position: "absolute",
-  //         left: cross.position,
-  //         top: 0,
-  //         height: main.size,
-  //         width: cross.size
-  //       };
-  //     } else {
-  //       positionStyle = {
-  //         position: "absolute",
-  //         left: 0,
-  //         top: cross.position,
-  //         height: cross.size,
-  //         width: main.size
-  //       };
-  //     }
-  //     renderedCells.push(
-  //       <HeaderComponent
-  //         key={`header-${header.key}`}
-  //         axis={axisType}
-  //         index={null}
-  //         header={header}
-  //         caption={"Total"}
-  //         positionStyle={positionStyle}
-  //         span={1}
-  //         previewSizes={previewSizes}
-  //         dimensionId={ROOT_ID}
-  //         isNotCollapsible={true}
-  //         isCollapsed={false}
-  //         isAffixManaged={false}
-  //         gridId={gridId}
-  //         isDropTarget={false}
-  //       />
-  //     );
-  //   }
-  //   // Loop on leaves
-  //   for (let index = startIndex; index <= correctStopIndex; index += 1) {
-  //     header = leaves[index];
-  //     leafKey = header.key;
-
-  //     // Loop on leaf and parents
-  //     while (header.id !== ROOT_ID && !renderedHeaderKeys[header.key]) {
-  //       renderedHeaderKeys[header.key] = true;
-  //       const dimension = dimensions[header.depth];
-
-  //       let caption;
-  //       if (header.type === HeaderType.DIMENSION) {
-  //         caption = dimension.format(
-  //           dimension.labelAccessor(data[header.dataIndexes[0]])
-  //         );
-  //       } else {
-  //         caption = measures[header.id].caption;
-  //       }
-  //       let mainSize, mainOffset, isAffixManaged;
-  //       if (leafKey === header.key) {
-  //         const main = sizeAndPositionManager.getSizeAndPositionOfCell(index);
-  //         mainSize = main.size;
-  //         mainOffset = main.offset + offsetAdjustment;
-  //         isAffixManaged = false;
-  //         mainLeafOffset = mainOffset;
-  //       } else {
-  //         const headerLeaves = getLeaves(header);
-  //         mainSize = headerLeaves.reduce(
-  //           (acc, leaf) => acc + getSizeByKey(leaf.key),
-  //           0
-  //         );
-  //         mainOffset = mainLeafOffset;
-  //         isAffixManaged =
-  //           leafKey !== headerLeaves[headerLeaves.length - 1].key;
-  //       }
-  //       const span = header.span;
-  //       const cross = crossPositions[dimension.id];
-  //       collapsedSize = 0;
-  //       if (header.isCollapsed && collapsedSizes.length > 0) {
-  //         if (header.type !== HeaderType.MEASURE) {
-  //           collapsedSize = collapsedSizes[header.depth];
-  //         }
-  //       }
-
-  //       let positionStyle;
-  //       if (axisType === AxisType.ROWS) {
-  //         positionStyle = {
-  //           position: "absolute",
-  //           left: cross.position,
-  //           top: mainOffset,
-  //           height: mainSize,
-  //           width: cross.size + collapsedSize
-  //         };
-  //       } else {
-  //         positionStyle = {
-  //           position: "absolute",
-  //           left: mainOffset,
-  //           top: cross.position,
-  //           height: cross.size + collapsedSize,
-  //           width: mainSize
-  //         };
-  //       }
-  //       const isNotCollapsible =
-  //         header.type === HeaderType.MEASURE ||
-  //         dimension.isAttribute ||
-  //         header.depth >= lastNotMeasureDimensionIndex ||
-  //         (!header.isCollapsed && span === measuresCount);
-  //       const isDropTarget =
-  //         dimension.id === MEASURE_ID &&
-  //         (header.depth === 0 || measuresCount > 1);
-  //       // read parents (but only once)
-  //       renderedCells.push(
-  //         <HeaderComponent
-  //           key={`header-${header.key}`}
-  //           axis={axisType}
-  //           index={HeaderType.MEASURE && measuresCount > 1 ? 0 : null}
-  //           measureId={HeaderType.MEASURE ? header.id : null}
-  //           header={header}
-  //           caption={caption}
-  //           positionStyle={positionStyle}
-  //           span={span}
-  //           scrollLeft={scrollLeft}
-  //           scrollTop={scrollTop}
-  //           previewSizes={previewSizes}
-  //           getLastChildSize={getLastChildSize}
-  //           dimensionId={dimension.id}
-  //           isNotCollapsible={isNotCollapsible}
-  //           isCollapsed={header.isCollapsed}
-  //           isAffixManaged={index === startIndex && isAffixManaged}
-  //           gridId={gridId}
-  //           selectAxis={selectAxis}
-  //           moveDimension={moveDimension}
-  //           toggleMeasure={toggleMeasure}
-  //           moveMeasure={moveMeasure}
-  //           toggleCollapse={toggleCollapse}
-  //           isDropTarget={isDropTarget}
-  //           collectMenu={this.collectMenu}
-  //         />
-  //       );
-  //       header = header.parent;
-  //     }
-  //   }
-  //   return renderedCells;
-  // };
-  getColumnWidth = ({ index }) => {
-    const n =
-      this.props.axisType === AxisType.COLUMNS
-        ? this.props.headers[index][0].header.main.size
-        : this.props.headers[index][0].header.cross.size;
-    // console.log(
-    //   "getColumnWidth",
-    //   this.props.axisType,
-    //   n,
-    //   this.props.headers[index][0].header.key,
-    //   index
-    // );
-    return n;
-  };
-  getRowHeight = ({ index }) => {
-    const n =
-      this.props.axisType === AxisType.ROWS
-        ? this.props.headers[index][0].header.main.size
-        : this.props.headers[index][0].header.cross.size;
-    // console.log(
-    //   "getRowHeight",
-    //   this.props.axisType,
-    //   n,
-    //   this.props.headers[index][0].header.key,
-    //   index
-    // );
-    return n;
+    return cells;
   };
   render() {
     const {
       // headers,
-      scrollTop,
-      scrollLeft,
+      // scrollToRow,
+      // scrollToColumn,
       height,
       width,
       axisType,
-      rowCount,
-      columnCount,
-      columnsSize,
-      rowsSize
+      // rowCount,
+      // columnCount,
+      // columnsSize,
+      // rowsSize,
+      gridId
     } = this.props;
-    console.log("header render", axisType, scrollTop, scrollLeft);
+    const cells = this.headersRenderer();
+    const style = {
+      position: "relative",
+      overflow: "hidden",
+      height,
+      width
+      // borderRight: "solid 0.03em grey",
+      // borderBottom: "solid 0.03em grey",
+      // borderRadius: " 0.25rem"
+    };
+    // console.log("header render", axisType, scrollTop, scrollLeft);
     return (
       <div
         className={classnames({
           "zebulon-grid-column-headers": axisType === AxisType.COLUMNS,
           "zebulon-grid-row-headers": axisType === AxisType.ROWS
         })}
+        id={`headers - ${axisType} - ${gridId}`}
+        style={style}
       >
-        <ReactVirtualizedGrid
-          cellRangeRenderer={this.headersRenderer}
-          cellRenderer={() => {}}
-          // The position of inner style was set to static in react-virtualized 9.2.3
-          // This broke the grid because the height of the inner container was not reset
-          // when the height prop changed
-          // This is a workaround
-          containerStyle={{ position: "static" }}
-          height={height}
-          width={width}
-          rowCount={rowCount}
-          rowHeight={this.getRowHeight}
-          columnCount={columnCount}
-          columnWidth={this.getColumnWidth}
-          ref={ref => {
-            this.grid = ref;
-          }}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          overscanRowCount={0}
-          overscanColumnCount={0}
-          estimatedColumnSize={columnsSize}
-          estimatedRowSize={rowsSize}
-          // We set overflowX and overflowY and not overflow
-          // because react-virtualized sets them during render
-          style={{
-            overflowX: "hidden",
-            overflowY: "hidden",
-            outline: "none"
-          }}
-        />
+        {cells}
       </div>
     );
   }

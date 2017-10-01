@@ -172,22 +172,10 @@ class PivotGrid extends Component {
   };
 
   handleKeyDown = e => {
-    const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
-    this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-    this.shiftKeyIsPressed = e.shiftKey;
+    // const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
+    // this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
+    // this.shiftKeyIsPressed = e.shiftKey;
     if (e.metaKey || e.ctrlKey) {
-      // // ctrl A -> select all
-      // if (e.which === 65) {
-      //   this.props.selectRange({
-      //     selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-      //     selectedCellEnd: {
-      //       columnIndex: columnHorizontalCount,
-      //       rowIndex: rowVerticalCount
-      //     }
-      //   });
-      //   e.preventDefault();
-      // }
-      // ctrl + -> zoom in
       // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
       if (e.key === "+" || e.key === "=") {
         this.props.zoom(ZOOM_IN);
@@ -200,22 +188,16 @@ class PivotGrid extends Component {
         this.props.zoom(ZOOM_OUT);
         e.preventDefault();
       }
-      // Page down
-      //   if (e.key === 'PageDown') {
-      //     handleScrollToChange({});
-
-      //     e.preventDefault();
-      // }
     }
   };
-  handleKeyUp = e => {
-    if (e.which === 17) {
-      this.modifierKeyIsPressed = false;
-    }
-    if (e.which === 16) {
-      this.shiftKeyIsPressed = false;
-    }
-  };
+  // handleKeyUp = e => {
+  //   if (e.which === 17) {
+  //     this.modifierKeyIsPressed = false;
+  //   }
+  //   if (e.which === 16) {
+  //     this.shiftKeyIsPressed = false;
+  //   }
+  // };
 
   handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
     const selectedRange = this.props.selectedRange;
@@ -303,7 +285,7 @@ class PivotGrid extends Component {
         <div
           style={{ width, position: "relative" }}
           onKeyDown={this.handleKeyDown}
-          onKeyUp={this.handleKeyUp}
+          // onKeyUp={this.handleKeyUp}
         >
           <div
             className="zebulon-grid-zebulon-grid"

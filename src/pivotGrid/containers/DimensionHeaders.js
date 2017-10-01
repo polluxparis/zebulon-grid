@@ -1,22 +1,22 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import {
   columnDimensionsSelector,
   rowDimensionsSelector,
-  columnHeadersWidthSelector,
+  columnHeadersHeightSelector,
   rowHeadersWidthSelector,
   crossPositionsSelector,
   previewSizesSelector,
   availableDimensionsSelector,
   getDimensionKeysSelector
-} from '../selectors';
-import DimensionHeaders from '../components/DimensionHeaders/DimensionHeaders';
+} from "../selectors";
+import DimensionHeaders from "../components/DimensionHeaders/DimensionHeaders";
 import {
   toggleCollapseDimension,
   toggleSortOrder,
   moveDimension,
   expandCollapseAll
-} from '../actions';
+} from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnDimensionsSelector(state);
@@ -28,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     filters: state.filters,
     availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),
-    height: columnHeadersWidthSelector(state),
+    height: columnHeadersHeightSelector(state),
     previewSizes: previewSizesSelector(state),
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,

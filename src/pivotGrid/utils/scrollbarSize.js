@@ -7,7 +7,7 @@ const inDOM = !!(
   window.document.createElement
 );
 export default function scrollbarSize(recalc) {
-  return 10;
+  return 20;
   // scrollbar size changes when zoom (devicePixelRatio) is modified
   if (
     !calculatedScrollBarSize ||

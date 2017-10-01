@@ -27,7 +27,6 @@ export const getDimensionValuesSelector = createSelector(
   [getData, state => state.dimensions],
   (data, dimensions) => id => {
     const dimension = dimensions[id];
-    // const filter = filters[id] || {};
 
     let values = {};
     // We use data here instead of filteredData

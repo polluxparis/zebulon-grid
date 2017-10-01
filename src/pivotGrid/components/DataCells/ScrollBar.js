@@ -3,20 +3,24 @@ class ScrollBarInner extends Component {
   constructor(props) {
     super(props);
   }
-  // componentDidMount() {
-  //   this.document = document.getElementById("thumb-" + this.props.id);
-  //   this.document.addEventListener("mousedown", this.handleMouseDown);
-  // }
+  collect = e => {
+    console.log(e);
+    e.preventDefault();
+  };
 
-  // componentDidUnMount() {
-  //   this.document.removeEventListener("mousedown", this.handleMouseDown);
-  // }
-  // handleMouseDown = e => {
-  //   console.log("thumb handleMouseDown", e);
-  //   e.preventDefault();
-  // };
+  handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
+  handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
+  handleMouseMove = e => this.props.handleMouseUp(this.collect(e));
   render() {
-    return <div id={"thumb-" + this.props.id} style={this.props.style} />;
+    return (
+      <div
+        id={"thumb-" + this.props.id}
+        style={this.props.style}
+        onMouseDown={this.handleMouseDown}
+        onMouseUp={this.props.handleMouseUp}
+        onMouseMove={this.props.handleMouseMove}
+      />
+    );
   }
 }
 
@@ -38,26 +42,70 @@ export class ScrollBar extends Component {
   // }
   collect = e => {
     const { button, shiftKey, target, clientX, clientY } = e;
+    const initiator = e.target.id.startsWith("thumb") ? "thumb" : "bar";
     const { left, top } = target.getBoundingClientRect();
     const x = clientX - left,
       y = clientY - top,
       position = this.props.direction === "horizontal" ? x : y;
-    return {
+    const event = {
       type: "scrollbar",
       direction: this.props.direction,
       button,
       shiftKey,
       x,
       y,
-      positionRatio: position / this.props.length,
-      initiator:
-        position < this.position || position > this.position + this.innerSize
-          ? "bar"
-          : "thumb"
+      positionRatio: Math.max(0, Math.min(1, position / this.props.length)),
+      initiator
     };
+    this.position = position;
+    return event;
   };
-  handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
-  handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
+  handleMouseDown = e => {
+    const event = this.collect(e);
+    if (event.initiator === "thumb") {
+      this.isDragging = true;
+    } else {
+      return this.props.handleMouseDown(event);
+    }
+  };
+  handleMouseUp = e => (this.isDragging = false);
+  handleMouseOver = e => {
+    if (this.isDragging) {
+      console.log("mouse over", e);
+    }
+  };
+  handleDragStart(event) {
+    // this.dragging = true;
+    // event.stopImmediatePropagation();
+    // this.setupDragging();
+  }
+  handleDrag(event) {
+    // if (this.prevPageX) {
+    //     const { clientX } = event;
+    //     const { left: trackLeft } = this.trackHorizontal.getBoundingClientRect();
+    //     const thumbWidth = this.getThumbHorizontalWidth();
+    //     const clickPosition = thumbWidth - this.prevPageX;
+    //     const offset = -trackLeft + clientX - clickPosition;
+    //     this.view.scrollLeft = this.getScrollLeftForOffset(offset);
+    // }
+    // if (this.prevPageY) {
+    //     const { clientY } = event;
+    //     const { top: trackTop } = this.trackVertical.getBoundingClientRect();
+    //     const thumbHeight = this.getThumbVerticalHeight();
+    //     const clickPosition = thumbHeight - this.prevPageY;
+    //     const offset = -trackTop + clientY - clickPosition;
+    //     this.view.scrollTop = this.getScrollTopForOffset(offset);
+    // }
+    // return false;
+  }
+
+  handleDragEnd() {
+    // this.dragging = false;
+    // this.prevPageX = this.prevPageY = 0;
+    // this.teardownDragging();
+    // this.handleDragEndAutoHide();
+  }
+
   render() {
     const {
       direction,
@@ -118,7 +166,8 @@ export class ScrollBar extends Component {
         id={id}
         style={style}
         onMouseDown={this.handleMouseDown}
-        onMouseUp={this.props.handleMouseUp}
+        onMouseUp={this.handleMouseUp}
+        onMouseOver={this.handleMouseOver}
       >
         <div id={"thumb-" + id} style={innerStyle} />
       </div>

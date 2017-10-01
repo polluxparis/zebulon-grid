@@ -1,3 +1,6 @@
+///////////////////////////////////////////////////////////////////
+//  compute the header trees (rows and columns) with positions ans sizes...
+///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 import { filteredDataSelector } from "./data.selector";
 import { isNull } from "../utils/generic";
@@ -15,16 +18,19 @@ import {
   crossPositionsSelector,
   getCellHeightByKeySelector,
   getCellWidthByKeySelector
-} from "./sizes.selector";
+} from "./cellSizes.selector";
+
 import {
   ROOT_ID,
   TOTAL_ID,
   MEASURE_ID,
   HeaderType,
   AxisType
-  // toAxisType
 } from "../constants";
-
+console.log("rowDimensionsSelector", rowDimensionsSelector);
+// console.log("horizontalScrollbarSizeSelector", horizontalScrollbarSizeSelector);
+console.log("getCellWidthByKeySelector", getCellWidthByKeySelector);
+console.log("crossPositionsSelector", crossPositionsSelector);
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
@@ -178,7 +184,7 @@ export function buildAxisPositionsHeaders(
   };
 }
 
-export const rowHeadersPositionsSelector = createSelector(
+export const rowHeadersPositionsAndSizesSelector = createSelector(
   [
     filteredDataSelector,
     rowLeavesSelector,
@@ -198,7 +204,7 @@ export const rowHeadersPositionsSelector = createSelector(
       AxisType.ROWS
     )
 );
-export const columnHeadersPositionsSelector = createSelector(
+export const columnHeadersPositionsAndSizesSelector = createSelector(
   [
     filteredDataSelector,
     columnLeavesSelector,

@@ -25,7 +25,7 @@ const mapStateToProps = state => {
   return {
     status: state.status,
     width: state.config.width,
-    layout: layoutSelector(state),
+    // layout: layoutSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
     sizes: state.sizes,
     columnLeaves,
@@ -73,7 +73,7 @@ const mergeProps = (
   {
     status,
     width,
-    layout,
+    // layout,
     headerSizes,
     sizes,
     defaultCellSizes,
@@ -86,7 +86,7 @@ const mergeProps = (
 ) => ({
   status,
   width,
-  layout,
+  // layout,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
   setSizes,

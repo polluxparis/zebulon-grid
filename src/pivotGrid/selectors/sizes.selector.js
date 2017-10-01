@@ -1,116 +1,28 @@
+// required sizes are (taking account of scrollbars size if needed)
+//  data cells available sizes
+//    - height
+//    - width
+//  row headers width
+//  column headers height
+//  + preview sizes or drag and drop
 import { createSelector } from "reselect";
 
 import scrollbarSize from "../utils/scrollbarSize";
 import { ROOT_ID, AxisType } from "../constants";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
+import {
+  getCellWidthByKeySelector,
+  getCellHeightByKeySelector
+} from "./cellSizes.selector";
+import {
+  rowHeadersPositionsAndSizesSelector,
+  columnHeadersPositionsAndSizesSelector
+} from "./headers.selector";
 import {
   columnDimensionsSelector,
   rowDimensionsSelector
 } from "./dimensions.selector";
 
-export const defaultCellSizesSelector = createSelector(
-  [
-    state => state.config.cellHeight,
-    state => state.config.cellWidth,
-    state => state.config.zoom
-  ],
-  (cellHeight, cellWidth, zoom) => ({
-    height: zoom * (cellHeight || 30),
-    width: zoom * (cellWidth || 100),
-    zoom
-  })
-);
-
-export const getCellHeightByKeySelector = createSelector(
-  [defaultCellSizesSelector, state => state.sizes.heights],
-  (defaultSizes, heights) => key => {
-    return defaultSizes.zoom * heights[key] || defaultSizes.height;
-  }
-);
-
-export const getCellWidthByKeySelector = createSelector(
-  [defaultCellSizesSelector, state => state.sizes.widths],
-  (defaultSizes, widths) => key => {
-    return defaultSizes.zoom * widths[key] || defaultSizes.width;
-  }
-);
-
-// export const getColumnWidthSelector = createSelector(
-//   [getCellWidthByKeySelector, columnLeavesSelector],
-//   (getCellWidthByKey, columnLeaves) => ({ index }) =>
-//     getCellWidthByKey(columnLeaves[index].key)
-// );
-
-export const getRowHeightSelector = createSelector(
-  [getCellHeightByKeySelector, rowLeavesSelector],
-  (getCellHeightByKeySelector, rowLeaves) => ({ index }) =>
-    getCellHeightByKeySelector(rowLeaves[index].key)
-);
-
-export const getColumnWidthSelector = createSelector(
-  [getCellWidthByKeySelector, columnLeavesSelector],
-  (getCellWidthByKeySelector, columnLeaves) => ({ index }) =>
-    getCellWidthByKeySelector(columnLeaves[index].key)
-);
-
-export const getColumnDimensionHeightSelector = createSelector(
-  [getCellHeightByKeySelector, columnDimensionsSelector],
-  (getCellHeightByKey, columnDimensions) => ({ index }) =>
-    getCellHeightByKey(columnDimensions[index].id)
-);
-
-export const getRowDimensionWidthSelector = createSelector(
-  [getCellWidthByKeySelector, rowDimensionsSelector],
-  (getCellWidthByKey, rowDimensions) => ({ index }) =>
-    getCellWidthByKey(rowDimensions[index].id)
-);
-
-const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
-  const res = {};
-  let position = 0;
-  // Total header if no dimensions
-  // if (!dimensions.length) {
-  //   position += getCrossSize(axisType, TOTAL_ID);
-  // } else {
-  if (dimensions.length === 0) {
-    res[ROOT_ID] = { position, size: getCellSizeByKey(ROOT_ID) };
-  } else {
-    dimensions.forEach(dimension => {
-      const size = getCellSizeByKey(dimension.id);
-      res[dimension.id] = { position, size };
-      position += size;
-    });
-  }
-  return res;
-};
-
-export const crossPositionsSelector = createSelector(
-  [
-    getCellWidthByKeySelector,
-    getCellHeightByKeySelector,
-    columnDimensionsSelector,
-    rowDimensionsSelector
-  ],
-  (getCellWidthByKey, getCellHeightByKey, columnDimensions, rowDimensions) => ({
-    [AxisType.COLUMNS]: calculateCrossPositions(
-      columnDimensions,
-      getCellHeightByKey
-    ),
-    [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellWidthByKey)
-  })
-);
-
-//--------------------------------------------------------
-export const rowsHeightSelector = createSelector(
-  [rowLeavesSelector, getCellHeightByKeySelector],
-  (rowLeaves, getCellHeightByKey) =>
-    rowLeaves.reduce((height, leaf) => height + getCellHeightByKey(leaf.key), 0)
-);
-export const columnsWidthSelector = createSelector(
-  [columnLeavesSelector, getCellWidthByKeySelector],
-  (columnLeaves, getCellWidthByKey) =>
-    columnLeaves.reduce((width, leaf) => width + getCellWidthByKey(leaf.key), 0)
-);
+//-------------------------------------------
 export const rowHeadersWidthSelector = createSelector(
   [rowDimensionsSelector, getCellWidthByKeySelector],
   (rowDimensions, getCellWidthByKey) => {
@@ -126,7 +38,8 @@ export const rowHeadersWidthSelector = createSelector(
     return width;
   }
 );
-export const columnHeadersWidthSelector = createSelector(
+//----------------------------------------------
+export const columnHeadersHeightSelector = createSelector(
   [columnDimensionsSelector, getCellHeightByKeySelector],
   (columnDimensions, getCellHeightByKey) => {
     let height;
@@ -141,129 +54,85 @@ export const columnHeadersWidthSelector = createSelector(
     return height;
   }
 );
-const hasHorizontalScrollbar = createSelector(
+//-------------------------------------------
+export const horizontalScrollbarSizeSelector = createSelector(
   [
     state => state.config.width,
-    state => state.config.height,
-    columnsWidthSelector,
-    rowHeadersWidthSelector
-  ],
-  (width, height, columnsWidth, rowHeadersWidth) =>
-    width < columnsWidth + rowHeadersWidth + scrollbarSize()
-);
-const hasVerticalScrollbar = createSelector(
-  [
-    state => state.config.width,
-    state => state.config.height,
-    columnHeadersWidthSelector,
-    rowsHeightSelector
-  ],
-  (width, height, columnHeadersHeight, rowsHeight) =>
-    height < columnHeadersHeight + rowsHeight + scrollbarSize()
-);
-
-export const rowsVisibleHeightSelector = createSelector(
-  [
-    state => state.config.height,
-    columnHeadersWidthSelector,
-    rowsHeightSelector,
-    hasHorizontalScrollbar
-  ],
-  (height, columnHeadersHeight, rowsHeight, hasScrollbar) => {
-    return Math.min(
-      height - columnHeadersHeight - (hasScrollbar ? scrollbarSize() : 0),
-      rowsHeight
-    );
-  }
-);
-export const columnsVisibleWidthSelector = createSelector(
-  [
-    state => state.config.width,
-    columnsWidthSelector,
     rowHeadersWidthSelector,
-    hasVerticalScrollbar
+    columnHeadersPositionsAndSizesSelector
   ],
-  (width, columnsWidth, rowsWidth, hasScrollbar) =>
+  (width, rowHeadersWidth, columnHeadersPositionsAndSizes) =>
+    width < rowHeadersWidth + columnHeadersPositionsAndSizes.size
+      ? scrollbarSize()
+      : 0
+);
+//---------------------------------------------
+export const verticalScrollbarSizeSelector = createSelector(
+  [
+    state => state.config.height,
+    columnHeadersHeightSelector,
+    rowHeadersPositionsAndSizesSelector
+  ],
+  (height, columnHeadersHeight, rowHeadersPositionsAndSizes) =>
+    height < columnHeadersHeight + rowHeadersPositionsAndSizes.size
+      ? scrollbarSize()
+      : 0
+);
+//  size of the datacells grid
+export const dataCellsHeightSelector = createSelector(
+  [
+    state => state.config.height,
+    columnHeadersHeightSelector,
+    rowHeadersPositionsAndSizesSelector,
+    horizontalScrollbarSizeSelector
+  ],
+  (height, columnHeadersHeight, rowHeadersPositionsAndSizes, scrollbarSize) =>
     Math.min(
-      width - rowsWidth - (hasScrollbar ? scrollbarSize() : 0),
-      columnsWidth
+      height - columnHeadersHeight - scrollbarSize,
+      rowHeadersPositionsAndSizes.size
+    )
+);
+export const dataCellsWidthSelector = createSelector(
+  [
+    state => state.config.width,
+    rowHeadersWidthSelector,
+    columnHeadersPositionsAndSizesSelector,
+    verticalScrollbarSizeSelector
+  ],
+  (width, rowHeadersWidth, columnHeadersPositionsAndSizes, scrollbarSize) =>
+    Math.min(
+      width - rowHeadersWidth - scrollbarSize,
+      columnHeadersPositionsAndSizes.size
     )
 );
 export const previewSizesSelector = createSelector(
   [
     state => state.config.height,
     state => state.config.width,
-    hasVerticalScrollbar,
-    hasHorizontalScrollbar,
-    rowsHeightSelector,
-    rowHeadersWidthSelector,
-    columnsWidthSelector,
-    columnHeadersWidthSelector
+    verticalScrollbarSizeSelector,
+    horizontalScrollbarSizeSelector,
+    dataCellsHeightSelector,
+    dataCellsWidthSelector,
+    columnHeadersHeightSelector,
+    rowHeadersWidthSelector
   ],
   (
     height,
     width,
-    hasVerticalScrollbar,
-    hasHorizontalScrollbar,
-    rowsHeight,
-    rowHeadersWidth,
-    columnsWidth,
-    columnHeadersHeight
+    verticalScrollbarSize,
+    horizontalScrollbarSize,
+    dataCellsHeight,
+    dataCellsWidth,
+    columnHeadersHeight,
+    rowHeadersWidth
   ) => ({
     height: Math.min(
-      height - (hasHorizontalScrollbar ? scrollbarSize() : 0),
-      rowsHeight + columnHeadersHeight
+      height - horizontalScrollbarSize,
+      dataCellsHeight + columnHeadersHeight
     ),
     width: Math.min(
-      width - (hasVerticalScrollbar ? scrollbarSize() : 0),
-      columnsWidth + rowHeadersWidth
+      width - verticalScrollbarSize,
+      dataCellsWidth + rowHeadersWidth
     )
   })
-);
-
-export const dataCellsHeightSelector = createSelector(
-  [
-    state => state.config.height,
-    columnHeadersWidthSelector,
-    rowsHeightSelector,
-    hasHorizontalScrollbar
-  ],
-  (height, columnHeadersHeight, rowsHeight, hasScrollbar) =>
-    Math.min(
-      height - columnHeadersHeight,
-      rowsHeight + (hasScrollbar ? scrollbarSize() : 0)
-    )
-);
-
-export const dataCellsWidthSelector = createSelector(
-  [
-    state => state.config.width,
-    columnsWidthSelector,
-    rowHeadersWidthSelector,
-    hasVerticalScrollbar
-  ],
-  (width, columnsWidth, rowHeadersWidth, hasScrollbar) =>
-    Math.min(
-      width - rowHeadersWidth,
-      columnsWidth + (hasScrollbar ? scrollbarSize() : 0)
-    )
-);
-const getLastChild = header => {
-  let lastChild = header;
-  if (lastChild.orderedChildrenIds && lastChild.orderedChildrenIds.length) {
-    lastChild =
-      lastChild.children[
-        lastChild.orderedChildrenIds[lastChild.orderedChildrenIds.length - 1]
-      ];
-  }
-  return lastChild;
-};
-export const getLastChildWidthSelector = createSelector(
-  [getCellWidthByKeySelector],
-  getWidth => header => getWidth(getLastChild(header).key)
-);
-
-export const getLastChildHeightSelector = createSelector(
-  [getCellHeightByKeySelector],
-  getHeight => header => getHeight(getLastChild(header).key)
 );

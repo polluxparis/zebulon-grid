@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import { AxisType } from "../constants";
 import {
   previewSizesSelector,
-  rowsVisibleHeightSelector,
+  dataCellsHeightSelector,
   rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  rowHeadersPositionsSelector
+  rowHeadersPositionsAndSizesSelector
 } from "../selectors";
-import Headers from "../components/Headers/Headers2";
+import Headers from "../components/Headers/Headers";
 import {
   toggleCollapse,
   selectRange,
@@ -18,14 +18,12 @@ import {
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const headers = rowHeadersPositionsSelector(state);
+  const headers = rowHeadersPositionsAndSizesSelector(state);
   return {
     axisType: AxisType.ROWS,
-    height: rowsVisibleHeightSelector(state),
+    height: dataCellsHeightSelector(state),
     width: rowHeadersWidthSelector(state),
     previewSizes: previewSizesSelector(state),
-
-    // getLastChildSize: getLastChildHeightSelector(state),
     rowCount: headers.headers.length,
     columnCount: headers.depth,
     rowsSize: headers.size,

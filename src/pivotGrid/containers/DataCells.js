@@ -8,18 +8,18 @@ import {
   getRangeInfosSelector,
   activatedMeasuresSelector,
   selectedRangeSelector,
-  columnHeadersPositionsSelector,
-  rowHeadersPositionsSelector
+  columnHeadersPositionsAndSizesSelector,
+  rowHeadersPositionsAndSizesSelector
 } from "../selectors";
-import { DataCells2 } from "../components/DataCells/DataCells2";
+import { DataCells } from "../components/DataCells/DataCells";
 import { selectRange, selectCell } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
   const measures = activatedMeasuresSelector(state);
   const getCellValue = getCellValueSelector(state);
   const selectedRange = selectedRangeSelector(state);
-  const columnHeaders = columnHeadersPositionsSelector(state);
-  const rowHeaders = rowHeadersPositionsSelector(state);
+  const columnHeaders = columnHeadersPositionsAndSizesSelector(state);
+  const rowHeaders = rowHeadersPositionsAndSizesSelector(state);
   const props = {
     measures,
     filters: state.filters,
@@ -48,4 +48,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectCell(cell));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(DataCells2);
+export default connect(mapStateToProps, mapDispatchToProps)(DataCells);
