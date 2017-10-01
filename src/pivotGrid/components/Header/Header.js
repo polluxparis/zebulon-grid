@@ -43,12 +43,12 @@ class Header extends Component {
       caption,
       positionStyle,
       previewSizes,
-      scrollLeft,
-      scrollTop,
-      firstSize,
+      // scrollLeft,
+      // scrollTop,
+      // firstSize,
       isNotCollapsible,
       isCollapsed,
-      isAffixManaged,
+      // isAffixManaged,
       moveDimension,
       moveMeasure,
       collectMenu,
@@ -56,26 +56,26 @@ class Header extends Component {
     } = this.props;
     let style = positionStyle;
 
-    // affix management to keep labels on screen (except for leaves)
-    // affix management stops where you reach the last leave size
-    // header cell size are recalculated to fit from the left (or top) of the grid
-    // and the beginning of the nect cell to keep formats (as cenetr left or right)
-    let offset;
-    if (isAffixManaged) {
-      if (axis === AxisType.COLUMNS) {
-        offset = Math.min(
-          scrollLeft - positionStyle.left,
-          positionStyle.width - firstSize
-        );
-        style.paddingLeft = offset;
-      } else {
-        offset = Math.min(
-          scrollTop - positionStyle.top,
-          positionStyle.height - firstSize
-        );
-        style.paddingTop = offset;
-      }
-    }
+    // // affix management to keep labels on screen (except for leaves)
+    // // affix management stops where you reach the last leave size
+    // // header cell size are recalculated to fit from the left (or top) of the grid
+    // // and the beginning of the nect cell to keep formats (as cenetr left or right)
+    // let offset;
+    // if (isAffixManaged) {
+    //   if (axis === AxisType.COLUMNS) {
+    //     offset = Math.min(
+    //       scrollLeft - positionStyle.left,
+    //       positionStyle.width - firstSize
+    //     );
+    //     style.paddingLeft = offset;
+    //   } else {
+    //     offset = Math.min(
+    //       scrollTop - positionStyle.top,
+    //       positionStyle.height - firstSize
+    //     );
+    //     style.paddingTop = offset;
+    //   }
+    // }
 
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;

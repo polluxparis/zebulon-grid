@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
 import classnames from "classnames";
-
+import { ROOT_ID } from "../../constants";
 import {
   // MEASURE_ID,
   // ROOT_ID,
@@ -39,6 +39,17 @@ class Headers extends PureComponent {
     };
   };
 
+  affixOffsets = firstHeader => {
+    const offsets = {};
+    const position = firstHeader.main.position;
+    let header = firstHeader;
+    while (header.parent.id !== ROOT_ID) {
+      header = header.parent;
+      offsets[header.depth] = position - header.main.position;
+    }
+    return offsets;
+  };
+
   headersRenderer = () => {
     const {
       scrollToRow,
@@ -60,30 +71,29 @@ class Headers extends PureComponent {
     const firstHeader = headers[startIndex][0].header;
     const maxSize = axisType === AxisType.ROWS ? height : width;
     const firstPosition = firstHeader.main.position;
-    // const offsetAdjustment = scroll - firstLeaf.main.position
-
+    //  start looping from the root of the first leaf header
     const startRootIndex = firstHeader.rootIndex;
     // const firstSize = firstLeaf.main.size;
     let size = 0;
     let index = startRootIndex;
-
-    // console.log("firstLeaf", firstLeaf, scrollTop, offsetAdjustment);
-    // const correctStopIndex = Math.min(stopIndex, headers.length - 1);
+    // calculate affix offset
+    const affix = this.affixOffsets(firstHeader);
     const cells = [];
     while (size < maxSize && index < headers.length) {
       headers[index].map((header, i) => {
         const h = header.header;
+        // don't add headers not parent of the first leaf
         if (h.lastIndex >= startIndex) {
           const positionStyle = {
             position: "absolute",
             left:
               axisType === AxisType.ROWS
                 ? h.cross.position
-                : h.main.position - firstPosition, // + offsetAdjustment,
+                : h.main.position - firstPosition,
             top:
               axisType === AxisType.COLUMNS
                 ? h.cross.position
-                : h.main.position - firstPosition, // + offsetAdjustment,
+                : h.main.position - firstPosition,
             height: axisType === AxisType.ROWS ? h.main.size : h.cross.size,
             width: axisType === AxisType.COLUMNS ? h.main.size : h.cross.size
           };
@@ -91,6 +101,19 @@ class Headers extends PureComponent {
             axisType === AxisType.ROWS
               ? (positionStyle.paddingRight = h.cross.collapsed)
               : (positionStyle.paddingBottom = h.cross.collapsed);
+          }
+          // affix management to keep labels on screen (except for leaves)
+          if (h.index < startIndex && header.isAffixManaged) {
+            // let offset;
+            if (axisType === AxisType.COLUMNS) {
+              // offset = Math.min(
+              //   scrollLeft - positionStyle.left,
+              //   positionStyle.width - firstSize
+              // );
+              positionStyle.paddingLeft = affix[h.depth];
+            } else {
+              positionStyle.paddingTop = affix[h.depth];
+            }
           }
           cells.push(
             <HeaderComponent
@@ -106,7 +129,6 @@ class Headers extends PureComponent {
               dimensionId={header.dimensionId}
               isNotCollapsible={header.isNotCollapsible}
               isCollapsed={header.header.isCollapsed}
-              isAffixManaged={h.index < startIndex && header.isAffixManaged}
               isDropTarget={header.isDropTarget}
               gridId={gridId}
               selectAxis={selectAxis}
@@ -130,8 +152,8 @@ class Headers extends PureComponent {
   render() {
     const {
       // headers,
-      scrollToRow,
-      scrollToColumn,
+      // scrollToRow,
+      // scrollToColumn,
       height,
       width,
       axisType,

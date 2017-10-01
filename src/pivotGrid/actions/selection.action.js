@@ -1,4 +1,4 @@
-import { SELECT_RANGE } from '../constants';
+import { SELECT_RANGE } from "../constants";
 
 export const selectRange = selectedRange => {
 	return {
@@ -12,8 +12,7 @@ export const selectCell = cell => {
 		type: SELECT_RANGE,
 		selectedRange: {
 			selectedCellStart: cell,
-			selectedCellEnd: cell,
-			focusedCell: cell
+			selectedCellEnd: cell
 		}
 	};
 };

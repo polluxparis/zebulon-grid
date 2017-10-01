@@ -176,17 +176,17 @@ class PivotGrid extends Component {
     this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
     this.shiftKeyIsPressed = e.shiftKey;
     if (e.metaKey || e.ctrlKey) {
-      // ctrl A -> select all
-      if (e.which === 65) {
-        this.props.selectRange({
-          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-          selectedCellEnd: {
-            columnIndex: columnHorizontalCount,
-            rowIndex: rowVerticalCount
-          }
-        });
-        e.preventDefault();
-      }
+      // // ctrl A -> select all
+      // if (e.which === 65) {
+      //   this.props.selectRange({
+      //     selectedCellStart: { columnIndex: 0, rowIndex: 0 },
+      //     selectedCellEnd: {
+      //       columnIndex: columnHorizontalCount,
+      //       rowIndex: rowVerticalCount
+      //     }
+      //   });
+      //   e.preventDefault();
+      // }
       // ctrl + -> zoom in
       // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
       if (e.key === "+" || e.key === "=") {
@@ -280,7 +280,7 @@ class PivotGrid extends Component {
       id: gridId
     } = this.props;
 
-    const { columnHorizontalCount, rowVerticalCount } = layout;
+    // const { columnHorizontalCount, rowVerticalCount } = layout;
     let grid;
     if (this.props.status.loading) {
       grid = <div>Loading data...</div>;
@@ -305,63 +305,49 @@ class PivotGrid extends Component {
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleKeyUp}
         >
-          <ArrowKeyStepper
-            columnCount={columnHorizontalCount}
-            mode="cells"
-            rowCount={rowVerticalCount}
-            scrollToRow={this.scrollToRow}
-            scrollToColumn={this.scrollToColumn}
-            onScrollToChange={this.handleScrollToChange}
-            isControlled={false}
+          <div
+            className="zebulon-grid-zebulon-grid"
+            style={{ fontSize: `${zoomValue * 100}%` }}
           >
-            {({ onSectionRendered, scrollToColumn, scrollToRow }) => {
-              console.log("ArrowKeyStepper", scrollToColumn, scrollToRow);
-              return (
-                <div
-                  className="zebulon-grid-zebulon-grid"
-                  style={{ fontSize: `${zoomValue * 100}%` }}
-                >
-                  <div style={{ display: "flex" }}>
-                    <DimensionHeaders gridId={gridId} />
-                    <ColumnHeaders
-                      gridId={gridId}
-                      scrollToColumn={this.state.scrollToColumn}
-                      scrollToRow={0}
-                    />
-                  </div>
-                  <div style={{ display: "flex" }}>
-                    <RowHeaders
-                      gridId={gridId}
-                      scrollToColumn={0}
-                      scrollToRow={this.state.scrollToRow}
-                    />
-                    <DataCells
-                      // onSectionRendered={onSectionRendered}
-                      drilldown={drilldown}
-                      menuFunctions={this.props.menuFunctions}
-                      onScroll={this.onScroll}
-                      gridId={gridId}
-                      // clientHeight={clientHeight}
-                      // clientWidth={clientWidth}
-                      // scrollToRow={scrollToRow}
-                      // scrollLeft={scrollLeft}
-                      // scrollTop={scrollTop}
-                      // scrollLeft={scrollLeft}
-                      // scrollToRow={
-                      //   scrollToRow
-                      //   // this.scrollChange ? this.scrollToRow : undefined
-                      // }
-                      // scrollToColumn={
-                      //   scrollToColumn
-                      //   // this.scrollChange ? this.scrollToColumn : undefined
-                      // }
-                    />
-                  </div>
-                  <ConnectedMenu />
-                </div>
-              );
-            }}
-          </ArrowKeyStepper>
+            <div style={{ display: "flex" }}>
+              <DimensionHeaders gridId={gridId} />
+              <ColumnHeaders
+                gridId={gridId}
+                scrollToColumn={this.state.scrollToColumn}
+                scrollToRow={0}
+              />
+            </div>
+            <div style={{ display: "flex" }}>
+              <RowHeaders
+                gridId={gridId}
+                scrollToColumn={0}
+                scrollToRow={this.state.scrollToRow}
+              />
+              <DataCells
+                // onSectionRendered={onSectionRendered}
+                drilldown={drilldown}
+                menuFunctions={this.props.menuFunctions}
+                onScroll={this.onScroll}
+                gridId={gridId}
+
+                // clientHeight={clientHeight}
+                // clientWidth={clientWidth}
+                // scrollToRow={scrollToRow}
+                // scrollLeft={scrollLeft}
+                // scrollTop={scrollTop}
+                // scrollLeft={scrollLeft}
+                // scrollToRow={
+                //   scrollToRow
+                //   // this.scrollChange ? this.scrollToRow : undefined
+                // }
+                // scrollToColumn={
+                //   scrollToColumn
+                //   // this.scrollChange ? this.scrollToColumn : undefined
+                // }
+              />
+            </div>
+            <ConnectedMenu />
+          </div>
         </div>
       );
     }
@@ -398,6 +384,19 @@ export default DropTarget(
   collect
 )(PivotGrid);
 /*
+ <ArrowKeyStepper
+            columnCount={columnHorizontalCount}
+            mode="cells"
+            rowCount={rowVerticalCount}
+            scrollToRow={this.scrollToRow}
+            scrollToColumn={this.scrollToColumn}
+            onScrollToChange={this.handleScrollToChange}
+            isControlled={false}
+          >
+            {({ onSectionRendered, scrollToColumn, scrollToRow }) => {
+              console.log("ArrowKeyStepper", scrollToColumn, scrollToRow);
+              return (
+
   <div
                         className="zebulon-grid-zebulon-grid"
                         style={{ fontSize: `${zoomValue * 100}%` }}
@@ -438,4 +437,6 @@ export default DropTarget(
                         </div>
                         <ConnectedMenu />
                       </div>
-      */
+             );
+            }}
+          </ArrowKeyStepper>      */

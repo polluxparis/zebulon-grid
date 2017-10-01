@@ -3,8 +3,7 @@ import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA } from "../constants";
 export default (
   state = {
     selectedCellStart: null,
-    selectedCellEnd: null,
-    focusedCell: null
+    selectedCellEnd: null
   },
   action
 ) => {
@@ -15,8 +14,7 @@ export default (
       return {
         ...state,
         selectedCellStart: null,
-        selectedCellEnd: null,
-        focusedCell: null
+        selectedCellEnd: null
       };
     case SELECT_RANGE:
       return {
