@@ -7,7 +7,7 @@
 //  + preview sizes or drag and drop
 import { createSelector } from "reselect";
 
-import scrollbarSize from "../utils/scrollbarSize";
+// import scrollbarSize from "../utils/scrollbarSize";
 import { ROOT_ID, AxisType } from "../constants";
 import {
   getCellWidthByKeySelector,
@@ -22,6 +22,7 @@ import {
   rowDimensionsSelector
 } from "./dimensions.selector";
 
+const scrollbarSize = 12;
 //-------------------------------------------
 export const rowHeadersWidthSelector = createSelector(
   [rowDimensionsSelector, getCellWidthByKeySelector],
@@ -63,7 +64,7 @@ export const horizontalScrollbarSizeSelector = createSelector(
   ],
   (width, rowHeadersWidth, columnHeadersPositionsAndSizes) =>
     width < rowHeadersWidth + columnHeadersPositionsAndSizes.size
-      ? scrollbarSize()
+      ? scrollbarSize
       : 0
 );
 //---------------------------------------------
@@ -75,9 +76,18 @@ export const verticalScrollbarSizeSelector = createSelector(
   ],
   (height, columnHeadersHeight, rowHeadersPositionsAndSizes) =>
     height < columnHeadersHeight + rowHeadersPositionsAndSizes.size
-      ? scrollbarSize()
+      ? scrollbarSize
       : 0
 );
+//---------------------------------------------
+export const scrollbarSizesSelector = createSelector(
+  [horizontalScrollbarSizeSelector, verticalScrollbarSizeSelector],
+  (horizontalScrollbarSize, verticalScrollbarSize) => ({
+    horizontal: horizontalScrollbarSize,
+    vertical: verticalScrollbarSize
+  })
+);
+
 //  size of the datacells grid
 export const dataCellsHeightSelector = createSelector(
   [

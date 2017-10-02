@@ -9,7 +9,8 @@ import {
   activatedMeasuresSelector,
   selectedRangeSelector,
   columnHeadersPositionsAndSizesSelector,
-  rowHeadersPositionsAndSizesSelector
+  rowHeadersPositionsAndSizesSelector,
+  scrollbarSizesSelector
 } from "../selectors";
 import { DataCells } from "../components/DataCells/DataCells";
 import { selectRange, selectCell } from "../actions";
@@ -32,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
     height: dataCellsHeightSelector(state),
     width: dataCellsWidthSelector(state),
     rowsSize: rowHeaders.size,
-    columnsSize: columnHeaders.size
+    columnsSize: columnHeaders.size,
+    scrollbarSizes: scrollbarSizesSelector(state)
   };
   if (ownProps.scroll) {
     props.scrollToRow = ownProps.scroll.row;

@@ -54,7 +54,11 @@ export class ScrollBar extends Component {
       shiftKey,
       x,
       y,
-      positionRatio: Math.max(0, Math.min(1, position / this.props.length)),
+      positionRatio: Math.max(
+        0,
+        Math.min(this.props.length - this.innerSize, position) /
+          this.props.length
+      ),
       initiator
     };
     this.position = position;
@@ -72,6 +76,7 @@ export class ScrollBar extends Component {
   handleMouseOver = e => {
     if (this.isDragging) {
       console.log("mouse over", e);
+      return this.props.handleMouseDown(this.collect(e));
     }
   };
   handleDragStart(event) {
@@ -109,7 +114,6 @@ export class ScrollBar extends Component {
   render() {
     const {
       direction,
-      visible,
       length,
       width,
       offset,
@@ -117,11 +121,11 @@ export class ScrollBar extends Component {
       displayedRatio,
       id
     } = this.props;
-    if (!visible) {
+    if (!width) {
       return null;
     }
     let style = {
-      position: "absolute",
+      // position: "relative",
       backgroundColor: "lightgrey",
       border: "solid 0.03em grey",
       borderRadius: " 0.25rem"
@@ -132,7 +136,7 @@ export class ScrollBar extends Component {
       backgroundColor: "grey"
     };
     this.innerSize = Math.max(30, length * displayedRatio);
-    this.position = (length - this.innerSize) * positionRatio;
+    this.position = length * positionRatio;
     if (direction === "horizontal") {
       style = {
         ...style,
@@ -142,7 +146,8 @@ export class ScrollBar extends Component {
       };
       innerStyle = {
         ...innerStyle,
-        height: width - 2,
+        height: width - 1,
+        // marginTop: 0.5,
         width: this.innerSize,
         left: this.position
       };
@@ -157,7 +162,8 @@ export class ScrollBar extends Component {
       innerStyle = {
         ...innerStyle,
         height: this.innerSize,
-        width: width - 2,
+        width: width - 1,
+        // marginLeft: 0.5,
         top: this.position
       };
     }

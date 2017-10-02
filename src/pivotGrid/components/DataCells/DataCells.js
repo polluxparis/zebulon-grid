@@ -9,8 +9,8 @@ export class DataCells extends Component {
   constructor(props) {
     super(props);
     this.cellCache = {};
-    this.scrollbarWidth = 10;
-    this.scrollArrowSize = 10;
+    // this.scrollbarWidth = 10;
+    // this.scrollArrowSize = 10;
     this.scroll = { rowStartIndex: 0, columnStartIndex: 0 };
   }
 
@@ -127,7 +127,7 @@ export class DataCells extends Component {
         }
         // shift display at end
         if (
-          cell.rowIndex > this.scroll.rowStopIndex ||
+          cell.rowIndex > this.scroll.rowStopIndex - 1 ||
           cell.rowIndex < this.scroll.rowStartIndex
         ) {
           this.scrollTo(
@@ -135,7 +135,7 @@ export class DataCells extends Component {
             this.scroll.columnStartIndex
           );
         } else if (
-          cell.columnIndex > this.scroll.columnStopIndex ||
+          cell.columnIndex > this.scroll.columnStopIndex - 1 ||
           cell.columnIndex < this.scroll.columnStartIndex
         ) {
           this.scrollTo(
@@ -392,10 +392,10 @@ export class DataCells extends Component {
       position: "relative",
       overflow: "hidden",
       height,
-      width,
-      borderRight: "solid 0.03em grey",
-      borderBottom: "solid 0.03em grey",
-      borderRadius: " 0.25rem"
+      width
+      // borderRight: "solid 0.03em grey",
+      // borderBottom: "solid 0.03em grey",
+      // borderRadius: " 0.25rem"
     };
     const cells = this.cellsRenderer();
     const rowDisplayedCount =
@@ -405,20 +405,19 @@ export class DataCells extends Component {
     return (
       <div
         id={`grid ${gridId}`}
-        style={style}
         onWheel={this.handleWheel}
         tabIndex={0}
         onKeyDown={this.handleKeyDown}
         onKeyUp={this.handleKeyUp}
       >
-        <div display="flex">
-          {cells}
+        <div style={{ display: "flex" }}>
+          <div style={style}>{cells}</div>
           <ScrollBar
             direction="vertical"
-            width={this.scrollbarWidth}
-            length={height - this.scroll.visbleScrollbarH * this.scrollbarWidth}
-            offset={width - this.scrollbarWidth}
-            visible={this.scroll.visbleScrollbarV}
+            width={this.props.scrollbarSizes.vertical}
+            length={height}
+            offset={width}
+            // visible={this.scroll.visbleScrollbarV}
             positionRatio={
               this.scroll.rowStartIndex / (this.scroll.rowLastIndex + 1)
             }
@@ -430,10 +429,10 @@ export class DataCells extends Component {
         </div>
         <ScrollBar
           direction="horizontal"
-          width={this.scrollbarWidth}
-          length={width - this.scroll.visbleScrollbarV * this.scrollbarWidth}
-          offset={height - this.scrollbarWidth}
-          visible={this.scroll.visbleScrollbarH}
+          width={this.props.scrollbarSizes.horizontal}
+          length={width}
+          offset={height}
+          // visible={this.scroll.visbleScrollbarH}
           positionRatio={
             this.scroll.columnStartIndex / (this.scroll.columnLastIndex + 1)
           }
@@ -443,7 +442,6 @@ export class DataCells extends Component {
           id={`horizontal-scrollbar ${gridId}`}
           handleMouseDown={this.handleMouseDown}
           handleMouseOver={this.handleMouseOver}
-        />
         />
       </div>
     );
