@@ -221,13 +221,13 @@ export class DataCells extends Component {
     // console.log(e);
     e.preventDefault();
     const direction = -Math.sign(e.deltaY);
-    const prevScroll = e.AltKey ? this.scroll.column : this.scroll.row;
+    const prevScroll = e.altKey ? this.scroll.column : this.scroll.row;
+    const headersLenght = e.altKey
+      ? this.props.columnHeaders.length
+      : this.props.rowHeaders.length;
     const scroll = {};
     const offset = prevScroll.direction * direction < 0;
-    if (
-      direction === -1 &&
-      prevScroll.stopIndex - offset < this.props.rowHeaders.length - 1
-    ) {
+    if (direction === -1 && prevScroll.stopIndex - offset < headersLenght - 1) {
       scroll.index = prevScroll.stopIndex - offset + 1;
       scroll.direction = direction;
     } else if (direction === 1 && prevScroll.startIndex + offset > 0) {
@@ -238,8 +238,8 @@ export class DataCells extends Component {
     }
     this.scrollTo({
       scroll: {
-        row: e.shiftKey ? this.state.scroll.row : scroll,
-        column: e.shiftKey ? scroll : this.state.scroll.column
+        row: e.altKey ? this.state.scroll.row : scroll,
+        column: e.altKey ? scroll : this.state.scroll.column
       }
     });
   };
@@ -394,10 +394,10 @@ export class DataCells extends Component {
       />
     );
   };
-  cellsRenderer = () => {
+  cellsRenderer = scroll => {
     // console.log("cells renderer");
     const { rowHeaders, columnHeaders, height, width } = this.props;
-    const { row, column } = this.state.scroll;
+    const { row, column } = scroll;
     const cells = [];
     if (row.index >= rowHeaders.length) {
       row.index = 0;
@@ -444,6 +444,18 @@ export class DataCells extends Component {
       rowsSize += rowHeader.main.size;
       rowIndex += row.direction;
     }
+    // when height(or widht) increase and the grid is scrolled, it may not rest enough cells to feed the grid
+    if (rowsSize < height || columnsSize < width) {
+      console.log(rowIndex - row.index, height, rowsSize);
+      const scroll2 = { ...scroll };
+      if (rowsSize < height) {
+        scroll2.row = { index: rowHeaders.length - 1, direction: -1 };
+      }
+      if (columnsSize < width) {
+        scroll2.column = { index: columnHeaders.length - 1, direction: -1 };
+      }
+      return this.cellsRenderer(scroll2);
+    }
     if (row.direction === 1) {
       this.scroll.row.startIndex = row.index;
       this.scroll.row.stopIndex = rowIndex - 1;
@@ -484,7 +496,7 @@ export class DataCells extends Component {
       // borderRadius: " 0.25rem"
     };
     // if (!this.cells) {
-    this.cells = this.cellsRenderer();
+    this.cells = this.cellsRenderer(this.state.scroll);
     // }
     const rowDisplayedCount =
       this.scroll.row.stopIndex - this.scroll.row.startIndex + 1;

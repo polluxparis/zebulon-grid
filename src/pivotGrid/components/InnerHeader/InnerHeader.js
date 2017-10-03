@@ -60,6 +60,7 @@ const innerHeader = ({
   caption,
   isNotCollapsible,
   isCollapsed,
+  collapseOffset,
   handleClick,
   handleClickCollapse,
   moveDimension,
@@ -117,8 +118,17 @@ const innerHeader = ({
       />
     );
   }
+  const style = { width: "-webkit-fill-available" };
+  if (collapseOffset) {
+    if (axis === AxisType.ROWS) {
+      style.paddingRight = collapseOffset;
+    } else {
+      style.paddingBottom = collapseOffset;
+    }
+  }
+
   let header = (
-    <div style={{ width: "inherit" }} onClick={handleClick}>
+    <div style={style} onClick={handleClick}>
       {caption}
     </div>
   );

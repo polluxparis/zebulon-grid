@@ -51,6 +51,8 @@ function buildAxisTrees(data, { columns, rows }) {
   const rowRoot = { id: ROOT_ID, children: {} };
   const columnRoot = { id: ROOT_ID, children: {} };
   // Create sorting accessors
+  console.log("buildNode0", Date.now());
+
   data.forEach((row, index) => {
     let columnNode = columnRoot;
     let rowNode = rowRoot;
@@ -65,6 +67,8 @@ function buildAxisTrees(data, { columns, rows }) {
       }
     });
   });
+  console.log("buildNode", Date.now());
+
   return { columns: columnRoot, rows: rowRoot };
 }
 const getAxisTreesSelector = createSelector(
@@ -83,6 +87,159 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
+function buildHeaders2(
+  data,
+  node,
+  dimensions,
+  measures,
+  depth,
+  parent,
+  areCollapsed
+) {
+  const { id, dataIndexes } = node;
+  let header;
+  // Root node
+  if (node.id === ROOT_ID) {
+    header = {
+      id: ROOT_ID,
+      type: HeaderType.GRAND_TOTAL,
+      parent: null,
+      dataIndexes: undefined,
+      orderedChildrenIds: []
+    };
+  } else {
+    const currentDimension = dimensions[depth];
+    const row = data[dataIndexes[0]];
+    const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
+    const isCollapsed = currentDimension.isAttribute
+      ? parent.isCollapsed
+      : areCollapsed[key] || false;
+    header = {
+      sortKey: currentDimension.sort.keyAccessor(row),
+      id: currentDimension.keyAccessor(row),
+      type: HeaderType.DIMENSION,
+      parent,
+      key,
+      dataIndexes,
+      orderedChildrenIds: [],
+      isCollapsed,
+      depth,
+      span: 1
+    };
+    // header.hasSubTotal = currentDimension.hasSubTotal;
+  }
+  if (
+    !header.isCollapsed ||
+    (depth + 1 < dimensions.length && dimensions[depth + 1].isAttribute)
+  ) {
+    // header.children = Object.keys(node.children).reduce(
+    //   (acc, nodeId) => ({
+    //     ...acc,
+    //     [nodeId]: buildHeaders(
+    //       data,
+    //       node.children[nodeId],
+    //       dimensions,
+    //       measures,
+    //       depth + 1,
+    //       header,
+    //       areCollapsed
+    //     )
+    //   }),
+    //   {}
+    // );
+    header.children = Object.values(node.children).reduce((acc, node) => {
+      acc[node.id] = buildHeaders(
+        data,
+        node,
+        dimensions,
+        measures,
+        depth + 1,
+        header,
+        areCollapsed
+      );
+      return acc;
+    }, {});
+  } else {
+    header.children = {};
+  }
+  return header;
+  const childrenKeys = Object.keys(header.children);
+  if (childrenKeys.length > 0) {
+    // sort children and count span
+    // start
+    header.span = 0;
+    const orderedChildrenMap = childrenKeys.map(id => {
+      header.span += header.children[id].span;
+      return {
+        id: header.children[id].id,
+        sortKey: header.children[id].sortKey
+      };
+    });
+
+    if (
+      header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
+    ) {
+      let childrenDimension = dimensions[depth + 1];
+
+      if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
+        childrenDimension =
+          dimensions[
+            dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
+          ] || childrenDimension;
+      }
+      let sortFunction;
+      if (childrenDimension.sort.custom) {
+        sortFunction = (a, b) =>
+          childrenDimension.sort.custom(a.sortKey, b.sortKey);
+      } else {
+        sortFunction = (a, b) =>
+          (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
+      }
+      orderedChildrenMap.sort(sortFunction);
+      header.orderedChildrenIds = orderedChildrenMap.map(obj => obj.id);
+      if (childrenDimension.sort.direction === "desc") {
+        header.orderedChildrenIds.reverse();
+      }
+    }
+    // end
+  } else {
+    if (!isNull(measures)) {
+      const measureIds = Object.keys(measures);
+      if (measureIds.length > 0) {
+        // measure headers
+        measureIds.forEach((id, index) => {
+          header.children[id] = {
+            id: id,
+            type: HeaderType.MEASURE,
+            parent: header,
+            dataIndexes: header.dataIndexes,
+            key: `${header.key}-/-${id}`,
+            orderedChildrenIds: [],
+            isCollapsed: header.isCollapsed,
+            span: 1,
+            depth: dimensions.length - 1
+          };
+          header.span = measureIds.length;
+          header.orderedChildrenIds.push(id);
+        });
+      } else {
+        header.children[EMPTY_ID] = {
+          id: EMPTY_ID,
+          type: HeaderType.MEASURE,
+          key: `${header.key}-/-${EMPTY_ID}`,
+          parent: header,
+          dataIndexes: header.dataIndexes,
+          isCollapsed: header.isCollapsed,
+          orderedChildrenIds: [],
+          span: 1,
+          depth: dimensions.length - 1
+        };
+        header.orderedChildrenIds.push(EMPTY_ID);
+      }
+    }
+  }
+  return header;
+}
 
 function buildHeaders(
   data,
@@ -123,33 +280,31 @@ function buildHeaders(
       depth,
       span: 1
     };
-    header.hasSubTotal = currentDimension.hasSubTotal;
+    // header.hasSubTotal = currentDimension.hasSubTotal;
   }
   if (
     !header.isCollapsed ||
     (depth + 1 < dimensions.length && dimensions[depth + 1].isAttribute)
   ) {
-    header.children = Object.keys(node.children).reduce(
-      (acc, nodeId) => ({
-        ...acc,
-        [nodeId]: buildHeaders(
-          data,
-          node.children[nodeId],
-          dimensions,
-          measures,
-          depth + 1,
-          header,
-          areCollapsed
-        )
-      }),
-      {}
-    );
+    header.children = Object.keys(node.children).reduce((acc, nodeId) => {
+      acc[nodeId] = buildHeaders(
+        data,
+        node.children[nodeId],
+        dimensions,
+        measures,
+        depth + 1,
+        header,
+        areCollapsed
+      );
+      return acc;
+    }, {});
   } else {
     header.children = {};
   }
   const childrenKeys = Object.keys(header.children);
   if (childrenKeys.length > 0) {
     // sort children and count span
+    // start
     header.span = 0;
     const orderedChildrenMap = childrenKeys.map(id => {
       header.span += header.children[id].span;
@@ -184,6 +339,7 @@ function buildHeaders(
         header.orderedChildrenIds.reverse();
       }
     }
+    // end
   } else {
     if (!isNull(measures)) {
       const measureIds = Object.keys(measures);

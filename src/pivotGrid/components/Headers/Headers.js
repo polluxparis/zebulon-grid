@@ -84,18 +84,18 @@ class Headers extends PureComponent {
             height: axisType === AxisType.ROWS ? h.main.size : h.cross.size,
             width: axisType === AxisType.COLUMNS ? h.main.size : h.cross.size
           };
-          if (h.cross.collapsed) {
-            axisType === AxisType.ROWS
-              ? (positionStyle.paddingRight = h.cross.collapsed)
-              : (positionStyle.paddingBottom = h.cross.collapsed);
-          }
+          // if (h.cross.collapsed) {
+          //   axisType === AxisType.ROWS
+          //     ? (positionStyle.paddingRight = h.cross.collapsed)
+          //     : (positionStyle.paddingBottom = h.cross.collapsed);
+          // }
           // affix management to keep labels on screen (except for leaves)
           if (h.index < startIndex && header.isAffixManaged) {
             // let offset;
             if (axisType === AxisType.COLUMNS) {
-              positionStyle.paddingLeft = affix[h.depth];
+              positionStyle.paddingLeft = affix[h.depth] - offset;
             } else {
-              positionStyle.paddingTop = affix[h.depth];
+              positionStyle.paddingTop = affix[h.depth] - offset;
             }
           }
           cells.push(
@@ -110,6 +110,7 @@ class Headers extends PureComponent {
               dimensionId={header.dimensionId}
               isNotCollapsible={header.isNotCollapsible}
               isCollapsed={h.isCollapsed}
+              collapseOffset={h.cross.collapsed ? h.cross.collapsed : 0}
               isDropTarget={header.isDropTarget}
               isDragSource={
                 header.dimensionId === MEASURE_ID &&

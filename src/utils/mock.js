@@ -74,7 +74,9 @@ export function getObservableMockDatasource(interval) {
     ],
     { toto: "0", toto_lb: "toto 0", qty: 1, amt: 2, titi: "titi 0", tutu: "1" }
   ];
-  return Observable.interval(interval || 100).take(3).map(i => data[i]);
+  return Observable.interval(interval || 100)
+    .take(3)
+    .map(i => data[i]);
 }
 export function getObservableError() {
   return Observable.throw(new Error("titi"));
@@ -158,8 +160,8 @@ export const basicConfig = {
       format: "price"
     }
   ],
-  columns: ["titi"],
-  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
+  columns: [],
+  rows: ["toto", "toto att 0", "toto att 1", "tutu", "titi"],
   activeMeasures: ["qty", "amt", "price"]
 };
 export const basicConfig2 = {

@@ -44,6 +44,7 @@ class Header extends Component {
       previewSizes,
       isNotCollapsible,
       isCollapsed,
+      collapseOffset,
       moveDimension,
       moveMeasure,
       collectMenu,
@@ -63,7 +64,8 @@ class Header extends Component {
     });
     const head = (
       <div
-        className={className}
+        // className={className}
+        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
         style={{
           boxSizing: "border-box",
           overflow: "hidden",
@@ -79,6 +81,7 @@ class Header extends Component {
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
+          collapseOffset={collapseOffset}
           handleClickCollapse={this.handleClickCollapse}
           handleClick={this.handleClick}
           handleClickMenu={this.handleClickMenu}
