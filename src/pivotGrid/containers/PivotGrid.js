@@ -6,7 +6,7 @@ import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
   columnLeavesSelector,
   defaultCellSizesSelector,
-  layoutSelector,
+  // layoutSelector,
   rowLeavesSelector,
   selectedRangeSelector,
   copySelector

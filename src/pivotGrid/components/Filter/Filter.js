@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // import { addFilter, deleteFilter } from "../actions";
-import { List, AutoSizer, Grid } from "react-virtualized";
+import { List } from "react-virtualized";
 
 export class Filter extends Component {
   constructor(props) {
@@ -59,7 +59,7 @@ export class Filter extends Component {
       changed: !this.state.changed
     });
   };
-
+  //  changed={this.state.changed}
   itemRenderer = ({ index, key, isScrolling, style }) => {
     const { id, label } = this.state.items[index];
     return (
@@ -68,7 +68,6 @@ export class Filter extends Component {
           type="checkbox"
           checked={this.state.filter[id] !== undefined}
           onChange={() => this.onChangeCheck(id, index)}
-          changed={this.state.changed}
         />
         <span onClick={() => this.onChangeCheck(id, index)}>{label}</span>
       </div>
@@ -81,8 +80,7 @@ export class Filter extends Component {
     );
   };
   render() {
-    const rowHeight = 20,
-      rowCount = 1000;
+    const rowHeight = 20;
     return (
       <div
         style={{

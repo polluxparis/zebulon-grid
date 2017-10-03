@@ -27,10 +27,7 @@ import {
   HeaderType,
   AxisType
 } from "../constants";
-console.log("rowDimensionsSelector", rowDimensionsSelector);
-// console.log("horizontalScrollbarSizeSelector", horizontalScrollbarSizeSelector);
-console.log("getCellWidthByKeySelector", getCellWidthByKeySelector);
-console.log("crossPositionsSelector", crossPositionsSelector);
+
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
@@ -97,6 +94,7 @@ export function buildAxisPositionsHeaders(
     header.cross = crossPositions[ROOT_ID];
     header.index = 0;
     header.rootIndex = 0;
+    header.lastIndex = 0;
     const headerCell = {
       header,
       caption: "Total",
@@ -174,7 +172,7 @@ export function buildAxisPositionsHeaders(
       header = header.parent;
     }
   });
-  console.log("buildAxisPositionsHeaders1", Date.now());
+  console.log("buildAxisPositionsHeaders1", Date.now(), headerCells.length);
 
   return {
     size: totalSize,

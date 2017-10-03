@@ -88,7 +88,7 @@ const MeasureMenu = (id, trigger) => {
       <MenuItem
         onClick={trigger.onItemClick}
         data={{ action: "remove" }}
-        disabled={Object.keys(trigger.measures).length < 2}
+        disabled={Object.keys(trigger.measures || {}).length < 2}
       >
         Remove
       </MenuItem>

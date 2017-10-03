@@ -1,15 +1,9 @@
 import React, { PureComponent } from "react";
-import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
+// import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
 import classnames from "classnames";
-import { ROOT_ID } from "../../constants";
-import {
-  // MEASURE_ID,
-  // ROOT_ID,
-  // TOTAL_ID,
-  // HeaderType,
-  AxisType
-} from "../../constants";
-import HeaderComponent from "../Header/Header";
+import { ROOT_ID, MEASURE_ID } from "../../constants";
+import { AxisType } from "../../constants";
+import Header from "../Header/Header";
 // import { isNull } from "../../utils/generic";
 // import { getLeaves } from "../../utils/headers";
 
@@ -20,17 +14,6 @@ class Headers extends PureComponent {
     }
   };
 
-  // componentDidUpdate = prevProps => {
-  //   if (
-  //     prevProps.sizes !== this.props.sizes ||
-  //     prevProps.dimensions !== this.props.dimensions ||
-  //     prevProps.zoom !== this.props.zoom
-  //   ) {
-  //   }
-  //   this.grid.recomputeGridSize();
-  // };
-  // shouldComponentUpdate = () => false;
-
   collectMenu = props => {
     return {
       ...props,
@@ -39,11 +22,11 @@ class Headers extends PureComponent {
     };
   };
 
-  affixOffsets = firstHeader => {
+  affixOffsets = (firstHeader, offset) => {
     const offsets = {};
     const position = firstHeader.main.position;
     let header = firstHeader;
-    while (header.parent.id !== ROOT_ID) {
+    while (header.parent && header.parent.id !== ROOT_ID) {
       header = header.parent;
       offsets[header.depth] = position - header.main.position;
     }
@@ -66,20 +49,24 @@ class Headers extends PureComponent {
       axisType,
       previewSizes
     } = this.props;
-    const startIndex =
-      axisType === AxisType.ROWS ? scrollToRow : scrollToColumn;
+    const scroll = axisType === AxisType.ROWS ? scrollToRow : scrollToColumn;
+    let { startIndex, offset } = scroll;
+    if (startIndex > headers.length) {
+      startIndex = 0;
+      offset = 0;
+    }
     const firstHeader = headers[startIndex][0].header;
     const maxSize = axisType === AxisType.ROWS ? height : width;
     const firstPosition = firstHeader.main.position;
     //  start looping from the root of the first leaf header
-    const startRootIndex = firstHeader.rootIndex;
+    const startRootIndex = firstHeader.rootIndex || 0;
     // const firstSize = firstLeaf.main.size;
     let size = 0;
     let index = startRootIndex;
     // calculate affix offset
-    const affix = this.affixOffsets(firstHeader);
+    const affix = this.affixOffsets(firstHeader, offset);
     const cells = [];
-    while (size < maxSize && index < headers.length) {
+    while (size < maxSize - offset && index < headers.length) {
       headers[index].map((header, i) => {
         const h = header.header;
         // don't add headers not parent of the first leaf
@@ -89,11 +76,11 @@ class Headers extends PureComponent {
             left:
               axisType === AxisType.ROWS
                 ? h.cross.position
-                : h.main.position - firstPosition,
+                : h.main.position - firstPosition + offset,
             top:
               axisType === AxisType.COLUMNS
                 ? h.cross.position
-                : h.main.position - firstPosition,
+                : h.main.position - firstPosition + offset,
             height: axisType === AxisType.ROWS ? h.main.size : h.cross.size,
             width: axisType === AxisType.COLUMNS ? h.main.size : h.cross.size
           };
@@ -106,30 +93,28 @@ class Headers extends PureComponent {
           if (h.index < startIndex && header.isAffixManaged) {
             // let offset;
             if (axisType === AxisType.COLUMNS) {
-              // offset = Math.min(
-              //   scrollLeft - positionStyle.left,
-              //   positionStyle.width - firstSize
-              // );
               positionStyle.paddingLeft = affix[h.depth];
             } else {
               positionStyle.paddingTop = affix[h.depth];
             }
           }
           cells.push(
-            <HeaderComponent
+            // index,
+            // measureId,
+            <Header
               key={`header-${h.key}`}
               header={h}
               axis={axisType}
               caption={header.caption}
               positionStyle={positionStyle}
-              // span={header.span}
-              // scrollLeft={scrollLeft}
-              // scrollTop={scrollTop}
-              // firstSize={firstSize}
               dimensionId={header.dimensionId}
               isNotCollapsible={header.isNotCollapsible}
-              isCollapsed={header.header.isCollapsed}
+              isCollapsed={h.isCollapsed}
               isDropTarget={header.isDropTarget}
+              isDragSource={
+                header.dimensionId === MEASURE_ID &&
+                Object.keys(this.props.measures || {}).length > 1
+              }
               gridId={gridId}
               selectAxis={selectAxis}
               moveDimension={moveDimension}
@@ -150,30 +135,14 @@ class Headers extends PureComponent {
     return cells;
   };
   render() {
-    const {
-      // headers,
-      // scrollToRow,
-      // scrollToColumn,
-      height,
-      width,
-      axisType,
-      // rowCount,
-      // columnCount,
-      // columnsSize,
-      // rowsSize,
-      gridId
-    } = this.props;
+    const { height, width, axisType, gridId } = this.props;
     const cells = this.headersRenderer();
     const style = {
       position: "relative",
       overflow: "hidden",
       height,
       width
-      // borderRight: "solid 0.03em grey",
-      // borderBottom: "solid 0.03em grey",
-      // borderRadius: " 0.25rem"
     };
-    // console.log("header render", axisType, scrollTop, scrollLeft);
     return (
       <div
         className={classnames({

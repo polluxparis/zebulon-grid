@@ -55,7 +55,7 @@ class PivotGridDemo extends Component {
         <div>
           <ResizableBox height={basicConfig.height} width={basicConfig.width}>
             <AutoSizer>
-              {({ height, width }) =>
+              {({ height, width }) => (
                 <GridWithoutStore
                   id={0}
                   menuFunctions={menuFunctions}
@@ -65,7 +65,8 @@ class PivotGridDemo extends Component {
                   drilldown={cell => {
                     console.log("drilldown", cell);
                   }}
-                />}
+                />
+              )}
             </AutoSizer>
           </ResizableBox>
           <div>

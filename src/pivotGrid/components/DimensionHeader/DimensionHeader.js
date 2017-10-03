@@ -125,6 +125,7 @@ class DimensionHeader extends PureComponent {
           handleClickCollapse={this.handleClickCollapse}
           moveDimension={moveDimension}
           isDropTarget={isDropTarget}
+          isDragSource={true}
           gridId={gridId}
         />
         <ResizeHandle

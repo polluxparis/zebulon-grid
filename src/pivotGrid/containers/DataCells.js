@@ -7,6 +7,7 @@ import {
   getCellInfosSelector,
   getRangeInfosSelector,
   activatedMeasuresSelector,
+  dimensionsSelector,
   selectedRangeSelector,
   columnHeadersPositionsAndSizesSelector,
   rowHeadersPositionsAndSizesSelector,
@@ -24,6 +25,8 @@ const mapStateToProps = (state, ownProps) => {
   const props = {
     measures,
     filters: state.filters,
+    dimensions: dimensionsSelector(state),
+
     selectedRange,
     getCellValue,
     columnHeaders: columnHeaders.headers,

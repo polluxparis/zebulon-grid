@@ -6,7 +6,9 @@ import {
   columnHeadersHeightSelector,
   previewSizesSelector,
   getSelectedColumnRangeSelector,
-  columnHeadersPositionsAndSizesSelector
+  columnHeadersPositionsAndSizesSelector,
+  getAxisActivatedMeasuresSelector,
+  availableMeasuresSelector
 } from "../selectors";
 import {
   toggleCollapse,
@@ -30,7 +32,9 @@ const mapStateToProps = (state, ownProps) => {
     rowCount: headers.depth,
     columnCount: headers.headers.length,
     rowsSize: headers.crossSize,
-    columnsSize: headers.size
+    columnsSize: headers.size,
+    measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
+    availableMeasures: availableMeasuresSelector(state)
   };
 };
 

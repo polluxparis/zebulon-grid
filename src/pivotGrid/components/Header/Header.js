@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import classNames from "classnames";
 
 import { AxisType, toAxis, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
@@ -35,55 +36,34 @@ class Header extends Component {
   render() {
     const {
       axis,
-      index,
-      measureId,
       dimensionId,
       gridId,
       header,
       caption,
       positionStyle,
       previewSizes,
-      // scrollLeft,
-      // scrollTop,
-      // firstSize,
       isNotCollapsible,
       isCollapsed,
-      // isAffixManaged,
       moveDimension,
       moveMeasure,
       collectMenu,
-      isDropTarget
+      isDropTarget,
+      isDragSource
     } = this.props;
     let style = positionStyle;
-
-    // // affix management to keep labels on screen (except for leaves)
-    // // affix management stops where you reach the last leave size
-    // // header cell size are recalculated to fit from the left (or top) of the grid
-    // // and the beginning of the nect cell to keep formats (as cenetr left or right)
-    // let offset;
-    // if (isAffixManaged) {
-    //   if (axis === AxisType.COLUMNS) {
-    //     offset = Math.min(
-    //       scrollLeft - positionStyle.left,
-    //       positionStyle.width - firstSize
-    //     );
-    //     style.paddingLeft = offset;
-    //   } else {
-    //     offset = Math.min(
-    //       scrollTop - positionStyle.top,
-    //       positionStyle.height - firstSize
-    //     );
-    //     style.paddingTop = offset;
-    //   }
-    // }
-
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
+    const className = classNames({
+      "zebulon-grid-cell": true,
+      "zebulon-grid-header": true
+      // "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
+      // "zebulon-grid-dimension-header-row": axis === AxisType.ROWS
+    });
     const head = (
       <div
-        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
+        className={className}
         style={{
           boxSizing: "border-box",
           overflow: "hidden",
@@ -94,8 +74,8 @@ class Header extends Component {
         <InnerHeader
           axis={axis}
           id={dimensionId}
-          measureId={measureId}
-          index={index}
+          measureId={dimensionId === MEASURE_ID ? header.id : null}
+          index={header.index}
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
@@ -105,6 +85,7 @@ class Header extends Component {
           moveDimension={moveDimension}
           moveMeasure={moveMeasure}
           isDropTarget={isDropTarget}
+          isDragSource={isDragSource}
           gridId={gridId}
         />
         <ResizeHandle

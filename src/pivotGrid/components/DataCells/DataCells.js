@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
-import { AXIS_SEPARATOR, HeaderType } from "../../constants";
+import { AXIS_SEPARATOR, HeaderType, AxisType } from "../../constants";
 import { ScrollBar } from "./ScrollBar";
 
 export class DataCells extends Component {
@@ -11,7 +11,22 @@ export class DataCells extends Component {
     this.cellCache = {};
     // this.scrollbarWidth = 10;
     // this.scrollArrowSize = 10;
-    this.scroll = { rowStartIndex: 0, columnStartIndex: 0 };
+    this.scroll = {
+      row: {},
+      column: {}
+    };
+    this.state = {
+      scroll: {
+        row: {
+          index: 0,
+          direction: 1
+        },
+        column: {
+          index: 0,
+          direction: 1
+        }
+      }
+    };
   }
 
   componentWillReceiveProps(newProps) {
@@ -22,30 +37,10 @@ export class DataCells extends Component {
       this.cellCache = {};
     }
   }
-  // componentDidMount() {
-  //   this.document = document.getElementById(`grid ${this.props.gridId}`);
-  //   this.document.addEventListener("mouseenter", this.handleMouseEnter);
-  //   this.document.addEventListener("mouseleave", this.handleMouseLeave);
-  //   // this.document.addEventListener("mousedown", this.handleMouseDown);
-  //   // this.document.addEventListener("mouseup", this.handleMouseUp);
-  //   // this.document.addEventListener("mouseover", this.handleMouseOver);
-  //   // this.document.addEventListener("wheel", this.handleWheel);
-  // }
-
-  // componentDidUnMount() {
-  //   this.document.removeEventListener("mouseenter", this.handleMouseEnter);
-  //   this.document.removeEventListener("mouseleave", this.handleMouseLeave);
-  // this.document.removeEventListener("mousedown", this.handleMouseDown);
-  // this.document.removeEventListener("mouseup", this.handleMouseUp);
-  // this.document.removeEventListener("mouseover", this.handleMouseOver);
-  // this.document.removeEventListener("wheel", this.handleWheel);
-  // }
-  // handleMouseEnter = e => {
-  //   // console.log("scrollbar handleMouseEnter", e);
-  // };
-  // handleMouseLeave = e => {
-  //   // console.log("scrollbar handleMouseLeave", e);
-  // };
+  componentDidUpdate() {
+    // this.cells = this.cellsRenderer();
+    this.props.onScroll(this.scroll.row, this.scroll.column);
+  }
 
   handleMouseDown = e => {
     // console.log("scrollbar handleMouseDown", e);
@@ -91,30 +86,91 @@ export class DataCells extends Component {
         e.preventDefault();
       }
       // arrow keys
-    } else if (e.which > 36 && e.which < 41) {
+    } else if (e.which > 32 && e.which < 41) {
       let direction,
         cell,
-        canApply = false;
+        canApply = false,
+        offset,
+        axis;
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        direction = e.key === "ArrowDown" ? 1 : -1;
+        direction = e.key === "ArrowDown" ? -1 : 1;
+        axis = AxisType.ROWS;
         cell = {
           columnIndex: this.props.selectedRange.selectedCellEnd.columnIndex,
           rowIndex:
-            this.props.selectedRange.selectedCellEnd.rowIndex + direction
+            this.props.selectedRange.selectedCellEnd.rowIndex - direction
         };
-        canApply =
-          cell.rowIndex >= 0 && cell.rowIndex <= this.scroll.rowLastIndex;
       } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        direction = e.key === "ArrowRight" ? 1 : -1;
+        direction = e.key === "ArrowRight" ? -1 : 1;
+        axis = AxisType.COLUMNS;
         cell = {
           columnIndex:
-            this.props.selectedRange.selectedCellEnd.columnIndex + direction,
+            this.props.selectedRange.selectedCellEnd.columnIndex - direction,
           rowIndex: this.props.selectedRange.selectedCellEnd.rowIndex
         };
-        canApply =
-          cell.columnIndex >= 0 &&
-          cell.columnIndex <= this.scroll.columnLastIndex;
+      } else if (e.key === "PageUp" || e.key === "PageDown") {
+        direction = e.key === "PageDown" ? -1 : 1;
+        if (e.altKey) {
+          axis = AxisType.COLUMNS;
+          cell = {
+            columnIndex: Math.max(
+              Math.min(
+                this.props.selectedRange.selectedCellEnd.rowIndex -
+                  direction *
+                    (this.scroll.column.stopIndex -
+                      this.scroll.column.startIndex),
+                this.props.columnHeaders.length - 1
+              ),
+              0
+            ),
+            rowIndex: this.props.selectedRange.selectedCellEnd.rowIndex
+          };
+        } else {
+          axis = AxisType.ROWS;
+          cell = {
+            columnIndex: this.props.selectedRange.selectedCellEnd.columnIndex,
+            rowIndex: Math.max(
+              Math.min(
+                this.props.selectedRange.selectedCellEnd.rowIndex -
+                  direction *
+                    (this.scroll.row.stopIndex - this.scroll.row.startIndex),
+                this.props.rowHeaders.length - 1
+              ),
+              0
+            )
+          };
+        }
+      } else if (e.key === "Home" || e.key === "End") {
+        direction = e.key === "End" ? -1 : 1;
+        if (e.altKey) {
+          axis = AxisType.COLUMNS;
+          cell = {
+            columnIndex:
+              direction === 1 ? 0 : this.props.columnHeaders.length - 1,
+            rowIndex: this.props.selectedRange.selectedCellEnd.rowIndex
+          };
+        } else {
+          axis = AxisType.ROWS;
+          cell = {
+            columnIndex: this.props.selectedRange.selectedCellEnd.columnIndex,
+            rowIndex: direction === 1 ? 0 : this.props.rowHeaders.length - 1
+          };
+        }
       }
+      offset =
+        axis === AxisType.ROWS
+          ? (this.scroll.row.direction * direction < 0) *
+            direction *
+            (this.props.scrollbarSizes.vertical !== 0)
+          : (this.scroll.column.direction * direction < 0) *
+            direction *
+            (this.props.scrollbarSizes.horizontal !== 0);
+      canApply =
+        axis === AxisType.ROWS
+          ? cell.rowIndex + offset >= 0 &&
+            cell.rowIndex + offset < this.props.rowHeaders.length
+          : cell.columnIndex + offset >= 0 &&
+            cell.columnIndex + offset < this.props.columnHeaders.length;
       if (canApply) {
         // selection
         if (e.shiftKey) {
@@ -126,22 +182,29 @@ export class DataCells extends Component {
           this.props.selectCell(cell);
         }
         // shift display at end
+        const scroll = {};
         if (
-          cell.rowIndex > this.scroll.rowStopIndex - 1 ||
-          cell.rowIndex < this.scroll.rowStartIndex
+          this.props.scrollbarSizes.vertical &&
+          (cell.rowIndex - offset > this.scroll.row.stopIndex ||
+            cell.rowIndex - offset < this.scroll.row.startIndex)
         ) {
-          this.scrollTo(
-            this.scroll.rowStartIndex + direction,
-            this.scroll.columnStartIndex
-          );
+          this.scrollTo({
+            scroll: {
+              row: { index: cell.rowIndex, direction },
+              column: this.state.scroll.column
+            }
+          });
         } else if (
-          cell.columnIndex > this.scroll.columnStopIndex - 1 ||
-          cell.columnIndex < this.scroll.columnStartIndex
+          this.props.scrollbarSizes.horizontal &&
+          (cell.columnIndex - offset > this.scroll.column.stopIndex ||
+            cell.columnIndex - offset < this.scroll.column.startIndex)
         ) {
-          this.scrollTo(
-            this.scroll.rowStartIndex,
-            this.scroll.columnStartIndex + direction
-          );
+          this.scrollTo({
+            scroll: {
+              row: this.state.scroll.row,
+              column: { index: cell.columnIndex, direction }
+            }
+          });
         }
       }
       e.preventDefault();
@@ -154,15 +217,69 @@ export class DataCells extends Component {
     //     e.preventDefault();
     // }
   };
-  // handleKeyUp = e => {
-  //   if (e.which === 17) {
-  //     this.modifierKeyIsPressed = false;
-  //   }
-  //   if (e.which === 16) {
-  //     this.shiftKeyIsPressed = false;
-  //   }
-  // };
+  handleWheel = e => {
+    // console.log(e);
+    e.preventDefault();
+    const direction = -Math.sign(e.deltaY);
+    const prevScroll = e.AltKey ? this.scroll.column : this.scroll.row;
+    const scroll = {};
+    const offset = prevScroll.direction * direction < 0;
+    if (
+      direction === -1 &&
+      prevScroll.stopIndex - offset < this.props.rowHeaders.length - 1
+    ) {
+      scroll.index = prevScroll.stopIndex - offset + 1;
+      scroll.direction = direction;
+    } else if (direction === 1 && prevScroll.startIndex + offset > 0) {
+      scroll.index = prevScroll.startIndex + offset - 1;
+      scroll.direction = direction;
+    } else {
+      return;
+    }
+    this.scrollTo({
+      scroll: {
+        row: e.shiftKey ? this.state.scroll.row : scroll,
+        column: e.shiftKey ? scroll : this.state.scroll.column
+      }
+    });
+  };
 
+  //
+  startScroll = e => {
+    if (e.type === "scrollbar") {
+      // console.log(e);
+      if (e.initiator === "bar")
+        if (e.direction === "horizontal") {
+          const index = Math.round(
+            this.props.columnHeaders.length * e.positionRatio
+          );
+          this.scrollTo({
+            scroll: {
+              row: this.state.scroll.row,
+              column: { index, direction: 1 }
+            }
+          });
+        } else {
+          const index = Math.round(
+            this.props.rowHeaders.length * e.positionRatio
+          );
+
+          this.scrollTo({
+            scroll: {
+              row: { index, direction: 1 },
+              column: this.state.scroll.column
+            }
+          });
+        }
+    } else {
+      return false;
+    }
+    return true;
+  };
+  scrollTo = scroll => {
+    this.setState(scroll);
+    // this.props.onScroll(scroll);
+  };
   startSelect = ({ button, shiftKey, columnIndex, rowIndex }) => {
     if (button === 0) {
       this.isMouseDown = true;
@@ -177,41 +294,33 @@ export class DataCells extends Component {
     }
   };
 
-  // handleDrilldown = cell => {
-  //   return this.props.drilldown(this.props.getCellInfos(cell));
-  // };
-  // collectMenu = props => {
-  //   return {
-  //     ...props,
-  //     dimensions: this.props.dimensions,
-  //     menuFunctions: this.props.menuFunctions,
-  //     filters: this.props.filters,
-  //     zoom: this.props.zoom
-  //   };
-  // };
-  // handleClickMenu = (e, data, target) => {
-  //   if (e.button === 0) {
-  //     if (data.action === "drilldown") {
-  //       this.handleDrilldown({
-  //         columnIndex: data.columnIndex,
-  //         rowIndex: data.rowIndex
-  //       });
-  //     } else if (data.functionType === "cell") {
-  //       this.props.menuFunctions.dataCellFunctions[data.action].function(
-  //         this.props.getCellInfos({
-  //           columnIndex: data.columnIndex,
-  //           rowIndex: data.rowIndex
-  //         })
-  //       );
-  //     } else if (data.functionType === "range") {
-  //       this.props.menuFunctions.rangeFunctions[data.action].function(
-  //         this.props.getRangeInfos(this.props.selectedRange)
-  //       );
-  //     } else if (data.functionType === "function") {
-  //       this.props.menuFunctions.functions[data.action].function();
-  //     }
-  //   }
-  // };
+  handleDoubleClick = cell => {
+    return this.props.drilldown(this.props.getCellInfos(cell));
+  };
+
+  handleClickMenu = (e, data, target) => {
+    if (e.button === 0) {
+      if (data.action === "drilldown") {
+        this.handleDrilldown({
+          columnIndex: data.columnIndex,
+          rowIndex: data.rowIndex
+        });
+      } else if (data.functionType === "cell") {
+        this.props.menuFunctions.dataCellFunctions[data.action].function(
+          this.props.getCellInfos({
+            columnIndex: data.columnIndex,
+            rowIndex: data.rowIndex
+          })
+        );
+      } else if (data.functionType === "range") {
+        this.props.menuFunctions.rangeFunctions[data.action].function(
+          this.props.getRangeInfos(this.props.selectedRange)
+        );
+      } else if (data.functionType === "function") {
+        this.props.menuFunctions.functions[data.action].function();
+      }
+    }
+  };
   collectMenu = props => {
     return {
       ...props,
@@ -221,12 +330,12 @@ export class DataCells extends Component {
       zoom: this.props.zoom
     };
   };
-  cellRenderer = ({ rowHeader, columnHeader, rowSize, columnSize }) => {
+  cellRenderer = ({ rowHeader, columnHeader, top, left }) => {
     const { getCellValue, measures, selectedRange, gridId } = this.props;
     const style = {
       position: "absolute",
-      top: rowSize,
-      left: columnSize,
+      top,
+      left,
       height: rowHeader.main.size,
       width: columnHeader.main.size
     };
@@ -280,112 +389,89 @@ export class DataCells extends Component {
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
+        handleDoubleClick={this.handleDoubleClick}
         collectMenu={this.collectMenu}
       />
     );
   };
   cellsRenderer = () => {
-    console.log("cells renderer");
+    // console.log("cells renderer");
     const { rowHeaders, columnHeaders, height, width } = this.props;
+    const { row, column } = this.state.scroll;
     const cells = [];
-    let rowSize = 0,
-      columnSize = 0,
-      rowIndex = this.scroll.rowStartIndex,
-      columnIndex = this.scroll.columnStartIndex,
-      visbleScrollbarV = false,
-      visbleScrollbarH = false;
-    if (rowIndex >= rowHeaders.length) {
-      rowIndex = 0;
-      this.scroll.rowStartIndex = 0;
+    if (row.index >= rowHeaders.length) {
+      row.index = 0;
+      row.direction = 1;
     }
-    if (columnIndex >= columnHeaders.length) {
-      columnIndex = 0;
-      this.scroll.columnStartIndex = 0;
+    if (column.index >= columnHeaders.length) {
+      column.index = 0;
+      column.direction = 1;
     }
-    while (rowSize < height && rowIndex < rowHeaders.length) {
+    let rowsSize = 0,
+      columnsSize = 0,
+      rowIndex = row.index,
+      columnIndex = column.index;
+
+    // a voir changement de longueur
+
+    while (rowsSize < height && rowIndex < rowHeaders.length && rowIndex >= 0) {
       const rowHeader = rowHeaders[rowIndex][0].header;
-      columnIndex = this.scroll.columnStartIndex;
-      columnSize = 0;
-      while (columnSize < width && columnIndex < columnHeaders.length) {
+      columnIndex = column.index;
+      columnsSize = 0;
+      while (
+        columnsSize < width &&
+        columnIndex < columnHeaders.length &&
+        columnIndex >= 0
+      ) {
         const columnHeader = columnHeaders[columnIndex][0].header;
         cells.push(
           this.cellRenderer({
-            rowSize,
-            columnSize,
+            top:
+              row.direction === 1
+                ? rowsSize
+                : height - rowsSize - rowHeader.main.size,
+            left:
+              column.direction === 1
+                ? columnsSize
+                : width - columnsSize - columnHeader.main.size,
             rowHeader,
             columnHeader
           })
         );
-        columnSize += columnHeader.main.size;
-        columnIndex++;
+        columnsSize += columnHeader.main.size;
+        columnIndex += column.direction;
       }
-      visbleScrollbarV = columnSize > width;
-      rowSize += rowHeader.main.size;
-      rowIndex++;
+      rowsSize += rowHeader.main.size;
+      rowIndex += row.direction;
     }
-    visbleScrollbarH = rowSize > height;
-    this.scroll = {
-      ...this.scroll,
-      rowStopIndex: rowIndex - 1,
-      columnStopIndex: columnIndex - 1,
-      rowLastIndex: rowHeaders.length - 1,
-      columnLastIndex: columnHeaders.length - 1,
-      visbleScrollbarV,
-      visbleScrollbarH
-    };
-    console.log(rowHeaders);
+    if (row.direction === 1) {
+      this.scroll.row.startIndex = row.index;
+      this.scroll.row.stopIndex = rowIndex - 1;
+      this.scroll.row.direction = rowsSize - width < 3 ? 1 : 0;
+      this.scroll.row.offset = 0;
+    } else {
+      this.scroll.row.startIndex = rowIndex + 1;
+      this.scroll.row.stopIndex = row.index;
+      this.scroll.row.direction = rowsSize - width < 3 ? 1 : 0;
+      this.scroll.row.offset = height - rowsSize;
+    }
+    this.scroll.row.direction = row.direction;
+    if (column.direction === 1) {
+      this.scroll.column.startIndex = column.index;
+      this.scroll.column.stopIndex = columnIndex - 1;
+      this.scroll.column.direction = columnsSize - width < 3 ? 1 : 0;
+      this.scroll.column.offset = 0;
+    } else {
+      this.scroll.column.startIndex = columnIndex + 1;
+      this.scroll.column.stopIndex = column.index;
+      this.scroll.column.direction = columnsSize - width < 3 ? 1 : 0;
+      this.scroll.column.offset = width - columnsSize;
+    }
+    this.scroll.column.direction = column.direction;
+    // console.log(rowHeaders);
     return cells;
   };
 
-  handleWheel = e => {
-    // console.log(e);
-    const direction = Math.sign(e.deltaY);
-    if (
-      (this.scroll.rowStartIndex === 0 && direction === -1) ||
-      (this.scroll.rowStopIndex === this.scroll.rowLastIndex && direction === 1)
-    ) {
-      return;
-    }
-    const scrollToRow = this.scroll.rowStartIndex + direction,
-      scrollToColumn = this.scroll.columnStartIndex;
-    e.preventDefault();
-    this.scrollTo(scrollToRow, scrollToColumn);
-  };
-  scrollTo = (scrollToRow, scrollToColumn) => {
-    this.setState({
-      scroll: {
-        scrollToRow,
-        scrollToColumn
-      }
-    });
-    this.scroll.rowStartIndex = scrollToRow;
-    this.scroll.columnStartIndex = scrollToColumn;
-    this.props.onScroll(scrollToRow, scrollToColumn);
-  };
-  startScroll = e => {
-    if (e.type === "scrollbar") {
-      console.log(e);
-      if (e.initiator === "bar")
-        if (e.direction === "horizontal") {
-          const scrollToRow = this.scroll.rowStartIndex,
-            scrollToColumn = Math.round(
-              (this.scroll.columnLastIndex + 1) * e.positionRatio
-            );
-
-          this.scrollTo(scrollToRow, scrollToColumn);
-        } else {
-          const scrollToRow = Math.round(
-              (this.scroll.rowLastIndex + 1) * e.positionRatio
-            ),
-            scrollToColumn = this.scroll.columnStartIndex;
-          this.scrollTo(scrollToRow, scrollToColumn);
-        }
-    } else {
-      return false;
-    }
-    return true;
-  };
-  endScroll = e => {};
   render() {
     const { height, width, gridId } = this.props;
     const style = {
@@ -397,11 +483,13 @@ export class DataCells extends Component {
       // borderBottom: "solid 0.03em grey",
       // borderRadius: " 0.25rem"
     };
-    const cells = this.cellsRenderer();
+    // if (!this.cells) {
+    this.cells = this.cellsRenderer();
+    // }
     const rowDisplayedCount =
-      this.scroll.rowStopIndex - this.scroll.rowStartIndex + 1;
+      this.scroll.row.stopIndex - this.scroll.row.startIndex + 1;
     const columnDisplayedCount =
-      this.scroll.columnStopIndex - this.scroll.columnStartIndex + 1;
+      this.scroll.column.stopIndex - this.scroll.column.startIndex + 1;
     return (
       <div
         id={`grid ${gridId}`}
@@ -411,7 +499,7 @@ export class DataCells extends Component {
         onKeyUp={this.handleKeyUp}
       >
         <div style={{ display: "flex" }}>
-          <div style={style}>{cells}</div>
+          <div style={style}>{this.cells}</div>
           <ScrollBar
             direction="vertical"
             width={this.props.scrollbarSizes.vertical}
@@ -419,9 +507,9 @@ export class DataCells extends Component {
             offset={width}
             // visible={this.scroll.visbleScrollbarV}
             positionRatio={
-              this.scroll.rowStartIndex / (this.scroll.rowLastIndex + 1)
+              this.scroll.row.startIndex / this.props.rowHeaders.length
             }
-            displayedRatio={rowDisplayedCount / (this.scroll.rowLastIndex + 1)}
+            displayedRatio={rowDisplayedCount / this.props.rowHeaders.length}
             id={`vertical-scrollbar ${gridId}`}
             handleMouseDown={this.handleMouseDown}
             handleMouseOver={this.handleMouseOver}
@@ -434,10 +522,10 @@ export class DataCells extends Component {
           offset={height}
           // visible={this.scroll.visbleScrollbarH}
           positionRatio={
-            this.scroll.columnStartIndex / (this.scroll.columnLastIndex + 1)
+            this.scroll.column.startIndex / this.props.columnHeaders.length
           }
           displayedRatio={
-            columnDisplayedCount / (this.scroll.columnLastIndex + 1)
+            columnDisplayedCount / this.props.columnHeaders.length
           }
           id={`horizontal-scrollbar ${gridId}`}
           handleMouseDown={this.handleMouseDown}

@@ -6,7 +6,9 @@ import {
   dataCellsHeightSelector,
   rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  rowHeadersPositionsAndSizesSelector
+  rowHeadersPositionsAndSizesSelector,
+  getAxisActivatedMeasuresSelector,
+  availableMeasuresSelector
 } from "../selectors";
 import Headers from "../components/Headers/Headers";
 import {
@@ -30,7 +32,9 @@ const mapStateToProps = (state, ownProps) => {
     columnsSize: headers.crossSize,
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),
-    headers: headers.headers
+    headers: headers.headers,
+    measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
+    availableMeasures: availableMeasuresSelector(state)
   };
 };
 

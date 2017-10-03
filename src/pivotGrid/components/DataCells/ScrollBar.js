@@ -3,22 +3,22 @@ class ScrollBarInner extends Component {
   constructor(props) {
     super(props);
   }
-  collect = e => {
-    console.log(e);
-    e.preventDefault();
-  };
+  // collect = e => {
+  //   console.log(e);
+  //   e.preventDefault();
+  // };
 
-  handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
-  handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
-  handleMouseMove = e => this.props.handleMouseUp(this.collect(e));
+  // handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
+  // handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
+  // handleMouseMove = e => this.props.handleMouseUp(this.collect(e));
   render() {
     return (
       <div
         id={"thumb-" + this.props.id}
         style={this.props.style}
-        onMouseDown={this.handleMouseDown}
-        onMouseUp={this.props.handleMouseUp}
-        onMouseMove={this.props.handleMouseMove}
+        // onMouseDown={this.handleMouseDown}
+        // onMouseUp={this.props.handleMouseUp}
+        // onMouseMove={this.props.handleMouseMove}
       />
     );
   }
@@ -27,6 +27,7 @@ class ScrollBarInner extends Component {
 export class ScrollBar extends Component {
   constructor(props) {
     super(props);
+    this.state = { innerStyle: this.computeScrollbar(props) };
   }
   // componentDidMount() {
   //   this.document = document.getElementById(this.props.id);
@@ -40,13 +41,78 @@ export class ScrollBar extends Component {
   //   this.document.removeEventListener("mouseleave", this.handleMouseLeave);
   //   this.document.removeEventListener("mousedown", this.handleMouseDown);
   // }
+  // shouldComponentUpdate() {
+  //   return !this.isDragging;
+  // }
+  componentWillReceiveProps(nextProps) {
+    const innerStyle = this.computeScrollbar(nextProps);
+    if (!this.isDragging) {
+      this.setState({ innerStyle });
+    }
+  }
+  computeScrollbar = props => {
+    const {
+      direction,
+      length,
+      width,
+      offset,
+      positionRatio,
+      displayedRatio
+    } = props;
+
+    const style = {
+      // position: "relative",
+      backgroundColor: "lightgrey",
+      border: "solid 0.03em grey",
+      borderRadius: " 0.25rem"
+    };
+    let innerStyle = {
+      ...style,
+      position: "relative",
+      backgroundColor: "grey"
+    };
+    this.innerSize = Math.max(30, length * displayedRatio);
+    this.position = Math.min(length - this.innerSize, length * positionRatio);
+    if (direction === "horizontal") {
+      this.style = {
+        ...style,
+        height: width,
+        width: length,
+        top: offset
+      };
+      innerStyle = {
+        ...innerStyle,
+        height: width - 1,
+        // marginTop: 0.5,
+        width: this.innerSize,
+        left: this.position
+      };
+    } else {
+      // const height = height - scrollbarSize;
+      this.style = {
+        ...style,
+        height: length,
+        width,
+        left: offset
+      };
+      innerStyle = {
+        ...innerStyle,
+        height: this.innerSize,
+        width: width - 1,
+        // marginLeft: 0.5,
+        top: this.position
+      };
+    }
+    return innerStyle;
+  };
   collect = e => {
     const { button, shiftKey, target, clientX, clientY } = e;
     const initiator = e.target.id.startsWith("thumb") ? "thumb" : "bar";
     const { left, top } = target.getBoundingClientRect();
-    const x = clientX - left,
+    let x = clientX - left,
       y = clientY - top,
       position = this.props.direction === "horizontal" ? x : y;
+    position = position - this.innerSize / 2 * (position / this.props.length);
     const event = {
       type: "scrollbar",
       direction: this.props.direction,
@@ -59,6 +125,7 @@ export class ScrollBar extends Component {
         Math.min(this.props.length - this.innerSize, position) /
           this.props.length
       ),
+      position,
       initiator
     };
     this.position = position;
@@ -68,15 +135,27 @@ export class ScrollBar extends Component {
     const event = this.collect(e);
     if (event.initiator === "thumb") {
       this.isDragging = true;
+      console.log("start dragging ", event);
     } else {
       return this.props.handleMouseDown(event);
     }
   };
   handleMouseUp = e => (this.isDragging = false);
-  handleMouseOver = e => {
+  handleMouseMove = e => {
     if (this.isDragging) {
-      console.log("mouse over", e);
-      return this.props.handleMouseDown(this.collect(e));
+      e.preventDefault();
+      const event = this.collect(e);
+      if (event.initiator === "bar") {
+        console.log("mouse over", event);
+        const innerStyle = { ...this.state.innerStyle };
+        if (event.direction === "horizontal") {
+          innerStyle.left = event.position;
+        } else {
+          innerStyle.top = event.position;
+        }
+        this.setState({ innerStyle });
+        return this.props.handleMouseDown(event);
+      }
     }
   };
   handleDragStart(event) {
@@ -112,70 +191,63 @@ export class ScrollBar extends Component {
   }
 
   render() {
-    const {
-      direction,
-      length,
-      width,
-      offset,
-      positionRatio,
-      displayedRatio,
-      id
-    } = this.props;
+    const { width, id } = this.props;
     if (!width) {
       return null;
     }
-    let style = {
-      // position: "relative",
-      backgroundColor: "lightgrey",
-      border: "solid 0.03em grey",
-      borderRadius: " 0.25rem"
-    };
-    let innerStyle = {
-      ...style,
-      position: "relative",
-      backgroundColor: "grey"
-    };
-    this.innerSize = Math.max(30, length * displayedRatio);
-    this.position = length * positionRatio;
-    if (direction === "horizontal") {
-      style = {
-        ...style,
-        height: width,
-        width: length,
-        top: offset
-      };
-      innerStyle = {
-        ...innerStyle,
-        height: width - 1,
-        // marginTop: 0.5,
-        width: this.innerSize,
-        left: this.position
-      };
-    } else {
-      // const height = height - scrollbarSize;
-      style = {
-        ...style,
-        height: length,
-        width,
-        left: offset
-      };
-      innerStyle = {
-        ...innerStyle,
-        height: this.innerSize,
-        width: width - 1,
-        // marginLeft: 0.5,
-        top: this.position
-      };
-    }
+    // let style = {
+    //   // position: "relative",
+    //   backgroundColor: "lightgrey",
+    //   border: "solid 0.03em grey",
+    //   borderRadius: " 0.25rem"
+    // };
+    // let innerStyle = {
+    //   ...style,
+    //   position: "relative",
+    //   backgroundColor: "grey"
+    // };
+    // this.innerSize = Math.max(30, length * displayedRatio);
+    // this.position = Math.min(length - this.innerSize, length * positionRatio);
+    // if (direction === "horizontal") {
+    //   style = {
+    //     ...style,
+    //     height: width,
+    //     width: length,
+    //     top: offset
+    //   };
+    //   innerStyle = {
+    //     ...innerStyle,
+    //     height: width - 1,
+    //     // marginTop: 0.5,
+    //     width: this.innerSize,
+    //     left: this.position
+    //   };
+    // } else {
+    //   // const height = height - scrollbarSize;
+    //   style = {
+    //     ...style,
+    //     height: length,
+    //     width,
+    //     left: offset
+    //   };
+    //   innerStyle = {
+    //     ...innerStyle,
+    //     height: this.innerSize,
+    //     width: width - 1,
+    //     // marginLeft: 0.5,
+    //     top: this.position
+    //   };
+    // }
+    // this.setState({ innerStyle });
     return (
       <div
         id={id}
-        style={style}
+        style={this.style}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
-        onMouseOver={this.handleMouseOver}
+        onMouseMove={this.handleMouseMove}
       >
-        <div id={"thumb-" + id} style={innerStyle} />
+        <ScrollBarInner id={"thumb-" + id} style={this.state.innerStyle} />
       </div>
     );
   }

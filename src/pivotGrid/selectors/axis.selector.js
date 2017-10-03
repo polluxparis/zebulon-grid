@@ -230,7 +230,8 @@ export function buildAxisHeaders(
   measures,
   areCollapsed
 ) {
-  return buildHeaders(
+  console.log("buildHeaders0", Date.now());
+  const x = buildHeaders(
     data,
     axisTree,
     dimensions,
@@ -239,6 +240,8 @@ export function buildAxisHeaders(
     null,
     areCollapsed
   );
+  console.log("buildHeaders", Date.now());
+  return x;
 }
 
 export const rowHeadersSelector = createSelector(
