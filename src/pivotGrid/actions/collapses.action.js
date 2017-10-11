@@ -5,18 +5,20 @@ import {
 	SET_COLLAPSES
 } from "../constants";
 
-export const toggleCollapse = ({ axisType, key }) => {
+export const toggleCollapse = ({ axisType, key, n }) => {
 	return {
 		type: EXPAND_COLLAPSE,
 		key,
-		axis: toAxis(axisType)
+		axis: toAxis(axisType),
+		n
 	};
 };
-export const expandCollapseAll = ({ axisType, keys }) => {
+export const expandCollapseAll = ({ axisType, keys, n }) => {
 	return {
 		type: EXPAND_COLLAPSE_ALL,
 		keys,
-		axis: toAxis(axisType)
+		axis: toAxis(axisType),
+		n
 	};
 };
 export const toggleCollapseDimension = ({ key }) => {

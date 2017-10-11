@@ -26,20 +26,20 @@ export default class DataCell extends PureComponent {
       focused,
       valueHasChanged,
       collectMenu,
-      gridId
+      gridId,
+      isEven
     } = this.props;
     const style = {
       boxSizing: "border-box",
-      overflow: "hidden",
-      padding: "02.em"
+      overflow: "hidden"
     };
 
     const className = classnames(
       "zebulon-grid-cell",
       "zebulon-grid-data-cell",
       {
-        "zebulon-grid-data-cell-even": !(rowIndex % 2),
-        "zebulon-grid-data-cell-uneven": rowIndex % 2,
+        "zebulon-grid-data-cell-even": isEven,
+        "zebulon-grid-data-cell-uneven": !isEven,
         "zebulon-grid-data-cell-highlighted": valueHasChanged,
         "zebulon-grid-data-cell-selected": selected,
         "zebulon-grid-data-cell-focused": focused

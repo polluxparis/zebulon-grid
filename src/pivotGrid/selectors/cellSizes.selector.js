@@ -3,11 +3,13 @@
 //  cross dimensions sizes selector
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
-import { ROOT_ID, AxisType } from "../constants";
+import { TOTAL_ID, AxisType } from "../constants";
 import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import {
   columnDimensionsSelector,
-  rowDimensionsSelector
+  rowDimensionsSelector,
+  columnVisibleDimensionsSelector,
+  rowVisibleDimensionsSelector
 } from "./dimensions.selector";
 
 export const defaultCellSizesSelector = createSelector(
@@ -68,13 +70,14 @@ const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
   // if (!dimensions.length) {
   //   position += getCrossSize(axisType, TOTAL_ID);
   // } else {
+  console.log("crosspositions", dimensions);
   if (dimensions.length === 0) {
-    res[ROOT_ID] = { position, size: getCellSizeByKey(ROOT_ID) };
+    res[TOTAL_ID] = { position, size: getCellSizeByKey(TOTAL_ID) };
   } else {
     dimensions.forEach(dimension => {
-      const size = getCellSizeByKey(dimension.id);
+      const size = dimension.isVisible * getCellSizeByKey(dimension.id);
       res[dimension.id] = { position, size };
-      position += size;
+      position += dimension.isVisible * size;
     });
   }
   return res;
@@ -83,8 +86,8 @@ export const crossPositionsSelector = createSelector(
   [
     getCellWidthByKeySelector,
     getCellHeightByKeySelector,
-    columnDimensionsSelector,
-    rowDimensionsSelector
+    columnVisibleDimensionsSelector,
+    rowVisibleDimensionsSelector
   ],
   (getCellWidthByKey, getCellHeightByKey, columnDimensions, rowDimensions) => ({
     [AxisType.COLUMNS]: calculateCrossPositions(
@@ -93,4 +96,13 @@ export const crossPositionsSelector = createSelector(
     ),
     [AxisType.ROWS]: calculateCrossPositions(rowDimensions, getCellWidthByKey)
   })
+);
+export const crossRowPositionsSelector = createSelector(
+  [columnVisibleDimensionsSelector, getCellHeightByKeySelector],
+  calculateCrossPositions
+);
+// (columnDimensions,getCellHeightByKey) =>   )
+export const crossColumnPositionsSelector = createSelector(
+  [rowVisibleDimensionsSelector, getCellWidthByKeySelector],
+  calculateCrossPositions
 );

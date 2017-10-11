@@ -13,7 +13,7 @@ import { isNull, isNullOrUndefined } from "../utils/generic";
 import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
-  EMPTY_ID,
+  TOTAL_ID,
   MEASURE_ID,
   HeaderType,
   AxisType,
@@ -38,10 +38,10 @@ export const getAxisActivatedMeasuresSelector = axisType =>
 // add child node to a node
 function buildNode(id, node, index) {
   if (node.children[id] !== undefined) {
-    node.children[id].dataIndexes.push(index);
+    node.children[id].dataRowIndexes.push(index);
     return node.children[id];
   } else {
-    node.children[id] = { id, children: {}, dataIndexes: [index] };
+    node.children[id] = { id, children: {}, dataRowIndexes: [index] };
     return node.children[id];
   }
 }
@@ -68,7 +68,6 @@ function buildAxisTrees(data, { columns, rows }) {
     });
   });
   console.log("buildNode", Date.now());
-
   return { columns: columnRoot, rows: rowRoot };
 }
 const getAxisTreesSelector = createSelector(
@@ -87,387 +86,340 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
-function buildHeaders2(
+
+function buildHeadersTree(
   data,
   node,
   dimensions,
   measures,
+  measuresCount,
+  areCollapsed,
+  index,
   depth,
-  parent,
-  areCollapsed
+  parent
 ) {
-  const { id, dataIndexes } = node;
+  const { id, dataRowIndexes } = node;
+  if (depth === -1) {
+    console.log("buildHeadersTree0", Date.now());
+  }
   let header;
   // Root node
   if (node.id === ROOT_ID) {
     header = {
       id: ROOT_ID,
+      dimensionId: ROOT_ID,
       type: HeaderType.GRAND_TOTAL,
+      caption: "Total",
       parent: null,
-      dataIndexes: undefined,
-      orderedChildrenIds: []
+      dataRowIndexes: undefined,
+      children: [],
+      orderedChildren: [],
+      nVisibles: 0,
+      options: {},
+      isCollapsed: false,
+      isParentCollapsed: false,
+      isVisible: true,
+      isAttribute: false,
+      depth: -1
     };
   } else {
     const currentDimension = dimensions[depth];
-    const row = data[dataIndexes[0]];
+    const row = data[dataRowIndexes[0]];
     const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
-    const isCollapsed = currentDimension.isAttribute
-      ? parent.isCollapsed
-      : areCollapsed[key] || false;
+    const isCollapsed =
+      areCollapsed[key] || (parent.isCollapsed && currentDimension.isAttribute);
+    const isParentCollapsed =
+      parent.isParentCollapsed ||
+      (parent.isCollapsed && !currentDimension.isAttribute);
+    const isVisible = (parent.isVisible && index === 0) || !isParentCollapsed;
+    // const isCollapsed = parent.isCollapsed||areCollapsed[key]
+
     header = {
       sortKey: currentDimension.sort.keyAccessor(row),
       id: currentDimension.keyAccessor(row),
+      dimensionId: currentDimension.id,
       type: HeaderType.DIMENSION,
+      caption: currentDimension.format(currentDimension.labelAccessor(row)),
       parent,
       key,
-      dataIndexes,
-      orderedChildrenIds: [],
-      isCollapsed,
+      dataRowIndexes,
+      children: [],
+      orderedChildren: [],
       depth,
-      span: 1
-    };
-    // header.hasSubTotal = currentDimension.hasSubTotal;
-  }
-  if (
-    !header.isCollapsed ||
-    (depth + 1 < dimensions.length && dimensions[depth + 1].isAttribute)
-  ) {
-    // header.children = Object.keys(node.children).reduce(
-    //   (acc, nodeId) => ({
-    //     ...acc,
-    //     [nodeId]: buildHeaders(
-    //       data,
-    //       node.children[nodeId],
-    //       dimensions,
-    //       measures,
-    //       depth + 1,
-    //       header,
-    //       areCollapsed
-    //     )
-    //   }),
-    //   {}
-    // );
-    header.children = Object.values(node.children).reduce((acc, node) => {
-      acc[node.id] = buildHeaders(
-        data,
-        node,
-        dimensions,
-        measures,
-        depth + 1,
-        header,
-        areCollapsed
-      );
-      return acc;
-    }, {});
-  } else {
-    header.children = {};
-  }
-  return header;
-  const childrenKeys = Object.keys(header.children);
-  if (childrenKeys.length > 0) {
-    // sort children and count span
-    // start
-    header.span = 0;
-    const orderedChildrenMap = childrenKeys.map(id => {
-      header.span += header.children[id].span;
-      return {
-        id: header.children[id].id,
-        sortKey: header.children[id].sortKey
-      };
-    });
-
-    if (
-      header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
-    ) {
-      let childrenDimension = dimensions[depth + 1];
-
-      if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
-        childrenDimension =
-          dimensions[
-            dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
-          ] || childrenDimension;
-      }
-      let sortFunction;
-      if (childrenDimension.sort.custom) {
-        sortFunction = (a, b) =>
-          childrenDimension.sort.custom(a.sortKey, b.sortKey);
-      } else {
-        sortFunction = (a, b) =>
-          (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
-      }
-      orderedChildrenMap.sort(sortFunction);
-      header.orderedChildrenIds = orderedChildrenMap.map(obj => obj.id);
-      if (childrenDimension.sort.direction === "desc") {
-        header.orderedChildrenIds.reverse();
-      }
-    }
-    // end
-  } else {
-    if (!isNull(measures)) {
-      const measureIds = Object.keys(measures);
-      if (measureIds.length > 0) {
-        // measure headers
-        measureIds.forEach((id, index) => {
-          header.children[id] = {
-            id: id,
-            type: HeaderType.MEASURE,
-            parent: header,
-            dataIndexes: header.dataIndexes,
-            key: `${header.key}-/-${id}`,
-            orderedChildrenIds: [],
-            isCollapsed: header.isCollapsed,
-            span: 1,
-            depth: dimensions.length - 1
-          };
-          header.span = measureIds.length;
-          header.orderedChildrenIds.push(id);
-        });
-      } else {
-        header.children[EMPTY_ID] = {
-          id: EMPTY_ID,
-          type: HeaderType.MEASURE,
-          key: `${header.key}-/-${EMPTY_ID}`,
-          parent: header,
-          dataIndexes: header.dataIndexes,
-          isCollapsed: header.isCollapsed,
-          orderedChildrenIds: [],
-          span: 1,
-          depth: dimensions.length - 1
-        };
-        header.orderedChildrenIds.push(EMPTY_ID);
-      }
-    }
-  }
-  return header;
-}
-
-function buildHeaders(
-  data,
-  node,
-  dimensions,
-  measures,
-  depth,
-  parent,
-  areCollapsed
-) {
-  const { id, dataIndexes } = node;
-  let header;
-  // Root node
-  if (node.id === ROOT_ID) {
-    header = {
-      id: ROOT_ID,
-      type: HeaderType.GRAND_TOTAL,
-      parent: null,
-      dataIndexes: undefined,
-      orderedChildrenIds: []
-    };
-  } else {
-    const currentDimension = dimensions[depth];
-    const row = data[dataIndexes[0]];
-    const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
-    const isCollapsed = currentDimension.isAttribute
-      ? parent.isCollapsed
-      : areCollapsed[key] || false;
-    header = {
-      sortKey: currentDimension.sort.keyAccessor(row),
-      id: currentDimension.keyAccessor(row),
-      type: HeaderType.DIMENSION,
-      parent,
-      key,
-      dataIndexes,
-      orderedChildrenIds: [],
+      span: 1,
+      nVisibles: 0,
       isCollapsed,
-      depth,
-      span: 1
+      isParentCollapsed,
+      isAttribute: currentDimension.isAttribute,
+      isVisible
     };
-    // header.hasSubTotal = currentDimension.hasSubTotal;
   }
-  if (
-    !header.isCollapsed ||
-    (depth + 1 < dimensions.length && dimensions[depth + 1].isAttribute)
-  ) {
-    header.children = Object.keys(node.children).reduce((acc, nodeId) => {
-      acc[nodeId] = buildHeaders(
-        data,
-        node.children[nodeId],
-        dimensions,
-        measures,
-        depth + 1,
-        header,
-        areCollapsed
-      );
-      return acc;
-    }, {});
-  } else {
-    header.children = {};
-  }
-  const childrenKeys = Object.keys(header.children);
-  if (childrenKeys.length > 0) {
-    // sort children and count span
-    // start
-    header.span = 0;
-    const orderedChildrenMap = childrenKeys.map(id => {
-      header.span += header.children[id].span;
-      return {
-        id: header.children[id].id,
-        sortKey: header.children[id].sortKey
-      };
-    });
-
-    if (
-      header.children[orderedChildrenMap[0].id].type === HeaderType.DIMENSION
-    ) {
-      let childrenDimension = dimensions[depth + 1];
-
-      if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
-        childrenDimension =
-          dimensions[
-            dimensions.findIndex(d => d.id === childrenDimension.sort.sortedBy)
-          ] || childrenDimension;
-      }
-      let sortFunction;
-      if (childrenDimension.sort.custom) {
-        sortFunction = (a, b) =>
-          childrenDimension.sort.custom(a.sortKey, b.sortKey);
-      } else {
-        sortFunction = (a, b) =>
-          (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
-      }
-      orderedChildrenMap.sort(sortFunction);
-      header.orderedChildrenIds = orderedChildrenMap.map(obj => obj.id);
-      if (childrenDimension.sort.direction === "desc") {
-        header.orderedChildrenIds.reverse();
-      }
-    }
-    // end
-  } else {
-    if (!isNull(measures)) {
-      const measureIds = Object.keys(measures);
-      if (measureIds.length > 0) {
-        // measure headers
-        measureIds.forEach((id, index) => {
-          header.children[id] = {
-            id: id,
-            type: HeaderType.MEASURE,
-            parent: header,
-            dataIndexes: header.dataIndexes,
-            key: `${header.key}-/-${id}`,
-            orderedChildrenIds: [],
-            isCollapsed: header.isCollapsed,
-            span: 1,
-            depth: dimensions.length - 1
-          };
-          header.span = measureIds.length;
-          header.orderedChildrenIds.push(id);
-        });
-      } else {
-        header.children[EMPTY_ID] = {
-          id: EMPTY_ID,
-          type: HeaderType.MEASURE,
-          key: `${header.key}-/-${EMPTY_ID}`,
-          parent: header,
-          dataIndexes: header.dataIndexes,
-          isCollapsed: header.isCollapsed,
-          orderedChildrenIds: [],
-          span: 1,
-          depth: dimensions.length - 1
-        };
-        header.orderedChildrenIds.push(EMPTY_ID);
-      }
-    }
-  }
-  return header;
-}
-
-export function buildAxisHeaders(
-  data,
-  axisTree,
-  dimensions,
-  measures,
-  areCollapsed
-) {
-  console.log("buildHeaders0", Date.now());
-  const x = buildHeaders(
-    data,
-    axisTree,
-    dimensions,
-    measures,
-    -1,
-    null,
-    areCollapsed
+  // recursion on children
+  header.children = Object.values(node.children).map((node, index) =>
+    buildHeadersTree(
+      data,
+      node,
+      dimensions,
+      measures,
+      measuresCount,
+      areCollapsed,
+      index,
+      depth + 1,
+      header
+    )
   );
-  console.log("buildHeaders", Date.now());
-  return x;
+  // level management after recursion
+  if (header.children.length > 0) {
+    // sort children and count span
+    header.span = 0;
+    const orderedChildren = header.children.map((child, index) => {
+      header.span += child.span;
+      header.nVisibles += child.nVisibles;
+      return {
+        index,
+        sortKey: child.sortKey
+      };
+    });
+    // count visible headers
+    if (header.isCollapsed) {
+      header.nVisibles = measuresCount;
+    }
+    // sorting using child dimension description
+    if (header.children[0].type === HeaderType.DIMENSION) {
+      let childrenDimension = dimensions[depth + 1];
+      if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
+        childrenDimension = dimensions[header.depth + 1];
+      }
+      let sortFunction;
+      if (childrenDimension.sort.custom) {
+        sortFunction = (a, b) =>
+          childrenDimension.sort.custom(a.sortKey, b.sortKey);
+      } else {
+        sortFunction = (a, b) =>
+          (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
+      }
+      orderedChildren.sort(sortFunction);
+      header.orderedChildren = orderedChildren.map(obj => obj.index);
+      if (childrenDimension.sort.direction === "desc") {
+        header.orderedChildren.reverse();
+      }
+    }
+  } else {
+    header.nVisibles = header.isVisible * measuresCount;
+    if (!isNull(measures)) {
+      const measureIds = Object.keys(measures);
+      if (measureIds.length > 0) {
+        // measure headers
+        header.children = [];
+        header.orderedChildren = [];
+        measureIds.forEach((id, index) => {
+          header.children.push({
+            id: id,
+            type: HeaderType.MEASURE,
+            dimensionId: MEASURE_ID,
+            caption: measures[id].caption,
+            parent: header,
+            dataRowIndexes: header.dataRowIndexes,
+            key: `${header.key}-/-${id}`,
+            children: [],
+            orderedChildren: [],
+            span: 1,
+            depth: dimensions.length - 1,
+            isVisible: header.isVisible,
+            nVisibles: header.isVisible || 0,
+            isAttribute: false
+          });
+          header.span = measureIds.length;
+          header.orderedChildren.push(index);
+        });
+      }
+    } else {
+      if (header.id === ROOT_ID) {
+        header.children = [
+          {
+            id: TOTAL_ID,
+            dimensionId: TOTAL_ID,
+            type: HeaderType.MEASURE,
+            key: TOTAL_ID,
+            caption: "Total",
+            parent: header,
+            dataRowIndexes: header.dataRowIndexes,
+            children: [],
+            orderedChildren: [],
+            span: 1,
+            depth: 0,
+            isVisible: true,
+            nVisibles: 1,
+            isAttribute: false
+          }
+        ];
+        header.orderedChildren = [0];
+      }
+    }
+    // }
+  }
+  if (depth === -1) {
+    console.log("buildHeadersTree", Date.now());
+  }
+  return header;
 }
 
-export const rowHeadersSelector = createSelector(
+export const rowHeadersTreeSelector = createSelector(
   [
     filteredDataSelector,
     rowAxisTreeSelector,
     rowDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
-    state => state.collapses.rows
+    state => state.collapses.configRows
   ],
-  buildAxisHeaders
+  (data, axisTree, dimensions, measures, areCollapsed) =>
+    buildHeadersTree(
+      data,
+      axisTree,
+      dimensions,
+      measures,
+      isNull(measures) || Object.keys(measures).length,
+      areCollapsed,
+      0,
+      -1,
+      null
+    )
 );
 
-export const columnHeadersSelector = createSelector(
+export const columnHeadersTreeSelector = createSelector(
   [
     filteredDataSelector,
     columnAxisTreeSelector,
     columnDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
-    state => state.collapses.columns
+    state => state.collapses.configColumns
   ],
-  buildAxisHeaders
+  (data, axisTree, dimensions, measures, areCollapsed) =>
+    buildHeadersTree(
+      data,
+      axisTree,
+      dimensions,
+      measures,
+      isNull(measures) || Object.keys(measures).length,
+      areCollapsed,
+      0,
+      -1,
+      null
+    )
 );
+export function buildAxisLeaves(headers) {
+  console.log("buildLeaves0", Date.now());
+  const leaves = getLeaves(headers, []);
+  console.log("buildLeaves", Date.now(), leaves.length);
+  return { nVisibles: headers.nVisibles, leaves };
+}
 
 export const rowLeavesSelector = createSelector(
-  [rowHeadersSelector],
-  getLeaves
-);
-export const columnLeavesSelector = createSelector(
-  [columnHeadersSelector],
-  getLeaves
+  [rowHeadersTreeSelector, state => state.status.toRefreshLeaves.rows],
+  buildAxisLeaves
 );
 
-// for expand and collapse all
-export const getDimensionKeys = (
-  node,
-  dimensionDepth,
-  depth,
-  parent,
-  isCollapsed
-) => {
-  const key =
-    depth !== -1 && parent.id !== ROOT_ID
-      ? `${parent.key}-/-${node.id}`
-      : String(node.id);
-  let keys = {};
-  if (dimensionDepth === depth) {
-    keys = { [key]: isCollapsed };
-  } else {
-    keys = Object.keys(node.children).reduce((acc, child) => {
-      const k = getDimensionKeys(
-        node.children[child],
-        dimensionDepth,
-        depth + 1,
-        { ...node, key: key },
-        isCollapsed
-      );
-      return { ...acc, ...k };
-    }, {});
+export const columnLeavesSelector = createSelector(
+  [columnHeadersTreeSelector, state => state.status.toRefreshLeaves.columns],
+  buildAxisLeaves
+);
+const headersParentVisibles = (header, nVisibles) => {
+  header.nVisibles += nVisibles;
+  if (header.id !== ROOT_ID) {
+    headersParentVisibles(header.parent, nVisibles);
   }
+};
+const headersChildrenVisibles = (header, measuresCount) => {
+  if (header.children.length) {
+    return header.children.reduce((n, child, index) => {
+      const nCells = child.dimensionId === MEASURE_ID ? measuresCount : 1;
+      const isCollapsed =
+        header.isParentCollapsed || (header.isCollapsed && !child.isAttribute);
+      child.isVisible = (header.isVisible && index < nCells) || !isCollapsed;
+      child.isCollapsed = child.isAttribute
+        ? header.isCollapsed
+        : child.isCollapsed;
+      child.isParentCollapsed = isCollapsed;
+      n += headersChildrenVisibles(child, measuresCount);
+      return n;
+    }, 0);
+  } else {
+    return header.isVisible;
+  }
+};
+export const expandCollapseHeader = (header, isCollapsed, measuresCount) => {
+  const { nVisibles } = header;
+  // mutate the headers
+  if (isCollapsed !== undefined && isCollapsed === header.isCollapsed) {
+    return 0;
+  }
+  header.isCollapsed =
+    isCollapsed === undefined ? !header.isCollapsed : isCollapsed;
+  header.nVisibles = headersChildrenVisibles(header, measuresCount);
+  headersParentVisibles(header.parent, header.nVisibles - nVisibles);
+  return header.nVisibles - nVisibles;
+};
+
+const expandCollapseAll = (header, depth, isCollapsed, measureCount) => {
+  // console.log(header, depth);
+  const headers = getLeaves(header, [], depth);
+  const keys = headers.reduce(
+    (acc, header) => {
+      acc.n += expandCollapseHeader(header, isCollapsed);
+      acc.keys[header.key] = isCollapsed;
+      return acc;
+    },
+    { n: 0, keys: {} }
+  );
+  // leaves.collapses += keys.n;
   return keys;
 };
-export const getDimensionKeysSelector = createSelector(
-  [rowAxisTreeSelector, columnAxisTreeSelector],
-  (rowNode, columnNode) => (axis, depth, isCollapsed) =>
-    getDimensionKeys(
-      axis === AxisType.ROWS ? rowNode : columnNode,
+
+export const getExpandCollapseKeysSelector = createSelector(
+  [
+    rowHeadersTreeSelector,
+    columnHeadersTreeSelector,
+    getAxisActivatedMeasuresSelector(AxisType.ROWS),
+    getAxisActivatedMeasuresSelector(AxisType.COLUMNS)
+  ],
+  (rowHeaders, columnHeaders, rowMeasures, columnMeasures) => (
+    axisType,
+    depth,
+    isCollapsed
+  ) => {
+    const measures = AxisType.ROWS ? rowMeasures : columnMeasures;
+    return expandCollapseAll(
+      axisType === AxisType.ROWS ? rowHeaders : columnHeaders,
       depth,
-      -1,
-      null,
-      isCollapsed
-    )
+      isCollapsed,
+      measures === null ? 1 : measures.length
+    );
+  }
+);
+export const toggleSortOrderSelector = createSelector(
+  [
+    rowHeadersTreeSelector,
+    columnHeadersTreeSelector,
+    rowDimensionsSelector,
+    columnDimensionsSelector
+  ],
+  (rowHeader, columnHeader, rowDimensions, columnDimensions) => (
+    axis,
+    depth
+  ) => {
+    const dimension =
+      axis === AxisType.ROWS ? rowDimensions[depth] : columnDimensions[depth];
+    if (dimension.id !== TOTAL_ID && dimension.id !== MEASURE_ID) {
+      console.log(axis, depth, rowDimensions, columnDimensions);
+      const header = axis === AxisType.ROWS ? rowHeader : columnHeader;
+      const sort = dimension.sort;
+      if (sort.direction === "desc") {
+        sort.direction = "asc";
+      } else {
+        sort.direction = "desc";
+      }
+      const leaves = getLeaves(header, [], depth - 1);
+      leaves.map(header => header.orderedChildren.reverse());
+    }
+  }
 );

@@ -131,7 +131,13 @@ export const applyConfigToStore = (
     store.dispatch(moveMeasure(measureId));
   });
   if (config.collapses) {
-    store.dispatch(setCollapses(config.collapses));
+    store.dispatch(
+      setCollapses({
+        ...config.collapses,
+        configRows: config.collapses.rows,
+        configColumns: config.collapses.columns
+      })
+    );
   }
   if (config.sizes) {
     store.dispatch(setSizes(config.sizes));

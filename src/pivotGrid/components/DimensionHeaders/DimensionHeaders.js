@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { AxisType, MEASURE_ID, ROOT_ID } from '../../constants';
-import DimensionHeader from '../DimensionHeader/DimensionHeader';
-import { isNullOrUndefined } from '../../utils/generic';
+import { AxisType, MEASURE_ID, ROOT_ID, TOTAL_ID } from "../../constants";
+import DimensionHeader from "../DimensionHeader/DimensionHeader";
+import { isNullOrUndefined } from "../../utils/generic";
 class DimensionHeaders extends Component {
   componentDidMount() {
     this.setCollapsibles();
@@ -30,7 +30,7 @@ class DimensionHeaders extends Component {
     return {
       ...props,
       availableDimensions: this.props.availableDimensions,
-      direction: props.sortDirection === 'asc' ? 'descending' : 'ascending',
+      direction: props.sortDirection === "asc" ? "descending" : "ascending",
       dimensionFilter: this.props.filters[props.dimensionId],
       isNotCollapsible: this.collapsibles[props.dimensionId] < 2
     };
@@ -42,7 +42,7 @@ class DimensionHeaders extends Component {
       gridId,
       toggleCollapseDimension,
       moveDimension,
-      getDimensionKeys,
+      getExpandCollapseKeys,
       expandCollapseAll,
       toggleSortOrder,
       crossPositions,
@@ -53,8 +53,10 @@ class DimensionHeaders extends Component {
 
     dimensions.forEach((dimension, index) => {
       if (
-        (dimension.id !== MEASURE_ID || lastCrossDimensionId === ROOT_ID) &&
-        dimension.id !== ROOT_ID
+        dimension.isVisible &&
+        (dimension.id !== MEASURE_ID || lastCrossDimensionId === TOTAL_ID)
+        // &&|| lastCrossDimensionId === TOTAL_ID)
+        // dimension.id !== TOTAL_ID
       ) {
         let positions;
         if (axis === AxisType.ROWS) {
@@ -62,7 +64,7 @@ class DimensionHeaders extends Component {
             left: crossPositions[AxisType.ROWS][dimension.id].position,
             top:
               height -
-                crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
+              crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size,
             width: crossPositions[AxisType.ROWS][dimension.id].size,
             height: crossPositions[AxisType.COLUMNS][lastCrossDimensionId].size
           };
@@ -93,9 +95,9 @@ class DimensionHeaders extends Component {
             previewSizes={previewSizes}
             gridId={gridId}
             toggleCollapseDimension={toggleCollapseDimension}
-            toggleSortOrder={toggleSortOrder}
+            toggleSortOrder={() => toggleSortOrder(axis, index)}
             moveDimension={moveDimension}
-            getDimensionKeys={getDimensionKeys}
+            getExpandCollapseKeys={getExpandCollapseKeys}
             expandCollapseAll={expandCollapseAll}
             isDropTarget={true}
             isAttribute={dimension.isAttribute}
@@ -112,29 +114,25 @@ class DimensionHeaders extends Component {
     const { columnDimensions, rowDimensions, height, width } = this.props;
     let headers = [];
     let lastCrossDimensionId;
-    if (rowDimensions.length === 0) {
-      lastCrossDimensionId = ROOT_ID;
-    } else {
-      lastCrossDimensionId = rowDimensions[rowDimensions.length - 1].id;
-    }
+    // if (rowDimensions.length === 0) {
+    //   lastCrossDimensionId = TOTAL_ID;
+    // } else {
+    lastCrossDimensionId = rowDimensions[rowDimensions.length - 1].id;
+    // }
 
     headers = this.headersRenderer(
       AxisType.COLUMNS,
-      columnDimensions.length ? columnDimensions : [{ id: ROOT_ID }],
+      columnDimensions,
       lastCrossDimensionId
     );
 
-    if (columnDimensions.length === 0) {
-      lastCrossDimensionId = ROOT_ID;
-    } else {
-      lastCrossDimensionId = columnDimensions[columnDimensions.length - 1].id;
-    }
+    // if (columnDimensions.length === 0) {
+    //   lastCrossDimensionId = ROOT_ID;
+    // } else {
+    lastCrossDimensionId = columnDimensions[columnDimensions.length - 1].id;
+    // }
     headers = headers.concat(
-      this.headersRenderer(
-        AxisType.ROWS,
-        rowDimensions.length ? rowDimensions : [{ id: ROOT_ID }],
-        lastCrossDimensionId
-      )
+      this.headersRenderer(AxisType.ROWS, rowDimensions, lastCrossDimensionId)
     );
 
     return (
@@ -142,10 +140,10 @@ class DimensionHeaders extends Component {
       // to be absolutely positioned relatively to their parent
       <div
         style={{
-          position: 'relative',
+          position: "relative",
           height,
           width,
-          overflow: 'hidden'
+          overflow: "hidden"
         }}
         className="zebulon-grid-dimension-headers"
         onMouseDown={this.handleMouseDown}

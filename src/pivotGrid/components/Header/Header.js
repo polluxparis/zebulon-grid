@@ -5,10 +5,14 @@ import { AxisType, toAxis, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import { ContextMenuTrigger } from "react-contextmenu";
+import { expandCollapseHeader } from "../../selectors";
 class Header extends Component {
   handleClickCollapse = () => {
-    const { toggleCollapse, header } = this.props;
-    toggleCollapse(header.key);
+    const { toggleCollapse, header, measuresCount } = this.props;
+    toggleCollapse(
+      header.key,
+      expandCollapseHeader(header, undefined, measuresCount)
+    );
   };
   handleClick = () => {
     this.props.selectAxis(this.props.header);
@@ -56,12 +60,12 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
-    const className = classNames({
-      "zebulon-grid-cell": true,
-      "zebulon-grid-header": true
-      // "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
-      // "zebulon-grid-dimension-header-row": axis === AxisType.ROWS
-    });
+    // const className = classNames({
+    //   "zebulon-grid-cell": true,
+    //   "zebulon-grid-header": true
+    //   // "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
+    //   // "zebulon-grid-dimension-header-row": axis === AxisType.ROWS
+    // });
     const head = (
       <div
         // className={className}
@@ -97,7 +101,7 @@ class Header extends Component {
           id={rightKey}
           axis={axis}
           header={rightHeader}
-          previewSize={previewSizes.height}
+          // previewSize={previewSizes.height}
           gridId={gridId}
         />
         <ResizeHandle
@@ -107,7 +111,7 @@ class Header extends Component {
           gridId={gridId}
           axis={axis}
           header={bottomHeader}
-          previewSize={previewSizes.width}
+          // previewSize={previewSizes.width}
         />
       </div>
     );

@@ -47,12 +47,20 @@ class DimensionHeader extends PureComponent {
         this.props.toggleSortOrder(data.dimensionId);
       }
       if (data.action === "expand all") {
-        const keys = this.props.getDimensionKeys(data.axis, data.index, false);
-        this.props.expandCollapseAll(data.axis, keys);
+        const keys = this.props.getExpandCollapseKeys(
+          data.axis,
+          data.index,
+          false
+        );
+        this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
       }
       if (data.action === "collapse all") {
-        const keys = this.props.getDimensionKeys(data.axis, data.index, true);
-        this.props.expandCollapseAll(data.axis, keys);
+        const keys = this.props.getExpandCollapseKeys(
+          data.axis,
+          data.index,
+          true
+        );
+        this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
       }
       if (data.action === "filter") {
       }
@@ -73,7 +81,7 @@ class DimensionHeader extends PureComponent {
       axis,
       isNotCollapsible,
       isCollapsed,
-      previewSizes,
+      // previewSizes,
       gridId,
       moveDimension,
       isAttribute,
@@ -134,7 +142,7 @@ class DimensionHeader extends PureComponent {
           id={ids.right}
           axis={AxisType.ROWS}
           gridId={gridId}
-          previewSize={previewSizes.height}
+          // previewSize={previewSizes.height}
         />
         <ResizeHandle
           position="bottom"
@@ -142,7 +150,7 @@ class DimensionHeader extends PureComponent {
           gridId={gridId}
           id={ids.bottom}
           axis={AxisType.COLUMNS}
-          previewSize={previewSizes.width}
+          // previewSize={previewSizes.width}
         />
       </div>
     );

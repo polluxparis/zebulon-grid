@@ -24,22 +24,17 @@ class Headers extends PureComponent {
 
   affixOffsets = (firstHeader, offset) => {
     const offsets = {};
-    const position = firstHeader.main.position;
+    const position = firstHeader.sizes.main.position;
     let header = firstHeader;
     while (header.parent && header.parent.id !== ROOT_ID) {
       header = header.parent;
-      offsets[header.depth] = position - header.main.position;
+      offsets[header.depth] = position - header.sizes.main.position;
     }
     return offsets;
   };
 
-  headersRenderer = () => {
+  cellRenderer = (header, affix) => {
     const {
-      scrollToRow,
-      scrollToColumn,
-      height,
-      width,
-      headers,
       gridId,
       selectAxis,
       moveDimension,
@@ -47,97 +42,90 @@ class Headers extends PureComponent {
       moveMeasure,
       toggleCollapse,
       axisType,
-      previewSizes
+      previewSizes,
+      measures
     } = this.props;
-    const scroll = axisType === AxisType.ROWS ? scrollToRow : scrollToColumn;
-    let { startIndex, offset } = scroll;
-    if (startIndex > headers.length) {
-      startIndex = 0;
-      offset = 0;
+    const positionStyle = {
+      position: "absolute",
+      left:
+        axisType === AxisType.ROWS
+          ? header.sizes.cross.position
+          : header.sizes.main.position,
+      top:
+        axisType === AxisType.COLUMNS
+          ? header.sizes.cross.position
+          : header.sizes.main.position,
+      height:
+        axisType === AxisType.ROWS
+          ? header.sizes.main.size
+          : header.sizes.cross.size,
+      width:
+        axisType === AxisType.COLUMNS
+          ? header.sizes.main.size
+          : header.sizes.cross.size
+    };
+    // if (header.sizes.cross.collapsed) {
+    //   axisType === AxisType.ROWS
+    //     ? (positionStyle.paddingRight = header.sizes.cross.collapsed)
+    //     : (positionStyle.paddingBottom = header.sizes.cross.collapsed);
+    // }
+    // affix management to keep labels on screen (except for leaves)
+    if (header.isAffixManaged) {
+      // let offset;
+      if (axisType === AxisType.COLUMNS) {
+        positionStyle.paddingLeft = affix[header.depth];
+      } else {
+        positionStyle.paddingTop = affix[header.depth];
+      }
     }
-    const firstHeader = headers[startIndex][0].header;
-    const maxSize = axisType === AxisType.ROWS ? height : width;
-    const firstPosition = firstHeader.main.position;
-    //  start looping from the root of the first leaf header
-    const startRootIndex = firstHeader.rootIndex || 0;
-    // const firstSize = firstLeaf.main.size;
-    let size = 0;
-    let index = startRootIndex;
-    // calculate affix offset
-    const affix = this.affixOffsets(firstHeader, offset);
-    const cells = [];
-    while (size < maxSize - offset && index < headers.length) {
-      headers[index].map((header, i) => {
-        const h = header.header;
-        // don't add headers not parent of the first leaf
-        if (h.lastIndex >= startIndex) {
-          const positionStyle = {
-            position: "absolute",
-            left:
-              axisType === AxisType.ROWS
-                ? h.cross.position
-                : h.main.position - firstPosition + offset,
-            top:
-              axisType === AxisType.COLUMNS
-                ? h.cross.position
-                : h.main.position - firstPosition + offset,
-            height: axisType === AxisType.ROWS ? h.main.size : h.cross.size,
-            width: axisType === AxisType.COLUMNS ? h.main.size : h.cross.size
-          };
-          // if (h.cross.collapsed) {
-          //   axisType === AxisType.ROWS
-          //     ? (positionStyle.paddingRight = h.cross.collapsed)
-          //     : (positionStyle.paddingBottom = h.cross.collapsed);
-          // }
-          // affix management to keep labels on screen (except for leaves)
-          if (h.index < startIndex && header.isAffixManaged) {
-            // let offset;
-            if (axisType === AxisType.COLUMNS) {
-              positionStyle.paddingLeft = affix[h.depth] - offset;
-            } else {
-              positionStyle.paddingTop = affix[h.depth] - offset;
-            }
-          }
-          cells.push(
-            // index,
-            // measureId,
-            <Header
-              key={`header-${h.key}`}
-              header={h}
-              axis={axisType}
-              caption={header.caption}
-              positionStyle={positionStyle}
-              dimensionId={header.dimensionId}
-              isNotCollapsible={header.isNotCollapsible}
-              isCollapsed={h.isCollapsed}
-              collapseOffset={h.cross.collapsed ? h.cross.collapsed : 0}
-              isDropTarget={header.isDropTarget}
-              isDragSource={
-                header.dimensionId === MEASURE_ID &&
-                Object.keys(this.props.measures || {}).length > 1
-              }
-              gridId={gridId}
-              selectAxis={selectAxis}
-              moveDimension={moveDimension}
-              toggleMeasure={toggleMeasure}
-              moveMeasure={moveMeasure}
-              toggleCollapse={toggleCollapse}
-              collectMenu={this.collectMenu}
-              previewSizes={previewSizes}
-            />
-          );
-          if (i === 0) {
-            size += h.main.size;
-          }
+    return (
+      <Header
+        key={`header-${header.key}`}
+        header={header}
+        axis={axisType}
+        caption={header.caption}
+        positionStyle={positionStyle}
+        dimensionId={header.dimensionId}
+        isNotCollapsible={header.options.isNotCollapsible}
+        isCollapsed={header.options.isCollapsed}
+        collapseOffset={
+          header.sizes.cross.collapsed ? header.sizes.cross.collapsed : 0
         }
-      });
-      index++;
+        isDropTarget={header.options.isDropTarget}
+        isDragSource={
+          header.dimensionId === MEASURE_ID &&
+          Object.keys(this.props.measures || {}).length > 1
+        }
+        gridId={gridId}
+        selectAxis={selectAxis}
+        moveDimension={moveDimension}
+        toggleMeasure={toggleMeasure}
+        moveMeasure={moveMeasure}
+        toggleCollapse={toggleCollapse}
+        collectMenu={this.collectMenu}
+        previewSizes={previewSizes}
+        measuresCount={measures === null || Object.keys(measures).length}
+      />
+    );
+  };
+  cellsRenderer = () => {
+    const headers =
+      this.props.axisType === AxisType.ROWS
+        ? this.props.rows
+        : this.props.columns;
+    if (headers === undefined || !headers.cells.length) {
+      return [];
     }
+    const affix = this.affixOffsets(headers.cells[0][0], headers.offset);
+    const cells = [];
+    headers.cells.map(header =>
+      header.map(cell => cells.push(this.cellRenderer(cell, affix)))
+    );
     return cells;
   };
   render() {
     const { height, width, axisType, gridId } = this.props;
-    const cells = this.headersRenderer();
+    const cells = this.cellsRenderer();
     const style = {
       position: "relative",
       overflow: "hidden",

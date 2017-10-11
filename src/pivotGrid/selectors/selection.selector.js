@@ -1,19 +1,19 @@
-import { createSelector } from 'reselect';
-import { rowLeavesSelector, columnLeavesSelector } from './axis.selector';
+import { createSelector } from "reselect";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import {
   getCellValueSelector,
   getCellDimensionInfosSelector
-} from './cell.selector';
+} from "./cell.selector";
 import {
-  rowDimensionsSelector,
-  columnDimensionsSelector,
+  rowVisibleDimensionsSelector,
+  columnVisibleDimensionsSelector,
   activatedMeasuresSelector
-} from './dimensions.selector';
-import { getLeaves } from '../utils/headers';
-import copy from '../services/copyService';
+} from "./dimensions.selector";
+import { getLeaves } from "../utils/headers";
+import copy from "../services/copyService";
 
 const getIndexfromKey = (leaves, key) =>
-  leaves.findIndex(leaf => leaf.key === key);
+  leaves.leaves.findIndex(leaf => leaf.key === key);
 
 export const getRowIndexFromKey = createSelector(
   [rowLeavesSelector],
@@ -34,11 +34,7 @@ export const getSelectedColumnRangeSelector = createSelector(
       selectedCellStart: { columnIndex: startIndex, rowIndex: 0 },
       selectedCellEnd: {
         columnIndex: stopIndex,
-        rowIndex: rowLeaves.length - 1
-      },
-      focusedCell: {
-        columnIndex: stopIndex,
-        rowIndex: null
+        rowIndex: rowLeaves.leaves.length - 1
       }
     };
   }
@@ -52,11 +48,7 @@ export const getSelectedRowRangeSelector = createSelector(
     return {
       selectedCellStart: { columnIndex: 0, rowIndex: startIndex },
       selectedCellEnd: {
-        columnIndex: columnLeaves.length - 1,
-        rowIndex: stopIndex
-      },
-      focusedCell: {
-        columnIndex: null,
+        columnIndex: columnLeaves.leaves.length - 1,
         rowIndex: stopIndex
       }
     };
@@ -72,8 +64,8 @@ export const copySelector = createSelector(
   [
     rowLeavesSelector,
     columnLeavesSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector,
+    rowVisibleDimensionsSelector,
+    columnVisibleDimensionsSelector,
     activatedMeasuresSelector,
     getCellValueSelector,
     getCellDimensionInfosSelector,
@@ -93,8 +85,8 @@ export const copySelector = createSelector(
       selectedRange,
       columnLeaves,
       rowLeaves,
-      rowDimensions,
-      columnDimensions,
+      rowDimensions: rowDimensions.filter(row => row.isVisible),
+      columnDimensions: columnDimensions.filter(column => column.isVisible),
       measures,
       getCellValue,
       getCellDimensionInfos

@@ -40,7 +40,7 @@ class PivotGridDemo extends Component {
       /* eslint-enable */
     );
     // _setData(store, data);
-    const data = getMockDatasource(1, 200, 200);
+    const data = getMockDatasource(1, 100, 100);
     // const data = getObservableError();
     applyConfigToStore(store, basicConfig, configurationFunctions, data);
     this.state = { store };

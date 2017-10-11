@@ -1,26 +1,37 @@
-import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA } from "../constants";
+import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA, SCROLL } from "../constants";
 
 export default (
   state = {
-    selectedCellStart: null,
-    selectedCellEnd: null
+    selectedCellStart: { rowIndex: null, columnIndex: null },
+    selectedCellEnd: { rowIndex: null, columnIndex: null },
+    scrollToRow: { index: 0, direction: 1 },
+    scrollToColumn: { index: 0, direction: 1 }
   },
   action
 ) => {
-  const { type, selectedRange } = action;
+  const { type, selectedRange, scrollToRow, scrollToColumn } = action;
   switch (type) {
     case FETCH_DATA:
     case MOVE_DIMENSION:
       return {
         ...state,
-        selectedCellStart: null,
-        selectedCellEnd: null
+        selectedCellStart: { rowIndex: null, columnIndex: null },
+        selectedCellEnd: { rowIndex: null, columnIndex: null }
       };
     case SELECT_RANGE:
       return {
         ...state,
         ...selectedRange
       };
+    case SCROLL:
+      const nextState = { ...state };
+      if (scrollToRow !== null) {
+        nextState.scrollToRow = scrollToRow;
+      }
+      if (scrollToColumn !== null) {
+        nextState.scrollToColumn = scrollToColumn;
+      }
+      return nextState;
     default:
       return state;
   }

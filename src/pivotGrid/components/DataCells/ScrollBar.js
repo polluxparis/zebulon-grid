@@ -29,21 +29,6 @@ export class ScrollBar extends Component {
     super(props);
     this.state = { innerStyle: this.computeScrollbar(props) };
   }
-  // componentDidMount() {
-  //   this.document = document.getElementById(this.props.id);
-  //   this.document.addEventListener("mouseenter", this.handleMouseEnter);
-  //   this.document.addEventListener("mouseleave", this.handleMouseLeave);
-  //   this.document.addEventListener("mousedown", this.handleMouseDown);
-  // }
-
-  // componentDidUnMount() {
-  //   this.document.removeEventListener("mouseenter", this.handleMouseEnter);
-  //   this.document.removeEventListener("mouseleave", this.handleMouseLeave);
-  //   this.document.removeEventListener("mousedown", this.handleMouseDown);
-  // }
-  // shouldComponentUpdate() {
-  //   return !this.isDragging;
-  // }
   componentWillReceiveProps(nextProps) {
     const innerStyle = this.computeScrollbar(nextProps);
     if (!this.isDragging) {
@@ -61,7 +46,6 @@ export class ScrollBar extends Component {
     } = props;
 
     const style = {
-      // position: "relative",
       backgroundColor: "lightgrey",
       border: "solid 0.03em grey",
       borderRadius: " 0.25rem"
@@ -83,12 +67,10 @@ export class ScrollBar extends Component {
       innerStyle = {
         ...innerStyle,
         height: width - 1,
-        // marginTop: 0.5,
         width: this.innerSize,
         left: this.position
       };
     } else {
-      // const height = height - scrollbarSize;
       this.style = {
         ...style,
         height: length,
@@ -99,7 +81,6 @@ export class ScrollBar extends Component {
         ...innerStyle,
         height: this.innerSize,
         width: width - 1,
-        // marginLeft: 0.5,
         top: this.position
       };
     }
@@ -137,27 +118,27 @@ export class ScrollBar extends Component {
       this.isDragging = true;
       console.log("start dragging ", event);
     } else {
-      return this.props.handleMouseDown(event);
+      return this.props.onScroll(event);
     }
   };
   handleMouseUp = e => (this.isDragging = false);
-  handleMouseMove = e => {
-    if (this.isDragging) {
-      e.preventDefault();
-      const event = this.collect(e);
-      if (event.initiator === "bar") {
-        console.log("mouse over", event);
-        const innerStyle = { ...this.state.innerStyle };
-        if (event.direction === "horizontal") {
-          innerStyle.left = event.position;
-        } else {
-          innerStyle.top = event.position;
-        }
-        this.setState({ innerStyle });
-        return this.props.handleMouseDown(event);
-      }
-    }
-  };
+  // handleMouseMove = e => {
+  //   if (this.isDragging) {
+  //     e.preventDefault();
+  //     const event = this.collect(e);
+  //     if (event.initiator === "bar") {
+  //       console.log("mouse over", event);
+  //       const innerStyle = { ...this.state.innerStyle };
+  //       if (event.direction === "horizontal") {
+  //         innerStyle.left = event.position;
+  //       } else {
+  //         innerStyle.top = event.position;
+  //       }
+  //       this.setState({ innerStyle });
+  //       return this.props.handleMouseDown(event);
+  //     }
+  //   }
+  // };
   handleDragStart(event) {
     // this.dragging = true;
     // event.stopImmediatePropagation();

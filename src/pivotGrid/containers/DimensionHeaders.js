@@ -1,14 +1,15 @@
 import { connect } from "react-redux";
 
 import {
-  columnDimensionsSelector,
-  rowDimensionsSelector,
+  columnVisibleDimensionsSelector,
+  rowVisibleDimensionsSelector,
   columnHeadersHeightSelector,
   rowHeadersWidthSelector,
   crossPositionsSelector,
-  previewSizesSelector,
+  // getAxisActivatedMeasuresSelector,
   availableDimensionsSelector,
-  getDimensionKeysSelector
+  getExpandCollapseKeysSelector,
+  toggleSortOrderSelector
 } from "../selectors";
 import DimensionHeaders from "../components/DimensionHeaders/DimensionHeaders";
 import {
@@ -19,29 +20,54 @@ import {
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const columnDimensions = columnDimensionsSelector(state);
-  const rowDimensions = rowDimensionsSelector(state);
+  const columnDimensions = columnVisibleDimensionsSelector(state);
+  const rowDimensions = rowVisibleDimensionsSelector(state);
   return {
     columnDimensions,
     rowDimensions,
-    getDimensionKeys: getDimensionKeysSelector(state),
+    // measures: getAxisActivatedMeasuresSelector(state),
+    getExpandCollapseKeys: getExpandCollapseKeysSelector(state),
     filters: state.filters,
     availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),
     height: columnHeadersHeightSelector(state),
-    previewSizes: previewSizesSelector(state),
+    // previewSizes: previewSizesSelector(state),
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,
-    sizes: state.sizes
+    sizes: state.sizes,
+    toggleSort: toggleSortOrderSelector(state)
   };
 };
 const mapDispatchToProps = dispatch => ({
   toggleCollapseDimension: key => dispatch(toggleCollapseDimension({ key })),
-  toggleSortOrder: key => dispatch(toggleSortOrder(key)),
-  expandCollapseAll: (axisType, keys) =>
-    dispatch(expandCollapseAll({ axisType, keys })),
+  toggleSortOrder: (axisType, depth) =>
+    dispatch(toggleSortOrder(axisType, depth)),
+  expandCollapseAll: (axisType, keys, n, measuresCount) =>
+    dispatch(expandCollapseAll({ axisType, keys, n, measuresCount })),
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(DimensionHeaders);
+const mergeProps = (
+  { toggleSort, measures, ...restStateProps },
+  { toggleSortOrder, ...restDispatchProps },
+  ownProps
+) => ({
+  toggleSortOrder: (axisType, depth) => {
+    toggleSort(axisType, depth);
+    toggleSortOrder(axisType, depth);
+  },
+  // expandCollapseAll: (axisType, keys, n) =>
+  //   expandCollapseAll(
+  //     axisType,
+  //     keys,
+  //     n,
+  //     measures === null ? 1 : measures.length
+  //   ),
+  ...restStateProps,
+  ...restDispatchProps,
+  ...ownProps
+});
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
+  DimensionHeaders
+);

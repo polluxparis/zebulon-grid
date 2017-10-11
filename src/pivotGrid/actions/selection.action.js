@@ -1,4 +1,4 @@
-import { SELECT_RANGE } from "../constants";
+import { SELECT_RANGE, SCROLL } from "../constants";
 
 export const selectRange = selectedRange => {
 	return {
@@ -14,5 +14,13 @@ export const selectCell = cell => {
 			selectedCellStart: cell,
 			selectedCellEnd: cell
 		}
+	};
+};
+
+export const scrollToIndex = (scrollToRow, scrollToColumn) => {
+	return {
+		type: SCROLL,
+		scrollToRow,
+		scrollToColumn
 	};
 };

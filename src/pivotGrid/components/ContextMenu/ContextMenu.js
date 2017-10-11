@@ -7,15 +7,17 @@ import {
 import classnames from "classnames";
 
 import { isNullOrUndefined } from "../../utils/generic";
-import { MEASURE_ID } from "../../constants";
+import { MEASURE_ID, TOTAL_ID } from "../../constants";
 import Filter from "../../containers/Filter";
 
 const DimensionMenu = (id, trigger) => {
   const isNotCollapsible = trigger.isNotCollapsible;
-  const isAddDimensionDisable = trigger.availableDimensions.length === 0;
+  const availableDimensions = trigger.availableDimensions.filter(
+    dimension => dimension.id !== MEASURE_ID
+  );
   const addDimensionSubMenu = (
-    <SubMenu title="Add dimension" disabled={isAddDimensionDisable}>
-      {trigger.availableDimensions.map(dimension => (
+    <SubMenu title="Add dimension" disabled={availableDimensions.length === 0}>
+      {availableDimensions.map(dimension => (
         <MenuItem
           key={dimension.id}
           onClick={trigger.onItemClick}
@@ -35,7 +37,11 @@ const DimensionMenu = (id, trigger) => {
   }
   return (
     <ReactContextMenu id={id} onShow={e => console.log("show", e, this)}>
-      <MenuItem onClick={trigger.onItemClick} data={{ action: "sort" }}>
+      <MenuItem
+        onClick={trigger.onItemClick}
+        disabled={trigger.dimensionId === TOTAL_ID}
+        data={{ action: "sort" }}
+      >
         {`Sort  ${trigger.direction} `}
       </MenuItem>
       {isNotCollapsible ? null : (
@@ -58,6 +64,7 @@ const DimensionMenu = (id, trigger) => {
       )}
       <SubMenu
         title="Filter"
+        disabled={trigger.dimensionId === TOTAL_ID}
         style={
           !isNullOrUndefined(trigger.dimensionFilter) ? (
             { fontWeight: "bold" }
@@ -69,7 +76,11 @@ const DimensionMenu = (id, trigger) => {
         </div>
       </SubMenu>
 
-      <MenuItem onClick={trigger.onItemClick} data={{ action: "remove" }}>
+      <MenuItem
+        onClick={trigger.onItemClick}
+        disabled={trigger.dimensionId === TOTAL_ID}
+        data={{ action: "remove" }}
+      >
         Remove
       </MenuItem>
 

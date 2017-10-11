@@ -10,7 +10,9 @@ const headerSpec = {
     const handle = monitor.getItem();
     let newAxis, index;
     if (props.id === MEASURE_ID && handle.id === MEASURE_ID) {
-      props.moveMeasure(handle.measureId, props.measureId);
+      if (handle && handle.measureId) {
+        props.moveMeasure(handle.measureId, props.measureId);
+      }
     } else {
       if (props.id === MEASURE_ID || props.id === ROOT_ID) {
         newAxis = toAxis(

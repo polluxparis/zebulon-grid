@@ -162,7 +162,8 @@ export const basicConfig = {
   ],
   columns: [],
   rows: ["toto", "toto att 0", "toto att 1", "tutu", "titi"],
-  activeMeasures: ["qty", "amt", "price"]
+  activeMeasures: ["qty", "amt", "price"],
+  collapses: { rows: { 99: true, 98: true }, columns: {} }
 };
 export const basicConfig2 = {
   measureHeadersAxis: "columns",

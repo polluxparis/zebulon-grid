@@ -4,8 +4,8 @@ import {
   ROOT_ID,
   TOTAL_ID,
   HeaderType
-} from '../constants';
-import { isNullOrUndefined, isUndefined } from './generic';
+} from "../constants";
+import { isNullOrUndefined, isUndefined } from "./generic";
 
 export function getHeaderSize(sizeAndPositionManager, index, span) {
   let res = 0;
@@ -20,7 +20,7 @@ const findHeader = (headers, keys) => {
     return headers.find(header => header.key === keys[0]);
   }
   const parentHeader = headers.find(header => header.key === keys[0]);
-  if (!parentHeader) throw new Error('header not found');
+  if (!parentHeader) throw new Error("header not found");
   return findHeader(parentHeader.children, [
     [keys[0], keys[1]].join(KEY_SEPARATOR),
     ...keys.slice(2)
@@ -41,31 +41,18 @@ export const keyToIndex = (headers, key) => {
   }
 };
 
-/* eslint-enable */
-export function getNotCollapsedLeaf(header) {
+export const getLeaves = (header, acc = [], depth) => {
   if (
-    (header.isCollapsed || header.hasCollapsedParent) &&
-    header.key !== ROOT_ID
+    // isNullOrUndefined(header.orderedChildren) ||
+    header.depth === (depth === undefined ? 10000 : depth) ||
+    (header.id !== ROOT_ID && header.orderedChildren.length === 0)
   ) {
-    return header.parent;
-  } else {
-    return header;
+    acc.push(header);
+    return acc;
   }
-}
-
-export function getLeaves(header) {
-  if (
-    isNullOrUndefined(header.orderedChildrenIds) ||
-    header.orderedChildrenIds.length === 0
-  ) {
-    return [header];
-  }
-  return [].concat(
-    ...header.orderedChildrenIds.map(headerId =>
-      getLeaves(header.children[headerId])
-    )
-  );
-}
+  header.orderedChildren.map(ix => getLeaves(header.children[ix], acc, depth));
+  return acc;
+};
 
 export function getKey({
   headerType,
@@ -106,7 +93,7 @@ export function getNextKey(current, next) {
   const firstLeafHeader =
     current.firstHeaderRow[current.firstHeaderRow.length - 1];
   const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
-  let nextKey = '';
+  let nextKey = "";
   if (current.dimensions.length > next.dimensions.length) {
     const nextDimensionIds = next.dimensions.map(dimension => dimension.id);
     const missingDimensionPosition = current.dimensions.findIndex(
@@ -127,7 +114,7 @@ export function getNextKey(current, next) {
   } else {
     // A filter has been modified
     // For the moment, do nothing
-    nextKey = '';
+    nextKey = "";
   }
   return nextKey;
 }

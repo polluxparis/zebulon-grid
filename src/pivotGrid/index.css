@@ -5,6 +5,7 @@
   user-select: none;
   cursor: default;
   border: solid lightgrey thin;
+  padding: 0.2em;
 }
 
 .zebulon-grid-data-cell-highlighted {
@@ -38,8 +39,8 @@
 }
 
 .zebulon-grid-header-inner {
-  margin: 0.2em;
-  margin-left: "0.5em";
+  /*margin: 0.2em;*/
+  /*margin-left: 0.5em;*/
 }
 
 .zebulon-grid-dimension-header {
@@ -78,7 +79,7 @@
   background-color: lightcyan;
 }
 .zebulon-grid-data-cell-focused {
-  border: solid;
+  border: solid 0.06em rgba(0, 0, 0, 0.5);
 }
 
 .react-contextmenu {
@@ -87,7 +88,7 @@
   text-align: left;
   background-color: #fff;
   background-clip: padding-box;
-  border: 0.01em solid rgba(0, 0, 0, 0.15);
+  border: 0.05em solid rgba(0, 0, 0, 0.5);
   border-radius: 0.25rem;
   outline: none;
   opacity: 0;

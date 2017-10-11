@@ -4,8 +4,8 @@ import { intersectDataIndexes } from "../utils/headers";
 import { filteredDataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
-  rowDimensionsSelector,
-  columnDimensionsSelector
+  rowVisibleDimensionsSelector,
+  columnVisibleDimensionsSelector
 } from "./dimensions.selector";
 import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import { MEASURE_ID, HeaderType } from "../constants";
@@ -130,8 +130,8 @@ export const getCellInfosSelector = createSelector(
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector
+    rowVisibleDimensionsSelector,
+    columnVisibleDimensionsSelector
   ],
   (
     data,
@@ -141,6 +141,8 @@ export const getCellInfosSelector = createSelector(
     rowDimensions,
     columnDimensions
   ) => cell => {
+    const columns = columnDimensions.filter(column => column.isVisible);
+    const rows = rowDimensions.filter(row => row.isVisible);
     const rowLeaf = rowLeaves[cell.rowIndex];
     const columnLeaf = columnLeaves[cell.columnIndex];
     let measure;
@@ -157,21 +159,9 @@ export const getCellInfosSelector = createSelector(
       measure.aggregation
     );
     let dimensions = [];
-    dimensions = cellDimensionInfos(
-      data,
-      rowDimensions,
-      "rows",
-      rowLeaf,
-      measures
-    );
+    dimensions = cellDimensionInfos(data, rows, "rows", rowLeaf, measures);
     dimensions = dimensions.concat(
-      cellDimensionInfos(
-        data,
-        columnDimensions,
-        "columns",
-        columnLeaf,
-        measures
-      )
+      cellDimensionInfos(data, columns, "columns", columnLeaf, measures)
     );
     const usedData = intersectDataIndexes(
       rowLeaf.dataIndexes,
@@ -186,8 +176,8 @@ export const getRangeInfosSelector = createSelector(
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector,
+    rowVisibleDimensionsSelector,
+    columnVisibleDimensionsSelector,
     state => state.config.measureHeadersAxis
   ],
   (
@@ -206,6 +196,8 @@ export const getRangeInfosSelector = createSelector(
     ) {
       return {};
     }
+    const columnDims = columnDimensions.filter(column => column.isVisible);
+    const rowDims = rowDimensions.filter(row => row.isVisible);
     const range = {
       selectedCellStart: {
         rowIndex: Math.min(
@@ -237,7 +229,7 @@ export const getRangeInfosSelector = createSelector(
       const rowLeaf = rowLeaves[index];
       rows[index] = cellDimensionInfos(
         data,
-        rowDimensions,
+        rowDims,
         "rows",
         rowLeaf,
         measures
@@ -252,7 +244,7 @@ export const getRangeInfosSelector = createSelector(
       const columnLeaf = columnLeaves[index];
       columns[index] = cellDimensionInfos(
         data,
-        columnDimensions,
+        columnDims,
         "columns",
         columnLeaf,
         measures

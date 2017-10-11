@@ -2,11 +2,11 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  previewSizesSelector,
-  dataCellsHeightSelector,
-  rowHeadersWidthSelector,
+  // previewSizesSelector,
+  // dataCellsHeightSelector,
+  // rowHeadersWidthSelector,
   getSelectedRowRangeSelector,
-  rowHeadersPositionsAndSizesSelector,
+  // rowHeadersPositionsAndSizesSelector,
   getAxisActivatedMeasuresSelector,
   availableMeasuresSelector
 } from "../selectors";
@@ -20,27 +20,27 @@ import {
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  const headers = rowHeadersPositionsAndSizesSelector(state);
+  // const headers = rowHeadersPositionsAndSizesSelector(state);
   return {
     axisType: AxisType.ROWS,
-    height: dataCellsHeightSelector(state),
-    width: rowHeadersWidthSelector(state),
-    previewSizes: previewSizesSelector(state),
-    rowCount: headers.headers.length,
-    columnCount: headers.depth,
-    rowsSize: headers.size,
-    columnsSize: headers.crossSize,
+    height: state.config.height,
+    width: state.config.width,
+    // previewSizes: previewSizesSelector(state),
+    // rowCount: headers.headers.length,
+    // columnCount: headers.depth,
+    // rowsSize: headers.size,
+    // columnsSize: headers.crossSize,
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),
-    headers: headers.headers,
+    // headers: headers.headers,
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     availableMeasures: availableMeasuresSelector(state)
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  toggleCollapse: key => {
-    dispatch(toggleCollapse({ axisType: AxisType.ROWS, key }));
+  toggleCollapse: (key, n) => {
+    dispatch(toggleCollapse({ axisType: AxisType.ROWS, key, n }));
   },
   selectAxis: getSelectedRowRange => header => {
     const selectedRange = getSelectedRowRange(header);

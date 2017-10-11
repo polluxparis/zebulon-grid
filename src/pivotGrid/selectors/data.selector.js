@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import pass from "../utils/filtering";
 import { isUndefined } from "../utils/generic";
+import { TOTAL_ID, MEASURE_ID } from "../constants";
 
 const getFilters = state => state.filters || {};
 const getData = state => state.data;
@@ -26,8 +27,10 @@ export const filteredDataSelector = createSelector(
 export const getDimensionValuesSelector = createSelector(
   [getData, state => state.dimensions],
   (data, dimensions) => id => {
+    if (id === TOTAL_ID || id === MEASURE_ID) {
+      return [];
+    }
     const dimension = dimensions[id];
-
     let values = {};
     // We use data here instead of filteredData
     // Otherwise you lose the filtered values the next time you open a Filter Panel
@@ -41,8 +44,6 @@ export const getDimensionValuesSelector = createSelector(
           id: key,
           label: label,
           sortKey: sortKey
-          // checked: pass(filter, key)
-          // checked: filter[key] !== undefined
         };
       }
     }

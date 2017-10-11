@@ -4,35 +4,33 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
-  columnLeavesSelector,
-  defaultCellSizesSelector,
-  // layoutSelector,
-  rowLeavesSelector,
+  rowHeadersSelector,
+  columnHeadersSelector,
   selectedRangeSelector,
-  copySelector
+  copySelector,
+  defaultCellSizesSelector
 } from "../selectors";
 import {
   updateCellSize,
   setConfigProperty,
   selectRange,
   selectCell,
+  scrollToIndex,
   zoom
 } from "../actions";
 
 const mapStateToProps = state => {
-  const rowLeaves = rowLeavesSelector(state);
-  const columnLeaves = columnLeavesSelector(state);
   return {
     status: state.status,
     width: state.config.width,
-    // layout: layoutSelector(state),
-    defaultCellSizes: defaultCellSizesSelector(state),
+    height: state.config.height,
+    rows: rowHeadersSelector(state),
+    columns: columnHeadersSelector(state),
     sizes: state.sizes,
-    columnLeaves,
-    rowLeaves,
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.config.zoom,
-    copy: copySelector(state)
+    copy: copySelector(state),
+    defaultCellSizes: defaultCellSizesSelector(state)
   };
 };
 
@@ -58,44 +56,22 @@ const mapDispatchToProps = dispatch => ({
     if (height) dispatch(setConfigProperty({ height, width }, "height"));
     if (width) dispatch(setConfigProperty({ height, width }, "width"));
   },
-  selectRange: selectedRange => {
-    dispatch(selectRange(selectedRange));
-  },
-  selectCell: cell => {
-    dispatch(selectCell(cell));
-  },
-  zoom: type => {
-    dispatch(zoom(type));
-  }
+  selectRange: selectedRange => dispatch(selectRange(selectedRange)),
+  selectCell: cell => dispatch(selectCell(cell)),
+  zoom: type => dispatch(zoom(type)),
+  scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
+  scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll))
 });
 
 const mergeProps = (
-  {
-    status,
-    width,
-    // layout,
-    headerSizes,
-    sizes,
-    defaultCellSizes,
-    selectedRange,
-    copy,
-    zoomValue
-  },
-  { updateCellSize, setSizes, selectRange, selectCell, zoom },
+  { sizes, defaultCellSizes, ...restStateProps },
+  { updateCellSize, ...restDispatchProps },
   ownProps
 ) => ({
-  status,
-  width,
-  // layout,
   updateCellSize: ({ handle, offset, initialOffset }) =>
     updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
-  setSizes,
-  selectRange,
-  selectCell,
-  selectedRange,
-  zoom,
-  copy,
-  zoomValue,
+  ...restStateProps,
+  ...restDispatchProps,
   ...ownProps
 });
 
