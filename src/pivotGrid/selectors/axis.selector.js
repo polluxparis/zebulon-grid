@@ -51,7 +51,7 @@ function buildAxisTrees(data, { columns, rows }) {
   const rowRoot = { id: ROOT_ID, children: {} };
   const columnRoot = { id: ROOT_ID, children: {} };
   // Create sorting accessors
-  console.log("buildNode0", Date.now());
+  console.log("buildNode0", Date.now(), data);
 
   data.forEach((row, index) => {
     let columnNode = columnRoot;
@@ -67,7 +67,7 @@ function buildAxisTrees(data, { columns, rows }) {
       }
     });
   });
-  console.log("buildNode", Date.now());
+  console.log("buildNode", Date.now(), columnRoot, rowRoot);
   return { columns: columnRoot, rows: rowRoot };
 }
 const getAxisTreesSelector = createSelector(
@@ -86,7 +86,13 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
-
+const sortFunction = dimension => {
+  if (dimension.sort.custom) {
+    return (a, b) => dimension.sort.custom(a.sortKey, b.sortKey);
+  } else {
+    return (a, b) => (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
+  }
+};
 function buildHeadersTree(
   data,
   node,
@@ -190,16 +196,11 @@ function buildHeadersTree(
       if (!isNullOrUndefined(childrenDimension.sort.sortedBy)) {
         childrenDimension = dimensions[header.depth + 1];
       }
-      let sortFunction;
-      if (childrenDimension.sort.custom) {
-        sortFunction = (a, b) =>
-          childrenDimension.sort.custom(a.sortKey, b.sortKey);
-      } else {
-        sortFunction = (a, b) =>
-          (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
-      }
-      orderedChildren.sort(sortFunction);
-      header.orderedChildren = orderedChildren.map(obj => obj.index);
+      orderedChildren.sort(sortFunction(childrenDimension));
+      header.orders = {
+        [childrenDimension.id]: orderedChildren.map(obj => obj.index)
+      };
+      header.orderedChildren = header.orders[childrenDimension.id];
       if (childrenDimension.sort.direction === "desc") {
         header.orderedChildren.reverse();
       }
@@ -396,6 +397,20 @@ export const getExpandCollapseKeysSelector = createSelector(
     );
   }
 );
+const sortHeader = (header, attributeId, attributeDepth, sortFunction) => {
+  if (attributeId) {
+    if (header.orders[attributeId]) {
+      header.orders[attributeId].reverse();
+    } else {
+      const orderedChildren = getLeaves(header, [], attributeDepth);
+      orderedChildren.sort(sortFunction);
+      header.orders[attributeId] = orderedChildren.map((obj, index) => index);
+    }
+    header.orderedChildren = header.orders[attributeId];
+  } else {
+    header.orderedChildren.reverse();
+  }
+};
 export const toggleSortOrderSelector = createSelector(
   [
     rowHeadersTreeSelector,
@@ -407,8 +422,21 @@ export const toggleSortOrderSelector = createSelector(
     axis,
     depth
   ) => {
-    const dimension =
-      axis === AxisType.ROWS ? rowDimensions[depth] : columnDimensions[depth];
+    let sortFct;
+    const dimensions =
+      axis === AxisType.ROWS ? rowDimensions : columnDimensions;
+    const dimension = dimensions[depth];
+    let sortingDepth = depth - 1;
+    if (dimension.isAttribute) {
+      while (dimensions[sortingDepth].id !== dimension.isAttributeOf) {
+        sortingDepth--;
+      }
+      sortFct = sortFunction(dimension);
+      sortingDepth--;
+      if (true) {
+      }
+    }
+
     if (dimension.id !== TOTAL_ID && dimension.id !== MEASURE_ID) {
       console.log(axis, depth, rowDimensions, columnDimensions);
       const header = axis === AxisType.ROWS ? rowHeader : columnHeader;
@@ -418,8 +446,8 @@ export const toggleSortOrderSelector = createSelector(
       } else {
         sort.direction = "desc";
       }
-      const leaves = getLeaves(header, [], depth - 1);
-      leaves.map(header => header.orderedChildren.reverse());
+      const leaves = getLeaves(header, [], sortingDepth);
+      leaves.map(header => sortHeader(header, dimension.id, depth, sortFct));
     }
   }
 );

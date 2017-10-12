@@ -16,16 +16,20 @@ class ZebulonGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.config !== nextProps.config) {
+    if (
+      this.props.config !== nextProps.config ||
+      this.props.data !== nextProps.data
+    ) {
       applyConfigToStore(
         this.state.store,
         nextProps.config,
         this.state.configurationFunctions,
         nextProps.data
       );
-    } else if (this.props.data !== nextProps.data) {
-      setData(this.state.store, nextProps.data);
     }
+    // else if (this.props.data !== nextProps.data) {
+    //   setData(this.state.store, nextProps.data);
+    // }
   }
   render() {
     const { store, menuFunctions } = this.state;

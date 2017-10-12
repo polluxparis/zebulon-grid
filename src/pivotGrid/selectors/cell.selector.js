@@ -143,8 +143,8 @@ export const getCellInfosSelector = createSelector(
   ) => cell => {
     const columns = columnDimensions.filter(column => column.isVisible);
     const rows = rowDimensions.filter(row => row.isVisible);
-    const rowLeaf = rowLeaves[cell.rowIndex];
-    const columnLeaf = columnLeaves[cell.columnIndex];
+    const rowLeaf = rowLeaves.leaves[cell.rowIndex];
+    const columnLeaf = columnLeaves.leaves[cell.columnIndex];
     let measure;
     if (rowLeaf.type === HeaderType.MEASURE) {
       measure = measures[rowLeaf.id];

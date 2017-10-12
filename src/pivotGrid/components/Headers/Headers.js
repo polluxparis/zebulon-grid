@@ -33,7 +33,7 @@ class Headers extends PureComponent {
     return offsets;
   };
 
-  cellRenderer = (header, affix) => {
+  cellRenderer = (header, offset, affix, lastSize) => {
     const {
       gridId,
       selectAxis,
@@ -50,11 +50,11 @@ class Headers extends PureComponent {
       left:
         axisType === AxisType.ROWS
           ? header.sizes.cross.position
-          : header.sizes.main.position,
+          : header.sizes.main.position - offset,
       top:
         axisType === AxisType.COLUMNS
           ? header.sizes.cross.position
-          : header.sizes.main.position,
+          : header.sizes.main.position - offset,
       height:
         axisType === AxisType.ROWS
           ? header.sizes.main.size
@@ -64,18 +64,16 @@ class Headers extends PureComponent {
           ? header.sizes.main.size
           : header.sizes.cross.size
     };
-    // if (header.sizes.cross.collapsed) {
-    //   axisType === AxisType.ROWS
-    //     ? (positionStyle.paddingRight = header.sizes.cross.collapsed)
-    //     : (positionStyle.paddingBottom = header.sizes.cross.collapsed);
-    // }
     // affix management to keep labels on screen (except for leaves)
-    if (header.isAffixManaged) {
-      // let offset;
+    if (header.sizes.affix && affix) {
+      const affixOffset = Math.min(
+        affix + offset,
+        Math.max(header.sizes.main.size - lastSize, 0)
+      );
       if (axisType === AxisType.COLUMNS) {
-        positionStyle.paddingLeft = affix[header.depth];
+        positionStyle.paddingLeft = affixOffset;
       } else {
-        positionStyle.paddingTop = affix[header.depth];
+        positionStyle.paddingTop = affixOffset;
       }
     }
     return (
@@ -116,10 +114,20 @@ class Headers extends PureComponent {
     if (headers === undefined || !headers.cells.length) {
       return [];
     }
-    const affix = this.affixOffsets(headers.cells[0][0], headers.offset);
+    // const offset =
+    //   headers.scroll.direction === 1 ? 0 : headers.hasScrollbar * ScrollbarSize;
     const cells = [];
     headers.cells.map(header =>
-      header.map(cell => cells.push(this.cellRenderer(cell, affix)))
+      header.map(cell =>
+        cells.push(
+          this.cellRenderer(
+            cell,
+            headers.offset,
+            headers.affix,
+            headers.lastSize
+          )
+        )
+      )
     );
     return cells;
   };

@@ -132,12 +132,12 @@ export class DataCells extends Component {
       zoom: this.props.zoom
     };
   };
-  cellRenderer = (rowHeader, columnHeader, isEven) => {
+  cellRenderer = (rowHeader, columnHeader, isEven, offsetRow, offsetColumn) => {
     const { getCellValue, measures, selectedRange, gridId } = this.props;
     const style = {
       position: "absolute",
-      top: rowHeader.sizes.main.position,
-      left: columnHeader.sizes.main.position,
+      top: rowHeader.sizes.main.position - offsetRow,
+      left: columnHeader.sizes.main.position - offsetColumn,
       height: rowHeader.sizes.main.size,
       width: columnHeader.sizes.main.size
     };
@@ -206,9 +206,21 @@ export class DataCells extends Component {
       return [];
     }
     const cells = [];
+    // const offsetRow =
+    //   rows.scroll.direction === 1 ? 0 : scrollbarsWidth.horizontal;
+    // const offsetColumn =
+    //   columns.scroll.direction === 1 ? 0 : scrollbarsWidth.vertical;
     rows.cells.map((row, index) =>
       columns.cells.map(column =>
-        cells.push(this.cellRenderer(row[0], column[0], !(index % 2)))
+        cells.push(
+          this.cellRenderer(
+            row[0],
+            column[0],
+            !(index % 2),
+            rows.offset,
+            columns.offset
+          )
+        )
       )
     );
     return cells;
@@ -262,53 +274,8 @@ export class DataCells extends Component {
           displayedRatio={columns.displayedRatio}
           id={`horizontal-scrollbar ${gridId}`}
           onScroll={this.onScroll}
-          // ={this.handleMouseDown}
-          // handleMouseOver={this.handleMouseOver}
         />
       </div>
     );
   }
 }
-/*
-      <div
-        id={`grid ${gridId}`}
-        onWheel={this.handleWheel}
-        tabIndex={0}
-        onKeyDown={this.handleKeyDown}
-        onKeyUp={this.handleKeyUp}
-      >
-        <div style={{ display: "flex" }}>
-          <div style={style}>{this.cells}</div>
-          <ScrollBar
-            direction="vertical"
-            width={this.props.scrollbarSizes.vertical}
-            length={height}
-            offset={width}
-            // visible={this.scroll.visbleScrollbarV}
-            positionRatio={
-              this.scroll.row.startIndex / this.props.rowHeaders.length
-            }
-            displayedRatio={rowDisplayedCount / this.props.rowHeaders.length}
-            id={`vertical-scrollbar ${gridId}`}
-            handleMouseDown={this.handleMouseDown}
-            handleMouseOver={this.handleMouseOver}
-          />
-        </div>
-        <ScrollBar
-          direction="horizontal"
-          width={this.props.scrollbarSizes.horizontal}
-          length={width}
-          offset={height}
-          // visible={this.scroll.visbleScrollbarH}
-          positionRatio={
-            this.scroll.column.startIndex / this.props.columnHeaders.length
-          }
-          displayedRatio={
-            columnDisplayedCount / this.props.columnHeaders.length
-          }
-          id={`horizontal-scrollbar ${gridId}`}
-          handleMouseDown={this.handleMouseDown}
-          handleMouseOver={this.handleMouseOver}
-        />
-      </div>
- */

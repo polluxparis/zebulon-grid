@@ -11,7 +11,7 @@ import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
 // import DragLayer from "./DragLayer";
 // import { isEmpty } from "../../utils/generic";
-import { ZOOM_IN, ZOOM_OUT, AxisType } from "../../constants";
+import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -83,19 +83,6 @@ import { ZOOM_IN, ZOOM_OUT, AxisType } from "../../constants";
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
-    this.scrollbarWidth = 12;
-    // const scroll = {
-    //   rows: { index: 0, direction: 1, cells: [] },
-    //   columns: { index: 0, direction: 1, cells: [] }
-    // };
-    // this.state = { ...scroll, scroll };
-
-    //   rows: props.getRowHeaders(props.height, { index: 0, direction: 1 }),
-    //   columns: props.getColumnHeaders(props.width, { index: 0, direction: 1 })
-    // };
-    // this.focusCellKeys = [];
-    // this.handleScrollToChange = this.handleScrollToChange.bind(this);
-    // this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -114,7 +101,7 @@ class PivotGrid extends Component {
     let ix = 0,
       n = 0;
     if (offset === 0) {
-      ix = direction;
+      ix = -direction;
       n = -1;
     }
     while (
@@ -128,13 +115,8 @@ class PivotGrid extends Component {
   };
   handleKeyDown = e => {
     this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-    const {
-      selectedRange,
-      selectRange,
-      selectCell,
-      rows,
-      columns
-    } = this.props;
+    const { selectedRange, selectRange, selectCell, headers } = this.props;
+    const { rows, columns } = headers;
     if (e.metaKey || e.ctrlKey) {
       // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
       if (e.key === "+" || e.key === "=") {
@@ -224,8 +206,8 @@ class PivotGrid extends Component {
           cell = {
             columnIndex: this.nextVisible(
               columns.leaves,
-              columns.length - 1,
-              direction,
+              direction === 1 ? columns.length - 1 : 0,
+              -direction,
               0
             ),
             rowIndex: selectedRange.selectedCellEnd.rowIndex
@@ -236,8 +218,8 @@ class PivotGrid extends Component {
             columnIndex: selectedRange.selectedCellEnd.columnIndex,
             rowIndex: this.nextVisible(
               rows.leaves,
-              rows.length - 1,
-              direction,
+              direction === 1 ? rows.length - 1 : 0,
+              -direction,
               0
             )
           };
@@ -275,7 +257,7 @@ class PivotGrid extends Component {
   };
   handleWheel = e => {
     e.preventDefault();
-    const { rows, columns } = this.props;
+    const { rows, columns } = this.props.headers;
     const direction = Math.sign(e.deltaY);
     const leaves = e.altKey ? columns : rows;
     const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
@@ -300,28 +282,7 @@ class PivotGrid extends Component {
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
-    // this.scrollChange = false;
   }
-  computeGrid = (rows, columns) => {
-    if (
-      rows &&
-      columns &&
-      ((rows.hasScrollbar && !columns.hasScrollbar) ||
-        (!rows.hasScrollbar && columns.hasScrollbar))
-    ) {
-      if (
-        rows.hasScrollbar &&
-        columns.size + this.scrollbarWidth > columns.maxSize
-      ) {
-        columns.hasScrollbar = true;
-      } else if (
-        columns.hasScrollbar &&
-        rows.size + this.scrollbarWidth > rows.maxSize
-      ) {
-        rows.hasScrollbar = true;
-      }
-    }
-  };
   handleCopy = () => {
     if (
       // Works only if the grid is focused
@@ -331,24 +292,6 @@ class PivotGrid extends Component {
     }
   };
 
-  // handleKeyDown = e => {
-  //   // const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
-  //   this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-  //   // this.shiftKeyIsPressed = e.shiftKey;
-  //   if (e.metaKey || e.ctrlKey) {
-  //     // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-  //     if (e.key === "+" || e.key === "=") {
-  //       this.props.zoom(ZOOM_IN);
-  //       e.preventDefault();
-  //     }
-  //     // ctrl - -> zoom out
-  //     // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-  //     if (e.key === "-" || e.key === "_") {
-  //       this.props.zoom(ZOOM_OUT);
-  //       e.preventDefault();
-  //     }
-  //   }
-  // };
   // handleKeyUp = e => {
   //   if (e.which === 17) {
   //     this.modifierKeyIsPressed = false;
@@ -358,57 +301,8 @@ class PivotGrid extends Component {
   //   }
   // };
 
-  // handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
-  //   const selectedRange = this.props.selectedRange;
-  //   if (this.shiftKeyIsPressed) {
-  //     // after column selection
-  //     if (isNull(selectedRange.focusedCell.rowIndex)) {
-  //       const columnIndex =
-  //         selectedRange.selectedCellEnd.columnIndex +
-  //         (scrollToColumn > this.scrollToColumn ? 1 : -1);
-  //       this.props.selectRange({
-  //         selectedCellEnd: {
-  //           columnIndex,
-  //           rowIndex: selectedRange.selectedCellEnd.rowIndex
-  //         },
-  //         focusedCell: { columnIndex, rowIndex: null }
-  //       });
-  //     } else if (isNull(selectedRange.focusedCell.columnIndex)) {
-  //       // after row  selection
-  //       const rowIndex =
-  //         selectedRange.selectedCellEnd.rowIndex +
-  //         (scrollToRow > this.scrollToRow ? 1 : -1);
-  //       this.props.selectRange({
-  //         selectedCellEnd: {
-  //           rowIndex,
-  //           columnIndex: selectedRange.selectedCellEnd.columnIndex
-  //         },
-  //         focusedCell: { rowIndex, columnIndex: null }
-  //       });
-  //     } else {
-  //       this.props.selectRange({
-  //         selectedCellEnd: {
-  //           columnIndex: scrollToColumn,
-  //           rowIndex: scrollToRow
-  //         },
-  //         focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
-  //       });
-  //     }
-  //   } else {
-  //     this.props.selectCell({
-  //       columnIndex: scrollToColumn,
-  //       rowIndex: scrollToRow
-  //     });
-  //   }
-
-  //   this.scrollChange = !(
-  //     this.scrollToRow === scrollToRow && this.scrollToColumn === scrollToColumn
-  //   );
-  //   this.scrollToRow = scrollToRow;
-  //   this.scrollToColumn = scrollToColumn;
-  // };
   onScroll = (scrollToRow, scrollToColumn) => {
-    let { rows, columns } = this.props;
+    let { rows, columns } = this.props.headers;
     if (
       scrollToRow !== null &&
       (scrollToRow.index !== rows.index ||
@@ -432,11 +326,10 @@ class PivotGrid extends Component {
       width,
       drilldown,
       zoomValue,
-      rows,
-      columns,
+      headers,
       id: gridId
     } = this.props;
-
+    const { rows, columns } = headers;
     let grid;
     if (this.props.status.loading) {
       grid = <div>Loading data...</div>;
@@ -452,14 +345,20 @@ class PivotGrid extends Component {
         );
       }
     } else if (rows !== undefined && columns !== undefined) {
-      this.computeGrid(rows, columns);
+      // this.computeGrid(rows, columns);
       const scrollbarsWidth = {
-        horizontal: this.scrollbarWidth * (columns.hasScrollbar || 0),
-        vertical: this.scrollbarWidth * (rows.hasScrollbar || 0)
+        horizontal: ScrollbarSize * (columns.hasScrollbar || 0),
+        vertical: ScrollbarSize * (rows.hasScrollbar || 0)
       };
       const dataCellsSizes = {
-        height: Math.min(height - scrollbarsWidth.horizontal, rows.size),
-        width: Math.min(width - scrollbarsWidth.vertical, columns.size)
+        height: Math.min(
+          height - rows.crossSize - scrollbarsWidth.horizontal,
+          rows.size
+        ),
+        width: Math.min(
+          width - columns.crossSize - scrollbarsWidth.vertical,
+          columns.size
+        )
       };
       const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(

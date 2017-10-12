@@ -27,7 +27,7 @@ import {
   ROOT_ID,
   // TOTAL_ID,
   MEASURE_ID,
-  // HeaderType,
+  ScrollbarSize,
   AxisType
 } from "../constants";
 
@@ -39,7 +39,7 @@ const parentsSizes = (
   main,
   crossPositions,
   collapsedSizes,
-  // index,
+  affix,
   cellsKey,
   rowCells,
   areCollapsed,
@@ -64,7 +64,7 @@ const parentsSizes = (
         header.depth >= getLastDimension(dimensions) ||
         (!header.isCollapsed && header.span === measuresCount),
       // isCollapsed: areCollapsed[header.key],
-      // isAffixManaged: index === 0,
+      isAffixManaged: false,
       isDropTarget: false
     };
     cellsKey[header.key] = true;
@@ -76,14 +76,14 @@ const parentsSizes = (
       // header.isAffixManaged = true;
     }
   }
-  // header.indexes.lastIndex = index;
+  header.sizes.affix = header.nVisibles === 1 ? 0 : affix;
   if (header.parent.id !== ROOT_ID) {
     parentsSizes(
       header.parent,
       main,
       crossPositions,
       collapsedSizes,
-      // index,
+      affix,
       cellsKey,
       rowCells,
       areCollapsed,
@@ -149,7 +149,7 @@ export const buildPositionedHeaders = (
   nVisibles,
   scroll
 ) => {
-  console.log("buildPositionedHeaders0", Date.now(), scroll);
+  console.log("buildPositionedHeaders0", Date.now(), scroll, nVisibles);
   const maxSize = containerSize - crossSize;
   let size = 0,
     depth = 0;
@@ -184,6 +184,7 @@ export const buildPositionedHeaders = (
   }
   let index = scroll.index;
   let ix = 0;
+  let lastSize;
   while (size <= maxSize && index < leaves.length && index >= 0) {
     // leaves.map((header, index) => {
     const header = leaves[index];
@@ -199,16 +200,12 @@ export const buildPositionedHeaders = (
         },
         cross: crossPositions[dimension.id]
       };
-      // header.indexes = {
-      //   index,
-      //   lastIndex: index,
-      //   rootIndex:
       parentsSizes(
         header.parent,
         header.sizes.main,
         crossPositions,
         collapsedSizes,
-        // index,
+        scroll.direction === 1 ? false : size + mainSize > maxSize,
         cellsKey,
         rowCells,
         areCollapsed,
@@ -216,8 +213,6 @@ export const buildPositionedHeaders = (
         measuresCount,
         scroll.direction
       );
-      //     || index
-      // };
       header.options = {
         isNotCollapsible: true,
         isAffixManaged: false,
@@ -225,17 +220,12 @@ export const buildPositionedHeaders = (
           dimension.id === MEASURE_ID &&
           (header.depth === 0 || measuresCount > 1)
       };
-      // if (
-      //   dimension.isVisible &&
-      //   (header.isVisible ||
-      //     (dimension.id !== MEASURE_ID && !header.isParentCollapsed))
-      // )
-      // {
       if (header.isParentCollapsed) {
         header.dataIndexes = header.parent.dataIndexes;
       } else {
         header.dataIndexes = header.dataRowIndexes;
       }
+      lastSize = header.sizes.main.size;
       rowCells.push(header);
       if (rowCells.length) {
         rowCells.reverse();
@@ -244,11 +234,14 @@ export const buildPositionedHeaders = (
         ix++;
       }
     }
-
     index += scroll.direction;
   }
   // when height(or width) increase and the grid is scrolled, it may not rest enough cells to feed the grid
-  if (size < maxSize && Math.max(index, scroll.index) < leaves.length - 1) {
+  if (
+    size < maxSize &&
+    (Math.max(index, scroll.index) < leaves.length - 1 ||
+      Math.min(index, scroll.index) > 0)
+  ) {
     scroll.index = leaves.length - 1;
     scroll.direction = -1;
     return buildPositionedHeaders(
@@ -264,14 +257,13 @@ export const buildPositionedHeaders = (
       scroll
     );
   }
-  const offset = Math.min(maxSize - size, 0);
-  console.log("buildPositionedHeaders1", Date.now(), cells.length);
-
+  // const offset = scroll.direction === 1 ? 0 : lastSize;
   return {
     size: Math.min(maxSize, size),
     containerSize,
     crossSize,
-    offset,
+    lastSize,
+    affix: scroll.direction === 1 ? 0 : Math.max(size - maxSize, 0),
     depth: depth + 1,
     cells,
     index: scroll.index,
@@ -291,7 +283,7 @@ export const buildPositionedHeaders = (
   };
 };
 
-export const rowHeadersSelector = createSelector(
+export const getRowHeadersSelector = createSelector(
   [
     rowLeavesSelector,
     getCellHeightByKeySelector,
@@ -301,8 +293,8 @@ export const rowHeadersSelector = createSelector(
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
     state => state.collapses.rows,
     state => state.collapses.nVisibleRows,
-    state => state.config.height,
-    state => state.selectedRange.scrollToRow
+    state => state.config.height
+    // state => state.selectedRange.scrollToRow
   ],
   (
     leaves,
@@ -315,7 +307,7 @@ export const rowHeadersSelector = createSelector(
     nVisibles,
     containerSize,
     scroll
-  ) => {
+  ) => scroll => {
     return buildPositionedHeaders(
       leaves.leaves,
       headerSizes,
@@ -330,7 +322,7 @@ export const rowHeadersSelector = createSelector(
     );
   }
 );
-export const columnHeadersSelector = createSelector(
+export const getColumnHeadersSelector = createSelector(
   [
     columnLeavesSelector,
     getCellWidthByKeySelector,
@@ -340,8 +332,8 @@ export const columnHeadersSelector = createSelector(
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
     state => state.collapses.columns,
     state => state.collapses.nVisibleColumns,
-    state => state.config.width,
-    state => state.selectedRange.scrollToColumn
+    state => state.config.width
+    // state => state.selectedRange.scrollToColumn
   ],
   (
     leaves,
@@ -354,7 +346,7 @@ export const columnHeadersSelector = createSelector(
     nVisibles,
     containerSize,
     scroll
-  ) =>
+  ) => scroll =>
     buildPositionedHeaders(
       leaves.leaves,
       headerSizes,
@@ -368,6 +360,67 @@ export const columnHeadersSelector = createSelector(
       scroll
     )
 );
+const combineRowsAndColumns = (rows, columns) => {
+  if (
+    (rows.hasScrollbar && !columns.hasScrollbar) ||
+    (!rows.hasScrollbar && columns.hasScrollbar)
+  ) {
+    if (rows.hasScrollbar && columns.size + ScrollbarSize > columns.maxSize) {
+      columns.hasScrollbar = true;
+    } else if (
+      columns.hasScrollbar &&
+      rows.size + ScrollbarSize > rows.maxSize
+    ) {
+      rows.hasScrollbar = true;
+    }
+  }
+  columns.offset = rows.hasScrollbar
+    ? columns.scroll.direction === 1 ? 0 : ScrollbarSize
+    : 0;
+  rows.offset = columns.hasScrollbar
+    ? rows.scroll.direction === 1 ? 0 : ScrollbarSize
+    : 0;
+};
+export const rowAndColumnHeadersSelector = createSelector(
+  [
+    getRowHeadersSelector,
+    state => state.selectedRange.scrollToRow,
+    getColumnHeadersSelector,
+    state => state.selectedRange.scrollToColumn
+  ],
+  (getRows, scrollToRow, getColumns, scrollToColumn) => {
+    let rows = getRows(scrollToRow);
+    let columns = getColumns(scrollToColumn);
+    combineRowsAndColumns(rows, columns);
+    //  corrections of diplay aberations
+    let change = false;
+    if (
+      columns.direction === -1 &&
+      columns.cells[columns.cells.length - 1][0].sizes.main.position -
+        columns.offset >
+        0
+    ) {
+      scrollToColumn.index = 0;
+      scrollToColumn.direction = 1;
+      columns = getColumns(scrollToColumn);
+      change = true;
+    }
+    if (
+      rows.direction === -1 &&
+      rows.cells[rows.cells.length - 1][0].sizes.main.position - rows.offset > 0
+    ) {
+      scrollToRow.index = 0;
+      scrollToRow.direction = 1;
+      rows = getRows(scrollToRow);
+      change = true;
+    }
+    if (change) {
+      combineRowsAndColumns(rows, columns);
+    }
+    return { rows, columns };
+  }
+);
+
 export const getRowsCollapsedSelector = createSelector(
   [rowLeavesSelector, state => state.collapses.columns],
   (leaves, areCollapsed) => (maxSize, scroll) => {}

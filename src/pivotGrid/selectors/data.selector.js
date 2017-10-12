@@ -9,6 +9,7 @@ const getData = state => state.data;
 export const filteredDataSelector = createSelector(
   [getData, getFilters, state => state.dimensions],
   (data, filtersObject, dimensions) => {
+    console.log("filteredDataSelector0", data);
     const filters = Object.keys(filtersObject).map(id => ({
       dimension: dimensions[id],
       values: Object.values(filtersObject[id].values)

@@ -4,8 +4,9 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
-  rowHeadersSelector,
-  columnHeadersSelector,
+  // rowHeadersSelector,
+  // columnHeadersSelector,
+  rowAndColumnHeadersSelector,
   selectedRangeSelector,
   copySelector,
   defaultCellSizesSelector
@@ -24,8 +25,8 @@ const mapStateToProps = state => {
     status: state.status,
     width: state.config.width,
     height: state.config.height,
-    rows: rowHeadersSelector(state),
-    columns: columnHeadersSelector(state),
+    headers: rowAndColumnHeadersSelector(state),
+    // columns: columnHeadersSelector(state),
     sizes: state.sizes,
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.config.zoom,

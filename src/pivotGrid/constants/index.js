@@ -6,7 +6,7 @@ export const AXIS_SEPARATOR = "-//-";
 
 export const ROOT_ID = "__ROOT_ID__";
 export const EMPTY_ID = "__EMPTY_ID__";
-
+export const ScrollbarSize = 12;
 // Headers
 export const HeaderType = {
   MEASURE: 1, // measure header

@@ -3,8 +3,13 @@ import { Observable } from "rx-lite";
 /* eslint-enable */
 // import * as 'from' './Format';
 
-export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
-  const nTutu = 2;
+export function getMockDatasource(
+  dataRepetition = 1,
+  nToto = 10,
+  nTiti = 10,
+  nTutu = 2
+) {
+  // const nTutu = 2;
   let obj = [];
   const res = [];
   for (let k = 0; k < dataRepetition; k += 1) {
@@ -17,7 +22,7 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
           obj.toto_0 = `att0 ${String(o)}`;
           obj.toto_1 = `att1 ${String(nToto - o)}`;
           obj.titi = `titi ${String(i)}`;
-          obj.tutu = String(u);
+          obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
           obj.qty = u + 10 * i + 100 * o + 1; // +9999999999.1234567890123456
           obj.amt = u + 10 * i + 100 * o + 1000; // +9999999999.1234567890123456
           res.push(obj);
@@ -27,8 +32,13 @@ export function getMockDatasource(dataRepetition = 1, nToto = 10, nTiti = 10) {
   }
   return res;
 }
-export function getMockDatasource2(dataRepetition = 1, nToto = 10, nTiti = 10) {
-  const nTutu = 2;
+export function getMockDatasource2(
+  dataRepetition = 1,
+  nToto = 10,
+  nTiti = 10,
+  nTutu = 2
+) {
+  // const nTutu = 2;
   let obj = [];
   const res = [];
   for (let k = 0; k < dataRepetition; k += 1) {
@@ -84,13 +94,11 @@ export function getObservableError() {
 export const getPromiseMockDatasource = (
   dataRepetition = 1,
   nToto = 10,
-  nTiti = 10
+  nTiti = 10,
+  nTutu = 2
 ) => {
-  const p = new Promise(resolve => setTimeout(resolve, 20)).then(
-    () => getMockDatasource(dataRepetition, nToto, nTiti)
-    // {
-    //   throw new Error('toto');
-    // }
+  const p = new Promise(resolve => setTimeout(resolve, 20)).then(() =>
+    getMockDatasource(dataRepetition, nToto, nTiti, nTutu)
   );
   return p;
 };
@@ -160,8 +168,8 @@ export const basicConfig = {
       format: "price"
     }
   ],
-  columns: [],
-  rows: ["toto", "toto att 0", "toto att 1", "tutu", "titi"],
+  columns: ["titi"],
+  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
   activeMeasures: ["qty", "amt", "price"],
   collapses: { rows: { 99: true, 98: true }, columns: {} }
 };
