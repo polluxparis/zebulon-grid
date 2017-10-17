@@ -1,29 +1,39 @@
 import React from "react";
 import { DragSource, DropTarget } from "react-dnd";
 // import { isNullOrUndefined } from "../../utils/generic";
-import { MEASURE_ID, ROOT_ID, toAxis, AxisType } from "../../constants";
+import { MEASURE_ID, TOTAL_ID, toAxis, AxisType } from "../../constants";
 import { rightArrow, downArrow } from "../../icons";
 
 // -------------------------------
 const headerSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
-    let newAxis, index;
-    if (props.id === MEASURE_ID && handle.id === MEASURE_ID) {
-      if (handle && handle.measureId) {
-        props.moveMeasure(handle.measureId, props.measureId);
-      }
-    } else {
-      if (props.id === MEASURE_ID || props.id === ROOT_ID) {
-        newAxis = toAxis(
-          handle.axis === AxisType.ROWS ? AxisType.COLUMNS : AxisType.ROWS
+    if (handle.id !== props.id) {
+      let newAxis, index;
+      if (props.id === MEASURE_ID && handle.id === MEASURE_ID) {
+        if (handle && handle.measureId) {
+          props.moveMeasure(handle.measureId, props.measureId);
+        }
+      } else if (
+        (handle.id === MEASURE_ID || handle.id === TOTAL_ID) &&
+        props.id !== MEASURE_ID &&
+        handle.axis !== props.axis
+      ) {
+        (handle.toggleMeasuresAxis || props.toggleMeasuresAxis)(
+          handle.axis === AxisType.ROWS ? "columns" : "rows"
         );
-        index = 0;
       } else {
-        newAxis = toAxis(props.axis);
-        index = props.index + 1;
+        if (props.id === MEASURE_ID || props.id === TOTAL_ID) {
+          newAxis = toAxis(
+            handle.axis === AxisType.ROWS ? AxisType.COLUMNS : AxisType.ROWS
+          );
+          index = 0;
+        } else {
+          newAxis = toAxis(props.axis);
+          index = props.index + 1;
+        }
+        props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
       }
-      props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
     }
   }
 };
@@ -31,16 +41,6 @@ const InnerHeaderSpec = {
   beginDrag(props) {
     return props;
   }
-  // {
-  //   return {
-  //     axis: props.axis,
-  //     id: props.id,
-  //     measureId: props.measureId,
-  //     gridId: props.gridId,
-  //     index: props.header.index,
-  //     previewSize: props.previewSize
-  //   };
-  // }
 };
 
 const collectDragSource = (connect, monitor) => ({
@@ -65,6 +65,7 @@ const innerHeader = ({
   collapseOffset,
   handleClick,
   handleClickCollapse,
+  toggleMeasuresAxis,
   moveDimension,
   moveMeasure,
   connectDragSource,

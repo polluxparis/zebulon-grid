@@ -37,6 +37,7 @@ class Headers extends PureComponent {
     const {
       gridId,
       selectAxis,
+      toggleMeasuresAxis,
       moveDimension,
       toggleMeasure,
       moveMeasure,
@@ -85,7 +86,7 @@ class Headers extends PureComponent {
         positionStyle={positionStyle}
         dimensionId={header.dimensionId}
         isNotCollapsible={header.options.isNotCollapsible}
-        isCollapsed={header.options.isCollapsed}
+        isCollapsed={header.isCollapsed}
         collapseOffset={
           header.sizes.cross.collapsed ? header.sizes.cross.collapsed : 0
         }
@@ -96,9 +97,10 @@ class Headers extends PureComponent {
         }
         gridId={gridId}
         selectAxis={selectAxis}
-        moveDimension={moveDimension}
+        toggleMeasuresAxis={toggleMeasuresAxis}
         toggleMeasure={toggleMeasure}
         moveMeasure={moveMeasure}
+        moveDimension={moveDimension}
         toggleCollapse={toggleCollapse}
         collectMenu={this.collectMenu}
         previewSizes={previewSizes}

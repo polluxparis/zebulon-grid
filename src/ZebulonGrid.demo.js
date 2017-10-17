@@ -5,42 +5,59 @@ import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
 import {
-  getMockDatasource,
-  getMockDatasource2,
+  // getMockDatasource,
+  // getMockDatasource2,
   getPromiseMockDatasource,
   basicConfig,
-  basicConfig2
+  getRandomMockDatasource
+  // basicConfig2
 } from "./utils/mock";
 import { configurationFunctions } from "./utils/configurationFunctions";
 import { menuFunctions } from "./utils/menuFunctions";
+
 // <button onClick={this.setData}>Set new data</button>
 // <button onClick={this.pushData}>Push data</button>
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
+    this.options = [100, 100, 5];
+    // this.options = [500, 400, 5];
     this.state = {
       focusCell: [],
-      data: getPromiseMockDatasource(1, 100, 100, 3)
+      data: getPromiseMockDatasource(1, ...this.options),
+      pushedData: []
     };
     this.bigDataSet = false;
   }
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
-    const options = this.bigDataSet ? [1, 500, 400, 5] : [1, 100, 100, 3];
-    this.setState({ data: getPromiseMockDatasource(...options) });
+    this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
+    this.setState({ data: getPromiseMockDatasource(1, ...this.options) });
   };
-
+  pushData = () => {
+    this.setState({ pushedData: getRandomMockDatasource(30, ...this.options) });
+  };
+  customMeasure = () => {
+    this.setState({ customMeasure: !this.state.customMeasure });
+  };
+  customSort = () => {
+    this.setState({ customSort: !this.state.customSort });
+  };
+  customCellFunction = () => {
+    this.setState({ customCellFunction: !this.state.customCellFunction });
+  };
   // setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   // pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
   render() {
     return (
-      <div>
+      <div style={{ fontFamily: "sans-serif" }}>
         <ResizableBox height={basicConfig.height} width={basicConfig.width}>
           <AutoSizer>
             {({ height, width }) => (
               <ZebulonGrid
                 config={basicConfig}
                 data={this.state.data}
+                pushedData={this.state.pushedData}
                 menuFunctions={menuFunctions}
                 configurationFunctions={configurationFunctions}
                 height={height}
@@ -55,14 +72,26 @@ class ZebulonGridDemo extends Component {
             )}
           </AutoSizer>
         </ResizableBox>
-        <div
-          style={{
-            fontFamily: "sans-serif",
-            fontSize: "smaller",
-            marginTop: "2em",
-            width: 500
-          }}
-        >
+        <div style={{ display: "flex", marginTop: ".5em" }}>
+          <button style={{ marginRight: ".5em" }} onClick={this.pushData}>
+            Push data
+          </button>
+          <button style={{ marginRight: ".5em" }} onClick={this.customMeasure}>
+            {`${this.state.customMeasure ? "Remove" : "Add"} a custom measure`}
+          </button>
+          <button style={{ marginRight: ".5em" }} onClick={this.customSort}>
+            {`${this.state.customSort
+              ? "Remove"
+              : "Add"} a custom sorting function`}
+          </button>
+          <button
+            style={{ marginRight: ".5em" }}
+            onClick={this.customCellFunction}
+          >
+            {`${this.state.customCellFunction
+              ? "Remove"
+              : "Add"} a custom cell function`}
+          </button>
           <div>
             <input
               id="option"
@@ -70,8 +99,17 @@ class ZebulonGridDemo extends Component {
               type="checkbox"
               onChange={this.handleDataSetOption}
             />
-            <label for="option">Try a 1M rows dataset</label>
-
+            <label htmlFor="option">Try a 1M rows dataset</label>
+          </div>
+        </div>
+        <div
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: "smaller",
+            marginTop: "2em"
+          }}
+        >
+          <div>
             <div style={{ fontWeight: "bold" }}> Key board and mouse: </div>
             <div style={{ paddingLeft: "2em" }}>
               <div>

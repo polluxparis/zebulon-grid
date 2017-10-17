@@ -4,36 +4,40 @@ import { Provider } from "react-redux";
 
 import PivotGrid from "./containers/PivotGrid";
 import reducer from "./reducers";
-import { applyConfigToStore, setData } from "./utils/configuration";
+import { applyConfigToStore, setData, pushData } from "./utils/configuration";
 import * as actions from "./actions";
 
 class ZebulonGrid extends Component {
   componentWillMount() {
     const { data, config, configurationFunctions, menuFunctions } = this.props;
-    const store = createStore(reducer);
+    const store = createStore(
+      reducer,
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
     applyConfigToStore(store, config, configurationFunctions, data);
     this.setState({ store, configurationFunctions, menuFunctions });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.config !== nextProps.config ||
-      this.props.data !== nextProps.data
-    ) {
+    if (this.props.config !== nextProps.config) {
       applyConfigToStore(
         this.state.store,
         nextProps.config,
         this.state.configurationFunctions,
         nextProps.data
       );
+    } else if (this.props.data !== nextProps.data) {
+      setData(this.state.store, nextProps.data);
+    } else if (
+      this.props.pushedData !== nextProps.pushedData &&
+      nextProps.pushedData.length
+    ) {
+      pushData(this.state.store, nextProps.pushedData);
     }
-    // else if (this.props.data !== nextProps.data) {
-    //   setData(this.state.store, nextProps.data);
-    // }
   }
   render() {
     const { store, menuFunctions } = this.state;
-
     return (
       <Provider store={store}>
         <PivotGrid
@@ -43,6 +47,7 @@ class ZebulonGrid extends Component {
           focusCells={this.props.focusCells}
           height={this.props.height}
           width={this.props.width}
+          ref={ref => (this.grid = ref)}
         />
       </Provider>
     );

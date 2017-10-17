@@ -6,7 +6,7 @@
 //   rowLeavesSelector,
 //   getAxisActivatedMeasuresSelector,
 //   getDimensionKeysSelector
-// } from "./axis.selector";
+// } from "./axis.selector2";
 
 // import {
 //   defaultCellSizesSelector,
@@ -57,11 +57,11 @@
 // import {
 //   columnHeadersPositionsAndSizesSelector,
 //   rowHeadersPositionsAndSizesSelector
-// } from "./headers.selector";
-export * from "./axis.selector";
+// } from "./headers.selector2";
+export * from "./axis.selector2";
 export * from "./cellSizes.selector";
 export * from "./dimensions.selector";
-export * from "./headers.selector";
+export * from "./headers.selector2";
 export * from "./sizes.selector";
 export * from "./cell.selector";
 export * from "./data.selector";

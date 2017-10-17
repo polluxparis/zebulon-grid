@@ -14,6 +14,7 @@ import Headers from "../components/Headers/Headers";
 import {
   toggleCollapse,
   selectRange,
+  setConfigProperty,
   moveDimension,
   moveMeasure,
   toggleMeasure
@@ -46,8 +47,13 @@ const mapDispatchToProps = dispatch => ({
     const selectedRange = getSelectedRowRange(header);
     dispatch(selectRange(selectedRange));
   },
-  moveDimension: (dimensionId, oldAxis, newAxis, position) =>
-    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position)),
+  moveDimension: (dimensionId, oldAxis, newAxis, position) => {
+    dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
+  },
+  toggleMeasuresAxis: axis =>
+    dispatch(
+      setConfigProperty({ measureHeadersAxis: axis }, "measureHeadersAxis")
+    ),
   moveMeasure: measures => (measureId, measureToId) => {
     dispatch(
       moveMeasure(measureId, Object.keys(measures).indexOf(measureToId))

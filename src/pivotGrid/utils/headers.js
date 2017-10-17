@@ -41,16 +41,20 @@ export const keyToIndex = (headers, key) => {
   }
 };
 
-export const getLeaves = (header, acc = [], depth) => {
+export const getLeaves = (node, acc = [], depth, notSorted) => {
   if (
-    // isNullOrUndefined(header.orderedChildren) ||
-    header.depth === (depth === undefined ? 10000 : depth) ||
-    (header.id !== ROOT_ID && header.orderedChildren.length === 0)
+    // isNullOrUndefined(node.orderedChildren) ||
+    node.depth === (depth === undefined ? 10000 : depth) ||
+    (node.id !== ROOT_ID && node.orderedChildren.length === 0)
   ) {
-    acc.push(header);
+    acc.push(node);
     return acc;
   }
-  header.orderedChildren.map(ix => getLeaves(header.children[ix], acc, depth));
+  if (notSorted) {
+    Object.values(node.children).map(node => getLeaves(node, acc, depth));
+  } else {
+    node.orderedChildren.map(key => getLeaves(node.children[key], acc, depth));
+  }
   return acc;
 };
 

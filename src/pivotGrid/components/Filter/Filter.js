@@ -75,9 +75,10 @@ export class Filter extends Component {
   };
   handleClick = () => {
     const filterKeys = Object.values(this.state.filter);
-    this.props.onOk(
-      filterKeys.length === this.props.items.length ? null : this.state.filter
-    );
+    const filter =
+      filterKeys.length === this.props.items.length ? null : this.state.filter;
+    // this.props.filterLeaves(filter);
+    this.props.onOk(filter);
   };
   render() {
     const rowHeight = 20;

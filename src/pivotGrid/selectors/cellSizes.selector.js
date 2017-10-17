@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 import { TOTAL_ID, AxisType } from "../constants";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector2";
 import {
   columnDimensionsSelector,
   rowDimensionsSelector,
@@ -70,7 +70,7 @@ const calculateCrossPositions = (dimensions, getCellSizeByKey) => {
   // if (!dimensions.length) {
   //   position += getCrossSize(axisType, TOTAL_ID);
   // } else {
-  console.log("crosspositions", dimensions);
+  // console.log("crosspositions", dimensions);
   if (dimensions.length === 0) {
     res[TOTAL_ID] = { position, size: getCellSizeByKey(TOTAL_ID) };
   } else {

@@ -2,7 +2,7 @@ import {
   fetchData,
   fetchFailure,
   fetchSuccess,
-  pushData,
+  applyPushedData,
   setDimensions,
   setMeasures,
   setConfigProperty,
@@ -18,6 +18,7 @@ import {
   isNullOrUndefined,
   toAccessorFunction
 } from "./generic";
+import { mergeData } from "../selectors";
 import { MEASURE_ID } from "../constants";
 import * as aggregations from "./aggregation";
 export const setData = (store, data) => {
@@ -41,7 +42,7 @@ export const setData = (store, data) => {
   } else if (isObservable(data)) {
     data.subscribe(
       data => {
-        store.dispatch(pushData(data));
+        pushData(store, data);
       },
       error => store.dispatch(fetchFailure({ message: error }))
     );
@@ -56,6 +57,8 @@ export const setData = (store, data) => {
     );
   }
 };
+export const pushData = (store, data) => store.dispatch(applyPushedData(data));
+
 export const applyConfigToStore = (
   store,
   config,
@@ -94,7 +97,7 @@ export const applyConfigToStore = (
     columns = config.axis.columns || columns;
     rows = config.axis.rows || rows;
   }
-  config.dimensions.push({ id: MEASURE_ID, caption: "" });
+  // config.dimensions.push({ id: MEASURE_ID, caption: "" });
   store.dispatch(setDimensions(config, configurationFunctions));
   store.dispatch(setMeasures(config, configurationFunctions));
 
@@ -108,17 +111,17 @@ export const applyConfigToStore = (
     store.dispatch(moveDimension(dimensionId, "dimensions", "columns", index));
     dimensionIdsPositioned.push(dimensionId);
   });
-  if (!dimensionIdsPositioned.includes(MEASURE_ID)) {
-    if (measureHeadersAxis === "columns") {
-      store.dispatch(
-        moveDimension(MEASURE_ID, "dimensions", "columns", columns.length)
-      );
-    } else {
-      store.dispatch(
-        moveDimension(MEASURE_ID, "dimensions", "rows", rows.length)
-      );
-    }
-  }
+  // if (!dimensionIdsPositioned.includes(MEASURE_ID)) {
+  //   if (measureHeadersAxis === "columns") {
+  //     store.dispatch(
+  //       moveDimension(MEASURE_ID, "dimensions", "columns", columns.length)
+  //     );
+  //   } else {
+  //     store.dispatch(
+  //       moveDimension(MEASURE_ID, "dimensions", "rows", rows.length)
+  //     );
+  //   }
+  // }
   config.dimensions
     .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
     .forEach((dimension, index) => {

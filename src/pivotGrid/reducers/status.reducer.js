@@ -15,22 +15,21 @@ export default (
   },
   action
 ) => {
-  const { type, error } = action;
+  const { type, error, pushedData } = action;
   switch (type) {
     case FETCH_DATA:
       return { ...state, loading: true, loaded: false, error: undefined };
     case FETCH_FAILURE:
       return { ...state, loading: false, loaded: false, error };
     case FETCH_SUCCESS:
-    case PUSH_DATA:
-      return { ...state, loading: false, loaded: true, error: undefined };
+      return { ...state, loading: false, loaded: false, error: undefined };
     // just to force the refresh
-    case CHANGE_SORT_ORDER:
-      const newState = { ...state };
-      newState.toRefreshLeaves[action.axis] = !newState.toRefreshLeaves[
-        action.axis
-      ];
-      return newState;
+    // case CHANGE_SORT_ORDER:
+    //   const newState = { ...state };
+    //   newState.toRefreshLeaves[action.axis] = !newState.toRefreshLeaves[
+    //     action.axis
+    //   ];
+    //   return newState;
     default:
       return state;
   }

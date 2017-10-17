@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////
 
 import { createSelector } from "reselect";
-import { filteredDataSelector } from "./data.selector";
+import { filteredDataSelector, getFilteredData } from "./data.selector";
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
@@ -47,32 +47,42 @@ function buildNode(id, node, index) {
 }
 
 // build colums and rows trees
-function buildAxisTrees(data, { columns, rows }) {
+export function buildAxisTrees(data, rows, columns, offset) {
   const rowRoot = { id: ROOT_ID, children: {} };
   const columnRoot = { id: ROOT_ID, children: {} };
   // Create sorting accessors
-  console.log("buildNode0", Date.now(), data);
+  const x = Date.now();
+  // console.log("buildAxisTrees0", x, data.length);
 
   data.forEach((row, index) => {
     let columnNode = columnRoot;
     let rowNode = rowRoot;
     columns.forEach(dimension => {
       if (dimension.id !== MEASURE_ID) {
-        columnNode = buildNode(dimension.keyAccessor(row), columnNode, index);
+        columnNode = buildNode(
+          dimension.keyAccessor(row),
+          columnNode,
+          index + offset
+        );
       }
     });
     rows.forEach(dimension => {
       if (dimension.id !== MEASURE_ID) {
-        rowNode = buildNode(dimension.keyAccessor(row), rowNode, index);
+        rowNode = buildNode(
+          dimension.keyAccessor(row),
+          rowNode,
+          index + offset
+        );
       }
     });
   });
-  console.log("buildNode", Date.now(), columnRoot, rowRoot);
+  console.log("buildAxisTrees", data.length, Date.now() - x);
   return { columns: columnRoot, rows: rowRoot };
 }
+
 const getAxisTreesSelector = createSelector(
   [filteredDataSelector, rowDimensionsSelector, columnDimensionsSelector],
-  (data, rows, columns) => buildAxisTrees(data, { columns, rows })
+  (data, rows, columns) => buildAxisTrees(data, rows, columns, 0)
 );
 export const columnAxisTreeSelector = createSelector(
   [getAxisTreesSelector],
@@ -86,14 +96,14 @@ export const rowAxisTreeSelector = createSelector(
 ///////////////////////////////////////////////////////////////////
 // headers
 //////////////////////////////////////////////////////////////////
-const sortFunction = dimension => {
+export const sortFunction = dimension => {
   if (dimension.sort.custom) {
     return (a, b) => dimension.sort.custom(a.sortKey, b.sortKey);
   } else {
     return (a, b) => (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
   }
 };
-function buildHeadersTree(
+export function buildHeadersTree(
   data,
   node,
   dimensions,
@@ -102,12 +112,10 @@ function buildHeadersTree(
   areCollapsed,
   index,
   depth,
-  parent
+  parent,
+  offset
 ) {
   const { id, dataRowIndexes } = node;
-  if (depth === -1) {
-    console.log("buildHeadersTree0", Date.now());
-  }
   let header;
   // Root node
   if (node.id === ROOT_ID) {
@@ -130,7 +138,7 @@ function buildHeadersTree(
     };
   } else {
     const currentDimension = dimensions[depth];
-    const row = data[dataRowIndexes[0]];
+    const row = data[dataRowIndexes[0] - offset];
     const key = parent.id !== ROOT_ID ? `${parent.key}-/-${id}` : String(id);
     const isCollapsed =
       areCollapsed[key] || (parent.isCollapsed && currentDimension.isAttribute);
@@ -157,12 +165,14 @@ function buildHeadersTree(
       isCollapsed,
       isParentCollapsed,
       isAttribute: currentDimension.isAttribute,
-      isVisible
+      isVisible,
+      relativeIndex: currentDimension.isAttribute ? parent.relativeIndex : index
     };
   }
   // recursion on children
-  header.children = Object.values(node.children).map((node, index) =>
-    buildHeadersTree(
+  header.keys = {};
+  header.children = Object.values(node.children).map((node, index) => {
+    const h = buildHeadersTree(
       data,
       node,
       dimensions,
@@ -171,9 +181,12 @@ function buildHeadersTree(
       areCollapsed,
       index,
       depth + 1,
-      header
-    )
-  );
+      header,
+      offset
+    );
+    header.keys[h.id] = index;
+    return h;
+  });
   // level management after recursion
   if (header.children.length > 0) {
     // sort children and count span
@@ -227,7 +240,7 @@ function buildHeadersTree(
             span: 1,
             depth: dimensions.length - 1,
             isVisible: header.isVisible,
-            nVisibles: header.isVisible || 0,
+            nVisibles: header.isVisible + 0,
             isAttribute: false
           });
           header.span = measureIds.length;
@@ -259,9 +272,6 @@ function buildHeadersTree(
     }
     // }
   }
-  if (depth === -1) {
-    console.log("buildHeadersTree", Date.now());
-  }
   return header;
 }
 
@@ -273,18 +283,24 @@ export const rowHeadersTreeSelector = createSelector(
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
     state => state.collapses.configRows
   ],
-  (data, axisTree, dimensions, measures, areCollapsed) =>
-    buildHeadersTree(
+  (data, axisTree, dimensions, measures, areCollapsed) => {
+    const x = Date.now();
+    // console.log("buildRowHeadersTree0", data.length, Date.now());
+    const y = buildHeadersTree(
       data,
       axisTree,
       dimensions,
       measures,
-      isNull(measures) || Object.keys(measures).length,
+      isNull(measures) + 0 || Object.keys(measures).length,
       areCollapsed,
       0,
       -1,
-      null
-    )
+      null,
+      0
+    );
+    console.log("buildRowHeadersTree", data.length, Date.now() - x);
+    return y;
+  }
 );
 
 export const columnHeadersTreeSelector = createSelector(
@@ -295,35 +311,88 @@ export const columnHeadersTreeSelector = createSelector(
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
     state => state.collapses.configColumns
   ],
-  (data, axisTree, dimensions, measures, areCollapsed) =>
-    buildHeadersTree(
+  (data, axisTree, dimensions, measures, areCollapsed) => {
+    const x = Date.now();
+    // console.log("buildColumnHeadersTree0", data.length, x);
+    const y = buildHeadersTree(
       data,
       axisTree,
       dimensions,
       measures,
-      isNull(measures) || Object.keys(measures).length,
+      isNull(measures) + 0 || Object.keys(measures).length,
       areCollapsed,
       0,
       -1,
-      null
-    )
+      null,
+      0
+    );
+    console.log("buildColumnHeadersTree", data.length, Date.now() - x);
+    return y;
+  }
 );
+// export const headersTreesSelector = createSelector(
+//   [
+//     rowDimensionsSelector,
+//     columnDimensionsSelector,
+//     getAxisActivatedMeasuresSelector,
+//     state => state.collapses
+//   ],
+//   (rows, columns, getMeasures, collapses) => data => {
+//     const filteredData = filteredDataNoDataSelector(data);
+//     const axisTrees = buildAxisTrees(data, { rows, columns });
+//     const rowMeasures = getMeasures(AxisType.ROWS);
+//     const columnMeasures = getMeasures(AxisType.COLUMNS);
+//     return {
+//       rows: buildHeadersTree(
+//         filteredData,
+//         axisTrees.rows,
+//         rows,
+//         rowMeasures,
+//         isNull(rowMeasures) + 0 || Object.keys(rowMeasures).length,
+//         collapses.rows,
+//         0,
+//         -1,
+//         null
+//       ),
+//       columns: buildHeadersTree(
+//         filteredData,
+//         axisTrees.columns,
+//         columns,
+//         columnMeasures,
+//         isNull(columnMeasures) + 0 || Object.keys(columnMeasures).length,
+//         collapses.columns,
+//         0,
+//         -1,
+//         null
+//       )
+//     };
+//   }
+// );
+
 export function buildAxisLeaves(headers) {
-  console.log("buildLeaves0", Date.now());
+  // console.log("buildLeaves0", Date.now());
+  const x = Date.now();
   const leaves = getLeaves(headers, []);
-  console.log("buildLeaves", Date.now(), leaves.length);
-  return { nVisibles: headers.nVisibles, leaves };
+  console.log("buildLeaves", leaves.length, Date.now() - x);
+  return { nVisibles: headers.nVisibles, headers, leaves };
 }
 
 export const rowLeavesSelector = createSelector(
-  [rowHeadersTreeSelector, state => state.status.toRefreshLeaves.rows],
+  [
+    rowHeadersTreeSelector,
+    state => state.selectedRange.scrollToRow.refreshLeaves
+  ],
   buildAxisLeaves
 );
 
 export const columnLeavesSelector = createSelector(
-  [columnHeadersTreeSelector, state => state.status.toRefreshLeaves.columns],
+  [
+    columnHeadersTreeSelector,
+    state => state.selectedRange.scrollToColumn.refreshLeaves
+  ],
   buildAxisLeaves
 );
+
 const headersParentVisibles = (header, nVisibles) => {
   header.nVisibles += nVisibles;
   if (header.id !== ROOT_ID) {
@@ -345,7 +414,7 @@ const headersChildrenVisibles = (header, measuresCount) => {
       return n;
     }, 0);
   } else {
-    return header.isVisible;
+    return header.isVisible + 0;
   }
 };
 export const expandCollapseHeader = (header, isCollapsed, measuresCount) => {
@@ -402,9 +471,11 @@ const sortHeader = (header, attributeId, attributeDepth, sortFunction) => {
     if (header.orders[attributeId]) {
       header.orders[attributeId].reverse();
     } else {
-      const orderedChildren = getLeaves(header, [], attributeDepth);
+      const orderedChildren = getLeaves(header, [], attributeDepth, true);
       orderedChildren.sort(sortFunction);
-      header.orders[attributeId] = orderedChildren.map((obj, index) => index);
+      header.orders[attributeId] = orderedChildren.map(
+        leaf => leaf.relativeIndex
+      );
     }
     header.orderedChildren = header.orders[attributeId];
   } else {
@@ -438,7 +509,7 @@ export const toggleSortOrderSelector = createSelector(
     }
 
     if (dimension.id !== TOTAL_ID && dimension.id !== MEASURE_ID) {
-      console.log(axis, depth, rowDimensions, columnDimensions);
+      // console.log(axis, depth, rowDimensions, columnDimensions);
       const header = axis === AxisType.ROWS ? rowHeader : columnHeader;
       const sort = dimension.sort;
       if (sort.direction === "desc") {
@@ -446,7 +517,7 @@ export const toggleSortOrderSelector = createSelector(
       } else {
         sort.direction = "desc";
       }
-      const leaves = getLeaves(header, [], sortingDepth);
+      const leaves = getLeaves(header, [], sortingDepth, true);
       leaves.map(header => sortHeader(header, dimension.id, depth, sortFct));
     }
   }

@@ -83,6 +83,7 @@ import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
+    // this.pushData = this.props.pushData;
   }
 
   componentDidMount() {
@@ -95,7 +96,9 @@ class PivotGrid extends Component {
     document.removeEventListener("keydown", this.handleKeyDown);
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
+    this.isPushing =
+      this.props.pushedData !== nextProps.pushedData &&
+      nextProps.pushedData.length > 0;
   }
   nextVisible = (leaves, index, direction, offset) => {
     let ix = 0,
@@ -403,6 +406,7 @@ class PivotGrid extends Component {
                 width={dataCellsSizes.width}
                 scrollbarsWidth={scrollbarsWidth}
                 onScroll={this.onScroll}
+                isPushing={this.isPushing}
               />
             </div>
             <ConnectedMenu />

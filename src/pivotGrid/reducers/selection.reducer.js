@@ -1,4 +1,11 @@
-import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA, SCROLL } from "../constants";
+import {
+  SELECT_RANGE,
+  MOVE_DIMENSION,
+  FETCH_DATA,
+  SCROLL,
+  CHANGE_SORT_ORDER,
+  AxisType
+} from "../constants";
 
 export default (
   state = {
@@ -9,7 +16,7 @@ export default (
   },
   action
 ) => {
-  const { type, selectedRange, scrollToRow, scrollToColumn } = action;
+  const { type, selectedRange, scrollToRow, scrollToColumn, axis } = action;
   switch (type) {
     case FETCH_DATA:
     case MOVE_DIMENSION:
@@ -32,6 +39,17 @@ export default (
         nextState.scrollToColumn = scrollToColumn;
       }
       return nextState;
+    // just to force the refresh
+    case CHANGE_SORT_ORDER:
+      const newState = { ...state };
+      if (axis === "rows") {
+        newState.scrollToRow.refreshLeaves = !newState.scrollToRow
+          .refreshLeaves;
+      } else if (axis === "columns") {
+        newState.scrollToColumn.refreshLeaves = !newState.scrollToColumn
+          .refreshLeaves;
+      }
+      return newState;
     default:
       return state;
   }

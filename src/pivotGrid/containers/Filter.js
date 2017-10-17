@@ -8,6 +8,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     items: getDimensionValuesSelector(state)(ownProps.dimensionId),
     filter: (state.filters[ownProps.dimensionId] || {}).values || {}
+    // filterLeaves: filter =>
+    //   filterLeavesSelector(state)(ownProps.dimensionId, filter)
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => ({

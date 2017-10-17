@@ -10,7 +10,13 @@
 
 .zebulon-grid-data-cell-highlighted {
   animation-name: anim-info-updated;
-  animation-duration: 1s;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+}
+.zebulon-grid-data-cell-highlighted2 {
+  animation-name: anim-info-updated2;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
 }
 
 .zebulon-grid-column-headers {
@@ -26,6 +32,14 @@
 }
 
 @keyframes anim-info-updated {
+  0% {
+    background-color: red;
+    color: rgb(128, 0, 0);
+  }
+  100% {
+  }
+}
+@keyframes anim-info-updated2 {
   0% {
     background-color: red;
     color: rgb(128, 0, 0);

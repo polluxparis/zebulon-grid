@@ -1,13 +1,13 @@
 import { createSelector } from "reselect";
 import { isNullOrUndefined, isUndefined, range } from "../utils/generic";
 import { intersectDataIndexes } from "../utils/headers";
-import { filteredDataSelector } from "./data.selector";
+// import { filteredDataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
   rowVisibleDimensionsSelector,
   columnVisibleDimensionsSelector
 } from "./dimensions.selector";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector2";
 import { MEASURE_ID, HeaderType } from "../constants";
 
 const cellValue = (
@@ -43,7 +43,7 @@ const cellValue = (
 };
 
 export const getCellValueSelector = createSelector(
-  [filteredDataSelector],
+  [state => state.data.data],
   data => (
     valueAccessor,
     rowDataIndexes,
@@ -111,7 +111,7 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   return dimensions.reverse();
 };
 export const getCellDimensionInfosSelector = createSelector(
-  [filteredDataSelector],
+  [state => state.data.data],
   data => (axisDimensions, axis, leaf, measures, dimensions) => {
     return cellDimensionInfos(
       data,
@@ -126,7 +126,7 @@ export const getCellDimensionInfosSelector = createSelector(
 
 export const getCellInfosSelector = createSelector(
   [
-    filteredDataSelector,
+    state => state.data.data,
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,
@@ -172,7 +172,7 @@ export const getCellInfosSelector = createSelector(
 );
 export const getRangeInfosSelector = createSelector(
   [
-    filteredDataSelector,
+    state => state.data.data,
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,

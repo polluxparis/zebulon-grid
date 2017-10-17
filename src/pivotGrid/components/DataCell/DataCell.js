@@ -40,9 +40,10 @@ export default class DataCell extends PureComponent {
       {
         "zebulon-grid-data-cell-even": isEven,
         "zebulon-grid-data-cell-uneven": !isEven,
-        "zebulon-grid-data-cell-highlighted": valueHasChanged,
         "zebulon-grid-data-cell-selected": selected,
-        "zebulon-grid-data-cell-focused": focused
+        "zebulon-grid-data-cell-focused": focused,
+        "zebulon-grid-data-cell-highlighted": valueHasChanged === 1,
+        "zebulon-grid-data-cell-highlighted2": valueHasChanged === 2
       }
     );
     // console.log("render cell");

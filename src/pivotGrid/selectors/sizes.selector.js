@@ -16,7 +16,7 @@ import {
 // import {
 //   rowHeadersPositionsAndSizesSelector,
 //   columnHeadersPositionsAndSizesSelector
-// } from "./headers.selector";
+// } from "./headers.selector2";
 import {
   columnVisibleDimensionsSelector,
   rowVisibleDimensionsSelector
@@ -36,7 +36,7 @@ export const rowHeadersWidthSelector = createSelector(
         width + dimension.isVisible * getCellWidthByKey(dimension.id),
       0
     );
-    console.log("rowHeadersWidthSelector", width, rowDimensions);
+    // console.log("rowHeadersWidthSelector", width, rowDimensions);
     // }
     return width;
   }
@@ -45,7 +45,7 @@ export const rowHeadersWidthSelector = createSelector(
 export const columnHeadersHeightSelector = createSelector(
   [columnVisibleDimensionsSelector, getCellHeightByKeySelector],
   (columnDimensions, getCellHeightByKey) => {
-    console.log("columnHeadersHeightSelector");
+    // console.log("columnHeadersHeightSelector");
     // let height = 0;
     // if (columnDimensions.length === 0) {
     //   height = getCellHeightByKey(ROOT_ID);

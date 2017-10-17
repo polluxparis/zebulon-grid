@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector2";
 import {
   getCellValueSelector,
   getCellDimensionInfosSelector

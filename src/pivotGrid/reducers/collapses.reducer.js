@@ -46,7 +46,7 @@ export default (
       };
       if (axis === "rows") {
         newState.nVisibleRows += n;
-      } else {
+      } else if (axis === "columns") {
         newState.nVisibleColumns += n;
       }
       return newState;
@@ -60,13 +60,15 @@ export default (
       };
       if (axis === "rows") {
         newState.nVisibleRows += n;
-      } else {
+      } else if (axis === "columns") {
         newState.nVisibleColumns += n;
+      } else {
+        return state;
       }
       return newState;
     // apply actual collapses to confix collapses as header Trees will be recalculate
-    case DELETE_FILTER:
-    case ADD_FILTER:
+    // case DELETE_FILTER:
+    // case ADD_FILTER:
     case SET_MEASURES:
     case MOVE_DIMENSION:
     case TOGGLE_MEASURE:

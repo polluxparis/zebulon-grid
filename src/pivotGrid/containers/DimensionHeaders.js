@@ -57,13 +57,6 @@ const mergeProps = (
     toggleSort(axisType, depth);
     toggleSortOrder(axisType, depth);
   },
-  // expandCollapseAll: (axisType, keys, n) =>
-  //   expandCollapseAll(
-  //     axisType,
-  //     keys,
-  //     n,
-  //     measures === null ? 1 : measures.length
-  //   ),
   ...restStateProps,
   ...restDispatchProps,
   ...ownProps

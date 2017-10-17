@@ -10,8 +10,8 @@ export default (state = {}, action) => {
   const { type, dimensions } = action;
   // let sort;
   switch (type) {
-    case FETCH_DATA:
-      return {};
+    // case FETCH_DATA:
+    //   return {};
     case SET_DIMENSIONS:
       return dimensions.reduce(
         (acc, dimension) => ({ ...acc, [dimension.id]: dimension }),

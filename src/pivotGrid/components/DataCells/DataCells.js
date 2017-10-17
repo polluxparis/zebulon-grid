@@ -9,29 +9,32 @@ export class DataCells extends Component {
   constructor(props) {
     super(props);
     this.cellCache = {};
+    this.isPushing = 0;
     // this.scrollbarWidth = 10;
     // this.scrollArrowSize = 10;
-    this.scroll = {
-      row: {},
-      column: {}
-    };
-    this.state = {
-      scroll: {
-        row: {
-          index: 0,
-          direction: -1
-        },
-        column: {
-          index: 0,
-          direction: -1
-        }
-      }
-    };
+    // this.scroll = {
+    //   row: {},
+    //   column: {}
+    // };
+    // this.state = {
+    //   scroll: {
+    //     row: {
+    //       index: 0,
+    //       direction: -1
+    //     },
+    //     column: {
+    //       index: 0,
+    //       direction: -1
+    //     }
+    //   }
+    // };
   }
   componentWillReceiveProps(newProps) {
+    this.isPushing = newProps.isPushing ? 1 + this.isPushing % 2 : 0;
     if (
-      newProps.rows !== this.props.rows ||
-      newProps.columns !== this.props.columns
+      !newProps.isPushing &&
+      (newProps.rows !== this.props.rows ||
+        newProps.columns !== this.props.columns)
     ) {
       this.cellCache = {};
     }
@@ -41,9 +44,9 @@ export class DataCells extends Component {
   };
   handleMouseUp = e => {
     this.isMouseDown = false;
-    if (this.scroll.isScrolling) {
-      this.endScroll(e);
-    }
+    // if (this.scroll.isScrolling) {
+    //   this.endScroll(e);
+    // }
   };
   handleMouseOver = ({ columnIndex, rowIndex, button }) => {
     if (this.isMouseDown && button === 0) {
@@ -132,8 +135,22 @@ export class DataCells extends Component {
       zoom: this.props.zoom
     };
   };
-  cellRenderer = (rowHeader, columnHeader, isEven, offsetRow, offsetColumn) => {
-    const { getCellValue, measures, selectedRange, gridId } = this.props;
+  cellRenderer = (
+    rowHeader,
+    columnHeader,
+    // key,
+    isEven,
+    offsetRow,
+    offsetColumn
+  ) => {
+    const {
+      getCellValue,
+      measures,
+      selectedRange,
+      gridId,
+      isPushing
+    } = this.props;
+    const key = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     const style = {
       position: "absolute",
       top: rowHeader.sizes.main.position - offsetRow,
@@ -168,22 +185,24 @@ export class DataCells extends Component {
         columnHeader.index === selectedRange.selectedCellEnd.columnIndex &&
         rowHeader.index === selectedRange.selectedCellEnd.rowIndex;
     }
-    const cellKey = `${rowHeader.index}${AXIS_SEPARATOR}${columnHeader.index}`;
-    const cell = this.cellCache[cellKey] || {};
-    if (cell.value === undefined) {
-      cell.value = getCellValue(
+    let valueHasChanged;
+    const cell = this.cellCache[key] || {};
+    if (cell.value === undefined || isPushing) {
+      const value = getCellValue(
         measure.valueAccessor,
         rowHeader.dataIndexes,
         columnHeader.dataIndexes,
         measure.aggregation
       );
+      valueHasChanged = this.isPushing * (cell.value !== value);
+      cell.value = value;
       cell.caption = measure.format(cell.value);
-      this.cellCache[cellKey] = cell;
+      this.cellCache[key] = cell;
     }
     return (
       <DataCell
-        key={cellKey}
-        valueHasChanged={false}
+        key={key}
+        valueHasChanged={valueHasChanged}
         style={style}
         rowIndex={rowHeader.index}
         columnIndex={columnHeader.index}
@@ -210,13 +229,13 @@ export class DataCells extends Component {
     //   rows.scroll.direction === 1 ? 0 : scrollbarsWidth.horizontal;
     // const offsetColumn =
     //   columns.scroll.direction === 1 ? 0 : scrollbarsWidth.vertical;
-    rows.cells.map((row, index) =>
-      columns.cells.map(column =>
+    rows.cells.map((row, rowIndex) =>
+      columns.cells.map((column, columnIndex) =>
         cells.push(
           this.cellRenderer(
             row[0],
             column[0],
-            !(index % 2),
+            !(rowIndex % 2),
             rows.offset,
             columns.offset
           )

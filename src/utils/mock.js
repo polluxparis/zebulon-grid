@@ -18,13 +18,70 @@ export function getMockDatasource(
         for (let u = 0; u < nTutu; u += 1) {
           obj = {};
           obj.toto = o;
-          obj.toto_lb = `toto ${String(nToto - o)}`;
+          obj.toto_lb = `toto ${String(o)}`;
           obj.toto_0 = `att0 ${String(o)}`;
           obj.toto_1 = `att1 ${String(nToto - o)}`;
           obj.titi = `titi ${String(i)}`;
           obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
-          obj.qty = u + 10 * i + 100 * o + 1; // +9999999999.1234567890123456
-          obj.amt = u + 10 * i + 100 * o + 1000; // +9999999999.1234567890123456
+          obj.qty = Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
+          obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
+          res.push(obj);
+        }
+      }
+    }
+  }
+  return res;
+}
+const getObj = (o, i, u) => {
+  let obj = {};
+  obj.toto = o;
+  obj.toto_lb = `toto ${String(o)}`;
+  obj.toto_0 = `att0 ${String(o)}`;
+  obj.toto_1 = `att1 ${String(100 - o)}`;
+  obj.titi = `titi ${String(i)}`;
+  obj.tutu = String(u);
+  obj.qty = 10; // +9999999999.1234567890123456
+  obj.amt = 100; // +9999999999.1234567890123456
+  return obj;
+};
+export function getRandomMockDatasource(
+  dataPercentage = 10,
+  nToto = 10,
+  nTiti = 10,
+  nTutu = 2
+) {
+  // const o = 0,
+  //   i = 0;
+  // obj = {};
+  // obj.toto = o;
+  // obj.toto_lb = `toto ${String(o)}`;
+  // obj.toto_0 = `att0 ${String(o)}`;
+  // obj.toto_1 = `att1 ${String(nToto - o)}`;
+  // obj.titi = `titi ${String(i)}`;
+  // obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
+  // obj.qty = 10; // +9999999999.1234567890123456
+  // obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
+  // return [obj];
+  return [getObj(1, 1, 0), getObj(1, 100, 1)];
+  const ratio = dataPercentage / 100;
+  // const nTutu = 2;
+  let obj = [];
+  const res = [];
+  for (let k = 0; k < 1; k += 1) {
+    for (let o = 0; o < nToto * ratio; o += 1) {
+      for (let i = 0; i < nTiti * ratio; i += 1) {
+        for (let u = 0; u < nTutu * ratio; u += 1) {
+          const oo = Math.round(Math.random() * nToto * 1.1);
+          const ii = Math.round(Math.random() * nTiti * 1);
+          obj = {};
+          obj.toto = oo;
+          obj.toto_lb = `toto ${String(oo)}`;
+          obj.toto_0 = `att0 ${String(oo)}`;
+          obj.toto_1 = `att1 ${String(nToto - oo)}`;
+          obj.titi = `titi ${String(ii)}`;
+          obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
+          obj.qty = 100; // Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
+          obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
           res.push(obj);
         }
       }
@@ -116,7 +173,7 @@ export const basicConfig = {
       keyAccessor: "toto",
       labelAccessor: "toto_lb",
       sort: {
-        keyAccessor: "toto_lb"
+        keyAccessor: "toto"
       }
     },
     {
@@ -168,8 +225,10 @@ export const basicConfig = {
       format: "price"
     }
   ],
-  columns: ["titi"],
-  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
+  // columns: ["titi"],
+  // rows: ["toto", "toto att 0", "toto att 1", "tutu"],
+  columns: [],
+  rows: ["toto", "titi", "tutu"],
   activeMeasures: ["qty", "amt", "price"],
   collapses: { rows: { 99: true, 98: true }, columns: {} }
 };

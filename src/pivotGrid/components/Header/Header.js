@@ -5,13 +5,13 @@ import { AxisType, toAxis, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import { ContextMenuTrigger } from "react-contextmenu";
-import { expandCollapseHeader } from "../../selectors";
+import { expandCollapseNode } from "../../selectors";
 class Header extends Component {
   handleClickCollapse = () => {
     const { toggleCollapse, header, measuresCount } = this.props;
     toggleCollapse(
       header.key,
-      expandCollapseHeader(header, undefined, measuresCount)
+      expandCollapseNode(header, undefined, measuresCount)
     );
   };
   handleClick = () => {
@@ -21,18 +21,12 @@ class Header extends Component {
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
       if (data.action === "move") {
-        this.props.moveDimension(
-          MEASURE_ID,
-          toAxis(data.axis),
-          toAxis(
-            data.axis === AxisType.COLUMNS ? AxisType.ROWS : AxisType.COLUMNS
-          )
+        this.props.toggleMeasuresAxis(
+          this.props.axis === AxisType.ROWS ? "columns" : "rows"
         );
-      }
-      if (data.action === "remove") {
+      } else if (data.action === "remove") {
         this.props.toggleMeasure(data.measureId);
-      }
-      if (data.action === "add") {
+      } else if (data.action === "add") {
         this.props.toggleMeasure(data.newMeasureId);
       }
     }
@@ -51,6 +45,7 @@ class Header extends Component {
       collapseOffset,
       moveDimension,
       moveMeasure,
+      toggleMeasuresAxis,
       collectMenu,
       isDropTarget,
       isDragSource
@@ -91,6 +86,7 @@ class Header extends Component {
           handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
           moveMeasure={moveMeasure}
+          toggleMeasuresAxis={toggleMeasuresAxis}
           isDropTarget={isDropTarget}
           isDragSource={isDragSource}
           gridId={gridId}

@@ -1,18 +1,18 @@
-import { getAxisActivatedMeasuresSelector } from './axis.selector';
+import { getAxisActivatedMeasuresSelector } from "./axis.selector2";
 // import { measureFactory, dimensionFactory } from '../dimensions';
-import { AxisType } from '../Axis';
+import { AxisType } from "../Axis";
 
-fdescribe('getAxisActivatedMeasuresSelector', () => {
+fdescribe("getAxisActivatedMeasuresSelector", () => {
   const measures = [{ id: 0 }];
-  const measureHeadersAxis = 'rows';
-  test('returns measures when axis has measures', () => {
+  const measureHeadersAxis = "rows";
+  test("returns measures when axis has measures", () => {
     const res = getAxisActivatedMeasuresSelector(AxisType.ROWS).resultFunc(
       measures,
       measureHeadersAxis
     );
     expect(res).toEqual(measures);
   });
-  test('returns null when axis is not measures axis', () => {
+  test("returns null when axis is not measures axis", () => {
     const res = getAxisActivatedMeasuresSelector(AxisType.COLUMNS).resultFunc(
       measures,
       measureHeadersAxis

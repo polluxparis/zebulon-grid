@@ -10,6 +10,7 @@ import {
   selectedRangeSelector,
   copySelector,
   defaultCellSizesSelector
+  // filteredPushedDataSelector
 } from "../selectors";
 import {
   updateCellSize,
@@ -31,7 +32,8 @@ const mapStateToProps = state => {
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.config.zoom,
     copy: copySelector(state),
-    defaultCellSizes: defaultCellSizesSelector(state)
+    defaultCellSizes: defaultCellSizesSelector(state),
+    pushedData: state.data.pushedData
   };
 };
 
@@ -68,13 +70,21 @@ const mergeProps = (
   { sizes, defaultCellSizes, ...restStateProps },
   { updateCellSize, ...restDispatchProps },
   ownProps
-) => ({
-  updateCellSize: ({ handle, offset, initialOffset }) =>
-    updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
-  ...restStateProps,
-  ...restDispatchProps,
-  ...ownProps
-});
+) => {
+  return {
+    updateCellSize: ({ handle, offset, initialOffset }) =>
+      updateCellSize({
+        handle,
+        offset,
+        initialOffset,
+        sizes,
+        defaultCellSizes
+      }),
+    ...restStateProps,
+    ...restDispatchProps,
+    ...ownProps
+  };
+};
 
 export const GridWithoutStoreAndDndContext = connect(
   mapStateToProps,

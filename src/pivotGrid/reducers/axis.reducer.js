@@ -17,8 +17,8 @@ export default (
   let positionToRemove;
   let newPosition = position;
   switch (type) {
-    case FETCH_DATA:
-      return { rows: [], columns: [], dimensions: [], measures: [] };
+    // case FETCH_DATA:
+    //   return { rows: [], columns: [], dimensions: [], measures: [] };
     case MOVE_DIMENSION:
       if (isNullOrUndefined(newPosition) && newAxis !== oldAxis) {
         newPosition = state[newAxis].length;

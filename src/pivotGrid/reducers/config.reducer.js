@@ -40,8 +40,8 @@ export default (state = {}, action) => {
   const { type, property, value, id, oldAxis, newAxis } = action;
 
   switch (type) {
-    case FETCH_DATA:
-      return {};
+    // case FETCH_DATA:
+    //   return {};
     case MOVE_DIMENSION:
       if (id === MEASURE_ID && oldAxis !== newAxis) {
         return { ...state, measureHeadersAxis: newAxis };
