@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-class ScrollBarInner extends Component {
+class ScrollbarInner extends Component {
   constructor(props) {
     super(props);
   }
-  // collect = e => {
-  //   console.log(e);
-  //   e.preventDefault();
-  // };
 
   // handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
   // handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
@@ -24,7 +20,7 @@ class ScrollBarInner extends Component {
   }
 }
 
-export class ScrollBar extends Component {
+export class Scrollbar extends Component {
   constructor(props) {
     super(props);
     this.state = { innerStyle: this.computeScrollbar(props) };
@@ -35,6 +31,12 @@ export class ScrollBar extends Component {
       this.setState({ innerStyle });
     }
   }
+  componentDidMount() {
+    const element = document.getElementById(this.props.id);
+    if (element) {
+      this.scrollbarPositions = element.getBoundingClientRect();
+    }
+  }
   computeScrollbar = props => {
     const {
       direction,
@@ -42,7 +44,7 @@ export class ScrollBar extends Component {
       width,
       offset,
       positionRatio,
-      displayedRatio
+      displayRatio
     } = props;
 
     const style = {
@@ -55,14 +57,13 @@ export class ScrollBar extends Component {
       position: "relative",
       backgroundColor: "grey"
     };
-    this.innerSize = Math.max(30, length * displayedRatio);
+    this.innerSize = Math.max(30, length * displayRatio);
     this.position = Math.min(length - this.innerSize, length * positionRatio);
     if (direction === "horizontal") {
       this.style = {
         ...style,
         height: width,
-        width: length,
-        top: offset
+        width: length
       };
       innerStyle = {
         ...innerStyle,
@@ -74,8 +75,7 @@ export class ScrollBar extends Component {
       this.style = {
         ...style,
         height: length,
-        width,
-        left: offset
+        width
       };
       innerStyle = {
         ...innerStyle,
@@ -89,23 +89,29 @@ export class ScrollBar extends Component {
   collect = e => {
     const { button, shiftKey, target, clientX, clientY } = e;
     const initiator = e.target.id.startsWith("thumb") ? "thumb" : "bar";
-    const { left, top } = target.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
+    // console.log("collect", e.clientX, e.clientY, rect, e.target);
+    const { left, top } = rect;
     let x = clientX - left,
       y = clientY - top,
-      position = this.props.direction === "horizontal" ? x : y;
-    position = position - this.innerSize / 2 * (position / this.props.length);
+      position = Math.max(
+        0,
+        Math.min(
+          (this.props.direction === "horizontal" ? x : y) - this.innerSize / 2,
+          this.props.length - this.innerSize
+        )
+      );
+
     const event = {
       type: "scrollbar",
       direction: this.props.direction,
       button,
       shiftKey,
+      clientX,
+      clientY,
       x,
       y,
-      positionRatio: Math.max(
-        0,
-        Math.min(this.props.length - this.innerSize, position) /
-          this.props.length
-      ),
+      positionRatio: position / this.props.length,
       position,
       initiator
     };
@@ -115,30 +121,36 @@ export class ScrollBar extends Component {
   handleMouseDown = e => {
     const event = this.collect(e);
     if (event.initiator === "thumb") {
+      const { clientX, clientY } = e;
       this.isDragging = true;
-      console.log("start dragging ", event);
+      console.log("start dragging ", this.startDraggingPosition, clientY);
     } else {
       return this.props.onScroll(event);
     }
   };
   handleMouseUp = e => (this.isDragging = false);
-  // handleMouseMove = e => {
-  //   if (this.isDragging) {
-  //     e.preventDefault();
-  //     const event = this.collect(e);
-  //     if (event.initiator === "bar") {
-  //       console.log("mouse over", event);
-  //       const innerStyle = { ...this.state.innerStyle };
-  //       if (event.direction === "horizontal") {
-  //         innerStyle.left = event.position;
-  //       } else {
-  //         innerStyle.top = event.position;
-  //       }
-  //       this.setState({ innerStyle });
-  //       return this.props.handleMouseDown(event);
-  //     }
-  //   }
-  // };
+  handleMouseMove = e => {
+    // if (this.isDragging) {
+    //   e.preventDefault();
+    //   const event = this.collect(e);
+    //   if (event.initiator === "bar") {
+    //     // this.setState({ innerStyle });
+    //     // return this.props.handleMouseDown(event);
+    //   } else {
+    //     const innerStyle = { ...this.state.innerStyle };
+    //     if (event.direction === "horizontal") {
+    //       innerStyle.left = event.position;
+    //     } else {
+    //       innerStyle.top = Math.round(
+    //         event.position - this.startDraggingPosition
+    //       );
+    //     }
+    //     console.log("mouse over", innerStyle.top);
+    //     this.position = innerStyle.top;
+    //     this.setState({ innerStyle });
+    //   }
+    // }
+  };
   handleDragStart(event) {
     // this.dragging = true;
     // event.stopImmediatePropagation();
@@ -176,50 +188,6 @@ export class ScrollBar extends Component {
     if (!width) {
       return null;
     }
-    // let style = {
-    //   // position: "relative",
-    //   backgroundColor: "lightgrey",
-    //   border: "solid 0.03em grey",
-    //   borderRadius: " 0.25rem"
-    // };
-    // let innerStyle = {
-    //   ...style,
-    //   position: "relative",
-    //   backgroundColor: "grey"
-    // };
-    // this.innerSize = Math.max(30, length * displayedRatio);
-    // this.position = Math.min(length - this.innerSize, length * positionRatio);
-    // if (direction === "horizontal") {
-    //   style = {
-    //     ...style,
-    //     height: width,
-    //     width: length,
-    //     top: offset
-    //   };
-    //   innerStyle = {
-    //     ...innerStyle,
-    //     height: width - 1,
-    //     // marginTop: 0.5,
-    //     width: this.innerSize,
-    //     left: this.position
-    //   };
-    // } else {
-    //   // const height = height - scrollbarSize;
-    //   style = {
-    //     ...style,
-    //     height: length,
-    //     width,
-    //     left: offset
-    //   };
-    //   innerStyle = {
-    //     ...innerStyle,
-    //     height: this.innerSize,
-    //     width: width - 1,
-    //     // marginLeft: 0.5,
-    //     top: this.position
-    //   };
-    // }
-    // this.setState({ innerStyle });
     return (
       <div
         id={id}
@@ -227,8 +195,9 @@ export class ScrollBar extends Component {
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
         onMouseMove={this.handleMouseMove}
+        // ref={ref => (this.scrollbarPositions = ref.getBoundingClientRect())}
       >
-        <ScrollBarInner id={"thumb-" + id} style={this.state.innerStyle} />
+        <ScrollbarInner id={"thumb-" + id} style={this.state.innerStyle} />
       </div>
     );
   }

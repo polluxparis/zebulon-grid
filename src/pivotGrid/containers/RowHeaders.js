@@ -2,11 +2,8 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  // previewSizesSelector,
-  // dataCellsHeightSelector,
-  // rowHeadersWidthSelector,
+  previewSizesSelector,
   getSelectedRowRangeSelector,
-  // rowHeadersPositionsAndSizesSelector,
   getAxisActivatedMeasuresSelector,
   availableMeasuresSelector
 } from "../selectors";
@@ -21,19 +18,13 @@ import {
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
-  // const headers = rowHeadersPositionsAndSizesSelector(state);
   return {
     axisType: AxisType.ROWS,
     height: state.config.height,
     width: state.config.width,
-    // previewSizes: previewSizesSelector(state),
-    // rowCount: headers.headers.length,
-    // columnCount: headers.depth,
-    // rowsSize: headers.size,
-    // columnsSize: headers.crossSize,
+    previewSizes: previewSizesSelector(state),
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),
-    // headers: headers.headers,
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
     availableMeasures: availableMeasuresSelector(state)
   };

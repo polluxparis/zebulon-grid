@@ -6,38 +6,33 @@
 //  column headers height
 //  + preview sizes or drag and drop
 import { createSelector } from "reselect";
-
-// import scrollbarSize from "../utils/scrollbarSize";
-import { ROOT_ID } from "../constants";
+import { ROOT_ID, ScrollbarSize } from "../constants";
 import {
   getCellWidthByKeySelector,
   getCellHeightByKeySelector
 } from "./cellSizes.selector";
-// import {
-//   rowHeadersPositionsAndSizesSelector,
-//   columnHeadersPositionsAndSizesSelector
-// } from "./headers.selector2";
 import {
   columnVisibleDimensionsSelector,
   rowVisibleDimensionsSelector
 } from "./dimensions.selector";
-
-// const scrollbarSize = 12;
+import {
+  getRowHeadersSelector,
+  getColumnHeadersSelector
+} from "./headers.selector";
+console.log(
+  getRowHeadersSelector,
+  getColumnHeadersSelector,
+  columnVisibleDimensionsSelector
+);
 //-------------------------------------------
 export const rowHeadersWidthSelector = createSelector(
   [rowVisibleDimensionsSelector, getCellWidthByKeySelector],
   (rowDimensions, getCellWidthByKey) => {
-    // let width;
-    // if (rowDimensions.length === 0) {
-    //   width = getCellWidthByKey(ROOT_ID);
-    // } else {
     const width = rowDimensions.reduce(
       (width, dimension) =>
         width + dimension.isVisible * getCellWidthByKey(dimension.id),
       0
     );
-    // console.log("rowHeadersWidthSelector", width, rowDimensions);
-    // }
     return width;
   }
 );
@@ -45,18 +40,11 @@ export const rowHeadersWidthSelector = createSelector(
 export const columnHeadersHeightSelector = createSelector(
   [columnVisibleDimensionsSelector, getCellHeightByKeySelector],
   (columnDimensions, getCellHeightByKey) => {
-    // console.log("columnHeadersHeightSelector");
-    // let height = 0;
-    // if (columnDimensions.length === 0) {
-    //   height = getCellHeightByKey(ROOT_ID);
-    // } else {
     return columnDimensions.reduce(
       (height, dimension) =>
         height + dimension.isVisible * getCellHeightByKey(dimension.id),
       0
     );
-    // }
-    // return height;
   }
 );
 //-------------------------------------------
@@ -118,35 +106,4 @@ export const columnHeadersHeightSelector = createSelector(
 //       width - rowHeadersWidth - scrollbarSize,
 //       columnHeadersPositionsAndSizes.size
 //     )
-// );
-// export const previewSizesSelector = createSelector(
-//   [
-//     state => state.config.height,
-//     state => state.config.width,
-//     verticalScrollbarSizeSelector,
-//     horizontalScrollbarSizeSelector,
-//     dataCellsHeightSelector,
-//     dataCellsWidthSelector,
-//     columnHeadersHeightSelector,
-//     rowHeadersWidthSelector
-//   ],
-//   (
-//     height,
-//     width,
-//     verticalScrollbarSize,
-//     horizontalScrollbarSize,
-//     dataCellsHeight,
-//     dataCellsWidth,
-//     columnHeadersHeight,
-//     rowHeadersWidth
-//   ) => ({
-//     height: Math.min(
-//       height - horizontalScrollbarSize,
-//       dataCellsHeight + columnHeadersHeight
-//     ),
-//     width: Math.min(
-//       width - verticalScrollbarSize,
-//       dataCellsWidth + rowHeadersWidth
-//     )
-//   })
 // );

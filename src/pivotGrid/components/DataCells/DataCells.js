@@ -3,31 +3,13 @@ import React, { Component } from "react";
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
 import { AXIS_SEPARATOR, HeaderType, AxisType } from "../../constants";
-import { ScrollBar } from "./ScrollBar";
+import { ScrollableArea } from "../Controls/ScrollableArea";
 
-export class DataCells extends Component {
+export class DataCells extends ScrollableArea {
   constructor(props) {
     super(props);
     this.cellCache = {};
     this.isPushing = 0;
-    // this.scrollbarWidth = 10;
-    // this.scrollArrowSize = 10;
-    // this.scroll = {
-    //   row: {},
-    //   column: {}
-    // };
-    // this.state = {
-    //   scroll: {
-    //     row: {
-    //       index: 0,
-    //       direction: -1
-    //     },
-    //     column: {
-    //       index: 0,
-    //       direction: -1
-    //     }
-    //   }
-    // };
   }
   componentWillReceiveProps(newProps) {
     this.isPushing = newProps.isPushing ? 1 + this.isPushing % 2 : 0;
@@ -44,9 +26,6 @@ export class DataCells extends Component {
   };
   handleMouseUp = e => {
     this.isMouseDown = false;
-    // if (this.scroll.isScrolling) {
-    //   this.endScroll(e);
-    // }
   };
   handleMouseOver = ({ columnIndex, rowIndex, button }) => {
     if (this.isMouseDown && button === 0) {
@@ -64,7 +43,6 @@ export class DataCells extends Component {
       }
     }
   };
-
   onScroll = e => {
     const { rows, columns, onScroll } = this.props;
     if (e.type === "scrollbar") {
@@ -75,11 +53,16 @@ export class DataCells extends Component {
             index: Math.round(columns.length * e.positionRatio),
             direction: 1
           };
+          //   this.ratios.position.horizontal =
+          //     scroll.columns.index / (columns.length - 1);
+          //
         } else {
           scroll.rows = {
             index: Math.round(rows.length * e.positionRatio),
             direction: 1
           };
+          // this.ratios.position.horizontal =
+          // scroll.rows.index / (rows.length - 1);
         }
         onScroll(scroll.rows, scroll.columns);
       }
@@ -219,16 +202,16 @@ export class DataCells extends Component {
       />
     );
   };
-  cellsRenderer = () => {
+  getContent = () => {
     const { rows, columns } = this.props;
     if (rows === undefined || columns === undefined) {
       return [];
     }
+    this.positionRatios = {
+      vertical: rows.positionRatio,
+      horizontal: columns.positionRatio
+    };
     const cells = [];
-    // const offsetRow =
-    //   rows.scroll.direction === 1 ? 0 : scrollbarsWidth.horizontal;
-    // const offsetColumn =
-    //   columns.scroll.direction === 1 ? 0 : scrollbarsWidth.vertical;
     rows.cells.map((row, rowIndex) =>
       columns.cells.map((column, columnIndex) =>
         cells.push(
@@ -244,57 +227,14 @@ export class DataCells extends Component {
     );
     return cells;
   };
-
-  render() {
-    const {
-      height,
-      width,
-      gridId,
-      scrollbarsWidth,
-      rows,
-      columns
-    } = this.props;
-    const style = {
-      position: "relative",
-      overflow: "hidden",
-      height,
-      width
+  getRatios = () => {
+    const { rows, columns } = this.props;
+    return {
+      vertical: { display: rows.displayedRatio, position: rows.positionRatio },
+      horizontal: {
+        display: columns.displayedRatio,
+        position: columns.positionRatio
+      }
     };
-    const cells = this.cellsRenderer();
-    return (
-      <div
-        id={`grid ${gridId}`}
-
-        // tabIndex={0}
-        // onKeyDown={this.handleKeyDown}
-        // onKeyUp={this.handleKeyUp}
-        // onWheel={this.handleWheel}
-      >
-        <div style={{ display: "flex" }}>
-          <div style={style}>{cells}</div>
-          <ScrollBar
-            direction="vertical"
-            width={scrollbarsWidth.vertical}
-            length={style.height}
-            offset={style.width}
-            positionRatio={rows.positionRatio}
-            displayedRatio={rows.displayedRatio}
-            id={`vertical-scrollbar ${gridId}`}
-            onScroll={this.onScroll}
-            // handleMouseOver={this.handleMouseOver}
-          />
-        </div>
-        <ScrollBar
-          direction="horizontal"
-          width={scrollbarsWidth.horizontal}
-          length={style.width}
-          offset={style.height}
-          positionRatio={columns.positionRatio}
-          displayedRatio={columns.displayedRatio}
-          id={`horizontal-scrollbar ${gridId}`}
-          onScroll={this.onScroll}
-        />
-      </div>
-    );
-  }
+  };
 }

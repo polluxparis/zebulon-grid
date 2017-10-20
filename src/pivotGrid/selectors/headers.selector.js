@@ -3,22 +3,20 @@
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 import { isNull } from "../utils/generic";
-import {
-  filteredDataSelector,
-  filteredPushedDataSelector
-} from "./data.selector";
+// import {
+//   filteredDataSelector,
+//   filteredPushedDataSelector
+// } from "./data.selector";
 
 import {
   buildAxisTrees,
-  buildHeadersTree,
+  getAxisTreesSelector,
+  getAxisLeaves,
   rowLeavesSelector,
   columnLeavesSelector,
   getAxisActivatedMeasuresSelector,
-  // rowHeadersTreeSelector,
-  // columnHeadersTreeSelector,
-  sortFunction,
-  buildAxisLeaves
-} from "./axis.selector2";
+  sortFunction
+} from "./axis.selector";
 import {
   rowDimensionsSelector,
   columnDimensionsSelector,
@@ -38,7 +36,7 @@ import {
 } from "./sizes.selector";
 import {
   ROOT_ID,
-  // TOTAL_ID,
+  TOTAL_ID,
   MEASURE_ID,
   ScrollbarSize,
   AxisType,
@@ -56,7 +54,6 @@ const parentsSizes = (
   affix,
   cellsKey,
   rowCells,
-  areCollapsed,
   dimensions,
   measuresCount,
   direction
@@ -71,23 +68,19 @@ const parentsSizes = (
       main: { ...main },
       cross: { ...crossPositions[dimensions[header.depth].id] }
     };
-    // header.indexes = { index, rootIndex: index, lastIndex: index };
     header.options = {
       isNotCollapsible:
         header.isAttribute ||
         header.depth >= getLastDimension(dimensions) ||
         header.span === measuresCount,
-      // isCollapsed: areCollapsed[header.key],
       isAffixManaged: false,
       isDropTarget: false
     };
     cellsKey[header.key] = true;
   } else {
-    // if (!header.isCollapsed) {
     header.sizes.main.size += main.size;
     if (direction === -1) {
       header.sizes.main.position -= main.size;
-      // header.isAffixManaged = true;
     }
   }
   header.sizes.affix = header.nVisibles === 1 ? 0 : affix;
@@ -100,12 +93,10 @@ const parentsSizes = (
       affix,
       cellsKey,
       rowCells,
-      areCollapsed,
       dimensions,
       measuresCount,
       direction
     );
-    // header.indexes.rootIndex = header.parent.indexes.rootIndex;
   }
   if (first) {
     if (
@@ -121,7 +112,6 @@ const parentsSizes = (
     if (header.isParentCollapsed) {
       header.dataIndexes = header.parent.dataIndexes;
     } else {
-      // if (header.isCollapsed)
       header.dataIndexes = header.dataRowIndexes;
     }
   }
@@ -152,20 +142,21 @@ const getCollapsedSizes = (dimensions, crossPositions) => {
   collapsedSizes.reverse();
   return collapsedSizes;
 };
-export const buildPositionedHeaders = (
-  leaves,
-  headers,
+const buildPositionedHeaders = (
   headerSizes,
   crossPositions,
   containerSize,
   crossSize,
   dimensions,
   measures,
-  areCollapsed,
   nVisibles,
+  leaves,
   scroll
 ) => {
-  // console.log("buildPositionedHeaders0", Date.now(), scroll, nVisibles);
+  if (!leaves.length) {
+    return undefined;
+  }
+  const x = Date.now();
   const maxSize = containerSize - crossSize;
   let size = 0,
     depth = 0;
@@ -190,6 +181,8 @@ export const buildPositionedHeaders = (
     const dimension = dimensions[header.depth];
     header.index = index;
     if (header.isVisible) {
+      // if (header.relativeIndex < measuresCount) {
+      // if (true) {
       const rowCells = [];
       const mainSize = headerSizes(header.key);
       header.sizes = {
@@ -207,7 +200,7 @@ export const buildPositionedHeaders = (
         scroll.direction === 1 ? false : size + mainSize > maxSize,
         cellsKey,
         rowCells,
-        areCollapsed,
+        // areCollapsed,
         dimensions,
         measuresCount,
         scroll.direction
@@ -216,7 +209,7 @@ export const buildPositionedHeaders = (
         isNotCollapsible: true,
         isAffixManaged: false,
         isDropTarget:
-          dimension.id === MEASURE_ID &&
+          (dimension.id === MEASURE_ID || dimension.id === TOTAL_ID) &&
           (header.depth === 0 || measuresCount > 1)
       };
       if (header.isParentCollapsed) {
@@ -246,20 +239,18 @@ export const buildPositionedHeaders = (
     scroll.index = leaves.length - 1;
     scroll.direction = -1;
     return buildPositionedHeaders(
-      leaves,
-      headers,
       headerSizes,
       crossPositions,
       containerSize,
       crossSize,
       dimensions,
       measures,
-      areCollapsed,
       nVisibles,
+      leaves,
       scroll
     );
   }
-  // const offset = scroll.direction === 1 ? 0 : lastSize;
+  console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
   return {
     size: Math.min(maxSize, size),
     containerSize,
@@ -270,16 +261,18 @@ export const buildPositionedHeaders = (
     cells,
     index: scroll.index,
     direction: scroll.direction,
-    startIndex:
-      scroll.direction === 1 ? scroll.index : index - scroll.direction,
-    stopIndex:
-      scroll.direction === -1 ? scroll.index : index - scroll.direction,
+    startIndex: scroll.direction === 1 ? scroll.index : index,
+    stopIndex: scroll.direction === -1 ? scroll.index : index,
     length: leaves.length,
     leaves,
-    headers,
+    // headers,
     nVisibles,
     hasScrollbar: ix < nVisibles || size > maxSize,
-    displayedRatio: (ix - 1) / nVisibles,
+    // displayedRatio: (ix - (size > maxSize)) / nVisibles,
+    displayedRatio:
+      cells.length - (size > maxSize + 3) === nVisibles
+        ? maxSize / Math.min(maxSize, size)
+        : cells.length / nVisibles,
     positionRatio:
       (scroll.direction === 1 ? scroll.index : index) / leaves.length,
     scroll
@@ -288,84 +281,70 @@ export const buildPositionedHeaders = (
 
 export const getRowHeadersSelector = createSelector(
   [
-    // rowLeavesSelector,
     getCellHeightByKeySelector,
     crossColumnPositionsSelector,
+    state => state.config.height,
     columnHeadersHeightSelector,
     rowVisibleDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
-    state => state.collapses.rows,
-    state => state.collapses.nVisibleRows,
-    state => state.config.height
-    // state => state.selectedRange.scrollToRow
+    state => state.selectedRange.scrollToRow.refreshLeaves
   ],
   (
-    // leaves,
     headerSizes,
     crossPositions,
+    containerSize,
     crossSize,
     dimensions,
     measures,
-    areCollapsed,
-    nVisibles,
-    containerSize,
-    scroll
+    x
   ) => (leaves, scroll) => {
     return buildPositionedHeaders(
-      leaves.leaves,
-      leaves.headers,
       headerSizes,
       crossPositions,
       containerSize,
       crossSize,
       dimensions,
       measures,
-      areCollapsed,
-      leaves.nVisibles + nVisibles,
+      leaves.node.nVisibles,
+      leaves.leaves,
       scroll
     );
   }
 );
 export const getColumnHeadersSelector = createSelector(
   [
-    // columnLeavesSelector,
     getCellWidthByKeySelector,
     crossRowPositionsSelector,
+    state => state.config.width,
     rowHeadersWidthSelector,
     columnVisibleDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
-    state => state.collapses.columns,
-    state => state.collapses.nVisibleColumns,
-    state => state.config.width
-    // state => state.selectedRange.scrollToColumn
+    state => state.selectedRange.scrollToColumn.refreshLeaves
   ],
   (
-    // leaves,
     headerSizes,
     crossPositions,
+    containerSize,
     crossSize,
     dimensions,
     measures,
-    areCollapsed,
-    nVisibles,
-    containerSize,
-    scroll
-  ) => (leaves, scroll) =>
-    buildPositionedHeaders(
-      leaves.leaves,
-      leaves.headers,
+    x
+  ) => (leaves, scroll) => {
+    return buildPositionedHeaders(
       headerSizes,
       crossPositions,
       containerSize,
       crossSize,
       dimensions,
       measures,
-      areCollapsed,
-      leaves.nVisibles + nVisibles,
+      leaves.node.nVisibles,
+      leaves.leaves,
       scroll
-    )
+    );
+  }
 );
 const combineRowsAndColumns = (rows, columns) => {
+  console.log(rows, columns);
   if (
     (rows.hasScrollbar && !columns.hasScrollbar) ||
     (!rows.hasScrollbar && columns.hasScrollbar)
@@ -386,175 +365,73 @@ const combineRowsAndColumns = (rows, columns) => {
     ? rows.scroll.direction === 1 ? 0 : ScrollbarSize
     : 0;
 };
-const mergeHeader = (header, newHeader, dimensions, dataCount) => {
-  //   console.log("merge", header, newHeader);
-  if (header.dataRowIndexes) {
-    header.dataRowIndexes.push(
-      ...newHeader.dataRowIndexes //.map(x => x + dataCount)
-    );
-  }
-  const newKeys = Object.keys(newHeader.keys);
-  let bNew = false,
-    bNewChild = false;
-  newKeys.map(key => {
-    const index = header.keys[key];
-    const newIndex = newHeader.keys[key];
-    if (index === undefined) {
-      // console.log("new", newHeader.children[newIndex]);
-      bNewChild = true;
-      header.keys[key] = header.children.length;
-      header.children.push(newHeader.children[newIndex]);
-    } else {
-      const { span, nVisibles } = header.children[index];
-      const child = mergeHeader(
-        header.children[index],
-        newHeader.children[newIndex],
-        dimensions,
-        dataCount
-      );
-      // console.log("changed", child, header.children[index]);
-      header.span += child.header.span - span;
-      header.nVisibles += child.header.nVisibles - nVisibles;
-      header.children[index] = child.header;
-      bNew = bNew || child.bNew;
-    }
-  });
-  if (bNewChild) {
-    // reorder
-    // A voir attribute orders
-    header.span = 0;
-    header.nVisibles = 0;
-    if (header.children[0].type === HeaderType.DIMENSION) {
-      const childrenDimension = dimensions[header.depth + 1];
-      const orderedChildren = header.children.map((child, index) => {
-        header.span += child.span;
-        header.nVisibles += child.nVisibles;
-        return {
-          index,
-          sortKey: child.sortKey
-        };
-      });
 
-      orderedChildren.sort(sortFunction(childrenDimension));
-      header.orders = {
-        [childrenDimension.id]: orderedChildren.map(obj => obj.index)
-      };
-      header.orderedChildren = header.orders[childrenDimension.id];
-      if (childrenDimension.sort.direction === "desc") {
-        header.orderedChildren.reverse();
-      }
-    }
-  }
-  //   const orders=Object.keys(header.orders);
-  //   orders.map(dimensionId=>{
-  //       const dimension=dimensions[dimensionId];
-  //       .sort(sortFunction(dimension));
-
-  //   });
-  //    orderedChildren.sort(sortFunction(childrenDimension));
-  //     header.orders = {
-  //       [childrenDimension.id]: orderedChildren.map(obj => obj.index)
-  //     };
-  //     header.orderedChildren = header.orders[childrenDimension.id];
-  //     if (childrenDimension.sort.direction === "desc") {
-  //       header.orderedChildren.reverse();
-  //     }
-  // }
-  return { bNew: bNew || bNewChild, header };
-};
 export const pushedDataSelector = createSelector(
   [
-    filteredPushedDataSelector,
-    filteredDataSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector,
-    getAxisActivatedMeasuresSelector(AxisType.ROWS),
-    getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
+    state => state.data,
+    getAxisTreesSelector,
     rowLeavesSelector,
     columnLeavesSelector,
-    state => state.collapses,
-    state => state.filters,
-    state => state.dimensions
+    state => state.dimensions,
+    state => state.axis,
+    getAxisActivatedMeasuresSelector(AxisType.ROWS),
+    getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
+    state => state.collapses
   ],
   (
-    filteredPushedData,
-    filteredData,
-    rowDimensions,
-    columnDimensions,
-    rowMeasures,
-    columnMeasures,
+    data,
+    axisTrees,
     rowLeaves,
     columnLeaves,
-    collapses,
-    filters,
-    dimensions
+    dimensions,
+    axises,
+    rowMeasures,
+    columnMeasures,
+    collapses
   ) => {
     // const filteredPushedData = getFilteredPushedData(data, filters, dimensions);
-    const dataCount = filteredData.length - filteredPushedData.length;
-    if (!filteredPushedData || !filteredPushedData.length) {
-      return { rowLeaves, columnLeaves };
+    if (!data.pushedData.length) {
+      return { rows: rowLeaves, columns: columnLeaves };
     }
     const newAxisTrees = buildAxisTrees(
-      filteredPushedData,
-      rowDimensions,
-      columnDimensions,
-      dataCount
+      axisTrees.rows,
+      axisTrees.columns,
+      data.pushedData,
+      axisTrees.dimensions,
+      data.data.length
     );
-    const newRowHeaders = buildHeadersTree(
-      filteredPushedData,
-      newAxisTrees.rows,
-      rowDimensions,
-      rowMeasures,
-      isNull(rowMeasures) + 0 || Object.keys(rowMeasures).length,
-      collapses.rows,
-      0,
-      -1,
-      null,
-      dataCount
-    );
-    const newColumnHeaders = buildHeadersTree(
-      filteredPushedData,
-      newAxisTrees.columns,
-      columnDimensions,
-      columnMeasures,
-      isNull(columnMeasures) + 0 || Object.keys(columnMeasures).length,
-      collapses.columns,
-      0,
-      -1,
-      null,
-      dataCount
-    );
-    // rowLeaves.bNew = mergeHeader(
-    //   rowLeaves.headers,
-    //   newRowHeaders,
-    //   rowDimensions,
-    //   dataCount
-    // ).bNew;
-    // columnLeaves.bNew = mergeHeader(
-    //   columnLeaves.headers,
-    //   newColumnHeaders,
-    //   columnDimensions,
-    //   dataCount
-    // ).bNew;
-    if (
-      mergeHeader(rowLeaves.headers, newRowHeaders, rowDimensions, dataCount)
-        .bNew
-    ) {
-      rowLeaves = buildAxisLeaves(rowLeaves.headers);
-      rowLeaves.bNew = true;
+    let leaves, measures, axisDimensions;
+    if (newAxisTrees.newRows) {
+      leaves = [];
+      axisDimensions = axises.rows.map(axis => dimensions[axis]);
+      getAxisLeaves(
+        axisTrees.rows,
+        axisDimensions,
+        rowMeasures,
+        rowMeasures === null ? 1 : rowMeasures.length,
+        collapses.rows,
+        0,
+        leaves
+      );
+      rowLeaves.leaves = leaves;
     }
-    if (
-      mergeHeader(
-        columnLeaves.headers,
-        newColumnHeaders,
-        columnDimensions,
-        dataCount
-      ).bNew
-    ) {
-      columnLeaves = buildAxisLeaves(columnLeaves.headers);
-      columnLeaves.bNew = true;
+    if (newAxisTrees.newColumns) {
+      leaves = [];
+      axisDimensions = axises.columns.map(axis => dimensions[axis]);
+      getAxisLeaves(
+        axisTrees.columns,
+        axisDimensions,
+        columnMeasures,
+        columnMeasures === null ? 1 : columnMeasures.length,
+        collapses.columns,
+        0,
+        leaves
+      );
+      columnLeaves.leaves = leaves;
     }
-    return { rowLeaves, columnLeaves };
+    data.data.push(...data.pushedData);
+    data.pushedData = [];
+    return { rows: rowLeaves, columns: columnLeaves };
   }
 );
 
@@ -566,42 +443,49 @@ export const rowAndColumnHeadersSelector = createSelector(
     getColumnHeadersSelector,
     state => state.selectedRange.scrollToColumn
   ],
-  (newHeaders, getRows, scrollToRow, getColumns, scrollToColumn) => {
-    // console.log("newHeaders", newHeaders);
-    if (newHeaders.rowLeaves.bNew) {
-      scrollToRow.refreshLeaves = !scrollToRow.refreshLeaves;
-    }
-    if (newHeaders.columnLeaves.bNew) {
-      scrollToColumn.refreshLeaves = !scrollToColumn.refreshLeaves;
-    }
-    let rows = getRows(newHeaders.rowLeaves, scrollToRow);
-    let columns = getColumns(newHeaders.columnLeaves, scrollToColumn);
-
-    combineRowsAndColumns(rows, columns);
-    //  corrections of diplay aberations
-    let change = false;
+  (
+    rowAndColumnLeaves,
+    getRowHeaders,
+    scrollToRow,
+    getColumnHeaders,
+    scrollToColumn
+  ) => {
+    let rows, columns;
     if (
-      columns.direction === -1 &&
-      columns.cells[columns.cells.length - 1][0].sizes.main.position -
-        columns.offset >
-        0
+      !(
+        rowAndColumnLeaves.rows.node === null ||
+        rowAndColumnLeaves.columns.node === null
+      )
     ) {
-      scrollToColumn.index = 0;
-      scrollToColumn.direction = 1;
-      columns = getColumns(scrollToColumn);
-      change = true;
-    }
-    if (
-      rows.direction === -1 &&
-      rows.cells[rows.cells.length - 1][0].sizes.main.position - rows.offset > 0
-    ) {
-      scrollToRow.index = 0;
-      scrollToRow.direction = 1;
-      rows = getRows(scrollToRow);
-      change = true;
-    }
-    if (change) {
+      rows = getRowHeaders(rowAndColumnLeaves.rows, scrollToRow);
+      columns = getColumnHeaders(rowAndColumnLeaves.columns, scrollToColumn);
       combineRowsAndColumns(rows, columns);
+      // corrections of diplay aberations
+      let change = false;
+      if (
+        columns.direction === -1 &&
+        columns.cells[columns.cells.length - 1][0].sizes.main.position -
+          columns.offset >
+          0
+      ) {
+        scrollToColumn.index = 0;
+        scrollToColumn.direction = 1;
+        columns = getColumnHeaders(rowAndColumnLeaves.columns, scrollToColumn);
+        change = true;
+      }
+      if (
+        rows.direction === -1 &&
+        rows.cells[rows.cells.length - 1][0].sizes.main.position - rows.offset >
+          0
+      ) {
+        scrollToRow.index = 0;
+        scrollToRow.direction = 1;
+        rows = getRowHeaders(rowAndColumnLeaves.rows, scrollToRow);
+        change = true;
+      }
+      if (change) {
+        combineRowsAndColumns(rows, columns);
+      }
     }
     return { rows, columns };
   }
@@ -610,4 +494,33 @@ export const rowAndColumnHeadersSelector = createSelector(
 export const getRowsCollapsedSelector = createSelector(
   [rowLeavesSelector, state => state.collapses.columns],
   (leaves, areCollapsed) => (maxSize, scroll) => {}
+);
+
+export const previewSizesSelector = createSelector(
+  [
+    state => state.config.height,
+    state => state.config.width,
+    rowAndColumnHeadersSelector
+  ],
+  (height, width, rowsAndColumns) => {
+    const { rows, columns } = rowsAndColumns;
+    console.log(
+      height,
+      width,
+      columns.crossSize,
+      columns.size,
+      rows.crossSize,
+      rows.size
+    );
+    return {
+      height: Math.min(
+        height - columns.hasScrollbar * ScrollbarSize,
+        rows.size + rows.crossSize
+      ),
+      width: Math.min(
+        width - rows.hasScrollbar * ScrollbarSize,
+        columns.size + columns.crossSize
+      )
+    };
+  }
 );

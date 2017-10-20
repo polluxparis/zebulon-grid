@@ -7,7 +7,7 @@ import {
   rowVisibleDimensionsSelector,
   columnVisibleDimensionsSelector
 } from "./dimensions.selector";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector2";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import { MEASURE_ID, HeaderType } from "../constants";
 
 const cellValue = (
@@ -65,9 +65,9 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   const depth = axisDimensions.length;
   let dimension;
   const dimensions = [];
-  const row = isNullOrUndefined(leaf.dataIndexes)
-    ? null
-    : data[leaf.dataIndexes[0]];
+  // const row = isNullOrUndefined(leaf.dataIndexes)
+  // ? null
+  // : data[leaf.dataIndexes[0]];
   for (let index = depth - 1; index >= 0; index -= 1) {
     dimension = axisDimensions[index];
 
@@ -102,7 +102,7 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
           caption: dimension.caption,
           isCollapsed: false
         },
-        cell: { id: l.id, caption: dimension.labelAccessor(row) }
+        cell: { id: l.id, caption: l.caption }
       });
 
       l = l.parent;

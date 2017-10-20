@@ -1,4 +1,4 @@
-import { getAxisActivatedMeasuresSelector } from "./axis.selector2";
+import { getAxisActivatedMeasuresSelector } from "./axis.selector";
 // import { measureFactory, dimensionFactory } from '../dimensions';
 import { AxisType } from "../Axis";
 

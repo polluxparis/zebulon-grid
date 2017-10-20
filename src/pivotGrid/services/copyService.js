@@ -58,7 +58,10 @@ function getSelectedText({
   );
   // Build data array
   let measure;
-  const cells = selectedRowLeaves.map(rowLeaf => {
+  let t = Date.now(),
+    t2;
+
+  const cells = selectedRowLeaves.map((rowLeaf, index) => {
     if (measureHeadersAxis === "rows") {
       measure = measures[rowLeaf.id];
     }
@@ -73,14 +76,16 @@ function getSelectedText({
           }
           return getCellValue(
             measure.valueAccessor,
-            rowLeaf.dataIndexes,
-            columnLeaf.dataIndexes,
+            rowLeaf.dataRowIndexes,
+            columnLeaf.dataRowIndexes,
             measure.aggregation
           );
         })
     );
   });
-
+  t2 = Date.now();
+  console.log("cells", t2 - t);
+  t = t2;
   // build string with corner headers and column headers
   let output = "";
   let caption;
@@ -106,22 +111,44 @@ function getSelectedText({
       output += `${replaceNullAndUndefined(columnsInfos[x][y].cell.caption)}\t`;
     }
     output = output.slice(0, -1);
-    output += "\n";
+    // output += "\n";
   }
+  t2 = Date.now();
+  console.log("columns headers", t2 - t);
+  t = t2;
 
   // Other rows with rows headers and data
+  // for (let y = 0; y < rowInfos.length; y += 1) {
+  //   // row headers
+  //   for (let x = 0; x < width; x += 1) {
+  //     output += `${replaceNullAndUndefined(rowInfos[y][x].cell.caption)}\t`;
+  //   }
+  //   // data cells
+  //   for (let x = 0; x < columnsInfos.length; x += 1) {
+  //     output += `${replaceNullAndUndefined(cells[y][x])}\t`;
+  //   }
+  //   output = output.slice(0, -1);
+  //   output += "\n";
+  // }
+  const outputRows = [output];
   for (let y = 0; y < rowInfos.length; y += 1) {
+    let outputRow = "";
     // row headers
     for (let x = 0; x < width; x += 1) {
-      output += `${replaceNullAndUndefined(rowInfos[y][x].cell.caption)}\t`;
+      outputRow += `${replaceNullAndUndefined(rowInfos[y][x].cell.caption)}\t`;
     }
     // data cells
     for (let x = 0; x < columnsInfos.length; x += 1) {
-      output += `${replaceNullAndUndefined(cells[y][x])}\t`;
+      outputRow += `${replaceNullAndUndefined(cells[y][x])}\t`;
     }
-    output = output.slice(0, -1);
-    output += "\n";
+    outputRow = outputRow.slice(0, -1);
+    outputRows.push(outputRow);
   }
+  output = outputRows.join("\n");
+  t2 = Date.now();
+  console.log("rows", t2 - t, t2);
+  t = t2;
+
   // output = output.slice(0, -1);
   return output;
 }
@@ -157,10 +184,13 @@ export default function copy({
       getCellValue,
       getCellDimensionInfos
     });
+    // console.log("rows0", Date.now());
     clipboardTextArea.select();
+    // console.log("rows1", Date.now());
     window.setTimeout(() => {
       bodyElement.removeChild(clipboardTextArea);
     }, 0);
+    // console.log("rows2", Date.now());
   } catch (error) {
     /* eslint-disable no-console */
     console.error("error during copy", error);

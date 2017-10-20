@@ -97,7 +97,7 @@ class Header extends Component {
           id={rightKey}
           axis={axis}
           header={rightHeader}
-          // previewSize={previewSizes.height}
+          previewSize={previewSizes.height}
           gridId={gridId}
         />
         <ResizeHandle
@@ -107,7 +107,7 @@ class Header extends Component {
           gridId={gridId}
           axis={axis}
           header={bottomHeader}
-          // previewSize={previewSizes.width}
+          previewSize={previewSizes.width}
         />
       </div>
     );

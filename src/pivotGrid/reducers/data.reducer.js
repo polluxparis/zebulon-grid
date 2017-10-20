@@ -13,12 +13,12 @@ export default (state = { data: [], pushedData: [] }, action) => {
 		// case DELETE_FILTER:
 		// case ADD_FILTER:
 		// case SET_MEASURES:
-		case MOVE_DIMENSION:
-			// case TOGGLE_MEASURE:
-			return {
-				...state,
-				pushedData: []
-			};
+		// case MOVE_DIMENSION:
+		// 	// case TOGGLE_MEASURE:
+		// 	return {
+		// 		...state,
+		// 		pushedData: []
+		// 	};
 		case PUSH_DATA:
 			// state.pushedData.push(...action.pushedData);
 			return {

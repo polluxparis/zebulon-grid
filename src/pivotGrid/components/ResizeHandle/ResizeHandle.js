@@ -5,15 +5,6 @@ const resizeHandleSpec = {
   beginDrag(props) {
     return props;
   }
-  //   return {
-  //     id: props.id,
-  //     axis: props.axis,
-  //     gridId: props.gridId,
-  //     position: props.position,
-  //     header: props.header,
-  //     previewSize: props.previewSize
-  //   };
-  // }
 };
 
 const sourceCollect = (connect, monitor) => {

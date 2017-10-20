@@ -55,8 +55,6 @@ class DimensionHeaders extends Component {
       if (
         dimension.isVisible &&
         (dimension.id !== MEASURE_ID || lastCrossDimensionId === TOTAL_ID)
-        // &&|| lastCrossDimensionId === TOTAL_ID)
-        // dimension.id !== TOTAL_ID
       ) {
         let positions;
         if (axis === AxisType.ROWS) {
@@ -114,23 +112,14 @@ class DimensionHeaders extends Component {
     const { columnDimensions, rowDimensions, height, width } = this.props;
     let headers = [];
     let lastCrossDimensionId;
-    // if (rowDimensions.length === 0) {
-    //   lastCrossDimensionId = TOTAL_ID;
-    // } else {
     lastCrossDimensionId = rowDimensions[rowDimensions.length - 1].id;
-    // }
-
     headers = this.headersRenderer(
       AxisType.COLUMNS,
       columnDimensions,
       lastCrossDimensionId
     );
 
-    // if (columnDimensions.length === 0) {
-    //   lastCrossDimensionId = ROOT_ID;
-    // } else {
     lastCrossDimensionId = columnDimensions[columnDimensions.length - 1].id;
-    // }
     headers = headers.concat(
       this.headersRenderer(AxisType.ROWS, rowDimensions, lastCrossDimensionId)
     );

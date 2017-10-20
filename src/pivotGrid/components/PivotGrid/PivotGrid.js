@@ -96,9 +96,7 @@ class PivotGrid extends Component {
     document.removeEventListener("keydown", this.handleKeyDown);
   }
   componentWillReceiveProps(nextProps) {
-    this.isPushing =
-      this.props.pushedData !== nextProps.pushedData &&
-      nextProps.pushedData.length > 0;
+    this.isPushing = this.props.pushedData !== nextProps.pushedData;
   }
   nextVisible = (leaves, index, direction, offset) => {
     let ix = 0,
@@ -117,80 +115,45 @@ class PivotGrid extends Component {
     return index + ix;
   };
   handleKeyDown = e => {
-    this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-    const { selectedRange, selectRange, selectCell, headers } = this.props;
-    const { rows, columns } = headers;
-    if (e.metaKey || e.ctrlKey) {
-      // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-      if (e.key === "+" || e.key === "=") {
-        this.props.zoom(ZOOM_IN);
-        e.preventDefault();
-      }
-      // ctrl - -> zoom out
-      // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-      if (e.key === "-" || e.key === "_") {
-        this.props.zoom(ZOOM_OUT);
-        e.preventDefault();
-      } else if (e.which === 65) {
-        // ctrl A -> select all
-        this.props.selectRange({
-          selectedCellStart: {
-            columnIndex: this.nextVisible(columns.leaves, 0, -1, 0),
-            rowIndex: this.nextVisible(rows.leaves, 0, -1, 0)
-          },
-          selectedCellEnd: {
-            columnIndex: this.nextVisible(
-              columns.leaves,
-              columns.length - 1,
-              1,
-              0
-            ),
-            rowIndex: this.nextVisible(rows.leaves, rows.length - 1, 1, 0)
-          }
-        });
-        e.preventDefault();
-      }
-      // arrow keys
-    } else if (e.which > 32 && e.which < 41) {
-      let direction, cell, axis;
-      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        direction = e.key === "ArrowDown" ? 1 : -1;
-        axis = AxisType.ROWS;
-        cell = {
-          columnIndex: selectedRange.selectedCellEnd.columnIndex,
-          rowIndex: this.nextVisible(
-            rows.leaves,
-            selectedRange.selectedCellEnd.rowIndex,
-            direction,
-            1
-          )
-        };
-      } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        direction = e.key === "ArrowRight" ? 1 : -1;
-        axis = AxisType.COLUMNS;
-        cell = {
-          columnIndex: this.nextVisible(
-            columns.leaves,
-            selectedRange.selectedCellEnd.columnIndex,
-            direction,
-            1
-          ),
-          rowIndex: selectedRange.selectedCellEnd.rowIndex
-        };
-      } else if (e.key === "PageUp" || e.key === "PageDown") {
-        direction = e.key === "PageDown" ? 1 : -1;
-        if (e.altKey) {
-          axis = AxisType.COLUMNS;
-          cell = {
-            columnIndex: this.nextVisible(
-              columns.leaves,
-              selectedRange.selectedCellEnd.columnIndex,
-              direction,
-              columns.cells.length - 1
-            ),
-            rowIndex: selectedRange.selectedCellEnd.rowIndex
-          };
-        } else {
+    if (!e.defaultPrevented) {
+      this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
+      const { selectedRange, selectRange, selectCell, headers } = this.props;
+      const { rows, columns } = headers;
+      if (e.metaKey || e.ctrlKey) {
+        // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
+        if (e.key === "+" || e.key === "=") {
+          this.props.zoom(ZOOM_IN);
+          e.preventDefault();
+        }
+        // ctrl - -> zoom out
+        // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
+        if (e.key === "-" || e.key === "_") {
+          this.props.zoom(ZOOM_OUT);
+          e.preventDefault();
+        } else if (e.which === 65) {
+          // ctrl A -> select all
+          this.props.selectRange({
+            selectedCellStart: {
+              columnIndex: this.nextVisible(columns.leaves, 0, -1, 0),
+              rowIndex: this.nextVisible(rows.leaves, 0, -1, 0)
+            },
+            selectedCellEnd: {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                columns.length - 1,
+                1,
+                0
+              ),
+              rowIndex: this.nextVisible(rows.leaves, rows.length - 1, 1, 0)
+            }
+          });
+          e.preventDefault();
+        }
+        // arrow keys
+      } else if (e.which > 32 && e.which < 41) {
+        let direction, cell, axis;
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          direction = e.key === "ArrowDown" ? 1 : -1;
           axis = AxisType.ROWS;
           cell = {
             columnIndex: selectedRange.selectedCellEnd.columnIndex,
@@ -198,86 +161,125 @@ class PivotGrid extends Component {
               rows.leaves,
               selectedRange.selectedCellEnd.rowIndex,
               direction,
-              rows.cells.length - 1
+              1
             )
           };
-        }
-      } else if (e.key === "Home" || e.key === "End") {
-        direction = e.key === "End" ? 1 : -1;
-        if (e.altKey) {
+        } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+          direction = e.key === "ArrowRight" ? 1 : -1;
           axis = AxisType.COLUMNS;
           cell = {
             columnIndex: this.nextVisible(
               columns.leaves,
-              direction === 1 ? columns.length - 1 : 0,
-              -direction,
-              0
+              selectedRange.selectedCellEnd.columnIndex,
+              direction,
+              1
             ),
             rowIndex: selectedRange.selectedCellEnd.rowIndex
           };
-        } else {
-          axis = AxisType.ROWS;
-          cell = {
-            columnIndex: selectedRange.selectedCellEnd.columnIndex,
-            rowIndex: this.nextVisible(
-              rows.leaves,
-              direction === 1 ? rows.length - 1 : 0,
-              -direction,
-              0
-            )
-          };
+        } else if (e.key === "PageUp" || e.key === "PageDown") {
+          direction = e.key === "PageDown" ? 1 : -1;
+          if (e.altKey) {
+            axis = AxisType.COLUMNS;
+            cell = {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                selectedRange.selectedCellEnd.columnIndex,
+                direction,
+                columns.cells.length - 1
+              ),
+              rowIndex: selectedRange.selectedCellEnd.rowIndex
+            };
+          } else {
+            axis = AxisType.ROWS;
+            cell = {
+              columnIndex: selectedRange.selectedCellEnd.columnIndex,
+              rowIndex: this.nextVisible(
+                rows.leaves,
+                selectedRange.selectedCellEnd.rowIndex,
+                direction,
+                rows.cells.length - 1
+              )
+            };
+          }
+        } else if (e.key === "Home" || e.key === "End") {
+          direction = e.key === "End" ? 1 : -1;
+          if (e.altKey) {
+            axis = AxisType.COLUMNS;
+            cell = {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                direction === 1 ? columns.length - 1 : 0,
+                -direction,
+                0
+              ),
+              rowIndex: selectedRange.selectedCellEnd.rowIndex
+            };
+          } else {
+            axis = AxisType.ROWS;
+            cell = {
+              columnIndex: selectedRange.selectedCellEnd.columnIndex,
+              rowIndex: this.nextVisible(
+                rows.leaves,
+                direction === 1 ? rows.length - 1 : 0,
+                -direction,
+                0
+              )
+            };
+          }
         }
+        // selection
+        if (e.shiftKey) {
+          selectRange({
+            ...selectedRange,
+            selectedCellEnd: cell
+          });
+        } else {
+          selectCell(cell);
+        }
+        // shift display at end
+        const scroll = { rows: rows.scroll, columns: columns.scroll };
+        if (
+          axis === AxisType.ROWS &&
+          rows.hasScrollbar &&
+          (cell.rowIndex >= rows.stopIndex || cell.rowIndex <= rows.startIndex)
+        ) {
+          scroll.rows = { index: cell.rowIndex, direction: -direction };
+          this.onScroll(scroll.rows, scroll.columns);
+        } else if (
+          axis === AxisType.COLUMNS &&
+          columns.hasScrollbar &&
+          (cell.columnIndex >= columns.stopIndex ||
+            cell.columnIndex <= columns.startIndex)
+        ) {
+          scroll.columns = { index: cell.columnIndex, direction: -direction };
+          this.onScroll(scroll.rows, scroll.columns);
+        }
+        e.preventDefault();
       }
-      // selection
-      if (e.shiftKey) {
-        selectRange({
-          ...selectedRange,
-          selectedCellEnd: cell
-        });
-      } else {
-        selectCell(cell);
-      }
-      // shift display at end
-      const scroll = { rows: rows.scroll, columns: columns.scroll };
-      if (
-        axis === AxisType.ROWS &&
-        rows.hasScrollbar &&
-        (cell.rowIndex >= rows.stopIndex || cell.rowIndex <= rows.startIndex)
-      ) {
-        scroll.rows = { index: cell.rowIndex, direction: -direction };
-        this.onScroll(scroll.rows, scroll.columns);
-      } else if (
-        axis === AxisType.COLUMNS &&
-        columns.hasScrollbar &&
-        (cell.columnIndex >= columns.stopIndex ||
-          cell.columnIndex <= columns.startIndex)
-      ) {
-        scroll.columns = { index: cell.columnIndex, direction: -direction };
-        this.onScroll(scroll.rows, scroll.columns);
-      }
-      e.preventDefault();
     }
   };
   handleWheel = e => {
-    e.preventDefault();
-    const { rows, columns } = this.props.headers;
-    const direction = Math.sign(e.deltaY);
-    const leaves = e.altKey ? columns : rows;
-    const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
-    const offset = leaves.direction === direction && leaves.offset > 2;
-    const index = this.nextVisible(
-      leaves.leaves,
-      prevIndex - offset,
-      direction,
-      1
-    );
-    const scroll = { rows: rows.scroll, columns: columns.scroll };
-    if (e.altKey) {
-      scroll.columns = { index, direction: -direction };
-      this.onScroll(scroll.rows, scroll.columns);
-    } else {
-      scroll.rows = { index, direction: -direction };
-      this.onScroll(scroll.rows, scroll.columns);
+    if (!e.defaultPrevented) {
+      e.preventDefault();
+      const { rows, columns } = this.props.headers;
+      const direction = Math.sign(e.deltaY);
+      const leaves = e.altKey ? columns : rows;
+      const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
+      const offset = leaves.direction === direction && leaves.offset > 2;
+      const index = this.nextVisible(
+        leaves.leaves,
+        prevIndex - offset,
+        direction,
+        1
+      );
+      const scroll = { rows: rows.scroll, columns: columns.scroll };
+      if (e.altKey) {
+        scroll.columns = { index, direction: -direction };
+        this.onScroll(scroll.rows, scroll.columns);
+      } else {
+        scroll.rows = { index, direction: -direction };
+        this.onScroll(scroll.rows, scroll.columns);
+      }
     }
   };
   componentDidUpdate(prevProps) {
@@ -294,15 +296,6 @@ class PivotGrid extends Component {
       this.props.copy();
     }
   };
-
-  // handleKeyUp = e => {
-  //   if (e.which === 17) {
-  //     this.modifierKeyIsPressed = false;
-  //   }
-  //   if (e.which === 16) {
-  //     this.shiftKeyIsPressed = false;
-  //   }
-  // };
 
   onScroll = (scrollToRow, scrollToColumn) => {
     let { rows, columns } = this.props.headers;
@@ -402,8 +395,8 @@ class PivotGrid extends Component {
                 rows={rows}
                 columns={columns}
                 gridId={gridId}
-                height={dataCellsSizes.height}
-                width={dataCellsSizes.width}
+                height={height - rows.crossSize}
+                width={width - columns.crossSize}
                 scrollbarsWidth={scrollbarsWidth}
                 onScroll={this.onScroll}
                 isPushing={this.isPushing}
@@ -419,8 +412,7 @@ class PivotGrid extends Component {
     return grid;
   }
 }
-// - columnHeadersHeight
-//  - rowHeadersWidth
+
 const gridSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
@@ -435,14 +427,6 @@ const collect = connect => ({
 });
 
 PivotGrid.defaultProps = { id: 0 };
-// expose all actions
-// Object.keys(actions).forEach(action => {
-//   /* eslint-disable func-names */
-//   PivotGrid.prototype[action] = function(...args) {
-//     this.state.store.dispatch(actions[action](...args));
-//   };
-//   /* eslint-enable */
-// });
 // Add grid id to the type to ensure only correct drop target is used
 export default DropTarget(
   props => `cell-resize-handle--${props.id || 0}`,

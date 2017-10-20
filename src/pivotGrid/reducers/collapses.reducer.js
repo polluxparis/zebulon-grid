@@ -58,13 +58,13 @@ export default (
           ...keys
         }
       };
-      if (axis === "rows") {
-        newState.nVisibleRows += n;
-      } else if (axis === "columns") {
-        newState.nVisibleColumns += n;
-      } else {
-        return state;
-      }
+      // if (axis === "rows") {
+      //   newState.nVisibleRows += n;
+      // } else if (axis === "columns") {
+      //   newState.nVisibleColumns += n;
+      // } else {
+      //   return state;
+      // }
       return newState;
     // apply actual collapses to confix collapses as header Trees will be recalculate
     // case DELETE_FILTER:

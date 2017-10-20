@@ -6,7 +6,7 @@ import {
   columnHeadersHeightSelector,
   rowHeadersWidthSelector,
   crossPositionsSelector,
-  // getAxisActivatedMeasuresSelector,
+  previewSizesSelector,
   availableDimensionsSelector,
   getExpandCollapseKeysSelector,
   toggleSortOrderSelector
@@ -25,13 +25,12 @@ const mapStateToProps = (state, ownProps) => {
   return {
     columnDimensions,
     rowDimensions,
-    // measures: getAxisActivatedMeasuresSelector(state),
     getExpandCollapseKeys: getExpandCollapseKeysSelector(state),
     filters: state.filters,
     availableDimensions: availableDimensionsSelector(state),
     crossPositions: crossPositionsSelector(state),
     height: columnHeadersHeightSelector(state),
-    // previewSizes: previewSizesSelector(state),
+    previewSizes: previewSizesSelector(state),
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,
     sizes: state.sizes,

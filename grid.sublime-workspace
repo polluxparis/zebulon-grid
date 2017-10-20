@@ -4,6 +4,74 @@
 		"selected_items":
 		[
 			[
+				"out",
+				"outputRow"
+			],
+			[
+				"oup",
+				"outputRows"
+			],
+			[
+				"me",
+				"measureId"
+			],
+			[
+				"onCh",
+				"onChangeCheck"
+			],
+			[
+				"inn",
+				"innerStyle"
+			],
+			[
+				"get",
+				"getBoundingClientRect"
+			],
+			[
+				"d",
+				"displayedRatio"
+			],
+			[
+				"scroll",
+				"scrollbar"
+			],
+			[
+				"scrollb",
+				"ScrollbarSize"
+			],
+			[
+				"dim",
+				"dimensionId"
+			],
+			[
+				"col",
+				"columnAxisTreeSelector"
+			],
+			[
+				"dimen",
+				"dimension"
+			],
+			[
+				"push",
+				"pushedData"
+			],
+			[
+				"p",
+				"pushDataSelector"
+			],
+			[
+				"fi",
+				"filteredData"
+			],
+			[
+				"FIL",
+				"filteredData"
+			],
+			[
+				"measure",
+				"measuresCount"
+			],
+			[
 				"columns",
 				"columnHeadersHeightSelector"
 			],
@@ -28,10 +96,6 @@
 				"dimensionId"
 			],
 			[
-				"measure",
-				"measuresCount"
-			],
-			[
 				"to",
 				"toggleSortOrder"
 			],
@@ -42,10 +106,6 @@
 			[
 				"R",
 				"ROWS"
-			],
-			[
-				"dim",
-				"dimension"
 			],
 			[
 				"T",
@@ -76,20 +136,12 @@
 				"headers"
 			],
 			[
-				"col",
-				"columnHeadersHeightSelector"
-			],
-			[
 				"rowH",
 				"rowHeadersWidthSelector"
 			],
 			[
 				"cr",
 				"crossSize"
-			],
-			[
-				"get",
-				"getRowHeaders"
 			],
 			[
 				"MEA",
@@ -128,10 +180,6 @@
 				"cellsRenderer"
 			],
 			[
-				"scroll",
-				"scrollToRow"
-			],
-			[
 				"columnIn",
 				"columnIncrement"
 			],
@@ -158,10 +206,6 @@
 			[
 				"pos",
 				"positionRatio"
-			],
-			[
-				"inn",
-				"innerSize"
 			],
 			[
 				"in",
@@ -258,10 +302,6 @@
 			[
 				"move",
 				"moveMeasure"
-			],
-			[
-				"me",
-				"measuresCount"
 			],
 			[
 				"M",
@@ -474,56 +514,95 @@
 			[
 				"D",
 				"DIMENSION"
-			],
-			[
-				"posi",
-				"positionStyle"
-			],
-			[
-				"header",
-				"headerLeaves"
-			],
-			[
-				"isA",
-				"isAffixManaged"
-			],
-			[
-				"las",
-				"lastChildSize"
-			],
-			[
-				"style",
-				"positionStyle"
-			],
-			[
-				"RO",
-				"ROWS"
-			],
-			[
-				"colum",
-				"columnCrossPositions"
-			],
-			[
-				"n",
-				"newAxis"
-			],
-			[
-				"mo",
-				"moveIndex"
-			],
-			[
-				"Dr",
-				"DropTarget"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
-			"file": "src/pivotGrid/components/PivotGrid/PivotGrid.js",
+			"file": "src/pivotGrid/components/Filter/Filter.js",
 			"settings":
 			{
-				"buffer_size": 15228,
+				"buffer_size": 7726,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/selectors/cell.selector.js",
+			"settings":
+			{
+				"buffer_size": 8039,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/services/copyService.js",
+			"settings":
+			{
+				"buffer_size": 5784,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
+			"settings":
+			{
+				"buffer_size": 4923,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/selectors/axis.selector2.js",
+			"settings":
+			{
+				"buffer_size": 13787,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/selectors/headers.selector2.js",
+			"settings":
+			{
+				"buffer_size": 13258,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/components/DataCells/ScrollBar.js",
+			"settings":
+			{
+				"buffer_size": 6563,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/components/DataCells/DataCells.js",
+			"settings":
+			{
+				"buffer_size": 8469,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/reducers/collapses.reducer.js",
+			"settings":
+			{
+				"buffer_size": 2662,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/pivotGrid/containers/DimensionHeaders.js",
+			"settings":
+			{
+				"buffer_size": 2173,
 				"line_ending": "Windows"
 			}
 		}
@@ -666,73 +745,85 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/thomas/dev_js/grid"
+		"/C/Users/thomas/dev_js/grid",
+		"/C/Users/thomas/dev_js/grid/src",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Filter",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils"
 	],
 	"file_history":
 	[
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/data.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/ZebulonGrid.demo.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/cellSizes.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/scrollableArea.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/ScrollBar.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Filter.js",
 		"/C/Users/thomas/dev_js/grid/src/utils/mock.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/PivotGrid.js",
-		"/C/Users/thomas/dev_js/grid/src/PivotGrid.demo.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/config.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/data.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/data.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/configuration.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/ZebulonGrid.js",
-		"/C/Users/thomas/dev_js/grid/src/App.js",
-		"/C/Users/thomas/dev_js/grid/src/App.css",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/index.css",
+		"/C/Users/thomas/dev_js/grid/src/utils/configurationFunctions.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/services/copyService.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/cell.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/headers.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/status.reducer.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/PivotGrid.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/headers.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/dimension.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/constants/index.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Headers/Headers.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/dimensions.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Header/Header.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/InnerHeader/InnerHeader.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DimensionHeaders.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeaders/DimensionHeaders.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
+		"/C/Users/thomas/dev_js/grid/src/PivotGrid.demo.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/headers.selector2.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/data.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells.js",
+		"/C/Users/thomas/dev_js/grid/src/ZebulonGrid.demo.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/headers.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/constants/index.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/PivotGrid.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector2.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCell/DataCell.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells2.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DataCells.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/data.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/filters.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/filter.action.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Filter/Filter.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/collapses.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/dimensions.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/ColumnHeaders.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/RowHeaders.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/collapses.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/collapses.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/collapses.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/dimensions.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/index.css",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCell/DataCell.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ContextMenu/ContextMenu.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/cellSizes.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/sizes.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/selection.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DataCells.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/config.action.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/config.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Headers/Headers.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/axis.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/configuration.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/config.action.test.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/selection.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/ZebulonGrid.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/selection.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/index.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/sizes.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/headers.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector.test.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/generic.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/status.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/dimension.action.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/index.css",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/data.action.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/collapses.action.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DimensionHeaders.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/dimensions.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/measures.reducer.js",
+		"/C/Users/thomas/dev_js/grid/src/App.js",
+		"/C/Users/thomas/dev_js/grid/src/App.css",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeaders/DimensionHeaders.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/collapses.selector.js",
+		"/C/Users/thomas/dev_js/grid/src/index.css",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ContextMenu/ContextMenu.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/sizes.action.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/selection.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/ScrollBar.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/config.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/filters.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/measures.reducer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/filter.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Filter.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/config.action.test.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/data.selector.test.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ResizeHandle/ResizeHandle.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Filter/Filter.js",
 		"/C/Users/thomas/dev_js/grid/src/utils/menuFunctions.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/index.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/DragLayer.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/scrollbarSize.js",
 		"/C/Users/thomas/dev_js/client/package.json",
 		"/C/Users/thomas/dev_js/grid/package.json",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells2.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Headers/Headers2.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Headers/Headers o.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/filtering.js",
@@ -743,11 +834,9 @@
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/index.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/sizes.reducer.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/index.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/axis.reducer.js",
 		"/C/Users/thomas/dev_js/grid/grid.sublime-project",
 		"/C/Users/thomas/dev_js/package/package.json",
 		"/C/Users/thomas/dev_js/grid/.gitignore",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/generic.js",
 		"/C/Users/thomas/dev_js/grid/package.json0",
 		"/C/Users/thomas/AppData/Local/Temp/tmpCD13.tmp.json",
 		"/C/Users/thomas/dev_js/grid/npm-debug.log",
@@ -788,16 +877,11 @@
 		"/C/Users/thomas/dev_js/grid/src/utils/29cba081-9fb3-4080-9721-108d7a24d6fd.dmp",
 		"/C/Users/thomas/dev_js/grid/src/utils/Format.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/Aggregation.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector.test.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/Filtering.js",
 		"/C/Users/thomas/dev_js/grid/lib/commonjs/index.js",
 		"/C/Users/thomas/AppData/Roaming/Sublime Text 3/Packages/ESLint/ESLint.sublime-settings",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/sizes.selector.test.js",
-		"/C/Users/thomas/dev_js/grid/config/env.js",
-		"/C/Users/thomas/dev_js/grid/public/index.html",
-		"/C/Users/thomas/dev_js/grid/LICENSE.txt",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/WrappedGrid.test.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/keys.js"
+		"/C/Users/thomas/dev_js/grid/config/env.js"
 	],
 	"find":
 	{
@@ -808,6 +892,7 @@
 		"height": 134.0,
 		"where_history":
 		[
+			"",
 			"th",
 			"",
 			".mkv.fx",
@@ -819,134 +904,134 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"FETCH_SUCCESS",
-			"loading",
-			"FETCH_SUCCESS",
-			"setData",
-			"checkbox",
-			"arial",
-			"mock",
-			"getCellValue",
-			"copy",
-			"childrenDimension",
-			"getLeaves",
-			"sortedBy",
-			"sortOrder",
-			"Row",
-			"headerSizes",
 			"nVisibles",
-			"columns",
-			"onScroll",
-			"offset",
-			"lastSize",
-			"scrollbarsWidth",
-			"scrollbarWidth",
-			"scroll",
-			"isAffixManaged",
-			"scrollbarWidth",
-			"getMockDatasource",
-			"mock",
-			"getAxisActivatedMeasuresSelector",
-			"activatedMeasuresSelector",
-			"getExpandCollapseKeys",
-			"expandCollapseHeader",
 			"expandCollapseAll",
-			"MEASURE_ID",
-			"header.type",
-			"MEASURE_ID",
-			"measures",
-			"visibles",
-			"collapses",
-			"nRows",
-			"nrows",
-			"nRows",
-			"nColumns",
-			"collapses",
-			"loading",
-			"getLeaves",
-			"axisType",
-			"getLeaves",
-			"axisType",
-			"toggleSortOrder",
-			"sort",
-			"indexes.",
-			"inde",
-			"lastIndex",
-			"rootIndex",
-			"options.isCollapsed",
-			"dataIndexes",
-			"isVisible",
-			"availableDim",
-			"moveDimension",
-			"moveMeasure",
-			"moveDimension",
-			"dimensionId",
-			"pass",
-			"isVisble",
-			"rowHeadersWidthSelector",
-			"headersRenderer",
-			"crossPositions",
-			"rowVisibleDimensionsSelector",
-			"rowDimensions",
-			"rows",
-			"columnDimensions",
-			"row",
-			"columnVisibleDimensionsSelector",
-			"column",
-			"columnVisibleDimensionsSelector",
-			"columnDimensionsSelector",
-			"rowDimensionsSelector",
-			"collapsered",
-			"childHeader",
-			"mutate",
-			"isVisible",
-			"isAtr",
-			"isVisible",
-			"getLeaves",
-			"updateCellSize",
-			" selectR",
-			" selectedR",
-			"onKeyDown",
-			"onScroll",
-			"modifierKeyIsPressed",
-			"getRowIndexFromKey",
-			"getIndexfromKey",
-			"console",
-			"rowHeadersWidthSelector",
+			"price",
+			"AutoSizer",
+			"virtualized",
+			"pushedData",
+			"index",
+			"positionRatios",
+			"handleWheel",
+			"react-virtualized",
+			"items",
+			"this.position",
+			"getEleme",
+			"e",
+			"handleDrag",
 			"width",
-			"columnHeadersHeight",
-			"grid.",
+			"buildPositionedHeaders",
+			"maxSize",
+			"positionRatios",
+			"scrollbars",
+			"heigth",
+			"ratio.",
+			"ratio",
+			"ratio.",
+			"scrollbar.",
+			"height",
+			"vertical",
+			"scr",
+			"relativeIndex",
+			"getleaves",
+			"getRowHeadersSelector",
+			"getFilters",
+			"filteredDat",
+			"axisTreesSelector",
+			"getColumnHeaders(rowAndColumnLeaves.columns,scrollToColumn)",
+			"getRowHeaders(rowAndColumnLeaves.rows,scrollToRow",
+			"row",
 			"Row",
-			"startSelect",
-			"isAffixManaged",
-			" cell.cell.",
-			"rowIndex",
 			"rows",
-			"offset",
-			"lastIndex",
-			"latIndex",
-			"cellRenderer",
-			"hasScrollBar",
-			"onScroll",
-			"onScroll={this.onScroll}",
-			"onScrll",
-			"scrollTo",
-			"rows",
-			"computeGrid",
-			"scroll.row",
-			"columns",
-			"isNotCollapsible",
-			"isCollapsible",
-			":",
-			"case",
-			"Rows",
-			"rows",
-			":",
-			",",
-			"mapDispatchToProps",
-			"moveDimension",
-			"SET_MEASURES",
-			"onOk"
+			"filteredData",
+			"getLeaves",
+			"sortAndFilter",
+			"getLeaves",
+			"cellValue",
+			"sortAndFilter",
+			"filter",
+			"addFilter",
+			"ADD_FILTER",
+			"getAxis",
+			"getActiv",
+			"orderedChildren",
+			"nVisibles",
+			"props",
+			"setConfigProperty",
+			"toggleMeasure",
+			"TOGGLE_MEASURE",
+			"MOVE_MEASURE",
+			"DimensionsSelector",
+			"refreshLeaves",
+			"header",
+			"relativeIndex",
+			"header.",
+			"expand",
+			"node.children",
+			"header",
+			"getLeaves",
+			"expandCollapseHeader",
+			"header",
+			"rowAxisTreeSelector",
+			"areCollapsed",
+			"node.parent",
+			"parent",
+			"node.parent",
+			"getLeaves",
+			"rowHeadersTreeSelector",
+			"buildHeadersTree",
+			"headers",
+			"headers.selector",
+			"header.selector",
+			"axisTree",
+			"getLeaves",
+			"dimension",
+			"DIMENSION",
+			"dimension",
+			"key",
+			"sortKey",
+			"axis.selector",
+			"\"columnHeadersHeightSelector",
+			"console",
+			"\"crossposit",
+			"console",
+			"filteredData",
+			"FilteredData",
+			"filteredData",
+			"filteredPushedDataSelector",
+			"pushedData",
+			"filteredPushedDataSelector",
+			"filteredDataSelector",
+			"getFilteredData",
+			"Row",
+			"CHANGE_SORT_ORDER",
+			"Row",
+			"row",
+			"toRefresh",
+			"rowLeaves",
+			"toRefreshLeaves",
+			"buildHeadersTree",
+			"dataRowIndexes",
+			"indexes",
+			"buildNode",
+			"buildAxisTrees",
+			"dataCount",
+			"buildAxisTrees",
+			"indexes",
+			"pushedDataSelector",
+			"buildAxisLeaves",
+			"rowHeadersTreeSelector",
+			"dispatch",
+			"toRefreshLeaves",
+			"toRefrseshLeaves",
+			"sortFunction",
+			"cellValue",
+			"this.state",
+			" this.endScroll",
+			"this.scroll",
+			"zebulon-grid-data-cell-highlighted",
+			"pushedData",
+			"pushData"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -954,6 +1039,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"headers.selector2",
+			"axis.selector2",
 			"hasScrollbar",
 			"columnHeadersPositionsAndSizesSelector",
 			"rowHeadersPositionsAndSizesSelector",
@@ -1079,9 +1166,7 @@
 			".z_cub.f.dcf",
 			"b_upd_ctx",
 			"subscription",
-			"`project`cd_mod",
-			"1-system_manager",
-			"`qfact_var"
+			"`project`cd_mod"
 		],
 		"reverse": false,
 		"show_context": false,
@@ -1092,24 +1177,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 7,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/pivotGrid/components/PivotGrid/PivotGrid.js",
+					"file": "src/pivotGrid/components/Filter/Filter.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15228,
+						"buffer_size": 7726,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								11484,
-								11491
+								1814,
+								1783
 							]
 						],
 						"settings":
@@ -1121,8 +1206,469 @@
 								{
 									"1":
 									[
-										11491,
-										11492
+										1910,
+										1911
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1782,
+										1783
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 624.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/pivotGrid/selectors/cell.selector.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8039,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 576.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/pivotGrid/services/copyService.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5784,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5645,
+								5645
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										5653,
+										5654
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										4733,
+										4734
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2288.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4923,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								858,
+								858
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										2123,
+										2124
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										857,
+										858
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 323.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/pivotGrid/selectors/axis.selector2.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13787,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11085,
+								11085
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										11111,
+										11112
 									]
 								},
 								"icon":
@@ -1137,8 +1683,8 @@
 								{
 									"1":
 									[
-										11465,
-										11466
+										11071,
+										11072
 									]
 								},
 								"unmatched":
@@ -1147,21 +1693,51 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
@@ -1171,47 +1747,612 @@
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
+								"bh_double_quote_content"
 							],
 							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 320.0,
+						"translation.y": 6173.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/pivotGrid/selectors/headers.selector2.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13258,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8441,
+								8441
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										9110,
+										9111
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										8440,
+										8441
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4845.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/pivotGrid/components/DataCells/ScrollBar.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6563,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2055,
+								2055
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										2060,
+										2061
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1799,
+										1800
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1056.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/pivotGrid/components/DataCells/DataCells.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1826,
+								1826
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1835,
+										1836
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1593,
+										1594
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 384.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/pivotGrid/reducers/collapses.reducer.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2662,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1221,
+								1230
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1234,
+										1235
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/curly_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1196,
+										1197
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 480.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/pivotGrid/containers/DimensionHeaders.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2173,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1565,
+								1582
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1619,
+										1620
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1582,
+										1583
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content"
+							],
+							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 96.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -1264,7 +2405,7 @@
 	"project": "grid.sublime-project",
 	"replace":
 	{
-		"height": 80.0
+		"height": 53.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1274,8 +2415,276 @@
 		"selected_items":
 		[
 			[
-				"pivotgrid",
+				"datacells",
+				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
+			],
+			[
+				"scrollbar",
+				"src\\pivotGrid\\components\\DataCells\\ScrollBar.js"
+			],
+			[
+				"header",
+				"src\\pivotGrid\\selectors\\headers.selector2.js"
+			],
+			[
+				"collapse",
+				"src\\pivotGrid\\reducers\\collapses.reducer.js"
+			],
+			[
+				"axissel",
+				"src\\pivotGrid\\selectors\\axis.selector2.js"
+			],
+			[
+				"dimensionh",
+				"src\\pivotGrid\\containers\\DimensionHeaders.js"
+			],
+			[
+				"copy",
+				"src\\pivotGrid\\services\\copyService.js"
+			],
+			[
+				"cellsel",
+				"src\\pivotGrid\\selectors\\cell.selector.js"
+			],
+			[
+				"cell",
+				"src\\pivotGrid\\selectors\\cell.selector.js"
+			],
+			[
+				"copyserv",
+				"src\\pivotGrid\\services\\copyService.js"
+			],
+			[
+				"mock",
+				"src\\utils\\mock.js"
+			],
+			[
+				"inner",
+				"src\\pivotGrid\\components\\InnerHeader\\InnerHeader.js"
+			],
+			[
+				"headersel",
+				"src\\pivotGrid\\selectors\\headers.selector2.js"
+			],
+			[
+				"pivot",
 				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
+			],
+			[
+				"fl",
+				"src\\pivotGrid\\components\\Filter\\Filter.js"
+			],
+			[
+				"filte",
+				"src\\pivotGrid\\containers\\Filter.js"
+			],
+			[
+				"pivotgri",
+				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
+			],
+			[
+				"consta",
+				"src\\pivotGrid\\constants\\index.js"
+			],
+			[
+				"datacell",
+				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
+			],
+			[
+				"data",
+				"src\\pivotGrid\\components\\DataCell\\DataCell.js"
+			],
+			[
+				"axis",
+				"src\\pivotGrid\\selectors\\axis.selector2.js"
+			],
+			[
+				"datared",
+				"src\\pivotGrid\\reducers\\data.reducer.js"
+			],
+			[
+				"zeb",
+				"src\\ZebulonGrid.demo.js"
+			],
+			[
+				"pivotgrid",
+				"src\\pivotGrid\\containers\\PivotGrid.js"
+			],
+			[
+				"uilhead",
+				"src\\pivotGrid\\utils\\headers.js"
+			],
+			[
+				"filter",
+				"src\\pivotGrid\\components\\Filter\\Filter.js"
+			],
+			[
+				"filter.action",
+				"src\\pivotGrid\\actions\\filter.action.js"
+			],
+			[
+				"filterred",
+				"src\\pivotGrid\\reducers\\filters.reducer.js"
+			],
+			[
+				"utilhead",
+				"src\\pivotGrid\\utils\\headers.js"
+			],
+			[
+				"dimensions",
+				"src\\pivotGrid\\selectors\\dimensions.selector.js"
+			],
+			[
+				"axisel",
+				"src\\pivotGrid\\selectors\\axis.selector2.js"
+			],
+			[
+				"confred",
+				"src\\pivotGrid\\reducers\\config.reducer.js"
+			],
+			[
+				"confact",
+				"src\\pivotGrid\\actions\\config.action.js"
+			],
+			[
+				"rowhea",
+				"src\\pivotGrid\\containers\\RowHeaders.js"
+			],
+			[
+				"column",
+				"src\\pivotGrid\\containers\\ColumnHeaders.js"
+			],
+			[
+				"headers",
+				"src\\pivotGrid\\components\\Headers\\Headers.js"
+			],
+			[
+				"innerheader",
+				"src\\pivotGrid\\components\\InnerHeader\\InnerHeader.js"
+			],
+			[
+				"configuration",
+				"src\\pivotGrid\\utils\\configuration.js"
+			],
+			[
+				"rowheaders",
+				"src\\pivotGrid\\containers\\RowHeaders.js"
+			],
+			[
+				"dimensionsel",
+				"src\\pivotGrid\\selectors\\dimensions.selector.js"
+			],
+			[
+				"utilheader",
+				"src\\pivotGrid\\utils\\headers.js"
+			],
+			[
+				"zebul",
+				"src\\ZebulonGrid.demo.js"
+			],
+			[
+				"axi",
+				"src\\pivotGrid\\selectors\\axis.selector2.js"
+			],
+			[
+				"selred",
+				"src\\pivotGrid\\reducers\\selection.reducer.js"
+			],
+			[
+				"selsel",
+				"src\\pivotGrid\\selectors\\selection.selector.js"
+			],
+			[
+				"zebulon",
+				"src\\pivotGrid\\ZebulonGrid.js"
+			],
+			[
+				"pivotdem",
+				"src\\PivotGrid.demo.js"
+			],
+			[
+				"he",
+				"src\\pivotGrid\\selectors\\headers.selector.js"
+			],
+			[
+				"zebu",
+				"src\\ZebulonGrid.demo.js"
+			],
+			[
+				"axis.red",
+				"src\\pivotGrid\\reducers\\axis.reducer.js"
+			],
+			[
+				"headerselector",
+				"src\\pivotGrid\\selectors\\headers.selector.js"
+			],
+			[
+				"dataselector",
+				"src\\pivotGrid\\selectors\\data.selector.js"
+			],
+			[
+				"zebulong",
+				"src\\pivotGrid\\ZebulonGrid.js"
+			],
+			[
+				"zebulongrid",
+				"src\\ZebulonGrid.demo.js"
+			],
+			[
+				"selectionre",
+				"src\\pivotGrid\\reducers\\selection.reducer.js"
+			],
+			[
+				"axiss",
+				"src\\pivotGrid\\selectors\\axis.selector.js"
+			],
+			[
+				"dataselec",
+				"src\\pivotGrid\\selectors\\data.selector.js"
+			],
+			[
+				"",
+				"src\\pivotGrid\\selectors\\headers.selector.js"
+			],
+			[
+				"status",
+				"src\\pivotGrid\\reducers\\status.reducer.js"
+			],
+			[
+				"collapsered",
+				"src\\pivotGrid\\reducers\\collapses.reducer.js"
+			],
+			[
+				"confi",
+				"src\\pivotGrid\\utils\\configuration.js"
+			],
+			[
+				"status.reducer",
+				"src\\pivotGrid\\reducers\\status.reducer.js"
+			],
+			[
+				"datasel",
+				"src\\pivotGrid\\selectors\\data.selector.js"
+			],
+			[
+				"header.sel",
+				"src\\pivotGrid\\selectors\\headers.selector.js"
+			],
+			[
+				"dataset",
+				"src\\pivotGrid\\selectors\\data.selector.js"
+			],
+			[
+				"dimesionhe",
+				"src\\pivotGrid\\components\\DimensionHeader\\DimensionHeader.js"
+			],
+			[
+				"header.sele",
+				"src\\pivotGrid\\selectors\\headers.selector.js"
+			],
+			[
+				"axisselect",
+				"src\\pivotGrid\\selectors\\axis.selector.js"
 			],
 			[
 				"configaction",
@@ -1286,10 +2695,6 @@
 				"src\\pivotGrid\\actions\\data.action.js"
 			],
 			[
-				"datared",
-				"src\\pivotGrid\\reducers\\data.reducer.js"
-			],
-			[
 				"conf",
 				"src\\pivotGrid\\utils\\configuration.js"
 			],
@@ -1298,40 +2703,12 @@
 				"src\\PivotGrid.demo.js"
 			],
 			[
-				"pivot",
-				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
-			],
-			[
-				"mock",
-				"src\\utils\\mock.js"
-			],
-			[
-				"zeb",
-				"src\\pivotGrid\\ZebulonGrid.js"
-			],
-			[
-				"axis",
-				"src\\pivotGrid\\selectors\\axis.selector.js"
-			],
-			[
-				"datasel",
-				"src\\pivotGrid\\selectors\\data.selector.js"
-			],
-			[
-				"confi",
-				"src\\pivotGrid\\utils\\configuration.js"
-			],
-			[
 				"css",
 				"src\\pivotGrid\\index.css"
 			],
 			[
 				"utilmock",
 				"src\\utils\\mock.js"
-			],
-			[
-				"utilhead",
-				"src\\pivotGrid\\utils\\headers.js"
 			],
 			[
 				"moc",
@@ -1350,36 +2727,16 @@
 				"src\\pivotGrid\\constants\\index.js"
 			],
 			[
-				"status",
-				"src\\pivotGrid\\reducers\\status.reducer.js"
-			],
-			[
-				"headers",
-				"src\\pivotGrid\\components\\Headers\\Headers.js"
-			],
-			[
 				"utils/mock",
 				"src\\utils\\mock.js"
-			],
-			[
-				"data",
-				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
 			],
 			[
 				"dimsel",
 				"src\\pivotGrid\\selectors\\dimensions.selector.js"
 			],
 			[
-				"innerheader",
-				"src\\pivotGrid\\components\\InnerHeader\\InnerHeader.js"
-			],
-			[
 				"rowh",
 				"src\\pivotGrid\\containers\\RowHeaders.js"
-			],
-			[
-				"column",
-				"src\\pivotGrid\\containers\\ColumnHeaders.js"
 			],
 			[
 				"coll",
@@ -1388,10 +2745,6 @@
 			[
 				"collared",
 				"src\\pivotGrid\\reducers\\collapses.reducer.js"
-			],
-			[
-				"collapse",
-				"src\\pivotGrid\\selectors\\collapses.selector.js"
 			],
 			[
 				"dim",
@@ -1406,32 +2759,12 @@
 				"src\\pivotGrid\\containers\\ColumnHeaders.js"
 			],
 			[
-				"dimensionh",
-				"src\\pivotGrid\\containers\\DimensionHeaders.js"
-			],
-			[
-				"datacells",
-				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
-			],
-			[
 				"index",
 				"src\\pivotGrid\\index.css"
 			],
 			[
 				"indexcss",
 				"src\\index.css"
-			],
-			[
-				"datacell",
-				"src\\pivotGrid\\components\\DataCell\\DataCell.js"
-			],
-			[
-				"headersel",
-				"src\\pivotGrid\\selectors\\headers.selector.js"
-			],
-			[
-				"header",
-				"src\\pivotGrid\\components\\Header\\Header.js"
 			],
 			[
 				"context",
@@ -1448,10 +2781,6 @@
 			[
 				"dimred",
 				"src\\pivotGrid\\reducers\\dimensions.reducer.js"
-			],
-			[
-				"dataselector",
-				"src\\pivotGrid\\selectors\\data.selector.js"
 			],
 			[
 				"dimheaders",
@@ -1474,18 +2803,6 @@
 				"src\\pivotGrid\\selectors\\sizes.selector.js"
 			],
 			[
-				"dimensionsel",
-				"src\\pivotGrid\\selectors\\dimensions.selector.js"
-			],
-			[
-				"collapsered",
-				"src\\pivotGrid\\reducers\\collapses.reducer.js"
-			],
-			[
-				"axissel",
-				"src\\pivotGrid\\selectors\\axis.selector.js"
-			],
-			[
 				"cellsize",
 				"src\\pivotGrid\\selectors\\cellSizes.selector.js"
 			],
@@ -1500,10 +2817,6 @@
 			[
 				"select",
 				"src\\pivotGrid\\reducers\\selection.reducer.js"
-			],
-			[
-				"dimensions",
-				"src\\pivotGrid\\containers\\DimensionHeaders.js"
 			],
 			[
 				"selection",
@@ -1526,10 +2839,6 @@
 				"src\\pivotGrid\\selectors\\headers.selector.js"
 			],
 			[
-				"scrollbar",
-				"src\\pivotGrid\\components\\DataCells\\ScrollBar.js"
-			],
-			[
 				"collred",
 				"src\\pivotGrid\\reducers\\collapses.reducer.js"
 			],
@@ -1538,16 +2847,8 @@
 				"src\\PivotGrid.demo.js"
 			],
 			[
-				"rowheaders",
-				"src\\pivotGrid\\containers\\RowHeaders.js"
-			],
-			[
 				"columnh",
 				"src\\pivotGrid\\containers\\ColumnHeaders.js"
-			],
-			[
-				"",
-				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
 			],
 			[
 				"ivotgrid",
@@ -1580,10 +2881,6 @@
 			[
 				"headsel",
 				"src\\pivotGrid\\selectors\\headers.selector.js"
-			],
-			[
-				"inner",
-				"src\\pivotGrid\\components\\InnerHeader\\InnerHeader.js"
 			],
 			[
 				"ro",
@@ -1628,162 +2925,6 @@
 			[
 				"dimehead",
 				"src\\pivotGrid\\components\\DimensionHeader\\DimensionHeader.js"
-			],
-			[
-				"pivotgr",
-				"src\\pivotGrid\\containers\\PivotGrid.js"
-			],
-			[
-				"filter",
-				"src\\pivotGrid\\components\\Filter\\Filter.js"
-			],
-			[
-				"axisselect",
-				"src\\pivotGrid\\selectors\\axis.selector.js"
-			],
-			[
-				"rowheader",
-				"src\\pivotGrid\\containers\\RowHeaders.js"
-			],
-			[
-				"datc",
-				"src\\pivotGrid\\containers\\DataCells.js"
-			],
-			[
-				"axis.select",
-				"src\\pivotGrid\\selectors\\axis.selector.js"
-			],
-			[
-				"innerh",
-				"src\\pivotGrid\\components\\InnerHeader\\InnerHeader.js"
-			],
-			[
-				"row",
-				"src\\pivotGrid\\containers\\RowHeaders.js"
-			],
-			[
-				"dimh",
-				"src\\pivotGrid\\components\\DimensionHeaders\\DimensionHeaders.js"
-			],
-			[
-				"headersele",
-				"src\\pivotGrid\\selectors\\headers.selector.js"
-			],
-			[
-				"sizesele",
-				"src\\pivotGrid\\selectors\\sizes.selector.js"
-			],
-			[
-				"aggre",
-				"src\\pivotGrid\\utils\\aggregation.js"
-			],
-			[
-				"filtering",
-				"src\\pivotGrid\\utils\\filtering.js"
-			],
-			[
-				"dat",
-				"src\\pivotGrid\\selectors\\data.selector.js"
-			],
-			[
-				"data.",
-				"src\\pivotGrid\\reducers\\data.reducer.js"
-			],
-			[
-				"zebulon",
-				"src\\pivotGrid\\ZebulonGrid.js"
-			],
-			[
-				"sizea",
-				"src\\pivotGrid\\actions\\sizes.action.js"
-			],
-			[
-				"contextme",
-				"src\\pivotGrid\\components\\ContextMenu\\ContextMenu.js"
-			],
-			[
-				"axisre",
-				"src\\pivotGrid\\reducers\\axis.reducer.js"
-			],
-			[
-				"pivotg",
-				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
-			],
-			[
-				"configred",
-				"src\\pivotGrid\\reducers\\config.reducer.js"
-			],
-			[
-				"co",
-				"src\\pivotGrid\\utils\\configuration.js"
-			],
-			[
-				"dem",
-				"src\\PivotGrid.demo.js"
-			],
-			[
-				"z",
-				"src\\ZebulonGrid.demo.js"
-			],
-			[
-				"pivit",
-				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
-			],
-			[
-				"configuration",
-				"src\\pivotGrid\\utils\\configuration.js"
-			],
-			[
-				"zebu",
-				"src\\pivotGrid\\ZebulonGrid.js"
-			],
-			[
-				"gen",
-				"src\\pivotGrid\\utils\\generic.js"
-			],
-			[
-				"con",
-				"src\\pivotGrid\\utils\\configuration.js"
-			],
-			[
-				"generic",
-				"src\\pivotGrid\\utils\\generic.js"
-			],
-			[
-				"pi",
-				"src\\pivotGrid\\containers\\PivotGrid.js"
-			],
-			[
-				"configu",
-				"src\\pivotGrid\\utils\\configuration.js"
-			],
-			[
-				"draglay",
-				"src\\pivotGrid\\components\\PivotGrid\\DragLayer.js"
-			],
-			[
-				"conte",
-				"src\\pivotGrid\\components\\ContextMenu\\ContextMenu.js"
-			],
-			[
-				"pivotgridem",
-				"src\\PivotGrid.demo.js"
-			],
-			[
-				"head",
-				"src\\pivotGrid\\components\\Header\\Header.js"
-			],
-			[
-				"datace",
-				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
-			],
-			[
-				"datacel",
-				"src\\pivotGrid\\components\\DataCell\\DataCell.js"
-			],
-			[
-				"da",
-				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
 			]
 		],
 		"width": 0.0
@@ -2137,8 +3278,8 @@
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": true,
-	"side_bar_width": 385.0,
+	"side_bar_visible": false,
+	"side_bar_width": 630.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

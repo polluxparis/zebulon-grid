@@ -8,7 +8,13 @@ import { rightArrow, downArrow } from "../../icons";
 const headerSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();
-    if (handle.id !== props.id) {
+    if (
+      props.id === MEASURE_ID &&
+      handle.id === MEASURE_ID &&
+      handle.measureId !== props.measureId
+    ) {
+      props.moveMeasure(handle.measureId, props.measureId);
+    } else if (handle.id !== props.id) {
       let newAxis, index;
       if (props.id === MEASURE_ID && handle.id === MEASURE_ID) {
         if (handle && handle.measureId) {

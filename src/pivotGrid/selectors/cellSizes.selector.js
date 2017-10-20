@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 import { TOTAL_ID, AxisType } from "../constants";
-import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector2";
+import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import {
   columnDimensionsSelector,
   rowDimensionsSelector,
