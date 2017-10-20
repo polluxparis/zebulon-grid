@@ -9,7 +9,7 @@ import DataCells from "../../containers/DataCells";
 import DimensionHeaders from "../../containers/DimensionHeaders";
 import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
-// import DragLayer from "./DragLayer";
+import DragLayer from "./DragLayer";
 // import { isEmpty } from "../../utils/generic";
 import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 // import * as actions from '../../actions';
@@ -367,6 +367,7 @@ class PivotGrid extends Component {
           onKeyUp={this.handleKeyUp}
           onWheel={this.handleWheel}
         >
+          <DragLayer gridId={gridId} />
           <div
             className="zebulon-grid-zebulon-grid"
             style={{ fontSize: `${zoomValue * 100}%` }}
