@@ -116,8 +116,6 @@ class Headers extends PureComponent {
     if (headers === undefined || !headers.cells.length) {
       return [];
     }
-    // const offset =
-    //   headers.scroll.direction === 1 ? 0 : headers.hasScrollbar * ScrollbarSize;
     const cells = [];
     headers.cells.map(header =>
       header.map(cell =>

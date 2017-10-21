@@ -55,15 +55,9 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
-    // const className = classNames({
-    //   "zebulon-grid-cell": true,
-    //   "zebulon-grid-header": true
-    //   // "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
-    //   // "zebulon-grid-dimension-header-row": axis === AxisType.ROWS
-    // });
+
     const head = (
       <div
-        // className={className}
         className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
         style={{
           boxSizing: "border-box",

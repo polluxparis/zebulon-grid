@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
+// import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
 import { createStore } from "redux";
@@ -43,31 +43,33 @@ class PivotGridDemo extends Component {
     const data = getMockDatasource(1, 100, 100);
     // const data = getObservableError();
     applyConfigToStore(store, basicConfig, configurationFunctions, data);
-    this.state = { store };
+    this.state = {
+      store,
+      height: basicConfig.height,
+      width: basicConfig.width
+    };
   }
 
   pushData = () =>
     this.state.store.dispatch(actions.pushData(getMockDatasource(1, 10, 10)));
-
+  onResize = (e, data) => {
+    this.setState({ height: data.size.height, width: data.size.width });
+  };
   render() {
     return (
       <Provider store={this.state.store}>
         <div>
-          <ResizableBox height={basicConfig.height} width={basicConfig.width}>
-            <AutoSizer>
-              {({ height, width }) => (
-                <GridWithoutStore
-                  id={0}
-                  menuFunctions={menuFunctions}
-                  configurationFunctions={configurationFunctions}
-                  height={height}
-                  width={width}
-                  drilldown={cell => {
-                    console.log("drilldown", cell);
-                  }}
-                />
-              )}
-            </AutoSizer>
+          <ResizableBox height={this.state.height} width={this.state.width}>
+            <GridWithoutStore
+              id={0}
+              menuFunctions={menuFunctions}
+              configurationFunctions={configurationFunctions}
+              height={this.state.height}
+              width={this.state.width}
+              drilldown={cell => {
+                console.log("drilldown", cell);
+              }}
+            />
           </ResizableBox>
           <div>
             <button onClick={this.pushData}>Push data</button>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import ZebulonGrid from "./pivotGrid";
-import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer";
+// import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer"; // ^9.10.1
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
 import {
@@ -25,7 +25,9 @@ class ZebulonGridDemo extends Component {
     this.state = {
       focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),
-      pushedData: []
+      pushedData: [],
+      height: basicConfig.height,
+      width: basicConfig.width
     };
     this.bigDataSet = false;
   }
@@ -48,29 +50,49 @@ class ZebulonGridDemo extends Component {
   };
   // setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
   // pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
+  // <AutoSizer>
+  // {({ height, width }) => (<ZebulonGrid
+  //  config={basicConfig}
+  // data={this.state.data}
+  // pushedData={this.state.pushedData}
+  // menuFunctions={menuFunctions}
+  // configurationFunctions={configurationFunctions}
+  // height={height}
+  // width={width}
+  // ref={ref => {
+  //   this.grid = ref;
+  // }}
+  // /* eslint-disable no-console */
+  // drilldown={cellInfos => console.log("drilldown", cellInfos)}
+  // /* eslint-enable *//>
+  //   )}
+  //   </AutoSizer>
+  onResize = (e, data) => {
+    this.setState({ height: data.size.height, width: data.size.width });
+  };
   render() {
     return (
       <div style={{ fontFamily: "sans-serif" }}>
-        <ResizableBox height={basicConfig.height} width={basicConfig.width}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <ZebulonGrid
-                config={basicConfig}
-                data={this.state.data}
-                pushedData={this.state.pushedData}
-                menuFunctions={menuFunctions}
-                configurationFunctions={configurationFunctions}
-                height={height}
-                width={width}
-                ref={ref => {
-                  this.grid = ref;
-                }}
-                /* eslint-disable no-console */
-                drilldown={cellInfos => console.log("drilldown", cellInfos)}
-                /* eslint-enable */
-              />
-            )}
-          </AutoSizer>
+        <ResizableBox
+          height={this.state.height}
+          width={this.state.width}
+          onResize={this.onResize}
+        >
+          <ZebulonGrid
+            config={basicConfig}
+            data={this.state.data}
+            pushedData={this.state.pushedData}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
+            height={this.state.height}
+            width={this.state.width}
+            ref={ref => {
+              this.grid = ref;
+            }}
+            /* eslint-disable no-console */
+            drilldown={cellInfos => console.log("drilldown", cellInfos)}
+            /* eslint-enable */
+          />
         </ResizableBox>
         <div style={{ display: "flex", marginTop: ".5em" }}>
           <button style={{ marginRight: ".5em" }} onClick={this.pushData}>

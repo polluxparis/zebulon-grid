@@ -3,7 +3,6 @@
 ///////////////////////////////////////////////////////////////////
 
 import { createSelector } from "reselect";
-// import { filteredDataSelector, getFilteredData } from "./data.selector";
 import {
   rowVisibleDimensionsSelector,
   columnVisibleDimensionsSelector,
@@ -63,7 +62,9 @@ function buildNode(id, node, index, dimension) {
       depth: dimension.depth,
       isAttribute: dimension.isAttribute,
       attributeParentId: dimension.isAttribute
-        ? node.attributeParentId || node.id
+        ? isNullOrUndefined(node.attributeParentId)
+          ? node.id
+          : node.attributeParentId
         : null
     };
   } else if (!dimension.isAttribute) {
@@ -378,7 +379,6 @@ export const expandCollapseNode = (node, isCollapsed, measuresCount) => {
 };
 
 const expandCollapseAll = (node, depth, isCollapsed, measuresCount) => {
-  // console.log(header, depth);
   const leaves = getLeaves(node, [], depth);
   const keys = leaves.reduce(
     (acc, leaf) => {
@@ -388,7 +388,6 @@ const expandCollapseAll = (node, depth, isCollapsed, measuresCount) => {
     },
     { n: 0, keys: {} }
   );
-  // leaves.collapses += keys.n;
   return keys;
 };
 
@@ -404,7 +403,7 @@ export const getExpandCollapseKeysSelector = createSelector(
     depth,
     isCollapsed
   ) => {
-    const measures = AxisType.ROWS ? rowMeasures : columnMeasures;
+    const measures = axisType === AxisType.ROWS ? rowMeasures : columnMeasures;
     return expandCollapseAll(
       axisType === AxisType.ROWS ? rowAxisTree : columnAxisTree,
       depth,

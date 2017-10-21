@@ -62,8 +62,6 @@ class DimensionHeader extends PureComponent {
         );
         this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
       }
-      // if (data.action === "filter") {
-      // }
     }
   };
 

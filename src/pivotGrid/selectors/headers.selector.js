@@ -3,10 +3,6 @@
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 import { isNull } from "../utils/generic";
-// import {
-//   filteredDataSelector,
-//   filteredPushedDataSelector
-// } from "./data.selector";
 
 import {
   buildAxisTrees,
