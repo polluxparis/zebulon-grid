@@ -2,7 +2,7 @@ import ZebulonGrid from "./ZebulonGrid";
 import GridWithoutStore, {
 	GridWithoutStoreAndDndContext
 } from "./containers/PivotGrid";
-// import reducers from './reducers';
+import reducer from "./reducers";
 import * as actions from "./actions";
 import { applyConfigToStore } from "./utils/configuration";
 
@@ -13,7 +13,7 @@ export default ZebulonGrid;
 export {
 	GridWithoutStoreAndDndContext,
 	GridWithoutStore,
-	// reducer,
+	reducer,
 	actions,
 	applyConfigToStore
 };
