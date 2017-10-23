@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PivotGridDemo from "./PivotGrid.demo";
+// import PivotGridDemo from "./PivotGrid.demo";
 import ZebulonGridDemo from "./ZebulonGrid.demo";
 
 class App extends Component {

@@ -2,13 +2,9 @@ import {
   EXPAND_COLLAPSE,
   EXPAND_COLLAPSE_ALL,
   SET_COLLAPSES,
-  DELETE_FILTER,
-  ADD_FILTER,
   SET_MEASURES,
   MOVE_DIMENSION,
-  TOGGLE_MEASURE,
-  AxisType,
-  toAxis
+  TOGGLE_MEASURE
 } from "../constants";
 
 /*
@@ -26,9 +22,9 @@ export default (
     rows: {},
     columns: {},
     dimensions: {},
-    configRows: {},
+    configurationRows: {},
     nVisibleRows: 0,
-    configColumns: {},
+    configurationColumns: {},
     nVisibleColumns: 0
   },
   action
@@ -58,13 +54,6 @@ export default (
           ...keys
         }
       };
-      // if (axis === "rows") {
-      //   newState.nVisibleRows += n;
-      // } else if (axis === "columns") {
-      //   newState.nVisibleColumns += n;
-      // } else {
-      //   return state;
-      // }
       return newState;
     // apply actual collapses to confix collapses as header Trees will be recalculate
     // case DELETE_FILTER:
@@ -72,16 +61,16 @@ export default (
     case SET_MEASURES:
     case MOVE_DIMENSION:
     case TOGGLE_MEASURE:
-      const rows = { ...state.configRows, ...state.rows };
-      const columns = { ...state.configColumns, ...state.columns };
+      const rows = { ...state.configurationRows, ...state.rows };
+      const columns = { ...state.configurationColumns, ...state.columns };
       return {
         rows,
         columns,
         dimensions: state.dimensions,
-        configRows: rows,
+        configurationRows: rows,
         nVisibleColumns: 0,
         nVisibleRows: 0,
-        configColumns: columns
+        configurationColumns: columns
       };
     case SET_COLLAPSES:
       return {

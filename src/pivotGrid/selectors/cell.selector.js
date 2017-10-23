@@ -73,17 +73,18 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
 
     // when a leaf is collapsed its parent  has a depth < leaf.depth -1
     // we  have to push an empty cell in this case
-    if (index > l.depth) {
-      dimensions.push({
-        axis,
-        dimension: {
-          id: dimension.id,
-          caption: dimension.caption,
-          isCollapsed: true
-        },
-        cell: { id: null, caption: null }
-      });
-    } else if (dimension.id === MEASURE_ID) {
+    // if (index > l.depth) {
+    //   dimensions.push({
+    //     axis,
+    //     dimension: {
+    //       id: dimension.id,
+    //       caption: dimension.caption,
+    //       isCollapsed: leaf.isParentCollapsed
+    //     },
+    //     cell: { id: null, caption: null }
+    //   });
+    // } else
+    if (dimension.id === MEASURE_ID) {
       dimensions.push({
         axis,
         dimension: {
@@ -100,9 +101,12 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
         dimension: {
           id: dimension.id,
           caption: dimension.caption,
-          isCollapsed: false
+          isCollapsed: l.isParentCollapsed
         },
-        cell: { id: l.id, caption: l.caption }
+        cell: {
+          id: l.isParentCollapsed ? null : l.id,
+          caption: l.isParentCollapsed ? null : l.caption
+        }
       });
 
       l = l.parent;

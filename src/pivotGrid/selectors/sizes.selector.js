@@ -6,7 +6,6 @@
 //  column headers height
 //  + preview sizes or drag and drop
 import { createSelector } from "reselect";
-import { ROOT_ID, ScrollbarSize } from "../constants";
 import {
   getCellWidthByKeySelector,
   getCellHeightByKeySelector
@@ -15,15 +14,7 @@ import {
   columnVisibleDimensionsSelector,
   rowVisibleDimensionsSelector
 } from "./dimensions.selector";
-import {
-  getRowHeadersSelector,
-  getColumnHeadersSelector
-} from "./headers.selector";
-console.log(
-  getRowHeadersSelector,
-  getColumnHeadersSelector,
-  columnVisibleDimensionsSelector
-);
+
 //-------------------------------------------
 export const rowHeadersWidthSelector = createSelector(
   [rowVisibleDimensionsSelector, getCellWidthByKeySelector],

@@ -3,8 +3,7 @@ import {
   MOVE_DIMENSION,
   FETCH_DATA,
   SCROLL,
-  CHANGE_SORT_ORDER,
-  AxisType
+  CHANGE_SORT_ORDER
 } from "../constants";
 
 export default (

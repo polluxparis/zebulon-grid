@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { AxisType, MEASURE_ID, ROOT_ID, TOTAL_ID } from "../../constants";
+import { AxisType, MEASURE_ID, TOTAL_ID } from "../../constants";
 import DimensionHeader from "../DimensionHeader/DimensionHeader";
 import { isNullOrUndefined } from "../../utils/generic";
 class DimensionHeaders extends Component {

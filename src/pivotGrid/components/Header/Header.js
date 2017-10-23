@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import classNames from "classnames";
+// import classNames from "classnames";
 
-import { AxisType, toAxis, MEASURE_ID } from "../../constants";
+import { AxisType, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import { ContextMenuTrigger } from "react-contextmenu";

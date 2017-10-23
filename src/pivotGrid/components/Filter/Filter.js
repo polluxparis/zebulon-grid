@@ -15,7 +15,6 @@ class FilterValues extends ScrollableArea {
         position: 0
       }
     };
-    return { height: height / (rowCount * rowHeight), width: 1.2 };
   };
   getContent = () => {
     const items = [];
@@ -37,9 +36,9 @@ class FilterValues extends ScrollableArea {
           <input
             type="checkbox"
             checked={filter[id] !== undefined}
-            onChange={() => onChangeCheck(id, index)}
+            onChange={onChangeCheck(id, index)}
           />
-          <span onClick={() => onChangeCheck(id, index)}>{label}</span>
+          <span onClick={onChangeCheck(id, index)}>{label}</span>
         </div>
       );
       index++;

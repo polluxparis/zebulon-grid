@@ -2,28 +2,42 @@ import React, { Component } from "react";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 
-import PivotGrid from "./containers/PivotGrid";
-import reducer from "./reducers";
-import { applyConfigToStore, setData, pushData } from "./utils/configuration";
+import PivotGrid from "../pivotGrid/containers/PivotGrid";
+import reducer from "../pivotGrid/reducers";
+import {
+  applyConfigurationToStore,
+  setData,
+  pushData
+} from "./utils/configuration";
 import * as actions from "./actions";
 
 class ZebulonGrid extends Component {
   componentWillMount() {
-    const { data, config, configurationFunctions, menuFunctions } = this.props;
+    const {
+      data,
+      configuration,
+      configurationFunctions,
+      menuFunctions
+    } = this.props;
     const store = createStore(
       reducer,
       window.__REDUX_DEVTOOLS_EXTENSION__ &&
         window.__REDUX_DEVTOOLS_EXTENSION__()
     );
-    applyConfigToStore(store, config, configurationFunctions, data);
+    applyConfigurationToStore(
+      store,
+      configuration,
+      configurationFunctions,
+      data
+    );
     this.setState({ store, configurationFunctions, menuFunctions });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.config !== nextProps.config) {
-      applyConfigToStore(
+    if (this.props.configuration !== nextProps.configuration) {
+      applyConfigurationToStore(
         this.state.store,
-        nextProps.config,
+        nextProps.configuration,
         this.state.configurationFunctions,
         nextProps.data
       );
@@ -67,10 +81,10 @@ ZebulonGrid.prototype["setData"] = function(data) {
 ZebulonGrid.prototype["getStore"] = function() {
   return this.state.store.getState();
 };
-ZebulonGrid.prototype["setConfig"] = function(config, data) {
-  applyConfigToStore(
+ZebulonGrid.prototype["setConfiguration"] = function(configuration, data) {
+  applyConfigurationToStore(
     this.state.store,
-    config,
+    configuration,
     this.props.configurationFunctions,
     data
   );

@@ -1,27 +1,20 @@
 import React, { Component } from "react";
 
-import ZebulonGrid from "./pivotGrid";
-// import { AutoSizer } from "react-virtualized/dist/commonjs/AutoSizer"; // ^9.10.1
+import ZebulonGrid from "../pivotGrid";
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
 import {
-  // getMockDatasource,
-  // getMockDatasource2,
   getPromiseMockDatasource,
   basicConfig,
   getRandomMockDatasource
-  // basicConfig2
-} from "./utils/mock";
-import { configurationFunctions } from "./utils/configurationFunctions";
-import { menuFunctions } from "./utils/menuFunctions";
+} from "./mock";
+import { configurationFunctions } from "./configurationFunctions";
+import { menuFunctions } from "./menuFunctions";
 
-// <button onClick={this.setData}>Set new data</button>
-// <button onClick={this.pushData}>Push data</button>
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
     this.options = [100, 100, 5];
-    // this.options = [500, 400, 5];
     this.state = {
       focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),
@@ -48,25 +41,6 @@ class ZebulonGridDemo extends Component {
   customCellFunction = () => {
     this.setState({ customCellFunction: !this.state.customCellFunction });
   };
-  // setData = () => this.grid.setData(getMockDatasource(1, 3, 3));
-  // pushData = () => this.grid.pushData(getMockDatasource(1, 3, 3));
-  // <AutoSizer>
-  // {({ height, width }) => (<ZebulonGrid
-  //  config={basicConfig}
-  // data={this.state.data}
-  // pushedData={this.state.pushedData}
-  // menuFunctions={menuFunctions}
-  // configurationFunctions={configurationFunctions}
-  // height={height}
-  // width={width}
-  // ref={ref => {
-  //   this.grid = ref;
-  // }}
-  // /* eslint-disable no-console */
-  // drilldown={cellInfos => console.log("drilldown", cellInfos)}
-  // /* eslint-enable *//>
-  //   )}
-  //   </AutoSizer>
   onResize = (e, data) => {
     this.setState({ height: data.size.height, width: data.size.width });
   };
@@ -79,7 +53,7 @@ class ZebulonGridDemo extends Component {
           onResize={this.onResize}
         >
           <ZebulonGrid
-            config={basicConfig}
+            configuration={basicConfig}
             data={this.state.data}
             pushedData={this.state.pushedData}
             menuFunctions={menuFunctions}

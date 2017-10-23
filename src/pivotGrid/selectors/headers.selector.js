@@ -10,12 +10,9 @@ import {
   getAxisLeaves,
   rowLeavesSelector,
   columnLeavesSelector,
-  getAxisActivatedMeasuresSelector,
-  sortFunction
+  getAxisActivatedMeasuresSelector
 } from "./axis.selector";
 import {
-  rowDimensionsSelector,
-  columnDimensionsSelector,
   rowVisibleDimensionsSelector,
   columnVisibleDimensionsSelector
 } from "./dimensions.selector";
@@ -35,8 +32,7 @@ import {
   TOTAL_ID,
   MEASURE_ID,
   ScrollbarSize,
-  AxisType,
-  HeaderType
+  AxisType
 } from "../constants";
 
 ///////////////////////////////////////////////////////////////////
@@ -396,7 +392,7 @@ export const pushedDataSelector = createSelector(
       axisTrees.dimensions,
       data.data.length
     );
-    let leaves, measures, axisDimensions;
+    let leaves, axisDimensions;
     if (newAxisTrees.newRows) {
       leaves = [];
       axisDimensions = axises.rows.map(axis => dimensions[axis]);

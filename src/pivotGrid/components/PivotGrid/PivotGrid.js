@@ -81,11 +81,6 @@ import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 //   </div>;
 
 class PivotGrid extends Component {
-  constructor(props) {
-    super(props);
-    // this.pushData = this.props.pushData;
-  }
-
   componentDidMount() {
     document.addEventListener("copy", this.handleCopy);
     document.addEventListener("keydown", this.handleKeyDown);

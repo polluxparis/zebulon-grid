@@ -3,8 +3,7 @@ import {
   ZOOM_IN,
   ZOOM_OUT,
   MOVE_DIMENSION,
-  MEASURE_ID,
-  FETCH_DATA
+  MEASURE_ID
 } from "../constants";
 
 function getNextZoom(previousZoom, zoomIn) {

@@ -5,7 +5,7 @@ import {
   TOTAL_ID,
   HeaderType
 } from "../constants";
-import { isNullOrUndefined, isUndefined } from "./generic";
+import { isUndefined } from "./generic";
 
 export function getHeaderSize(sizeAndPositionManager, index, span) {
   let res = 0;

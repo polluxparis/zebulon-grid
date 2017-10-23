@@ -24,7 +24,11 @@ export const setMeasures = (configObject, configurationFunctions) => ({
     measureFactory(measure, configurationFunctions)
   )
 });
-export const setConfigProperty = (configObject, property, defaultValue) => ({
+export const setConfigurationProperty = (
+  configObject,
+  property,
+  defaultValue
+) => ({
   type: SET_CONFIG_PROPERTY,
   property,
   value: configObject[property] || defaultValue

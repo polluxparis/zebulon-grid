@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 class ScrollbarInner extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   // handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
   // handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
   // handleMouseMove = e => this.props.handleMouseUp(this.collect(e));
   render() {
     return (
       <div
+        className="zebulon-scrollbar-thumb"
         id={"thumb-" + this.props.id}
         style={this.props.style}
         // onMouseDown={this.handleMouseDown}
@@ -38,47 +35,29 @@ export class Scrollbar extends Component {
     }
   }
   computeScrollbar = props => {
-    const {
-      direction,
-      length,
-      width,
-      offset,
-      positionRatio,
-      displayRatio
-    } = props;
+    const { direction, length, width, positionRatio, displayRatio } = props;
 
-    const style = {
-      backgroundColor: "lightgrey",
-      border: "solid 0.03em grey",
-      borderRadius: " 0.25rem"
-    };
-    let innerStyle = {
-      ...style,
-      position: "relative",
-      backgroundColor: "grey"
-    };
+    let innerStyle;
     this.innerSize = Math.max(30, length * displayRatio);
     this.position = Math.min(length - this.innerSize, length * positionRatio);
     if (direction === "horizontal") {
       this.style = {
-        ...style,
         height: width,
         width: length
       };
       innerStyle = {
-        ...innerStyle,
+        position: "relative",
         height: width - 1,
         width: this.innerSize,
         left: this.position
       };
     } else {
       this.style = {
-        ...style,
         height: length,
         width
       };
       innerStyle = {
-        ...innerStyle,
+        position: "relative",
         height: this.innerSize,
         width: width - 1,
         top: this.position
@@ -121,9 +100,9 @@ export class Scrollbar extends Component {
   handleMouseDown = e => {
     const event = this.collect(e);
     if (event.initiator === "thumb") {
-      const { clientX, clientY } = e;
-      this.isDragging = true;
-      console.log("start dragging ", this.startDraggingPosition, clientY);
+      // const { clientX, clientY } = e;
+      // this.isDragging = true;
+      // console.log("start dragging ", this.startDraggingPosition, clientY);
     } else {
       return this.props.onScroll(event);
     }
@@ -190,12 +169,12 @@ export class Scrollbar extends Component {
     }
     return (
       <div
+        className="zebulon-scrollbar-bar"
         id={id}
         style={this.style}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
         onMouseMove={this.handleMouseMove}
-        // ref={ref => (this.scrollbarPositions = ref.getBoundingClientRect())}
       >
         <ScrollbarInner id={"thumb-" + id} style={this.state.innerStyle} />
       </div>

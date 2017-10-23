@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
-import { AXIS_SEPARATOR, HeaderType, AxisType } from "../../constants";
+import { AXIS_SEPARATOR, HeaderType } from "../../constants";
 import { ScrollableArea } from "../Controls/ScrollableArea";
 
 export class DataCells extends ScrollableArea {

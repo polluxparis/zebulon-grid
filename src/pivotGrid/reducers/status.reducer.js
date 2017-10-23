@@ -1,10 +1,4 @@
-import {
-  FETCH_SUCCESS,
-  PUSH_DATA,
-  FETCH_DATA,
-  FETCH_FAILURE,
-  CHANGE_SORT_ORDER
-} from "../constants";
+import { FETCH_SUCCESS, FETCH_DATA, FETCH_FAILURE } from "../constants";
 
 export default (
   state = {
@@ -15,7 +9,7 @@ export default (
   },
   action
 ) => {
-  const { type, error, pushedData } = action;
+  const { type, error } = action;
   switch (type) {
     case FETCH_DATA:
       return { ...state, loading: true, loaded: false, error: undefined };
@@ -23,13 +17,6 @@ export default (
       return { ...state, loading: false, loaded: false, error };
     case FETCH_SUCCESS:
       return { ...state, loading: false, loaded: false, error: undefined };
-    // just to force the refresh
-    // case CHANGE_SORT_ORDER:
-    //   const newState = { ...state };
-    //   newState.toRefreshLeaves[action.axis] = !newState.toRefreshLeaves[
-    //     action.axis
-    //   ];
-    //   return newState;
     default:
       return state;
   }

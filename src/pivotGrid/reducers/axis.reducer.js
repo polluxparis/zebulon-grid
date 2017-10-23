@@ -2,8 +2,7 @@ import {
   MOVE_DIMENSION,
   MOVE_MEASURE,
   TOGGLE_MEASURE,
-  SET_AXIS,
-  FETCH_DATA
+  SET_AXIS
 } from "../constants";
 import { isNullOrUndefined } from "../utils/generic";
 export default (
@@ -17,8 +16,6 @@ export default (
   let positionToRemove;
   let newPosition = position;
   switch (type) {
-    // case FETCH_DATA:
-    //   return { rows: [], columns: [], dimensions: [], measures: [] };
     case MOVE_DIMENSION:
       if (isNullOrUndefined(newPosition) && newAxis !== oldAxis) {
         newPosition = state[newAxis].length;

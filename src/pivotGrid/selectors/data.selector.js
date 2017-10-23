@@ -1,44 +1,7 @@
 import { createSelector } from "reselect";
-import pass from "../utils/filtering";
+// import pass from "../utils/filtering";
 import { isUndefined } from "../utils/generic";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
-
-//         pass(filter.values, filter.dimension.keyAccessor(row))
-//       )
-//       filters.every(filter =>
-//     "filteredDataSelector",
-//     );
-//     const data = getFilteredData(pushedData, filters, dimensions);
-//     d = data.filter(row =>
-//     data.length,
-//     Date.now() - x
-//     dimension: dimensions[id],
-//     filtersObject.length,
-//     return data;
-//     values: Object.values(filtersObject[id].values)
-//   (pushedData, filters, dimensions) => {
-//   );
-//   // console.log("filteredDataSelector0", filtersObject.length, data.length, x);
-//   [getData, getFilters, state => state.dimensions],
-//   [state => state.data.pushedData, getFilters, state => state.dimensions],
-//   console.log(
-//   const filters = Object.keys(filtersObject).map(id => ({
-//   const x = Date.now();
-//   getFilteredData
-//   if (filters.length !== 0) {
-//   let d = data;
-//   return d;
-//   }
-//   }
-//   }));
-// );
-// );
-// const getData = state => state.data.data;
-// const getFilters = state => state.filters || {};
-// export const filteredDataSelector = createSelector(
-// export const filteredPushedDataSelector = createSelector(
-// export const getFilteredData = (data, filtersObject, dimensions) => {
-// };
 
 export const getDimensionValuesSelector = createSelector(
   [state => state.data.data, state => state.dimensions],

@@ -6,10 +6,9 @@ import { createSelector } from "reselect";
 import {
   rowVisibleDimensionsSelector,
   columnVisibleDimensionsSelector,
-  activatedMeasuresSelector,
   dimensionsWithAxisSelector
 } from "./dimensions.selector";
-import { isNull, isNullOrUndefined } from "../utils/generic";
+import { isNullOrUndefined } from "../utils/generic";
 import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
@@ -209,7 +208,7 @@ export const getAxisLeaves = (
       )
     };
     node.orderedChildren = node.orders[nextDimension.id];
-    node.orderedChildren.map((key, index) => {
+    node.orderedChildren.forEach((key, index) => {
       nVisibles += getAxisLeaves(
         node.children[key],
         dimensions,
@@ -225,7 +224,7 @@ export const getAxisLeaves = (
     node.orderedChildren = [];
     if (measures) {
       node.childrem = {};
-      measures.map((measure, index) => {
+      measures.forEach((measure, index) => {
         node.children[measure.id] = {
           id: measure.id,
           dimensionId: MEASURE_ID,
@@ -261,7 +260,7 @@ export const rowLeavesSelector = createSelector(
     state => state.dimensions,
     state => state.axis.rows,
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
-    state => state.collapses.configRows,
+    state => state.collapses.configurationRows,
     state => state.filters
   ],
   (node, dimensions, axises, measures, areCollapsed, filters) => {
@@ -304,7 +303,7 @@ export const columnLeavesSelector = createSelector(
     state => state.dimensions,
     state => state.axis.columns,
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
-    state => state.collapses.configColumns,
+    state => state.collapses.configurationColumns,
     state => state.filters
   ],
   (node, dimensions, axises, measures, areCollapsed, filters) => {

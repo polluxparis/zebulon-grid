@@ -52,6 +52,7 @@ export function getRandomMockDatasource(
 ) {
   // return [getObj(1, 1, 0), getObj(1, 100, 1)];
   const ratio = dataPercentage / 100;
+  // const nTutu = 2;
   let obj = [];
   const res = [];
   for (let k = 0; k < 1; k += 1) {

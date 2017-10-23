@@ -14,7 +14,7 @@ import {
 } from "../selectors";
 import {
   updateCellSize,
-  setConfigProperty,
+  setConfigurationProperty,
   selectRange,
   selectCell,
   scrollToIndex,
@@ -56,8 +56,8 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, "height"));
-    if (width) dispatch(setConfigProperty({ height, width }, "width"));
+    if (height) dispatch(setConfigurationProperty({ height, width }, "height"));
+    if (width) dispatch(setConfigurationProperty({ height, width }, "width"));
   },
   selectRange: selectedRange => dispatch(selectRange(selectedRange)),
   selectCell: cell => dispatch(selectCell(cell)),
