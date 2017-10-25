@@ -25,7 +25,7 @@ import {
 import { configurationFunctions } from "./utils/configurationFunctions";
 import { menuFunctions } from "./utils/menuFunctions";
 import "./App.css";
-console.log(actions);
+// console.log(actions);
 
 //
 class PivotGridDemo extends Component {
@@ -45,8 +45,8 @@ class PivotGridDemo extends Component {
     applyConfigToStore(store, basicConfig, configurationFunctions, data);
     this.state = {
       store,
-      height: basicConfig.height,
-      width: basicConfig.width
+      height: basicconfiguration.height,
+      width: basicconfiguration.width
     };
   }
 

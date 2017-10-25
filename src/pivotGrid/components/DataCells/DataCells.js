@@ -84,16 +84,16 @@ export class DataCells extends ScrollableArea {
     }
   };
   handleDoubleClick = cell => {
-    return this.props.drilldown(this.props.getCellInfos(cell));
+    const keys = Object.keys(this.props.menuFunctions.dataCellFunctions);
+    if (keys.length) {
+      const menuFunction = this.props.menuFunctions.dataCellFunctions[keys[0]]
+        .function;
+      return menuFunction(this.props.getCellInfos(cell));
+    }
   };
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
-      if (data.action === "drilldown") {
-        this.handleDrilldown({
-          columnIndex: data.columnIndex,
-          rowIndex: data.rowIndex
-        });
-      } else if (data.functionType === "cell") {
+      if (data.functionType === "cell") {
         this.props.menuFunctions.dataCellFunctions[data.action].function(
           this.props.getCellInfos({
             columnIndex: data.columnIndex,
@@ -105,7 +105,9 @@ export class DataCells extends ScrollableArea {
           this.props.getRangeInfos(this.props.selectedRange)
         );
       } else if (data.functionType === "function") {
-        this.props.menuFunctions.functions[data.action].function();
+        this.props.menuFunctions.gridFunctions[data.action].function();
+      } else if (data.action === "toggle-totals") {
+        this.props.setConfigProperty("totalsFirst", data.value);
       }
     }
   };
@@ -115,7 +117,9 @@ export class DataCells extends ScrollableArea {
       dimensions: this.props.dimensions,
       menuFunctions: this.props.menuFunctions,
       filters: this.props.filters,
-      zoom: this.props.zoom
+      zoom: this.props.zoom,
+      onItemClick: this.handleClickMenu,
+      configuration: this.props.configuration
     };
   };
   cellRenderer = (
@@ -193,6 +197,7 @@ export class DataCells extends ScrollableArea {
         gridId={gridId}
         selected={selected}
         focused={focused}
+        isTotal={rowHeader.isTotal || columnHeader.isTotal}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}

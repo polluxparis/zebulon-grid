@@ -3,43 +3,57 @@
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
 
-import { ROOT_ID, TOTAL_ID, MEASURE_ID, AxisType } from "../constants";
-const getAxisDimensions = (axis, dimensions) => {
+import { ROOT_ID, TOTAL_ID, MEASURE_ID, AxisType, toAxis } from "../constants";
+const getAxisDimensions = (axis, axisDimensions, dimensions) => {
   let prevDimension = { id: ROOT_ID };
-  return axis.map(id => {
+  return axisDimensions.map((id, index) => {
     const dimension = dimensions[id];
     if (
       dimension.attributeParents.includes(prevDimension.id) ||
       (dimension.attributeParents.includes(prevDimension.isAttributeOf) &&
         prevDimension.isAttribute)
     ) {
+      dimension.axis = axis;
+      dimension.depth = index;
       dimension.isAttribute = true;
       dimension.isAttributeOf = prevDimension.isAttributeOf || prevDimension.id;
-      // dimension.isCollapsed = prevDimension.isCollapsed;
       prevDimension.hasAttribute = !prevDimension.isAttribute;
     } else {
-      // dimension.isCollapsed = collapses[dimension.id];
       dimension.isAttribute = false;
     }
     prevDimension = dimension;
+
     return dimension;
   });
-  // .filter(dimension => {
-  //   return !(dimension.isCollapsed && dimension.isAttribute);
-  // })
-  // ;
 };
-const getVisibleDimensions = (dimensions, collapses, hasMeasures) => {
+const getVisibleDimensions = (
+  axis,
+  dimensions,
+  collapses,
+  subTotals,
+  hasMeasures
+) => {
   let prevId;
-  const dims = dimensions.map(dimension => {
-    if (dimension.isAttribute) {
-      dimension.isVisible = !collapses[prevId];
-    } else {
-      dimension.isVisible = true;
-      prevId = dimension.id;
-    }
-    return dimension;
-  });
+  const hasGrandTotal = subTotals[`${toAxis(axis)}${TOTAL_ID}`] || false;
+  const dims = dimensions
+    .map(dimension => {
+      if (dimension.isAttribute) {
+        dimension.isVisible = !collapses[prevId];
+        dimension.hasSubTotal = null;
+      } else {
+        dimension.isVisible = true;
+        dimension.hasSubTotal = subTotals[dimension.id] || false;
+        dimension.hasGrandTotal = hasGrandTotal;
+        prevId = dimension.id;
+      }
+      return dimension;
+    })
+    .map(dimension => {
+      if (dimension.id === prevId) {
+        dimension.hasSubTotal = null;
+      }
+      return dimension;
+    });
   if (hasMeasures) {
     dims.push({
       id: MEASURE_ID,
@@ -56,29 +70,47 @@ const getVisibleDimensions = (dimensions, collapses, hasMeasures) => {
 
 export const rowDimensionsSelector = createSelector(
   [state => state.axis.rows, state => state.dimensions],
-  getAxisDimensions
+  (axisDimensions, dimensions) =>
+    getAxisDimensions(AxisType.ROWS, axisDimensions, dimensions)
 );
 
 export const columnDimensionsSelector = createSelector(
   [state => state.axis.columns, state => state.dimensions],
-  getAxisDimensions
+  (axisDimensions, dimensions) =>
+    getAxisDimensions(AxisType.COLUMNS, axisDimensions, dimensions)
 );
 export const rowVisibleDimensionsSelector = createSelector(
   [
     rowDimensionsSelector,
     state => state.collapses.dimensions,
-    state => state.config.measureHeadersAxis === "rows"
+    state => state.subtotals,
+    state => state.configuration.measureHeadersAxis === "rows"
   ],
-  getVisibleDimensions
+  (dimensions, collapses, subTotals, hasMeasures) =>
+    getVisibleDimensions(
+      AxisType.ROWS,
+      dimensions,
+      collapses,
+      subTotals,
+      hasMeasures
+    )
 );
 
 export const columnVisibleDimensionsSelector = createSelector(
   [
     columnDimensionsSelector,
     state => state.collapses.dimensions,
-    state => state.config.measureHeadersAxis === "columns"
+    state => state.subtotals,
+    state => state.configuration.measureHeadersAxis === "columns"
   ],
-  getVisibleDimensions
+  (dimensions, collapses, subTotals, hasMeasures) =>
+    getVisibleDimensions(
+      AxisType.COLUMNS,
+      dimensions,
+      collapses,
+      subTotals,
+      hasMeasures
+    )
 );
 
 export const availableDimensionsSelector = createSelector(

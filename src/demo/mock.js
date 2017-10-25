@@ -21,7 +21,8 @@ export function getMockDatasource(
           obj.toto_lb = `toto ${String(o)}`;
           obj.toto_0 = `att0 ${String(o)}`;
           obj.toto_1 = `att1 ${String(nToto - o)}`;
-          obj.titi = `titi ${String(i)}`;
+          obj.titi = i;
+          obj.titi_lb = `titi ${String(i)}`;
           obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
           obj.qty = Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
           obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
@@ -66,7 +67,8 @@ export function getRandomMockDatasource(
           obj.toto_lb = `toto ${String(oo)}`;
           obj.toto_0 = `att0 ${String(oo)}`;
           obj.toto_1 = `att1 ${String(nToto - oo)}`;
-          obj.titi = `titi ${String(ii)}`;
+          obj.titi = ii;
+          obj.titi_lb = `titi ${String(ii)}`;
           obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
           obj.qty = 100; // Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
           obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
@@ -167,7 +169,8 @@ export const basicConfig = {
     {
       id: "titi",
       caption: "Titi",
-      keyAccessor: "titi"
+      keyAccessor: "titi",
+      labelAccessor: "titi_lb"
     },
     {
       id: "tutu",
@@ -204,20 +207,22 @@ export const basicConfig = {
       aggregation: "sum",
       aggregationCaption: "whatever",
       format: "amount"
-    },
-    {
-      id: "price",
-      caption: "Price",
-      aggregation: "weighted_avg",
-      valueAccessor: "price",
-      format: "price"
     }
+    // ,
+    // {
+    //   id: "price",
+    //   caption: "Price",
+    //   aggregation: "weighted_avg",
+    //   valueAccessor: "price",
+    //   format: "price"
+    // }
   ],
   // columns: ["titi"],
   // rows: ["toto", "toto att 0", "toto att 1", "tutu"],
   columns: [],
   rows: ["toto", "titi", "tutu"],
-  activeMeasures: ["qty", "amt", "price"],
+  // activeMeasures: ["qty", "amt", "price"],
+  activeMeasures: ["qty", "amt"],
   collapses: { rows: { 99: true, 98: true }, columns: {} }
 };
 export const basicConfig2 = {

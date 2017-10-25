@@ -322,7 +322,7 @@ class PivotGrid extends Component {
     } = this.props;
     const { rows, columns } = headers;
     let grid;
-    if (this.props.status.loading) {
+    if (this.props.status.loading || this.props.status.loadingConfig) {
       grid = <div>Loading data...</div>;
     } else if (this.props.status.error) {
       if (this.props.status.error.message === "No rows retrieved") {

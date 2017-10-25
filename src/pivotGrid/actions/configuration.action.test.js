@@ -11,7 +11,7 @@ import {
   moveDimension,
   setDimensions,
   setMeasures
-} from "./config.action";
+} from "./configuration.action";
 
 describe("setConfigurationProperty creates an action to set a config property", () => {
   test("when a property  value is given", () => {

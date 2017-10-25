@@ -27,6 +27,10 @@ class DimensionHeaders extends Component {
   };
   // -----------------------------------------------------
   collectMenu = props => {
+    const dimension =
+      props.axis === AxisType.ROWS
+        ? this.props.rowDimensions[props.index]
+        : this.props.columnDimensions[props.index];
     return {
       ...props,
       availableDimensions: this.props.availableDimensions,
@@ -45,6 +49,7 @@ class DimensionHeaders extends Component {
       getExpandCollapseKeys,
       expandCollapseAll,
       toggleSortOrder,
+      toggleSubTotal,
       crossPositions,
       height,
       width
@@ -78,27 +83,32 @@ class DimensionHeaders extends Component {
         headers.push(
           <DimensionHeader
             key={`dimension-header-${dimension.id}`}
-            left={positions.left}
-            top={positions.top}
-            width={positions.width}
-            height={positions.height}
-            dimensionId={dimension.id}
-            dimensionIndex={index}
-            sortDirection={dimension.sort.direction}
-            caption={dimension.caption}
-            axis={axis}
+            positions={positions}
+            // left={positions.left}
+            // top={positions.top}
+            // width={positions.width}
+            // height={positions.height}
+            dimension={dimension}
+            // dimensionId={dimension.id}
+            // dimensionIndex={index}
+            // sortDirection={dimension.sort.direction}
+            // caption={dimension.caption}
+            // axis={axis}
             crossDimensionId={lastCrossDimensionId}
-            isNotCollapsible={!dimension.hasAttribute}
-            isCollapsed={dimension.isCollapsed || false}
+            // isNotCollapsible={!dimension.hasAttribute}
+            // hasSubTotal={dimension.hasSubTotal}
+            // hasGrandTotal={dimension.hasSubTotal}
+            // isCollapsed={dimension.isCollapsed || false}
             previewSizes={previewSizes}
             gridId={gridId}
             toggleCollapseDimension={toggleCollapseDimension}
             toggleSortOrder={() => toggleSortOrder(axis, index)}
             moveDimension={moveDimension}
+            toggleSubTotal={toggleSubTotal}
             getExpandCollapseKeys={getExpandCollapseKeys}
             expandCollapseAll={expandCollapseAll}
-            isDropTarget={true}
-            isAttribute={dimension.isAttribute}
+            // isDropTarget={true}
+            // isAttribute={dimension.isAttribute}
             collectMenu={this.collectMenu}
             isFiltered={!isNullOrUndefined(this.props.filters[dimension.id])}
           />

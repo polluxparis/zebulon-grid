@@ -174,7 +174,7 @@ export class Scrollbar extends Component {
         style={this.style}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
-        onMouseMove={this.handleMouseMove}
+        // onMouseMove={this.handleMouseMove}
       >
         <ScrollbarInner id={"thumb-" + id} style={this.state.innerStyle} />
       </div>

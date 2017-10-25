@@ -24,13 +24,12 @@ import {
 const mapStateToProps = state => {
   return {
     status: state.status,
-    width: state.config.width,
-    height: state.config.height,
+    width: state.configuration.width,
+    height: state.configuration.height,
     headers: rowAndColumnHeadersSelector(state),
-    // columns: columnHeadersSelector(state),
     sizes: state.sizes,
     selectedRange: selectedRangeSelector(state),
-    zoomValue: state.config.zoom,
+    zoomValue: state.configuration.zoom,
     copy: copySelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
     pushedData: state.data.pushedData

@@ -26,6 +26,9 @@
 .zebulon-grid-row-headers {
   outline: none;
 }
+.zebulon-grid-header-total {
+  background-color: rgba(190, 234, 175, 0.98);
+}
 
 .zebulon-grid-data-cells {
   outline: none;
@@ -60,6 +63,7 @@
 .zebulon-grid-dimension-header {
   background-color: #fafad2;
 }
+
 .zebulon-grid-dimension-header-row {
   border-bottom: solid 0.07em;
 }
@@ -95,9 +99,11 @@
 .zebulon-grid-data-cell-focused {
   border: solid 0.06em rgba(0, 0, 0, 0.5);
 }
-
+.zebulon-grid-data-cell-total {
+  background-color: rgba(190, 234, 175, 0.98);
+}
 .react-contextmenu {
-  min-width: 9em;
+  min-width: 10em;
   color: #373a3c;
   text-align: left;
   background-color: #fff;

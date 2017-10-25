@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import classNames from "classnames";
+import classNames from "classnames";
 
 import { AxisType, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
@@ -55,10 +55,17 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
-
+    (" zebulon-grid-header zebulon-grid-column-header");
+    const className = classNames({
+      "zebulon-grid-cell": true,
+      "zebulon-grid-header": !header.isTotal,
+      "zebulon-grid-column-header": axis === AxisType.COLUMNS,
+      "zebulon-grid-row-header": axis === AxisType.ROWS,
+      "zebulon-grid-header-total": header.isTotal
+    });
     const head = (
       <div
-        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
+        className={className}
         style={{
           boxSizing: "border-box",
           overflow: "hidden",

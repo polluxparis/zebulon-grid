@@ -38,17 +38,6 @@ export default (
         nextState.scrollToColumn = scrollToColumn;
       }
       return nextState;
-    // just to force the refresh
-    case CHANGE_SORT_ORDER:
-      const newState = { ...state };
-      if (axis === "rows") {
-        newState.scrollToRow.refreshLeaves = !newState.scrollToRow
-          .refreshLeaves;
-      } else if (axis === "columns") {
-        newState.scrollToColumn.refreshLeaves = !newState.scrollToColumn
-          .refreshLeaves;
-      }
-      return newState;
     default:
       return state;
   }

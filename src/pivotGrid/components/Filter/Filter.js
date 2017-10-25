@@ -30,22 +30,19 @@ class FilterValues extends ScrollableArea {
     } = this.props;
     while (index < rowCount && i < height / rowHeight) {
       const { id, label } = this.props.items[index];
-
       items.push(
         <div key={index} style={{ height: rowHeight, width }}>
           <input
             type="checkbox"
             checked={filter[id] !== undefined}
-            onChange={onChangeCheck(id, index)}
+            onChange={() => onChangeCheck(id, index)}
           />
-          <span onClick={onChangeCheck(id, index)}>{label}</span>
+          <span onClick={() => onChangeCheck(id, index)}>{label}</span>
         </div>
       );
       index++;
       i++;
     }
-    // this.positionRatios.vertical = this.props.startIndex / rowCount;
-    // this.positionRatios.vertical *= this.props.index / rowCount;
     return items;
   };
   onScroll = e => {
@@ -76,7 +73,7 @@ export class Filter extends Component {
     });
   }
   onScroll = startIndex => {
-    console.log(startIndex);
+    // console.log(startIndex);
     this.setState({ startIndex });
   };
   onWheel = e => {

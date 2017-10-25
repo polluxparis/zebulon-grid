@@ -1,4 +1,4 @@
-import reducer from "./config.reducer";
+import reducer from "./configuration.reducer";
 import { SET_CONFIG_PROPERTY } from "../constants";
 
 test("setConfigurationProperty reducer", () => {

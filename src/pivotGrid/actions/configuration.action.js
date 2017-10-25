@@ -8,9 +8,13 @@ import {
   MOVE_MEASURE,
   MOVE_DIMENSION,
   ZOOM_IN,
-  ZOOM_OUT
+  ZOOM_OUT,
+  LOADING_CONFIG
 } from "../constants";
-
+export const loadingConfig = loading => ({
+  type: LOADING_CONFIG,
+  loading
+});
 export const setDimensions = (configObject, configurationFunctions) => ({
   type: SET_DIMENSIONS,
   dimensions: configObject.dimensions.map(dimension =>

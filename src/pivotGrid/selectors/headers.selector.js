@@ -182,8 +182,12 @@ const buildPositionedHeaders = (
           size: mainSize,
           position: scroll.direction === 1 ? size : maxSize - size - mainSize
         },
-        cross: crossPositions[dimension.id]
+        cross: { ...crossPositions[dimension.id] }
       };
+      if (header.isCollapsed) {
+        header.sizes.cross.collapsed = collapsedSizes[header.depth];
+        header.sizes.cross.size += collapsedSizes[header.depth];
+      }
       parentsSizes(
         header.parent,
         header.sizes.main,
@@ -197,6 +201,9 @@ const buildPositionedHeaders = (
         measuresCount,
         scroll.direction
       );
+      if (header.isTotal && header.dimensionId === MEASURE_ID) {
+        header.sizes.cross.position += collapsedSizes[header.parent.depth];
+      }
       header.options = {
         isNotCollapsible: true,
         isAffixManaged: false,
@@ -242,7 +249,7 @@ const buildPositionedHeaders = (
       scroll
     );
   }
-  console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
+  // console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
   return {
     size: Math.min(maxSize, size),
     containerSize,
@@ -275,11 +282,11 @@ export const getRowHeadersSelector = createSelector(
   [
     getCellHeightByKeySelector,
     crossColumnPositionsSelector,
-    state => state.config.height,
+    state => state.configuration.height,
     columnHeadersHeightSelector,
     rowVisibleDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
-    state => state.selectedRange.scrollToRow.refreshLeaves
+    state => state.status.refreshDisplay
   ],
   (
     headerSizes,
@@ -288,7 +295,7 @@ export const getRowHeadersSelector = createSelector(
     crossSize,
     dimensions,
     measures,
-    x
+    forceRefresh
   ) => (leaves, scroll) => {
     return buildPositionedHeaders(
       headerSizes,
@@ -307,11 +314,11 @@ export const getColumnHeadersSelector = createSelector(
   [
     getCellWidthByKeySelector,
     crossRowPositionsSelector,
-    state => state.config.width,
+    state => state.configuration.width,
     rowHeadersWidthSelector,
     columnVisibleDimensionsSelector,
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
-    state => state.selectedRange.scrollToColumn.refreshLeaves
+    state => state.status.refreshDisplay
   ],
   (
     headerSizes,
@@ -320,7 +327,7 @@ export const getColumnHeadersSelector = createSelector(
     crossSize,
     dimensions,
     measures,
-    x
+    forceRefresh
   ) => (leaves, scroll) => {
     return buildPositionedHeaders(
       headerSizes,
@@ -336,7 +343,7 @@ export const getColumnHeadersSelector = createSelector(
   }
 );
 const combineRowsAndColumns = (rows, columns) => {
-  console.log(rows, columns);
+  // console.log(rows, columns);
   if (
     (rows.hasScrollbar && !columns.hasScrollbar) ||
     (!rows.hasScrollbar && columns.hasScrollbar)
@@ -368,7 +375,9 @@ export const pushedDataSelector = createSelector(
     state => state.axis,
     getAxisActivatedMeasuresSelector(AxisType.ROWS),
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
-    state => state.collapses
+    state => state.collapses,
+    state => state.subtotals,
+    state => state.configuration.totalsFirst
   ],
   (
     data,
@@ -379,7 +388,9 @@ export const pushedDataSelector = createSelector(
     axises,
     rowMeasures,
     columnMeasures,
-    collapses
+    collapses,
+    subtotals,
+    totalsFirst
   ) => {
     // const filteredPushedData = getFilteredPushedData(data, filters, dimensions);
     if (!data.pushedData.length) {
@@ -402,6 +413,8 @@ export const pushedDataSelector = createSelector(
         rowMeasures,
         rowMeasures === null ? 1 : rowMeasures.length,
         collapses.rows,
+        subtotals,
+        totalsFirst,
         0,
         leaves
       );
@@ -416,6 +429,8 @@ export const pushedDataSelector = createSelector(
         columnMeasures,
         columnMeasures === null ? 1 : columnMeasures.length,
         collapses.columns,
+        subtotals,
+        totalsFirst,
         0,
         leaves
       );
@@ -433,18 +448,21 @@ export const rowAndColumnHeadersSelector = createSelector(
     getRowHeadersSelector,
     state => state.selectedRange.scrollToRow,
     getColumnHeadersSelector,
-    state => state.selectedRange.scrollToColumn
+    state => state.selectedRange.scrollToColumn,
+    state => state.status.loadingConfig
   ],
   (
     rowAndColumnLeaves,
     getRowHeaders,
     scrollToRow,
     getColumnHeaders,
-    scrollToColumn
+    scrollToColumn,
+    loadingConfig
   ) => {
     let rows, columns;
     if (
       !(
+        loadingConfig ||
         rowAndColumnLeaves.rows.node === null ||
         rowAndColumnLeaves.columns.node === null
       )
@@ -490,20 +508,20 @@ export const getRowsCollapsedSelector = createSelector(
 
 export const previewSizesSelector = createSelector(
   [
-    state => state.config.height,
-    state => state.config.width,
+    state => state.configuration.height,
+    state => state.configuration.width,
     rowAndColumnHeadersSelector
   ],
   (height, width, rowsAndColumns) => {
     const { rows, columns } = rowsAndColumns;
-    console.log(
-      height,
-      width,
-      columns.crossSize,
-      columns.size,
-      rows.crossSize,
-      rows.size
-    );
+    // console.log(
+    //   height,
+    //   width,
+    //   columns.crossSize,
+    //   columns.size,
+    //   rows.crossSize,
+    //   rows.size
+    // );
     return {
       height: Math.min(
         height - columns.hasScrollbar * ScrollbarSize,

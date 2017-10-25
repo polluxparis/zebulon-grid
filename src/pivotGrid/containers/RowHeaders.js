@@ -20,8 +20,8 @@ import {
 const mapStateToProps = (state, ownProps) => {
   return {
     axisType: AxisType.ROWS,
-    height: state.config.height,
-    width: state.config.width,
+    height: state.configuration.height,
+    width: state.configuration.width,
     previewSizes: previewSizesSelector(state),
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),

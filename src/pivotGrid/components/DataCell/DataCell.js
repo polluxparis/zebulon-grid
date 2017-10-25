@@ -25,6 +25,7 @@ export default class DataCell extends PureComponent {
       selected,
       focused,
       valueHasChanged,
+      isTotal,
       collectMenu,
       gridId,
       isEven
@@ -42,6 +43,7 @@ export default class DataCell extends PureComponent {
         "zebulon-grid-data-cell-uneven": !isEven,
         "zebulon-grid-data-cell-selected": selected,
         "zebulon-grid-data-cell-focused": focused,
+        "zebulon-grid-data-cell-total": isTotal,
         "zebulon-grid-data-cell-highlighted": valueHasChanged === 1,
         "zebulon-grid-data-cell-highlighted2": valueHasChanged === 2
       }

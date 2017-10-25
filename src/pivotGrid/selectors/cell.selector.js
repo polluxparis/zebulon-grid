@@ -182,7 +182,7 @@ export const getRangeInfosSelector = createSelector(
     activatedMeasuresSelector,
     rowVisibleDimensionsSelector,
     columnVisibleDimensionsSelector,
-    state => state.config.measureHeadersAxis
+    state => state.configuration.measureHeadersAxis
   ],
   (
     data,

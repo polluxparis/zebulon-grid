@@ -16,7 +16,8 @@ import {
   toggleCollapseDimension,
   toggleSortOrder,
   moveDimension,
-  expandCollapseAll
+  expandCollapseAll,
+  toggleSubTotal
 } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
@@ -45,7 +46,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(expandCollapseAll({ axisType, keys, n, measuresCount })),
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
-  }
+  },
+  toggleSubTotal: dimensionId => dispatch(toggleSubTotal(dimensionId))
 });
 const mergeProps = (
   { toggleSort, measures, ...restStateProps },

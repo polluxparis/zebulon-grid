@@ -1,11 +1,17 @@
-import { FETCH_SUCCESS, FETCH_DATA, FETCH_FAILURE } from "../constants";
+import {
+  FETCH_SUCCESS,
+  FETCH_DATA,
+  FETCH_FAILURE,
+  LOADING_CONFIG,
+  CHANGE_SORT_ORDER
+} from "../constants";
 
 export default (
   state = {
     loading: false,
     loaded: false,
     error: undefined,
-    toRefreshLeaves: { rows: false, columns: false }
+    loadingConfig: false
   },
   action
 ) => {
@@ -17,6 +23,11 @@ export default (
       return { ...state, loading: false, loaded: false, error };
     case FETCH_SUCCESS:
       return { ...state, loading: false, loaded: false, error: undefined };
+    case LOADING_CONFIG:
+      return { ...state, loadingConfig: action.loading };
+    // just to force the refresh
+    case CHANGE_SORT_ORDER:
+      return { ...state, refreshDisplay: !state.refreshDisplay };
     default:
       return state;
   }

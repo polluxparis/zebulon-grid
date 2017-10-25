@@ -9,7 +9,7 @@ import {
   selectedRangeSelector
 } from "../selectors";
 import { DataCells } from "../components/DataCells/DataCells";
-import { selectRange, selectCell } from "../actions";
+import { selectRange, selectCell, setConfigurationProperty } from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
   const measures = activatedMeasuresSelector(state);
@@ -24,8 +24,9 @@ const mapStateToProps = (state, ownProps) => {
     getCellValue,
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
-    height: state.config.height,
-    width: state.config.width,
+    // height: state.configuration.height,
+    // width: state.configuration.width,
+    configuration: state.configuration,
     ...ownProps
   };
   return props;
@@ -36,6 +37,8 @@ const mapDispatchToProps = dispatch => ({
   },
   selectCell: cell => {
     dispatch(selectCell(cell));
-  }
+  },
+  setConfigProperty: (prop, value) =>
+    dispatch(setConfigurationProperty({ [prop]: value }, prop))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DataCells);
