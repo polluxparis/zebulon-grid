@@ -10,6 +10,7 @@ import {
 } from "./mock";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
+const MEASURE_ID = "__measures__";
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
@@ -75,18 +76,18 @@ class ZebulonGridDemo extends Component {
         },
         aggregations: {
           ...this.state.configurationFunctions.aggregations,
-          price: (accessor, dataIndexes, data) => {
-            const values = { amt: 0, qty: 0 };
-            if (dataIndexes.length) {
-              dataIndexes.forEach(index => {
-                const v = accessor(data[index]);
-                values.amt += v.amt;
-                values.qty += v.qty;
-              });
-            }
-            return values.amt === 0 && values.qty === 0
+          price: values => {
+            const price = values.reduce(
+              (price, value) => {
+                price.amt += value.amt;
+                price.qty += value.qty;
+                return price;
+              },
+              { amt: null, qty: null }
+            );
+            return price.amt === null || price.qty === null
               ? null
-              : values.amt / values.qty;
+              : price.amt / price.qty;
           }
         },
         sorts: {
@@ -151,6 +152,44 @@ class ZebulonGridDemo extends Component {
       });
     }
   };
+  cellDisplay = cell => {
+    console.log(cell);
+    const rows = cell.dimensions
+      .filter(dimension => dimension.axis === "rows")
+      .map(dimension => (
+        <li key={dimension.dimension.id}>
+          {`${dimension.dimension.id === MEASURE_ID
+            ? "Measure"
+            : dimension.dimension.caption} : ${dimension.cell.caption}`}
+        </li>
+      ));
+    const columns = cell.dimensions
+      .filter(dimension => dimension.axis === "columns")
+      .map(dimension => (
+        <li key={dimension.dimension.id}>
+          {`${dimension.dimension.id === MEASURE_ID
+            ? "Measure"
+            : dimension.dimension.caption} : ${dimension.cell.caption}`}
+        </li>
+      ));
+    const value = <li key={"value"}>{cell.value}</li>;
+    return (
+      <div style={{ display: "flex" }}>
+        <div style={{ width: 150 }}>
+          <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Rows</div>
+          <ul style={{ paddingLeft: "20px" }}> {rows}</ul>
+        </div>
+        <div style={{ width: 150 }}>
+          <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Columns</div>
+          <ul style={{ paddingLeft: "20px" }}> {columns}</ul>
+        </div>
+        <div style={{ width: 90 }}>
+          <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Value</div>
+          <ul style={{ paddingLeft: "20px" }}> {value}</ul>
+        </div>
+      </div>
+    );
+  };
   setCustomFunctions = () => {
     if (this.state.menuFunctions === menuFunctions) {
       const menuFunctions = {
@@ -160,47 +199,10 @@ class ZebulonGridDemo extends Component {
             code: "cell",
             caption: "Cell function",
             type: "MenuItem",
-            function: cell => {
-              const rows = cell.dimensions
-                .filter(dimension => dimension.axis === "rows")
-                .map(dimension => (
-                  <li>
-                    {`${dimension.dimension.caption} : ${dimension.cell
-                      .caption}`}
-                  </li>
-                ));
-              const columns = cell.dimensions
-                .filter(dimension => dimension.axis === "columns")
-                .map(dimension => (
-                  <li>
-                    {`${dimension.dimension.caption} : ${dimension.cell
-                      .caption}`}
-                  </li>
-                ));
+            function: cell =>
               this.setState({
-                actionContent: (
-                  <div style={{ display: "flex" }}>
-                    <div style={{ width: 200 }}>
-                      <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>
-                        {" "}
-                        Rows{" "}
-                      </div>
-                      <ul style={{ paddingLeft: "15px" }}> {rows}</ul>
-                    </div>
-                    <div style={{ width: 200 }}>
-                      <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>
-                        {" "}
-                        Columns{" "}
-                      </div>
-                      <ul style={{ paddingLeft: "15px" }}> {columns}</ul>
-                    </div>
-                    <div style={{ fontWeight: "bold" }}>
-                      {`Value : ${cell.value}`}
-                    </div>
-                  </div>
-                )
-              });
-            }
+                actionContent: this.cellDisplay(cell)
+              })
           }
         },
         rangeFunctions: {
@@ -210,7 +212,100 @@ class ZebulonGridDemo extends Component {
             caption: "Custom range function",
             type: "MenuItem",
             function: range => {
-              console.log("range", range);
+              const cellFrom = {
+                dimensions: range.rows[0].concat(range.columns[0]),
+                value: range.values[0][0]
+              };
+              const cellTo = {
+                dimensions: range.rows[range.rows.length - 1].concat(
+                  range.columns[range.columns.length - 1]
+                ),
+                value:
+                  range.values[range.rows.length - 1][range.columns.length - 1]
+              };
+              const divFrom = this.cellDisplay(cellFrom);
+              const divTo = this.cellDisplay(cellTo);
+              let values = {};
+              if (range.measureHeadersAxis === "columns") {
+                values = range.columns.reduce(
+                  (values, measure, indexColumn) => {
+                    if (values[measure.leaf.caption] === undefined) {
+                      values[measure.leaf.caption] = 0;
+                    }
+                    values[
+                      measure.leaf.caption
+                    ] += range.rows.reduce((value, dimension, indexRow) => {
+                      value += range.values[indexRow][indexColumn];
+                      return value;
+                    }, 0);
+                    return values;
+                  },
+                  {}
+                );
+              } else {
+                values = range.rows.reduce((values, measure, indexRow) => {
+                  if (values[measure.leaf.caption] === undefined) {
+                    values[measure.leaf.caption] = 0;
+                  }
+                  values[
+                    measure.leaf.caption
+                  ] += range.columns.reduce((value, dimension, indexColumn) => {
+                    value += range.values[indexRow][indexColumn];
+                    return value;
+                  }, 0);
+                  return values;
+                }, {});
+              }
+              const sums = Object.keys(values).map(measure => (
+                <li key={measure}>{`${measure} : ${values[measure]}`}</li>
+              ));
+              const divValues = (
+                <div
+                  style={{
+                    width: 160,
+                    borderLeft: "solid 0.02em",
+                    height: 100
+                  }}
+                >
+                  <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>
+                    Sum of values
+                  </div>
+                  <ul style={{ paddingLeft: "20px" }}> {sums}</ul>
+                </div>
+              );
+              const div = (
+                <div style={{ display: "flex" }}>
+                  <div style={{ borderLeft: "solid 0.02em", height: 100 }}>
+                    <div
+                      style={{
+                        paddingLeft: "5px",
+                        fontWeight: "bold",
+                        textAlign: "left"
+                      }}
+                    >
+                      From
+                    </div>
+                    {divFrom}
+                  </div>
+                  <div style={{ borderLeft: "solid 0.02em", height: 100 }}>
+                    <div
+                      style={{
+                        paddingLeft: "5px",
+                        fontWeight: "bold",
+                        textAlign: "Left"
+                      }}
+                    >
+                      To
+                    </div>
+                    {divTo}
+                  </div>
+                  {divValues}
+                </div>
+              );
+              this.setState({
+                actionContent: div
+              });
+              console.log("range", range, values);
             }
           }
         },

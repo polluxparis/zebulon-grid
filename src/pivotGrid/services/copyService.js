@@ -1,12 +1,20 @@
 import { MEASURE_ID } from "../constants";
+import { getFilteredIndex } from "../selectors";
+
 function replaceNullAndUndefined(val) {
   if (val === null || val === undefined) {
     return "";
   }
   return val;
 }
-
-function getSelectedText({
+// const getFilteredIndex = leaf => {
+//   if (leaf.isParentCollapsed) {
+//     return getFilteredIndex(leaf.parent);
+//   } else {
+//     return leaf.filteredIndexes;
+//   }
+// };
+const getSelectedText = ({
   selectedRange,
   rowLeaves,
   columnLeaves,
@@ -16,7 +24,7 @@ function getSelectedText({
   measureHeadersAxis,
   getCellValue,
   getCellDimensionInfos
-}) {
+}) => {
   const mc = measureHeadersAxis === "columns";
   const mr = measureHeadersAxis === "rows";
   // Build rows headers array
@@ -35,9 +43,10 @@ function getSelectedText({
     .filter(leaf => leaf.isVisible);
 
   // get rows captions
-  const rowInfos = selectedRowLeaves.map(leaf =>
-    getCellDimensionInfos(rowDimensions, "rows", leaf, measures, [])
-  );
+  const rowInfos = selectedRowLeaves.map(leaf => {
+    leaf.dataIndexes = getFilteredIndex(leaf);
+    return getCellDimensionInfos(rowDimensions, "rows", leaf, measures, []);
+  });
   // Build columns headers array
   const columnsRange = [
     Math.min(
@@ -53,9 +62,16 @@ function getSelectedText({
     .slice(...columnsRange)
     .filter(leaf => leaf.isVisible);
   // get columns captions
-  const columnsInfos = selectedColumnLeaves.map(leaf =>
-    getCellDimensionInfos(columnDimensions, "columns", leaf, measures, [])
-  );
+  const columnsInfos = selectedColumnLeaves.map(leaf => {
+    leaf.dataIndexes = getFilteredIndex(leaf);
+    return getCellDimensionInfos(
+      columnDimensions,
+      "columns",
+      leaf,
+      measures,
+      []
+    );
+  });
   // Build data array
   let measure;
   let t = Date.now(),
@@ -138,7 +154,7 @@ function getSelectedText({
 
   // output = output.slice(0, -1);
   return output.join("\n");
-}
+};
 
 export default function copy({
   selectedRange,

@@ -75,26 +75,13 @@ class DimensionHeader extends PureComponent {
     const {
       positions,
       dimension,
-      // Id,
-      // dimensionIndex,
-      // sortDirection,
-      // caption,
-      // left,
-      // top,
-      // height,
-      // width,
       crossDimensionId,
-      // axis,
-      // isNotCollapsible,
-      // hasSubTotal,
-      // hasGrandTotal,
-      // isCollapsed,
       previewSizes,
       gridId,
       moveDimension,
-      // isAttribute,
+
       collectMenu,
-      // isDropTarget,
+
       isFiltered
     } = this.props;
 

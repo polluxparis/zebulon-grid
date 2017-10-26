@@ -91,7 +91,6 @@ const DimensionMenu = (id, trigger) => {
           <Filter dimensionId={trigger.dimensionId} />
         </div>
       </SubMenu>
-
       <MenuItem
         onClick={trigger.onItemClick}
         disabled={trigger.dimensionId === TOTAL_ID}
@@ -99,7 +98,6 @@ const DimensionMenu = (id, trigger) => {
       >
         Remove
       </MenuItem>
-
       {addDimensionSubMenu}
     </ReactContextMenu>
   );
@@ -155,6 +153,7 @@ const externalMenu = (functionType, externalFunction, onClick) => {
     );
   }
 };
+
 // {externalFunction.function()}
 const DataCellMenu = (id, trigger) => {
   let fct = trigger.menuFunctions.dataCellFunctions,
@@ -194,6 +193,7 @@ const DataCellMenu = (id, trigger) => {
       </SubMenu>
     );
   }
+  const config = { ...trigger.configuration };
   return (
     <ReactContextMenu id={id}>
       {cellFunctions}
@@ -227,12 +227,12 @@ const DataCellMenu = (id, trigger) => {
         style={{ width: "fitContent" }}
       >
         <SubMenu key={"cell-height"} title={"Default cell height"}>
-          <div style={{ textAlign: "right", width: 50 }}>
+          <div style={{ textAlign: "right", backgroundColor: "lightgrey" }}>
             {trigger.configuration.cellHeight}
           </div>
         </SubMenu>
         <SubMenu key={"cell-width"} title={"Default cell width"}>
-          <div style={{ textAlign: "right", width: 50 }}>
+          <div style={{ textAlign: "right", backgroundColor: "lightgrey" }}>
             {trigger.configuration.cellWidth}
           </div>
         </SubMenu>

@@ -219,8 +219,8 @@ export const basicConfig = {
   ],
   // columns: ["titi"],
   // rows: ["toto", "toto att 0", "toto att 1", "tutu"],
-  columns: [],
-  rows: ["toto", "titi", "tutu"],
+  columns: ["tutu"],
+  rows: ["toto", "titi"],
   // activeMeasures: ["qty", "amt", "price"],
   activeMeasures: ["qty", "amt"],
   collapses: { rows: { 99: true, 98: true }, columns: {} }

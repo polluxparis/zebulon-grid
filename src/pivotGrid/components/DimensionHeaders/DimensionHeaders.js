@@ -84,21 +84,8 @@ class DimensionHeaders extends Component {
           <DimensionHeader
             key={`dimension-header-${dimension.id}`}
             positions={positions}
-            // left={positions.left}
-            // top={positions.top}
-            // width={positions.width}
-            // height={positions.height}
             dimension={dimension}
-            // dimensionId={dimension.id}
-            // dimensionIndex={index}
-            // sortDirection={dimension.sort.direction}
-            // caption={dimension.caption}
-            // axis={axis}
             crossDimensionId={lastCrossDimensionId}
-            // isNotCollapsible={!dimension.hasAttribute}
-            // hasSubTotal={dimension.hasSubTotal}
-            // hasGrandTotal={dimension.hasSubTotal}
-            // isCollapsed={dimension.isCollapsed || false}
             previewSizes={previewSizes}
             gridId={gridId}
             toggleCollapseDimension={toggleCollapseDimension}
@@ -107,8 +94,6 @@ class DimensionHeaders extends Component {
             toggleSubTotal={toggleSubTotal}
             getExpandCollapseKeys={getExpandCollapseKeys}
             expandCollapseAll={expandCollapseAll}
-            // isDropTarget={true}
-            // isAttribute={dimension.isAttribute}
             collectMenu={this.collectMenu}
             isFiltered={!isNullOrUndefined(this.props.filters[dimension.id])}
           />

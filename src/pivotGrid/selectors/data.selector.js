@@ -1,8 +1,89 @@
+// import { createSelector } from 'reselect';
+// import pass from '../utils/filtering';
+// import { isUndefined } from '../utils/generic';
+
+// const getFilters = state => state.filters || {};
+// const getData = state => state.data;
+
+// export const filteredDataSelector = createSelector(
+//   [getData, getFilters, state => state.dimensions],
+//   (data, filtersObject, dimensions) => {
+//     const filters = [
+//       ...Object.keys(filtersObject).map(id => filtersObject[id])
+//     ];
+//     if (filters.length === 0) {
+//       return data;
+//     }
+//     return data.filter(row =>
+//       filters.every(filter =>
+//         pass(filter, dimensions[filter.dimensionId].keyAccessor(row))
+//       )
+//     );
+//   }
+// );
 import { createSelector } from "reselect";
-// import pass from "../utils/filtering";
+import { intersec } from "../utils/headers";
 import { isUndefined } from "../utils/generic";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
 
+export const filteredIndexes = (dimensions, filters, loading) => {
+  if (loading) {
+    return undefined;
+  }
+  const notVisibleFilters = Object.values(filters).filter(
+    filter => !dimensions[filter.dimensionId].axis
+  );
+  const y = Date.now();
+  if (notVisibleFilters.length) {
+    const filteredIndexes = notVisibleFilters.map(filter => {
+      const dimension = dimensions[filter.dimensionId];
+      let dimensionIndexes = [];
+      if (!dimension.axis) {
+        dimensionIndexes = Object.values(
+          dimension.values
+        ).reduce((indexes, value) => {
+          if (filter.values[value.id] !== undefined) {
+            indexes = indexes.concat(value.rowIndexes);
+          }
+          return indexes;
+        }, []);
+      }
+      return dimensionIndexes.sort((a, b) => a - b);
+    });
+    const x = new Map(intersec(filteredIndexes).map(index => [index, true]));
+    console.log("filteredIndexes", Date.now() - y), x.length;
+    return x;
+  } else {
+    return undefined;
+  }
+};
+// only filters on not visible dimensions
+export const dataSelector = createSelector(
+  [state => state.data.data, state => state.status.loading],
+  data => data
+);
+
+export const filteredIndexesSelector = createSelector(
+  [
+    state => state.dimensions,
+    state => state.filters,
+    state => state.status.loading
+  ],
+  filteredIndexes
+);
+export const filteredDataSelector = createSelector(
+  [dataSelector, filteredIndexesSelector],
+  (data, filteredIndexes) => {
+    if (filteredIndexes) {
+      // const y = Date.now();
+      // data.map(row => (row.isFiltered = true));
+      // filteredIndexes.map(index => (data[index].isFiltered = false));
+      // console.log("filteredDataSelector", Date.now() - y),
+      //   filteredIndexes.length;
+      return filteredIndexes;
+    }
+  }
+);
 export const getDimensionValuesSelector = createSelector(
   [state => state.data.data, state => state.dimensions],
   (data, dimensions) => id => {

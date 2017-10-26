@@ -27,6 +27,7 @@ import {
   rowHeadersWidthSelector,
   columnHeadersHeightSelector
 } from "./sizes.selector";
+import { filteredDataSelector } from "./data.selector";
 import {
   ROOT_ID,
   TOTAL_ID,
@@ -50,7 +51,7 @@ const parentsSizes = (
   measuresCount,
   direction
 ) => {
-  if (header.id === ROOT_ID) {
+  if (!header || header.id === ROOT_ID) {
     return null;
   }
   // et main = mainSizes;
@@ -104,7 +105,7 @@ const parentsSizes = (
     if (header.isParentCollapsed) {
       header.dataIndexes = header.parent.dataIndexes;
     } else {
-      header.dataIndexes = header.dataRowIndexes;
+      header.dataIndexes = header.filteredIndexes;
     }
   }
   return header.rootIndex;
@@ -168,13 +169,10 @@ const buildPositionedHeaders = (
   let ix = 0;
   let lastSize;
   while (size <= maxSize && index < leaves.length && index >= 0) {
-    // leaves.map((header, index) => {
     const header = leaves[index];
     const dimension = dimensions[header.depth];
     header.index = index;
     if (header.isVisible) {
-      // if (header.relativeIndex < measuresCount) {
-      // if (true) {
       const rowCells = [];
       const mainSize = headerSizes(header.key);
       header.sizes = {
@@ -196,7 +194,6 @@ const buildPositionedHeaders = (
         scroll.direction === 1 ? false : size + mainSize > maxSize,
         cellsKey,
         rowCells,
-        // areCollapsed,
         dimensions,
         measuresCount,
         scroll.direction
@@ -214,7 +211,7 @@ const buildPositionedHeaders = (
       if (header.isParentCollapsed) {
         header.dataIndexes = header.parent.dataIndexes;
       } else {
-        header.dataIndexes = header.dataRowIndexes;
+        header.dataIndexes = header.filteredIndexes;
       }
       lastSize = header.sizes.main.size;
       if (dimension.isVisible) {
@@ -377,7 +374,8 @@ export const pushedDataSelector = createSelector(
     getAxisActivatedMeasuresSelector(AxisType.COLUMNS),
     state => state.collapses,
     state => state.subtotals,
-    state => state.configuration.totalsFirst
+    state => state.configuration.totalsFirst,
+    filteredDataSelector
   ],
   (
     data,
@@ -390,7 +388,8 @@ export const pushedDataSelector = createSelector(
     columnMeasures,
     collapses,
     subtotals,
-    totalsFirst
+    totalsFirst,
+    notFilteredIndexes
   ) => {
     // const filteredPushedData = getFilteredPushedData(data, filters, dimensions);
     if (!data.pushedData.length) {
@@ -408,6 +407,7 @@ export const pushedDataSelector = createSelector(
       leaves = [];
       axisDimensions = axises.rows.map(axis => dimensions[axis]);
       getAxisLeaves(
+        AxisType.ROWS,
         axisTrees.rows,
         axisDimensions,
         rowMeasures,
@@ -415,6 +415,7 @@ export const pushedDataSelector = createSelector(
         collapses.rows,
         subtotals,
         totalsFirst,
+        notFilteredIndexes,
         0,
         leaves
       );
@@ -424,6 +425,7 @@ export const pushedDataSelector = createSelector(
       leaves = [];
       axisDimensions = axises.columns.map(axis => dimensions[axis]);
       getAxisLeaves(
+        AxisType.COLUMNS,
         axisTrees.columns,
         axisDimensions,
         columnMeasures,
@@ -431,6 +433,7 @@ export const pushedDataSelector = createSelector(
         collapses.columns,
         subtotals,
         totalsFirst,
+        notFilteredIndexes,
         0,
         leaves
       );

@@ -29,7 +29,9 @@
 .zebulon-grid-header-total {
   background-color: rgba(190, 234, 175, 0.98);
 }
-
+.zebulon-grid-header-grandtotal {
+  background-color: rgba(217, 226, 132, 0.98);
+}
 .zebulon-grid-data-cells {
   outline: none;
 }
@@ -63,7 +65,6 @@
 .zebulon-grid-dimension-header {
   background-color: #fafad2;
 }
-
 .zebulon-grid-dimension-header-row {
   border-bottom: solid 0.07em;
 }
@@ -80,19 +81,15 @@
   margin: 0.2em;
   margin-left: "0.5em";
 }
-
 .zebulon-grid-data-cell {
   text-align: right;
 }
-
 .zebulon-grid-data-cell-uneven {
   background-color: rgb(230, 230, 230);
 }
-
 .zebulon-grid-data-cell-even {
   background-color: white;
 }
-
 .zebulon-grid-data-cell-selected {
   background-color: lightcyan;
 }
@@ -101,6 +98,9 @@
 }
 .zebulon-grid-data-cell-total {
   background-color: rgba(190, 234, 175, 0.98);
+}
+.zebulon-grid-data-cell-grandtotal {
+  background-color: rgba(217, 226, 132, 0.98);
 }
 .react-contextmenu {
   min-width: 10em;

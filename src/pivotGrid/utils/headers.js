@@ -41,7 +41,7 @@ export const keyToIndex = (headers, key) => {
   }
 };
 
-export const getLeaves = (node, acc = [], depth, notSorted) => {
+export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
   if (
     // isNullOrUndefined(node.orderedChildren) ||
     node.depth === (depth === undefined ? 10000 : depth) ||
@@ -53,7 +53,15 @@ export const getLeaves = (node, acc = [], depth, notSorted) => {
   if (notSorted) {
     Object.values(node.children).map(node => getLeaves(node, acc, depth));
   } else {
-    node.orderedChildren.map(key => getLeaves(node.children[key], acc, depth));
+    if (totalsFirst && node.subtotal) {
+      getLeaves(node.subtotal, acc);
+    }
+    node.orderedChildren.map(key =>
+      getLeaves(node.children[key], acc, depth, notSorted, totalsFirst)
+    );
+    if (totalsFirst === false && node.subtotal) {
+      getLeaves(node.subtotal, acc);
+    }
   }
   return acc;
 };
@@ -122,8 +130,35 @@ export const getLeaves = (node, acc = [], depth, notSorted) => {
 //   }
 //   return nextKey;
 // }
+export const union = arrays => {
+  let res = arrays.reduce((acc, array) => {
+    if (!acc.length) {
+      acc = array || [];
+    } else {
+      acc = acc.concat(array);
+    }
+    return acc;
+  }, []);
+  res = [...new Set(res)];
+  // res.sort((a,b)=>);
+  return res;
+};
 
-export function intersectDataIndexes(arg0, arg1) {
+// export const except = arrays => {
+//   let res = arrays.reduce((acc, array) => {
+//     if (!acc.length) {
+//       acc = array || [];
+//     } else {
+//       acc = acc.concat(array);
+//     }
+//     return acc;
+//   }, []);
+//   res = [...new Set(res)];
+//   // res.sort((a,b)=>);
+//   return res;
+// };
+
+export const inter = (arg0, arg1) => {
   if (isUndefined(arg0)) {
     return arg1;
   } else if (isUndefined(arg1)) {
@@ -147,4 +182,36 @@ export function intersectDataIndexes(arg0, arg1) {
     }
     return res;
   }
-}
+};
+export const intersec = arrays => {
+  if (!arrays.length) {
+    return [];
+  } else if (arrays.length === 1) {
+    return arrays[0];
+  } else {
+    return arrays.slice(1).reduce((acc, array) => inter(acc, array), arrays[0]);
+  }
+};
+export const hasInter = (arg0, arg1) => {
+  if (isUndefined(arg0) || isUndefined(arg1)) {
+    return true;
+  } else {
+    const n = arg0.length;
+    const m = arg1.length;
+    let i = 0;
+    let j = 0;
+    const res = [];
+    while (i < n && j < m) {
+      if (arg0[i] > arg1[j]) {
+        j += 1;
+      } else if (arg0[i] < arg1[j]) {
+        i += 1;
+      } else {
+        return true;
+        i += 1;
+        j += 1;
+      }
+    }
+    return false;
+  }
+};

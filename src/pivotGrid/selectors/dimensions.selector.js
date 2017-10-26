@@ -141,7 +141,13 @@ export const dimensionsWithAxisSelector = createSelector(
           return dimension;
         })
       )
-      .concat(available)
+      .concat(
+        available.map(dimension => {
+          dimension.depth = null;
+          dimension.axis = null;
+          return dimension;
+        })
+      )
       .filter(dimension => dimension.id !== MEASURE_ID)
 );
 const measuresSelector = state => state.measures;

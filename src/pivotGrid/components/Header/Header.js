@@ -61,7 +61,8 @@ class Header extends Component {
       "zebulon-grid-header": !header.isTotal,
       "zebulon-grid-column-header": axis === AxisType.COLUMNS,
       "zebulon-grid-row-header": axis === AxisType.ROWS,
-      "zebulon-grid-header-total": header.isTotal
+      "zebulon-grid-header-total": header.isTotal === 1,
+      "zebulon-grid-header-grandtotal": header.isTotal === 2
     });
     const head = (
       <div
