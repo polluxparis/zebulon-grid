@@ -30,12 +30,9 @@ export const filteredIndexes = (dimensions, filters, loading) => {
   if (loading) {
     return undefined;
   }
-  const notVisibleFilters = Object.values(filters).filter(
-    filter => !dimensions[filter.dimensionId].axis
-  );
   const y = Date.now();
-  if (notVisibleFilters.length) {
-    const filteredIndexes = notVisibleFilters.map(filter => {
+  if (filters.length) {
+    const filteredIndexes = filters.map(filter => {
       const dimension = dimensions[filter.dimensionId];
       let dimensionIndexes = [];
       if (!dimension.axis) {
@@ -57,33 +54,60 @@ export const filteredIndexes = (dimensions, filters, loading) => {
     return undefined;
   }
 };
-// only filters on not visible dimensions
-export const dataSelector = createSelector(
-  [state => state.data.data, state => state.status.loading],
-  data => data
+export const dataFilteredIndexes = (
+  data,
+  filters,
+  dimensions,
+  filteredIndexes,
+  offset
+) => {
+  data.map((row, index) => {
+    if (
+      filters.every(
+        filter =>
+          filter.values[dimensions[filter.dimensionId].keyAccessor(row)] !==
+          undefined
+      )
+    ) {
+      console.log("new index", index);
+      filteredIndexes.set(index + offset, true);
+    }
+  });
+};
+export const notVisibleFiltersSelector = createSelector(
+  [state => state.dimensions, state => state.filters],
+  (dimensions, filters) =>
+    Object.values(filters).filter(
+      filter => !dimensions[filter.dimensionId].axis
+    )
 );
+// only filters on not visible dimensions
+// export const dataSelector = createSelector(
+//   [state => state.data.data, state => state.status.loading],
+//   data => data
+// );
 
 export const filteredIndexesSelector = createSelector(
   [
     state => state.dimensions,
-    state => state.filters,
+    notVisibleFiltersSelector,
     state => state.status.loading
   ],
   filteredIndexes
 );
-export const filteredDataSelector = createSelector(
-  [dataSelector, filteredIndexesSelector],
-  (data, filteredIndexes) => {
-    if (filteredIndexes) {
-      // const y = Date.now();
-      // data.map(row => (row.isFiltered = true));
-      // filteredIndexes.map(index => (data[index].isFiltered = false));
-      // console.log("filteredDataSelector", Date.now() - y),
-      //   filteredIndexes.length;
-      return filteredIndexes;
-    }
-  }
-);
+// export const filteredDataSelector = createSelector(
+//   [dataSelector, filteredIndexesSelector],
+//   (data, filteredIndexes) => {
+//     if (filteredIndexes) {
+//       // const y = Date.now();
+//       // data.map(row => (row.isFiltered = true));
+//       // filteredIndexes.map(index => (data[index].isFiltered = false));
+//       // console.log("filteredDataSelector", Date.now() - y),
+//       //   filteredIndexes.length;
+//       return filteredIndexes;
+//     }
+//   }
+// );
 export const getDimensionValuesSelector = createSelector(
   [state => state.data.data, state => state.dimensions],
   (data, dimensions) => id => {

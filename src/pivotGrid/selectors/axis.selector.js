@@ -19,7 +19,7 @@ import {
   toAxis,
   toAxisType
 } from "../constants";
-import { filteredDataSelector } from "./data.selector";
+import { filteredIndexesSelector } from "./data.selector";
 export const getAxisActivatedMeasuresSelector = axisType =>
   createSelector(
     [
@@ -178,12 +178,24 @@ export const rowAxisTreeSelector = createSelector(
   axisTrees => axisTrees.rows
 );
 
-export const sortAndFilter = (children, sortFunction, filter) => {
+export const sortAndFilter = (
+  children,
+  sortFunction,
+  filter,
+  filteredByAttribute
+) => {
   let nodes = Object.values(children);
   if (filter) {
     nodes = nodes.filter(node => filter[node.id] !== undefined);
   }
-  return nodes.sort(sortFunction).map(child => child.id);
+  return nodes
+    .sort(sortFunction)
+    .map(
+      child =>
+        child.isAttribute && filteredByAttribute
+          ? child.attributeParentId
+          : child.id
+    );
 };
 const getFinalLeaves = (
   node,
@@ -250,7 +262,6 @@ export const getAxisLeaves = (
   // add measures if needed
   const dimension = dimensions[node.depth] || {};
   const nextDimension = dimensions[node.depth + 1] || {};
-
   const isAttribute = node.depth !== -1 ? dimension.isAttribute : false;
   const parent = node.parent || { isVisible: true };
   node.isCollapsed =
@@ -258,7 +269,9 @@ export const getAxisLeaves = (
   node.isParentCollapsed =
     parent.isParentCollapsed || (parent.isCollapsed && !isAttribute);
   node.isVisible = (parent.isVisible && index === 0) || !node.isParentCollapsed;
+  // filtering
   // when a filter is set on one or several not diplayed dimensions=> filter data indexes
+  // else filtering is made on leaves
   if (node.id !== ROOT_ID && filteredIndexes) {
     node.filteredIndexes = node.dataRowIndexes.filter(index =>
       filteredIndexes.get(index)
@@ -289,26 +302,38 @@ export const getAxisLeaves = (
       isTotal: 1
     };
     if (totalsFirst) {
+      // push subtotals or grand total
       subtotalNode.nVisibles = getFinalLeaves(
         subtotalNode,
         measures,
         measuresCount,
-        // filteredIndexes,
         leaves
       );
     }
   }
   node.subtotal = subtotalNode;
-
   if (nextDimension.id !== undefined) {
+    //  sorting
+    let children = node.children,
+      sortDimension = nextDimension;
+    // if node is sorted by an attribute of the next dimension=> find attribute nodes
+    if (
+      nextDimension.orderBy !== undefined &&
+      nextDimension.orderBy !== nextDimension.depth
+    ) {
+      sortDimension = dimensions[nextDimension.orderBy];
+      children = getLeaves(node, [], nextDimension.orderBy, true);
+    }
     node.orders = {
-      [nextDimension.id]: sortAndFilter(
-        node.children,
-        nextDimension.sortFunction,
-        nextDimension.filter
+      [sortDimension.id]: sortAndFilter(
+        children,
+        sortDimension.sortFunction,
+        sortDimension.filter,
+        sortDimension !== nextDimension
       )
     };
-    node.orderedChildren = node.orders[nextDimension.id];
+    node.orderedChildren = node.orders[sortDimension.id];
+    //  recursive loop on children
     node.orderedChildren.forEach((key, index) => {
       nVisibles += getAxisLeaves(
         axis,
@@ -326,19 +351,14 @@ export const getAxisLeaves = (
     });
   }
   if (nextDimension.id === undefined) {
-    nVisibles = getFinalLeaves(
-      node,
-      measures,
-      measuresCount,
-      // filteredIndexes,
-      leaves
-    );
+    // push terminal leaves or, if measures are on the axis,1 leave per measure
+    nVisibles = getFinalLeaves(node, measures, measuresCount, leaves);
   } else if (subtotalNode && !totalsFirst && node.nVisibles) {
+    // push subtotals or grand total
     subtotalNode.nVisibles = getFinalLeaves(
       subtotalNode,
       measures,
       measuresCount,
-      // filteredIndexes,
       leaves
     );
   }
@@ -355,7 +375,7 @@ export const rowLeavesSelector = createSelector(
     state => state.subtotals,
     state => state.configuration.totalsFirst,
     state => state.status.loadingConfig,
-    filteredDataSelector
+    filteredIndexesSelector
   ],
   (
     node,
@@ -420,7 +440,7 @@ export const columnLeavesSelector = createSelector(
     state => state.subtotals,
     state => state.configuration.totalsFirst,
     state => state.status.loadingConfig,
-    filteredDataSelector
+    filteredIndexesSelector
   ],
   (
     node,
@@ -551,21 +571,19 @@ export const getExpandCollapseKeysSelector = createSelector(
     );
   }
 );
-const sortNode = (node, attributeId, attributeDepth, sortFunction) => {
-  if (attributeId) {
-    if (node.orders[attributeId]) {
-      node.orders[attributeId].reverse();
-    } else {
-      const orderedChildren = getLeaves(node, [], attributeDepth, true);
-      orderedChildren.sort(sortFunction);
-      node.orders[attributeId] = orderedChildren.map(
-        child => child.attributeParentId
-      );
-    }
-    node.orderedChildren = node.orders[attributeId];
+const sortNode = (node, dimensionId, depth, sortFunction) => {
+  let orders = node.orders[dimensionId];
+  if (orders) {
+    orders.reverse();
   } else {
-    node.orderedChildren.reverse();
+    const orderedChildren = getLeaves(node, [], depth, true);
+    orderedChildren.sort(sortFunction);
+    orders = orderedChildren.map(
+      child => (child.isAttribute ? child.attributeParentId : child.id)
+    );
+    node.orders[dimensionId] = orders;
   }
+  node.orderedChildren = orders;
 };
 export const toggleSortOrderSelector = createSelector(
   [
@@ -579,21 +597,18 @@ export const toggleSortOrderSelector = createSelector(
     axis,
     depth
   ) => {
-    let sortFct;
     const dimensions =
       axis === AxisType.ROWS ? rowDimensions : columnDimensions;
     const dimension = dimensions[depth];
     let sortingDepth = depth - 1;
+    const sortFct = sortFunction(dimension);
     if (dimension.isAttribute) {
       while (dimensions[sortingDepth].id !== dimension.isAttributeOf) {
         sortingDepth--;
       }
-      sortFct = sortFunction(dimension);
       sortingDepth--;
-      if (true) {
-      }
     }
-
+    dimensions[sortingDepth + 1].orderBy = dimension.depth;
     if (dimension.id !== TOTAL_ID && dimension.id !== MEASURE_ID) {
       const leaves = axis === AxisType.ROWS ? rowLeaves : columnLeaves;
       const sort = dimension.sort;
@@ -607,7 +622,7 @@ export const toggleSortOrderSelector = createSelector(
       leaves.leaves = getLeaves(
         leaves.node,
         [],
-        null,
+        undefined,
         false,
         totalsFirst || false
       );

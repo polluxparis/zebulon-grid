@@ -27,7 +27,11 @@ import {
   rowHeadersWidthSelector,
   columnHeadersHeightSelector
 } from "./sizes.selector";
-import { filteredDataSelector } from "./data.selector";
+import {
+  filteredIndexesSelector,
+  notVisibleFiltersSelector,
+  dataFilteredIndexes
+} from "./data.selector";
 import {
   ROOT_ID,
   TOTAL_ID,
@@ -375,7 +379,8 @@ export const pushedDataSelector = createSelector(
     state => state.collapses,
     state => state.subtotals,
     state => state.configuration.totalsFirst,
-    filteredDataSelector
+    filteredIndexesSelector,
+    notVisibleFiltersSelector
   ],
   (
     data,
@@ -389,12 +394,14 @@ export const pushedDataSelector = createSelector(
     collapses,
     subtotals,
     totalsFirst,
-    notFilteredIndexes
+    filteredIndexes,
+    filters
   ) => {
-    // const filteredPushedData = getFilteredPushedData(data, filters, dimensions);
     if (!data.pushedData.length) {
       return { rows: rowLeaves, columns: columnLeaves };
     }
+    // build the axis trees only for new data using the previous root
+    // nodes of the intial root will be completed
     const newAxisTrees = buildAxisTrees(
       axisTrees.rows,
       axisTrees.columns,
@@ -402,6 +409,17 @@ export const pushedDataSelector = createSelector(
       axisTrees.dimensions,
       data.data.length
     );
+    // filtered indexes must be completed when filters are applied on not displayed dimensions
+    if (filters.length) {
+      dataFilteredIndexes(
+        data,
+        filters,
+        dimensions,
+        filteredIndexes,
+        data.data.length
+      );
+    }
+    // when new dimension key appears, axis leaves must be rebuild
     let leaves, axisDimensions;
     if (newAxisTrees.newRows) {
       leaves = [];
@@ -415,12 +433,13 @@ export const pushedDataSelector = createSelector(
         collapses.rows,
         subtotals,
         totalsFirst,
-        notFilteredIndexes,
+        filteredIndexes,
         0,
         leaves
       );
       rowLeaves.leaves = leaves;
     }
+    // when new dimension key appears, axis leaves must be rebuild
     if (newAxisTrees.newColumns) {
       leaves = [];
       axisDimensions = axises.columns.map(axis => dimensions[axis]);
@@ -433,7 +452,7 @@ export const pushedDataSelector = createSelector(
         collapses.columns,
         subtotals,
         totalsFirst,
-        notFilteredIndexes,
+        filteredIndexes,
         0,
         leaves
       );

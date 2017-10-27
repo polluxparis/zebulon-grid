@@ -45,13 +45,17 @@ export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
   if (
     // isNullOrUndefined(node.orderedChildren) ||
     node.depth === (depth === undefined ? 10000 : depth) ||
-    (node.id !== ROOT_ID && node.orderedChildren.length === 0)
+    (node.id !== ROOT_ID &&
+      depth === undefined &&
+      node.orderedChildren.length === 0)
   ) {
     acc.push(node);
     return acc;
   }
   if (notSorted) {
-    Object.values(node.children).map(node => getLeaves(node, acc, depth));
+    Object.values(node.children).map(node =>
+      getLeaves(node, acc, depth, notSorted)
+    );
   } else {
     if (totalsFirst && node.subtotal) {
       getLeaves(node.subtotal, acc);

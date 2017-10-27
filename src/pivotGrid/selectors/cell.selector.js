@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { isNullOrUndefined, isUndefined, range } from "../utils/generic";
 import { inter } from "../utils/headers";
-import { filteredDataSelector, dataSelector } from "./data.selector";
+// import { dataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
   rowVisibleDimensionsSelector,
@@ -46,7 +46,7 @@ const cellValue = (
 };
 
 export const getCellValueSelector = createSelector(
-  [dataSelector],
+  [state => state.data.data],
   data => (
     valueAccessor,
     rowDataIndexes,

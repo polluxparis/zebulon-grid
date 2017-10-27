@@ -22,7 +22,7 @@ export default (
     case FETCH_FAILURE:
       return { ...state, loading: false, loaded: false, error };
     case FETCH_SUCCESS:
-      return { ...state, loading: false, loaded: false, error: undefined };
+      return { ...state, loading: false, loaded: true, error: undefined };
     case LOADING_CONFIG:
       return { ...state, loadingConfig: action.loading };
     // just to force the refresh
