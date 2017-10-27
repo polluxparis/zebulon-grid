@@ -1,10 +1,4 @@
-import {
-  KEY_SEPARATOR,
-  AXIS_SEPARATOR,
-  ROOT_ID,
-  TOTAL_ID,
-  HeaderType
-} from "../constants";
+import { KEY_SEPARATOR, ROOT_ID } from "../constants";
 import { isUndefined } from "./generic";
 
 export function getHeaderSize(sizeAndPositionManager, index, span) {
@@ -53,9 +47,9 @@ export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
     return acc;
   }
   if (notSorted) {
-    Object.values(node.children).map(node =>
-      getLeaves(node, acc, depth, notSorted)
-    );
+    Object.values(node.children)
+      .filter(node => node.isFiltered)
+      .map(node => getLeaves(node, acc, depth, notSorted));
   } else {
     if (totalsFirst && node.subtotal) {
       getLeaves(node.subtotal, acc);
@@ -204,7 +198,7 @@ export const hasInter = (arg0, arg1) => {
     const m = arg1.length;
     let i = 0;
     let j = 0;
-    const res = [];
+    // const res = [];
     while (i < n && j < m) {
       if (arg0[i] > arg1[j]) {
         j += 1;
@@ -212,8 +206,6 @@ export const hasInter = (arg0, arg1) => {
         i += 1;
       } else {
         return true;
-        i += 1;
-        j += 1;
       }
     }
     return false;

@@ -22,6 +22,7 @@ const getAxisDimensions = (axis, axisDimensions, dimensions) => {
       dimension.isAttribute = false;
     }
     prevDimension = dimension;
+    dimension.orderBy = undefined;
 
     return dimension;
   });

@@ -16,13 +16,7 @@ import * as actions from "./actions";
 
 class ZebulonGrid extends Component {
   componentWillMount() {
-    const {
-      data,
-      configuration,
-      configurationFunctions,
-      menuFunctions,
-      sizes
-    } = this.props;
+    const { data, configuration, configurationFunctions, sizes } = this.props;
     this.store = createStore(
       reducer,
       window.__REDUX_DEVTOOLS_EXTENSION__ &&
@@ -46,7 +40,6 @@ class ZebulonGrid extends Component {
       data,
       configuration,
       configurationFunctions,
-      menuFunctions,
       pushedData,
       sizes
     } = nextProps;

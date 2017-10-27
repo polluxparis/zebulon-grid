@@ -9,7 +9,7 @@ import {
   dimensionsWithAxisSelector
 } from "./dimensions.selector";
 import { isNullOrUndefined } from "../utils/generic";
-import { getLeaves, hasInter } from "../utils/headers";
+import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
   TOTAL_ID,
@@ -178,21 +178,12 @@ export const rowAxisTreeSelector = createSelector(
   axisTrees => axisTrees.rows
 );
 
-export const sortAndFilter = (
-  children,
-  sortFunction,
-  filter,
-  filteredByAttribute
-) => {
-  let nodes = Object.values(children);
-  if (filter) {
-    nodes = nodes.filter(node => filter[node.id] !== undefined);
-  }
-  return nodes
+export const sort = (children, sortFunction, orderByAttribute) => {
+  return children
     .sort(sortFunction)
     .map(
       child =>
-        child.isAttribute && filteredByAttribute
+        child.isAttribute && orderByAttribute
           ? child.attributeParentId
           : child.id
     );
@@ -272,6 +263,13 @@ export const getAxisLeaves = (
   // filtering
   // when a filter is set on one or several not diplayed dimensions=> filter data indexes
   // else filtering is made on leaves
+  node.isFiltered = true;
+  if (dimension.filter && !dimension.filter[node.id]) {
+    node.isFiltered = false;
+    node.isVisible = false;
+    node.nVisibles = 0;
+    return 0;
+  }
   if (node.id !== ROOT_ID && filteredIndexes) {
     node.filteredIndexes = node.dataRowIndexes.filter(index =>
       filteredIndexes.get(index)
@@ -279,6 +277,7 @@ export const getAxisLeaves = (
     if (node.filteredIndexes.length === 0) {
       node.isVisible = false;
       node.nVisibles = 0;
+      node.isFiltered = false;
       return 0;
     }
   } else {
@@ -313,9 +312,15 @@ export const getAxisLeaves = (
   }
   node.subtotal = subtotalNode;
   if (nextDimension.id !== undefined) {
-    //  sorting
-    let children = node.children,
+    let children = Object.values(node.children),
       sortDimension = nextDimension;
+    // filtering
+    // children = children.map(child => {
+    //   child.isFiltered =
+    //     !nextDimension.filter || nextDimension.filter[child.id] !== undefined;
+    //   return child;
+    // });
+    //  sorting
     // if node is sorted by an attribute of the next dimension=> find attribute nodes
     if (
       nextDimension.orderBy !== undefined &&
@@ -324,20 +329,29 @@ export const getAxisLeaves = (
       sortDimension = dimensions[nextDimension.orderBy];
       children = getLeaves(node, [], nextDimension.orderBy, true);
     }
-    node.orders = {
-      [sortDimension.id]: sortAndFilter(
-        children,
-        sortDimension.sortFunction,
-        sortDimension.filter,
-        sortDimension !== nextDimension
-      )
-    };
-    node.orderedChildren = node.orders[sortDimension.id];
-    //  recursive loop on children
-    node.orderedChildren.forEach((key, index) => {
-      nVisibles += getAxisLeaves(
+    // else if (nextDimension.filter) {
+    //   children = children.filter(child => child.isFiltered);
+    // }
+    children = sort(
+      children,
+      sortDimension.sortFunction,
+      sortDimension !== nextDimension
+    );
+    // node.orders = {
+    //   [sortDimension.id]: sort(
+    //     children,
+    //     sortDimension.sortFunction,
+    //     sortDimension !== nextDimension
+    //   )
+    // };
+    // node.orderedChildren = node.orders[sortDimension.id];
+
+    //  recursive loop on ordered children
+    children = children.map((id, index) => ({
+      id,
+      nVisibles: getAxisLeaves(
         axis,
-        node.children[key],
+        node.children[id],
         dimensions,
         measures,
         measuresCount,
@@ -347,8 +361,38 @@ export const getAxisLeaves = (
         filteredIndexes,
         index,
         leaves
-      );
+      )
+    }));
+    children = children.filter(
+      child =>
+        child.nVisibles &&
+        (!nextDimension.filter || nextDimension.filter[child.id])
+    );
+    children = children.map(child => {
+      nVisibles += child.nVisibles;
+      return child.id;
     });
+    if (!node.orders) {
+      node.orders = {};
+    }
+    node.orders[sortDimension.id] = children;
+    node.orderedChildren = node.orders[sortDimension.id];
+
+    // node.orderedChildren.forEach((key, index) => {
+    //   nVisibles += getAxisLeaves(
+    //     axis,
+    //     node.children[key],
+    //     dimensions,
+    //     measures,
+    //     measuresCount,
+    //     areCollapsed,
+    //     subtotals,
+    //     totalsFirst,
+    //     filteredIndexes,
+    //     index,
+    //     leaves
+    //   );
+    // });
   }
   if (nextDimension.id === undefined) {
     // push terminal leaves or, if measures are on the axis,1 leave per measure

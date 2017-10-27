@@ -1,7 +1,13 @@
-import React from "react";
-
 export const menuFunctions = {
-  dataCellFunctions: {},
-  rangeFunctions: {},
-  gridFunctions: {}
+	dataCellFunctions: {},
+	rangeFunctions: {},
+	gridFunctions: {}
+};
+const a = {
+	dataCellFunctions: {
+		drilldown: cell => {},
+		otherDrilldown: cell => {}
+	},
+	rangeFunctions: { range: range => {} },
+	gridFunctions: {}
 };

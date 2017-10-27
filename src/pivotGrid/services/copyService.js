@@ -74,8 +74,8 @@ const getSelectedText = ({
   });
   // Build data array
   let measure;
-  let t = Date.now(),
-    t2;
+  // let t = Date.now(),
+  //   t2;
 
   const cells = selectedRowLeaves.map((rowLeaf, index) => {
     if (measureHeadersAxis === "rows") {
@@ -99,9 +99,9 @@ const getSelectedText = ({
         })
     );
   });
-  t2 = Date.now();
+  // t2 = Date.now();
   // console.log("cells", t2 - t);
-  t = t2;
+  // t = t2;
   // build string with corner headers and column headers
 
   const output = [];
@@ -130,9 +130,9 @@ const getSelectedText = ({
     outputHeaders = outputHeaders.slice(0, -1);
     output.push(outputHeaders);
   }
-  t2 = Date.now();
+  // t2 = Date.now();
   // console.log("columns headers", t2 - t);
-  t = t2;
+  // t = t2;
   let outputRow = "";
   for (let y = 0; y < rowInfos.length; y += 1) {
     outputRow = "";
@@ -148,9 +148,9 @@ const getSelectedText = ({
     output.push(outputRow);
   }
 
-  t2 = Date.now();
+  // t2 = Date.now();
   // console.log("rows", t2 - t, t2);
-  t = t2;
+  // t = t2;
 
   // output = output.slice(0, -1);
   return output.join("\n");

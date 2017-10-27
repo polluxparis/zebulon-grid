@@ -166,6 +166,7 @@ export function dimensionFactory(
     attributeParents
   } = dimensionConfiguration;
   const { formats, accessors, sorts } = configurationFunctions;
+
   const dimSort = !isNullOrUndefined(sort)
     ? {
         direction: sort.direction,

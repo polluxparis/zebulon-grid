@@ -1,10 +1,4 @@
-import {
-  SELECT_RANGE,
-  MOVE_DIMENSION,
-  FETCH_DATA,
-  SCROLL,
-  CHANGE_SORT_ORDER
-} from "../constants";
+import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA, SCROLL } from "../constants";
 
 export default (
   state = {
@@ -15,7 +9,7 @@ export default (
   },
   action
 ) => {
-  const { type, selectedRange, scrollToRow, scrollToColumn, axis } = action;
+  const { type, selectedRange, scrollToRow, scrollToColumn } = action;
   switch (type) {
     case FETCH_DATA:
     case MOVE_DIMENSION:

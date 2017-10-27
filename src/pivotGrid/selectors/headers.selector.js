@@ -61,9 +61,11 @@ const parentsSizes = (
   // et main = mainSizes;
   const first = cellsKey[header.key] === undefined;
   if (first) {
+    const dimension = dimensions[header.depth];
+    header.format = dimension.format;
     header.sizes = {
       main: { ...main },
-      cross: { ...crossPositions[dimensions[header.depth].id] }
+      cross: { ...crossPositions[dimension.id] }
     };
     header.options = {
       isNotCollapsible:
@@ -153,7 +155,7 @@ const buildPositionedHeaders = (
   if (!leaves.length) {
     return undefined;
   }
-  const x = Date.now();
+  // const x = Date.now();
   const maxSize = containerSize - crossSize;
   let size = 0,
     depth = 0;
@@ -175,6 +177,7 @@ const buildPositionedHeaders = (
   while (size <= maxSize && index < leaves.length && index >= 0) {
     const header = leaves[index];
     const dimension = dimensions[header.depth];
+    header.format = dimension.format;
     header.index = index;
     if (header.isVisible) {
       const rowCells = [];

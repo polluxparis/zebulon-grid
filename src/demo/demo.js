@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 
-import ZebulonGrid from "../pivotGrid";
-import "react-resizable/css/styles.css";
-import { ResizableBox } from "react-resizable";
-import {
-  getPromiseMockDatasource,
-  basicConfig,
-  getRandomMockDatasource
-} from "./mock";
-import { configurationFunctions } from "./configurationFunctions";
-import { menuFunctions } from "./menuFunctions";
+// import ZebulonGrid from "../pivotGrid";
+// import "react-resizable/css/styles.css";
+// import { ResizableBox } from "react-resizable";
+// import {
+//   getPromiseMockDatasource,
+//   basicConfig,
+//   getRandomMockDatasource
+// } from "./mock";
+// import { configurationFunctions } from "./configurationFunctions";
+// import { menuFunctions } from "./menuFunctions";
 export const MEASURE_ID = "__measures__";
 export const customConfigurationFunctions = (
   prevConfigurationFunctions,
@@ -27,7 +27,10 @@ export const customConfigurationFunctions = (
           );
         }
         return value;
-      }
+      },
+      titi: value => (
+        <div style={{ color: "red", textAlign: "center" }}>{value}</div>
+      )
     },
     accessors: {
       ...prevConfigurationFunctions.accessors,
@@ -78,7 +81,8 @@ export const customConfigurationFunctions = (
         caption: "Titi",
         keyAccessor: "titi",
         labelAccessor: "titi_lb",
-        sort: { keyAccessor: "titi", custom: "titi" }
+        sort: { keyAccessor: "titi", custom: "titi" },
+        format: "titi"
       },
       ...prevConfiguration.dimensions.slice(2, 5)
     ],
@@ -97,6 +101,7 @@ export const customConfigurationFunctions = (
         Add a (dummy) sort function for dimension Titi : ordered by even ids,
         then odd ids.
       </div>
+      <div> Add a custom format ( red centered) on dimension Titi.</div>
     </div>
   );
   return { configurationFunctions, configuration, actionContent };

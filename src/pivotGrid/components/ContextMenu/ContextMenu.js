@@ -193,7 +193,6 @@ const DataCellMenu = (id, trigger) => {
       </SubMenu>
     );
   }
-  const config = { ...trigger.configuration };
   return (
     <ReactContextMenu id={id}>
       {cellFunctions}

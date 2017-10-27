@@ -10,11 +10,7 @@ import {
 } from "./mock";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
-import {
-  MEASURE_ID,
-  customConfigurationFunctions,
-  customMenuFunctions
-} from "./demo";
+import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);

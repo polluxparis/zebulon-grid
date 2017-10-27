@@ -1,26 +1,3 @@
-// import { createSelector } from 'reselect';
-// import pass from '../utils/filtering';
-// import { isUndefined } from '../utils/generic';
-
-// const getFilters = state => state.filters || {};
-// const getData = state => state.data;
-
-// export const filteredDataSelector = createSelector(
-//   [getData, getFilters, state => state.dimensions],
-//   (data, filtersObject, dimensions) => {
-//     const filters = [
-//       ...Object.keys(filtersObject).map(id => filtersObject[id])
-//     ];
-//     if (filters.length === 0) {
-//       return data;
-//     }
-//     return data.filter(row =>
-//       filters.every(filter =>
-//         pass(filter, dimensions[filter.dimensionId].keyAccessor(row))
-//       )
-//     );
-//   }
-// );
 import { createSelector } from "reselect";
 import { intersec } from "../utils/headers";
 import { isUndefined } from "../utils/generic";
@@ -30,7 +7,7 @@ export const filteredIndexes = (dimensions, filters, loading) => {
   if (loading) {
     return undefined;
   }
-  const y = Date.now();
+  // const y = Date.now();
   if (filters.length) {
     const filteredIndexes = filters.map(filter => {
       const dimension = dimensions[filter.dimensionId];
@@ -48,7 +25,7 @@ export const filteredIndexes = (dimensions, filters, loading) => {
       return dimensionIndexes.sort((a, b) => a - b);
     });
     const x = new Map(intersec(filteredIndexes).map(index => [index, true]));
-    console.log("filteredIndexes", Date.now() - y), x.length;
+    // console.log("filteredIndexes", Date.now() - y), x.length;
     return x;
   } else {
     return undefined;
@@ -81,12 +58,6 @@ export const notVisibleFiltersSelector = createSelector(
       filter => !dimensions[filter.dimensionId].axis
     )
 );
-// only filters on not visible dimensions
-// export const dataSelector = createSelector(
-//   [state => state.data.data, state => state.status.loading],
-//   data => data
-// );
-
 export const filteredIndexesSelector = createSelector(
   [
     state => state.dimensions,
@@ -95,19 +66,6 @@ export const filteredIndexesSelector = createSelector(
   ],
   filteredIndexes
 );
-// export const filteredDataSelector = createSelector(
-//   [dataSelector, filteredIndexesSelector],
-//   (data, filteredIndexes) => {
-//     if (filteredIndexes) {
-//       // const y = Date.now();
-//       // data.map(row => (row.isFiltered = true));
-//       // filteredIndexes.map(index => (data[index].isFiltered = false));
-//       // console.log("filteredDataSelector", Date.now() - y),
-//       //   filteredIndexes.length;
-//       return filteredIndexes;
-//     }
-//   }
-// );
 export const getDimensionValuesSelector = createSelector(
   [state => state.data.data, state => state.dimensions],
   (data, dimensions) => id => {

@@ -55,7 +55,6 @@ class Header extends Component {
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
-    (" zebulon-grid-header zebulon-grid-column-header");
     const className = classNames({
       "zebulon-grid-cell": true,
       "zebulon-grid-header": !header.isTotal,
