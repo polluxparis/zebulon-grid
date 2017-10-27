@@ -1,13 +1,18 @@
 import React, { Component } from "react";
+import classNames from "classnames";
 
-import { AxisType, toAxis, MEASURE_ID } from "../../constants";
+import { AxisType, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import { ContextMenuTrigger } from "react-contextmenu";
+import { expandCollapseNode } from "../../selectors";
 class Header extends Component {
   handleClickCollapse = () => {
-    const { toggleCollapse, header } = this.props;
-    toggleCollapse(header.key);
+    const { toggleCollapse, header, measuresCount } = this.props;
+    toggleCollapse(
+      header.key,
+      expandCollapseNode(header, undefined, measuresCount)
+    );
   };
   handleClick = () => {
     this.props.selectAxis(this.props.header);
@@ -16,18 +21,12 @@ class Header extends Component {
   handleClickMenu = (e, data, target) => {
     if (e.button === 0) {
       if (data.action === "move") {
-        this.props.moveDimension(
-          MEASURE_ID,
-          toAxis(data.axis),
-          toAxis(
-            data.axis === AxisType.COLUMNS ? AxisType.ROWS : AxisType.COLUMNS
-          )
+        this.props.toggleMeasuresAxis(
+          this.props.axis === AxisType.ROWS ? "columns" : "rows"
         );
-      }
-      if (data.action === "remove") {
+      } else if (data.action === "remove") {
         this.props.toggleMeasure(data.measureId);
-      }
-      if (data.action === "add") {
+      } else if (data.action === "add") {
         this.props.toggleMeasure(data.newMeasureId);
       }
     }
@@ -35,56 +34,38 @@ class Header extends Component {
   render() {
     const {
       axis,
-      index,
-      measureId,
       dimensionId,
       gridId,
       header,
       caption,
       positionStyle,
       previewSizes,
-      scrollLeft,
-      scrollTop,
       isNotCollapsible,
       isCollapsed,
-      isAffixManaged,
+      collapseOffset,
       moveDimension,
       moveMeasure,
+      toggleMeasuresAxis,
       collectMenu,
-      isDropTarget
+      isDropTarget,
+      isDragSource
     } = this.props;
     let style = positionStyle;
-
-    // affix management to keep labels on screen (except for leaves)
-    // affix management stops where you reach the last leave size
-    // header cell size are recalculated to fit from the left (or top) of the grid
-    // and the beginning of the nect cell to keep formats (as cenetr left or right)
-    let offset;
-    if (isAffixManaged) {
-      if (axis === AxisType.COLUMNS) {
-        offset = scrollLeft - positionStyle.left;
-        style = {
-          ...style,
-          left: positionStyle.left + offset,
-          width: positionStyle.width - offset
-        };
-      } else {
-        offset = scrollTop - positionStyle.top;
-        style = {
-          ...style,
-          top: positionStyle.top + offset,
-          height: positionStyle.height - offset
-        };
-      }
-    }
-
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
     const bottomKey = axis === AxisType.ROWS ? header.key : dimensionId;
     const rightHeader = axis === AxisType.COLUMNS ? header : null;
     const bottomHeader = axis === AxisType.ROWS ? header : null;
+    const className = classNames({
+      "zebulon-grid-cell": true,
+      "zebulon-grid-header": !header.isTotal,
+      "zebulon-grid-column-header": axis === AxisType.COLUMNS,
+      "zebulon-grid-row-header": axis === AxisType.ROWS,
+      "zebulon-grid-header-total": header.isTotal === 1,
+      "zebulon-grid-header-grandtotal": header.isTotal === 2
+    });
     const head = (
       <div
-        className="zebulon-grid-cell zebulon-grid-header zebulon-grid-column-header"
+        className={className}
         style={{
           boxSizing: "border-box",
           overflow: "hidden",
@@ -95,17 +76,20 @@ class Header extends Component {
         <InnerHeader
           axis={axis}
           id={dimensionId}
-          measureId={measureId}
-          index={index}
+          measureId={dimensionId === MEASURE_ID ? header.id : null}
+          index={header.index}
           caption={caption}
           isNotCollapsible={isNotCollapsible}
           isCollapsed={isCollapsed}
+          collapseOffset={collapseOffset}
           handleClickCollapse={this.handleClickCollapse}
           handleClick={this.handleClick}
           handleClickMenu={this.handleClickMenu}
           moveDimension={moveDimension}
           moveMeasure={moveMeasure}
+          toggleMeasuresAxis={toggleMeasuresAxis}
           isDropTarget={isDropTarget}
+          isDragSource={isDragSource}
           gridId={gridId}
         />
         <ResizeHandle

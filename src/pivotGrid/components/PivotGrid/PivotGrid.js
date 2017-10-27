@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { ScrollSync } from "react-virtualized/dist/commonjs/ScrollSync";
-import { ArrowKeyStepper } from "react-virtualized/dist/commonjs/ArrowKeyStepper";
+
 import { DropTarget } from "react-dnd";
 import { connectMenu } from "react-contextmenu";
 import ContextMenu from "../ContextMenu/ContextMenu";
@@ -11,8 +10,8 @@ import DimensionHeaders from "../../containers/DimensionHeaders";
 import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
 import DragLayer from "./DragLayer";
-import { isEmpty, isNull } from "../../utils/generic";
-import { ZOOM_IN, ZOOM_OUT } from "../../constants";
+// import { isEmpty } from "../../utils/generic";
+import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -82,86 +81,208 @@ import { ZOOM_IN, ZOOM_OUT } from "../../constants";
 //   </div>;
 
 class PivotGrid extends Component {
-  constructor(props) {
-    super(props);
-    this.scrollToRow = 0;
-    this.scrollToColumn = 0;
-    this.focusCellKeys = [];
-    // this.handleScrollToChange = this.handleScrollToChange.bind(this);
-    // this.handleKeyDown = this.handleKeyDown.bind(this);
-  }
-
   componentDidMount() {
     document.addEventListener("copy", this.handleCopy);
+    document.addEventListener("keydown", this.handleKeyDown);
   }
 
   componentDidUnMount() {
     document.removeEventListener("copy", this.handleCopy);
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
-
   componentWillReceiveProps(nextProps) {
-    // let nextScrollToRow;
-    // let nextScrollColumn;
-    // const current = {};
-    // const next = {};
-    // if (this.props.focusCells !== nextProps.focusCells) {
-    //   this.focusCellKeys = nextProps.focusCells.map(cell =>
-    //     getCellInfosSelectorKey(cell)
-    //   );
-    //   if (this.focusCellKeys.length > 0) {
-    //     nextScrollColumn = keyToIndex(
-    //       nextProps.columnHeaders,
-    //       this.focusCellKeys[0].columns
-    //     );
-    //     nextScrollToRow = keyToIndex(
-    //       nextProps.rowHeaders,
-    //       this.focusCellKeys[0].rows
-    //     );
-    //   }
-    // } else {
-
-    // // Update row and column indexes to make sure the same header stay in view when toggling measure or filtering
-    // current.dataDimensionsCount = this.props.dataDimensionsCount;
-    // next.dataDimensionsCount = nextProps.dataDimensionsCount;
-    // if (this.props.layout.rowVerticalCount !== nextProps.layout.rowVerticalCount) {
-    //   console.log('updating row start index');
-    //   current.dimensions = this.props.rowDimensions;
-    //   next.dimensions = nextProps.rowDimensions;
-    //   current.firstHeaderRow = this.props.rowHeaders[this.scrollToRow];
-    //   const nextFirstHeaderKey = getNextKey(current, next);
-    //   nextScrollToRow = keyToIndex(nextProps.rowHeaders, nextFirstHeaderKey);
-    // }
-    // if (this.props.columnHeaders.length !== nextProps.columnHeaders.length) {
-    //   console.log('updating column start index');
-    //   current.dimensions = this.props.columnDimensions;
-    //   next.dimensions = nextProps.columnDimensions;
-    //   current.firstHeaderRow = this.props.columnHeaders[this.columnStartIndex];
-    //   const nextFirstHeaderKey = getNextKey(current, next);
-    //   nextScrollColumn = keyToIndex(
-    //     nextProps.columnHeaders,
-    //     nextFirstHeaderKey
-    //   );
-    // }
-    // }
-    // // If keyToIndex does not find the key in the headers, it returns -1
-    // // In this case, do nothing
-    // if (nextScrollToRow >= 0) this.scrollToRow = nextScrollToRow;
-    // if (nextScrollColumn >= 0) this.columnStartIndex = nextScrollColumn;
-    if (!isEmpty(nextProps.selectedRange.focusedCell)) {
-      this.scrollToRow =
-        nextProps.selectedRange.focusedCell.rowIndex || this.scrollToRow;
-      this.scrollToColumn =
-        nextProps.selectedRange.focusedCell.columnIndex || this.scrollToColumn;
-    }
+    this.isPushing = this.props.pushedData !== nextProps.pushedData;
   }
-
+  nextVisible = (leaves, index, direction, offset) => {
+    let ix = 0,
+      n = 0;
+    if (offset === 0) {
+      ix = -direction;
+      n = -1;
+    }
+    while (
+      n < offset &&
+      (direction === 1 ? index + ix < leaves.length - 1 : index + ix > 0)
+    ) {
+      ix += direction;
+      n += leaves[index + ix].isVisible || 0;
+    }
+    return index + ix;
+  };
+  handleKeyDown = e => {
+    if (!e.defaultPrevented) {
+      this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
+      const { selectedRange, selectRange, selectCell, headers } = this.props;
+      const { rows, columns } = headers;
+      if (e.metaKey || e.ctrlKey) {
+        // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
+        if (e.key === "+" || e.key === "=") {
+          this.props.zoom(ZOOM_IN);
+          e.preventDefault();
+        }
+        // ctrl - -> zoom out
+        // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
+        if (e.key === "-" || e.key === "_") {
+          this.props.zoom(ZOOM_OUT);
+          e.preventDefault();
+        } else if (e.which === 65) {
+          // ctrl A -> select all
+          this.props.selectRange({
+            selectedCellStart: {
+              columnIndex: this.nextVisible(columns.leaves, 0, -1, 0),
+              rowIndex: this.nextVisible(rows.leaves, 0, -1, 0)
+            },
+            selectedCellEnd: {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                columns.length - 1,
+                1,
+                0
+              ),
+              rowIndex: this.nextVisible(rows.leaves, rows.length - 1, 1, 0)
+            }
+          });
+          e.preventDefault();
+        }
+        // arrow keys
+      } else if (e.which > 32 && e.which < 41) {
+        let direction, cell, axis;
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          direction = e.key === "ArrowDown" ? 1 : -1;
+          axis = AxisType.ROWS;
+          cell = {
+            columnIndex: selectedRange.selectedCellEnd.columnIndex,
+            rowIndex: this.nextVisible(
+              rows.leaves,
+              selectedRange.selectedCellEnd.rowIndex,
+              direction,
+              1
+            )
+          };
+        } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+          direction = e.key === "ArrowRight" ? 1 : -1;
+          axis = AxisType.COLUMNS;
+          cell = {
+            columnIndex: this.nextVisible(
+              columns.leaves,
+              selectedRange.selectedCellEnd.columnIndex,
+              direction,
+              1
+            ),
+            rowIndex: selectedRange.selectedCellEnd.rowIndex
+          };
+        } else if (e.key === "PageUp" || e.key === "PageDown") {
+          direction = e.key === "PageDown" ? 1 : -1;
+          if (e.altKey) {
+            axis = AxisType.COLUMNS;
+            cell = {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                selectedRange.selectedCellEnd.columnIndex,
+                direction,
+                columns.cells.length - 1
+              ),
+              rowIndex: selectedRange.selectedCellEnd.rowIndex
+            };
+          } else {
+            axis = AxisType.ROWS;
+            cell = {
+              columnIndex: selectedRange.selectedCellEnd.columnIndex,
+              rowIndex: this.nextVisible(
+                rows.leaves,
+                selectedRange.selectedCellEnd.rowIndex,
+                direction,
+                rows.cells.length - 1
+              )
+            };
+          }
+        } else if (e.key === "Home" || e.key === "End") {
+          direction = e.key === "End" ? 1 : -1;
+          if (e.altKey) {
+            axis = AxisType.COLUMNS;
+            cell = {
+              columnIndex: this.nextVisible(
+                columns.leaves,
+                direction === 1 ? columns.length - 1 : 0,
+                -direction,
+                0
+              ),
+              rowIndex: selectedRange.selectedCellEnd.rowIndex
+            };
+          } else {
+            axis = AxisType.ROWS;
+            cell = {
+              columnIndex: selectedRange.selectedCellEnd.columnIndex,
+              rowIndex: this.nextVisible(
+                rows.leaves,
+                direction === 1 ? rows.length - 1 : 0,
+                -direction,
+                0
+              )
+            };
+          }
+        }
+        // selection
+        if (e.shiftKey) {
+          selectRange({
+            ...selectedRange,
+            selectedCellEnd: cell
+          });
+        } else {
+          selectCell(cell);
+        }
+        // shift display at end
+        const scroll = { rows: rows.scroll, columns: columns.scroll };
+        if (
+          axis === AxisType.ROWS &&
+          rows.hasScrollbar &&
+          (cell.rowIndex >= rows.stopIndex || cell.rowIndex <= rows.startIndex)
+        ) {
+          scroll.rows = { index: cell.rowIndex, direction: -direction };
+          this.onScroll(scroll.rows, scroll.columns);
+        } else if (
+          axis === AxisType.COLUMNS &&
+          columns.hasScrollbar &&
+          (cell.columnIndex >= columns.stopIndex ||
+            cell.columnIndex <= columns.startIndex)
+        ) {
+          scroll.columns = { index: cell.columnIndex, direction: -direction };
+          this.onScroll(scroll.rows, scroll.columns);
+        }
+        e.preventDefault();
+      }
+    }
+  };
+  handleWheel = e => {
+    if (!e.defaultPrevented) {
+      e.preventDefault();
+      const { rows, columns } = this.props.headers;
+      const direction = Math.sign(e.deltaY);
+      const leaves = e.altKey ? columns : rows;
+      const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
+      const offset = leaves.direction === direction && leaves.offset > 2;
+      const index = this.nextVisible(
+        leaves.leaves,
+        prevIndex - offset,
+        direction,
+        1
+      );
+      const scroll = { rows: rows.scroll, columns: columns.scroll };
+      if (e.altKey) {
+        scroll.columns = { index, direction: -direction };
+        this.onScroll(scroll.rows, scroll.columns);
+      } else {
+        scroll.rows = { index, direction: -direction };
+        this.onScroll(scroll.rows, scroll.columns);
+      }
+    }
+  };
   componentDidUpdate(prevProps) {
     const { height, width, setSizes } = this.props;
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
   }
-
   handleCopy = () => {
     if (
       // Works only if the grid is focused
@@ -171,113 +292,37 @@ class PivotGrid extends Component {
     }
   };
 
-  handleKeyDown = e => {
-    const { columnHorizontalCount, rowVerticalCount } = this.props.layout;
-    this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-    this.shiftKeyIsPressed = e.shiftKey;
-    if (e.metaKey || e.ctrlKey) {
-      // ctrl A -> select all
-      if (e.which === 65) {
-        this.props.selectRange({
-          selectedCellStart: { columnIndex: 0, rowIndex: 0 },
-          selectedCellEnd: {
-            columnIndex: columnHorizontalCount,
-            rowIndex: rowVerticalCount
-          }
-        });
-        e.preventDefault();
-      }
-      // ctrl + -> zoom in
-      // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-      if (e.key === "+" || e.key === "=") {
-        this.props.zoom(ZOOM_IN);
-
-        e.preventDefault();
-      }
-      // ctrl - -> zoom out
-      // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-      if (e.key === "-" || e.key === "_") {
-        this.props.zoom(ZOOM_OUT);
-        e.preventDefault();
-      }
-      // Page down
-      //   if (e.key === 'PageDown') {
-      //     handleScrollToChange({});
-
-      //     e.preventDefault();
-      // }
+  onScroll = (scrollToRow, scrollToColumn) => {
+    let { rows, columns } = this.props.headers;
+    if (
+      scrollToRow !== null &&
+      (scrollToRow.index !== rows.index ||
+        scrollToRow.direction !== rows.direction)
+    ) {
+      this.props.scrollToRow(scrollToRow);
     }
-  };
-  handleKeyUp = e => {
-    if (e.which === 17) {
-      this.modifierKeyIsPressed = false;
+    if (
+      scrollToColumn !== null &&
+      (scrollToColumn.index !== columns.index ||
+        scrollToColumn.direction !== columns.direction)
+    ) {
+      this.props.scrollToColumn(scrollToColumn);
     }
-    if (e.which === 16) {
-      this.shiftKeyIsPressed = false;
-    }
-  };
-
-  handleScrollToChange = ({ scrollToColumn, scrollToRow }) => {
-    const selectedRange = this.props.selectedRange;
-
-    if (this.shiftKeyIsPressed) {
-      // after column selection
-      if (isNull(selectedRange.focusedCell.rowIndex)) {
-        const columnIndex =
-          selectedRange.selectedCellEnd.columnIndex +
-          (scrollToColumn > this.scrollToColumn ? 1 : -1);
-        this.props.selectRange({
-          selectedCellEnd: {
-            columnIndex,
-            rowIndex: selectedRange.selectedCellEnd.rowIndex
-          },
-          focusedCell: { columnIndex, rowIndex: null }
-        });
-      } else if (isNull(selectedRange.focusedCell.columnIndex)) {
-        // after row  selection
-        const rowIndex =
-          selectedRange.selectedCellEnd.rowIndex +
-          (scrollToRow > this.scrollToRow ? 1 : -1);
-        this.props.selectRange({
-          selectedCellEnd: {
-            rowIndex,
-            columnIndex: selectedRange.selectedCellEnd.columnIndex
-          },
-          focusedCell: { rowIndex, columnIndex: null }
-        });
-      } else {
-        this.props.selectRange({
-          selectedCellEnd: {
-            columnIndex: scrollToColumn,
-            rowIndex: scrollToRow
-          },
-          focusedCell: { columnIndex: scrollToColumn, rowIndex: scrollToRow }
-        });
-      }
-    } else {
-      this.props.selectCell({
-        columnIndex: scrollToColumn,
-        rowIndex: scrollToRow
-      });
-    }
-    this.scrollToRow = scrollToRow;
-    this.scrollToColumn = scrollToColumn;
   };
 
   render() {
     const {
       connectDropTarget,
+      height,
       width,
-      layout,
-      // customFunctions,
       drilldown,
       zoomValue,
+      headers,
       id: gridId
     } = this.props;
-
-    const { columnHorizontalCount, rowVerticalCount } = layout;
+    const { rows, columns } = headers;
     let grid;
-    if (this.props.status.loading) {
+    if (this.props.status.loading || this.props.status.loadingConfig) {
       grid = <div>Loading data...</div>;
     } else if (this.props.status.error) {
       if (this.props.status.error.message === "No rows retrieved") {
@@ -285,80 +330,80 @@ class PivotGrid extends Component {
       } else {
         grid = (
           <div style={{ color: "red", width: "max-content" }}>
-            <p>
-              {this.props.status.error.type}
-            </p>
-            <p>
-              {this.props.status.error.message}
-            </p>
+            <p>{this.props.status.error.type}</p>
+            <p>{this.props.status.error.message}</p>
           </div>
         );
       }
-    } else {
+    } else if (rows !== undefined && columns !== undefined) {
+      // this.computeGrid(rows, columns);
+      const scrollbarsWidth = {
+        horizontal: ScrollbarSize * (columns.hasScrollbar || 0),
+        vertical: ScrollbarSize * (rows.hasScrollbar || 0)
+      };
+      const dataCellsSizes = {
+        height: Math.min(
+          height - rows.crossSize - scrollbarsWidth.horizontal,
+          rows.size
+        ),
+        width: Math.min(
+          width - columns.crossSize - scrollbarsWidth.vertical,
+          columns.size
+        )
+      };
       const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
         <div
-          style={{ width, position: "relative" }}
+          style={{ width, height, position: "relative" }}
+          // tabIndex={0}
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleKeyUp}
+          onWheel={this.handleWheel}
         >
           <DragLayer gridId={gridId} />
-          <ArrowKeyStepper
-            columnCount={columnHorizontalCount}
-            mode="cells"
-            rowCount={rowVerticalCount}
-            scrollToRow={this.scrollToRow}
-            scrollToColumn={this.scrollToColumn}
-            onScrollToChange={this.handleScrollToChange}
-            isControlled={true}
+          <div
+            className="zebulon-grid-zebulon-grid"
+            style={{ fontSize: `${zoomValue * 100}%` }}
           >
-            {({ onSectionRendered, scrollToColumn, scrollToRow }) =>
-              <ScrollSync>
-                {({
-                  clientHeight,
-                  clientWidth,
-                  onScroll,
-                  scrollLeft,
-                  scrollTop
-                }) =>
-                  <div
-                    className="zebulon-grid-zebulon-grid"
-                    style={{ fontSize: `${zoomValue * 100}%` }}
-                  >
-                    <div style={{ display: "flex" }}>
-                      <DimensionHeaders gridId={gridId} />
-                      <ColumnHeaders
-                        gridId={gridId}
-                        scrollLeft={scrollLeft}
-                        scrollTop={0}
-                      />
-                    </div>
-                    <div style={{ display: "flex" }}>
-                      <RowHeaders
-                        scrollTop={scrollTop}
-                        scrollLeft={0}
-                        gridId={gridId}
-                      />
-                      <DataCells
-                        onSectionRendered={onSectionRendered}
-                        scrollToColumn={scrollToColumn}
-                        scrollToRow={scrollToRow}
-                        onScroll={onScroll}
-                        drilldown={drilldown}
-                        menuFunctions={this.props.menuFunctions}
-                        clientHeight={clientHeight}
-                        clientWidth={clientWidth}
-                        gridId={gridId}
-                      />
-                    </div>
-                    <ConnectedMenu />
-                  </div>}
-              </ScrollSync>}
-          </ArrowKeyStepper>
+            <div style={{ display: "flex" }}>
+              <DimensionHeaders gridId={gridId} />
+              <ColumnHeaders
+                gridId={gridId}
+                rows={null}
+                columns={columns}
+                height={rows.crossSize}
+                width={dataCellsSizes.width}
+              />
+            </div>
+            <div style={{ display: "flex" }}>
+              <RowHeaders
+                gridId={gridId}
+                rows={rows}
+                columns={null}
+                height={dataCellsSizes.height}
+                width={columns.crossSize}
+              />
+              <DataCells
+                drilldown={drilldown}
+                menuFunctions={this.props.menuFunctions}
+                rows={rows}
+                columns={columns}
+                gridId={gridId}
+                height={height - rows.crossSize}
+                width={width - columns.crossSize}
+                scrollbarsWidth={scrollbarsWidth}
+                onScroll={this.onScroll}
+                isPushing={this.isPushing}
+              />
+            </div>
+            <ConnectedMenu />
+          </div>
         </div>
       );
+    } else {
+      grid = <div>Loading...</div>;
     }
     return grid;
   }
@@ -378,14 +423,6 @@ const collect = connect => ({
 });
 
 PivotGrid.defaultProps = { id: 0 };
-// expose all actions
-// Object.keys(actions).forEach(action => {
-//   /* eslint-disable func-names */
-//   PivotGrid.prototype[action] = function(...args) {
-//     this.state.store.dispatch(actions[action](...args));
-//   };
-//   /* eslint-enable */
-// });
 // Add grid id to the type to ensure only correct drop target is used
 export default DropTarget(
   props => `cell-resize-handle--${props.id || 0}`,

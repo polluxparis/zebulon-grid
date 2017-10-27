@@ -1,38 +1,23 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import VirtualizedCheckbox from 'react-virtualized-checkbox';
+import { connect } from "react-redux";
+// import VirtualizedCheckbox from "react-virtualized-checkbox";
 
-import { getDimensionValuesSelector } from '../selectors';
-import { addFilter, deleteFilter } from '../actions';
-
-const Filter = ({ items, onOk }) =>
-  <VirtualizedCheckbox
-    items={items}
-    onOk={onOk}
-    rowHeight={20}
-    width={130}
-    height={400}
-  />;
-
+import { getDimensionValuesSelector } from "../selectors";
+import { addFilter, deleteFilter } from "../actions";
+import { Filter } from "../components/Filter/Filter";
 const mapStateToProps = (state, ownProps) => {
   return {
-    items: getDimensionValuesSelector(state)(ownProps.dimensionId)
+    items: getDimensionValuesSelector(state)(ownProps.dimensionId),
+    filter: (state.filters[ownProps.dimensionId] || {}).values || {}
+    // filterLeaves: filter =>
+    //   filterLeavesSelector(state)(ownProps.dimensionId, filter)
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onOk: (filterKeys, checkedAll) => {
-    if (checkedAll) {
+  onOk: filter => {
+    if (!filter) {
       dispatch(deleteFilter(ownProps.dimensionId));
     } else {
-      dispatch(
-        addFilter(
-          ownProps.dimensionId,
-          'in',
-          null,
-          filterKeys.map(v => v.key),
-          false
-        )
-      );
+      dispatch(addFilter(ownProps.dimensionId, "in", null, false, filter));
     }
   }
 });

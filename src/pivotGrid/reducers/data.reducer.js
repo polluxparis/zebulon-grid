@@ -1,13 +1,14 @@
-import { PUSH_DATA, FETCH_SUCCESS, FETCH_DATA } from "../constants";
+import { PUSH_DATA, FETCH_SUCCESS } from "../constants";
 
-export default (state = [], action) => {
+export default (state = { data: [], pushedData: [] }, action) => {
 	switch (action.type) {
-		case FETCH_DATA:
-			return [];
 		case PUSH_DATA:
-			return [...state, ...action.payload];
+			return {
+				...state,
+				pushedData: action.pushedData
+			};
 		case FETCH_SUCCESS:
-			return action.payload;
+			return { data: action.data, pushedData: [] };
 		default:
 			return state;
 	}

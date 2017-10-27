@@ -6,17 +6,17 @@ import {
   MOVE_DIMENSION
 } from "../constants";
 import {
-  setConfigProperty,
+  setConfigurationProperty,
   toggleMeasure,
   moveDimension,
   setDimensions,
   setMeasures
-} from "./config.action";
+} from "./configuration.action";
 
-describe("setConfigProperty creates an action to set a config property", () => {
+describe("setConfigurationProperty creates an action to set a config property", () => {
   test("when a property  value is given", () => {
     const configObject = { toto: 33 };
-    expect(setConfigProperty(configObject, "toto", 666)).toEqual({
+    expect(setConfigurationProperty(configObject, "toto", 666)).toEqual({
       type: SET_CONFIG_PROPERTY,
       property: "toto",
       value: 33
@@ -24,7 +24,7 @@ describe("setConfigProperty creates an action to set a config property", () => {
   });
   test("when no property  value is given", () => {
     const configObject = {};
-    expect(setConfigProperty(configObject, "toto", 666)).toEqual({
+    expect(setConfigurationProperty(configObject, "toto", 666)).toEqual({
       type: SET_CONFIG_PROPERTY,
       property: "toto",
       value: 666

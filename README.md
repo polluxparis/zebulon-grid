@@ -1,3 +1,305 @@
-### Work in progress
+# Zebulon pivot grid
+React pivot grid component for large data sets.
+Manage measures (aggregated figures) by dimensions (axises) in rows or columns directly on the grid. 
+## available demo at: http://polluxparis.github.io/zebulon-grid/
+## Main features
+* Pivoting by drag & drop of dimensions.
+* Sorting and filtering.
+* Grand total and subtotals.
+* Expand/collapse of dimensions hierarchy.
+* Resizing of columns and rows.
+* Drilldown facilities.
+* Custom measures, formats, sorts and external functions in the configuration objects.
+## Getting started
 
-Pivot grid written in Javascript
+Install `zebulon-pivotgrid` using npm.
+
+```shell
+npm install zebulon-pivotgrid --save
+```
+
+And in your code:
+```js
+import zebulon-grid from 'zebulon-pivotgrid'
+```
+
+## Simple Example
+
+```js
+import React, { Component } from "react";
+import ZebulonGrid from "zebulon-pivotgrid";
+
+const buildData = (n0, n1, n2) => {
+  let data = [];
+  for (let k = 0; k < dataRepetition; k += 1) {
+    for (let i0 = 0; i0 < n0; i0++) {
+      for (let i1 = 0; i1 < n1; i1++) {
+        for (let i2 = 0; i2 < n2; i2++) {
+          data.push({
+            totoId: i0,
+            totoLabel: `toto${i0}`,
+            titi: i1,
+            tutu: `tutu${i2}`,
+            qty: 1,
+            amt: 1
+          });
+        }
+      }
+    }
+    return data;
+  }
+};
+const buildConfiguration = () => ({
+  measureHeadersAxis: "columns",
+  width: 1000,
+  height: 800,
+  cellHeight: 30,
+  cellWidth: 100,
+  dimensions: [
+    {
+      id: "toto",
+      caption: "Toto",
+      keyAccessor: "totoId",
+      labelAccessor: "totoLabel",
+      sort: {
+        keyAccessor: "totoLabel"
+      }
+    },
+    {
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi"
+    },
+    {
+      id: "tutu",
+      caption: "Tutu",
+      keyAccessor: "tutu"
+    }
+  ],
+  measures: [
+    {
+      valueAccessor: "qty",
+      id: "qty",
+      caption: "Quantity",
+      aggregation: "sum"
+    },
+    {
+      valueAccessor: "amt",
+      id: "amt",
+      caption: "Amount",
+      aggregation: "sum"
+    }
+  ],
+  columns: ["tutu"],
+  rows: ["toto", "titi"],
+  activeMeasures: ["qty", "amt"]
+});
+class MyPivotGrid extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  data = this.buildData(30, 12, 7);
+  configuration = this.buildConfiguration();
+  render() {
+    return (
+      <ZebulonGrid
+        data={this.data}
+        configuration={this.configuration}
+        height={600}
+        width={1000}
+      />
+    );
+  }
+}
+```
+
+## React zebulon grid props
+| Property | Type | Description |
+|:---|:---|:---|
+| data | `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects. |
+| pushedData | `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects. |
+| menuFunctions | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
+| configuration | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
+| configurationFunctions | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
+| height | `PropTypes.number` | Items to choose from; can be an array of strings or an array of objects. |
+| width | `PropTypes.number` | Items to choose from; can be an array of strings or an array of objects. |
+
+## Data set
+The data set (data property) can be either an array of similar objects or a promise that will be resolved as an array of objects.
+```js
+[
+    {
+      totoId: 25,
+      totoLabel: "toto25",
+      titi: 3,
+      tutu: "tutuA",
+      qty: 100,
+      amt: 12456
+    },
+    {
+      totoId: 154,
+      totoLabel: "toto154",
+      titi: 12,
+      tutu: "tutuS",
+      qty: 22,
+      amt: 2539
+    },
+    ...
+  ]
+```
+Rows can be added dynamically to the data set using the pushedData property.
+Changed data cells will be highlighted using the corresponding CSS. 
+## Configuration
+The configuration property is an object describing the pivot grid objects as measure or dimensions and their links with the data set properties.
+### Accessors
+Accessors are used to get the appropriate values from the data set.
+They can be :
+####
+* the name of a dataset property.
+* A function called with the data row as parameter.
+* A name of an accessor specified in the configurationFunctions property. 
+####
+Accessors can be defined for:
+####
+* dimension ids.
+* dimension labels.
+* dimension sorting keys.
+* measures values.
+### Formats
+Formats are functions used to format the displayed values
+They can be:
+####
+* undefined.
+* A function called with the value to format.
+* A name of a format specified in the configurationFunctions property. 
+####
+Formats can be defined for
+####
+* dimension labels.
+* measures values. 
+####
+### Aggregations
+Aggregation are functions used the calculate the measures called for each cell with an array of values returned by its accessor for each data rows to be computed (at the intersection of the dimension values in rows and columns).
+They can be:
+####
+* A name of an available precoded aggregation as sum, min, max...
+* An aggregation function.
+* A name of an aggregation function specified specified in the configurationFunctions property.
+####
+N.B. Aggregations (as weighted average) may require several data. In this case its accessor must return each needed data.
+### Sortings
+Sortings are objects thay may contains
+####
+* A sort key accessor
+* A sorting function.
+* A direction (ascending or descending).
+### Dimensions
+Dimensions are the dimensions of the multidimentional matrix managed by the component.
+Dimensions have:
+####
+* An id and a label (caption).
+* A keys accessor and a label accessor (by default the key accessor) for each dimension instances.
+* A facultative sorting.
+* A facultative format.
+```js
+  dimensions: [
+    {
+      id: "toto",
+      caption: "Toto",
+      keyAccessor: "totoId",
+      labelAccessor: "totoLabel",
+      sort: {
+        keyAccessor: "totoId"
+      },
+      format:x=>x.toUpperCase()
+    },
+    {
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi",
+    },
+    ...]
+```
+### Measures
+Measures are the calculations, using aggregation function, of the projections of the matrix on the required dimensions.
+Measures have:
+####
+* An id and a label (caption).
+* A value accessor.
+* An aggregation function.
+* A facultative format.
+```js
+  measures: [
+    {
+      valueAccessor: "qty",
+      id: "qty",
+      caption: "Quantity",
+      format: value =>(
+          <div style={{ color: "blue", textAlign: "right" }}>
+            {Number(value).toFixed(0)}
+          </div>
+        ),
+      aggregation: "sum"
+    },
+    {
+      valueAccessor: "amt",
+      id: "amt",
+      caption: "Amount",
+      aggregation: "sum",
+      format: "amount"
+    },...]
+```
+###Axis
+Displayed dimensions and measures are assigned (ordered) either in row or in column. All measures must be on the same axis.
+```js
+{
+  columns: ["titi"],
+  rows: ["toto"],
+  activeMeasures: ["qty", "amt"],
+  measureHeadersAxis: "columns"
+}
+```
+###Others
+Collapses, sizes and filters can be defined in the configuration property 
+## Configuration functions
+The configurationFunctions property can bu used to define named custom formats, accessors, sorts and aggregations
+```js
+{
+  formats: {amount:...},
+  accessors: {...},
+  sorts: {...},
+  aggregations: {...}
+}
+```
+## Menu functions
+Custom functions that can be dynamically added to contectual menus on the data cells area:
+### Cell functions
+Cell functions are called with a cell description object as parameter:
+####
+* rows and columns dimensions decription (ids, captions...) corresponding to the cell.
+* cell value.
+* rows from the dataset to calculate the value of the cell. 
+### Range functions
+Range functions are called with a range description object as parameter:
+####
+* Each rows and columns dimensions (ids, captions...) corresponding to the cell* Array of arrays of cell values.
+####
+Range functions are called with a range description object as parameter:
+### Grid functions
+Grid functions are called with a configuration object as parameter:
+####
+* Available dimensions and axis (rows or columns) where they are eventually used.
+* Available measures and axis where they are eventually used.
+```js
+ {
+  dataCellFunctions: {
+    drilldown: cell => {...},
+    otherDrilldown: cell => {...}
+  },
+  rangeFunctions: { range: range => {...} },
+  gridFunctions: {...}
+}
+```
+
+

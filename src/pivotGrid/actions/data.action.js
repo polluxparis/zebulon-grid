@@ -23,12 +23,12 @@ const validateData = payload => {
   return [];
 };
 
-export const pushData = payload => ({
+export const applyPushedData = pushedData => ({
   type: PUSH_DATA,
-  payload: validateData(payload)
+  pushedData: validateData(pushedData)
 });
 
-export const fetchSuccess = payload => ({
+export const fetchSuccess = data => ({
   type: FETCH_SUCCESS,
-  payload: validateData(payload)
+  data: validateData(data)
 });

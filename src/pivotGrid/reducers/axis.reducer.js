@@ -3,7 +3,7 @@ import {
   MOVE_MEASURE,
   TOGGLE_MEASURE,
   SET_AXIS,
-  FETCH_DATA
+  LOADING_CONFIG
 } from "../constants";
 import { isNullOrUndefined } from "../utils/generic";
 export default (
@@ -17,8 +17,12 @@ export default (
   let positionToRemove;
   let newPosition = position;
   switch (type) {
-    case FETCH_DATA:
-      return { rows: [], columns: [], dimensions: [], measures: [] };
+    case LOADING_CONFIG:
+      if (action.loading) {
+        return { rows: [], columns: [], dimensions: [], measures: [] };
+      } else {
+        return state;
+      }
     case MOVE_DIMENSION:
       if (isNullOrUndefined(newPosition) && newAxis !== oldAxis) {
         newPosition = state[newAxis].length;

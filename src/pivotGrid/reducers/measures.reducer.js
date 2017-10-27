@@ -1,10 +1,14 @@
-import { SET_MEASURES, FETCH_DATA } from "../constants";
+import { SET_MEASURES, LOADING_CONFIG } from "../constants";
 
 export default (state = {}, action) => {
-  const { type, measures, id } = action;
+  const { type, measures } = action;
   switch (type) {
-    case FETCH_DATA:
-      return {};
+    case LOADING_CONFIG:
+      if (action.loading) {
+        return {};
+      } else {
+        return state;
+      }
     case SET_MEASURES:
       return measures.reduce(
         (acc, measure) => ({ ...acc, [measure.id]: measure }),

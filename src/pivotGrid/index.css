@@ -5,11 +5,18 @@
   user-select: none;
   cursor: default;
   border: solid lightgrey thin;
+  padding: 0.2em;
 }
 
 .zebulon-grid-data-cell-highlighted {
   animation-name: anim-info-updated;
-  animation-duration: 1s;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+}
+.zebulon-grid-data-cell-highlighted2 {
+  animation-name: anim-info-updated2;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
 }
 
 .zebulon-grid-column-headers {
@@ -19,12 +26,25 @@
 .zebulon-grid-row-headers {
   outline: none;
 }
-
+.zebulon-grid-header-total {
+  background-color: rgba(190, 234, 175, 0.98);
+}
+.zebulon-grid-header-grandtotal {
+  background-color: rgba(217, 226, 132, 0.98);
+}
 .zebulon-grid-data-cells {
   outline: none;
 }
 
 @keyframes anim-info-updated {
+  0% {
+    background-color: red;
+    color: rgb(128, 0, 0);
+  }
+  100% {
+  }
+}
+@keyframes anim-info-updated2 {
   0% {
     background-color: red;
     color: rgb(128, 0, 0);
@@ -38,21 +58,18 @@
 }
 
 .zebulon-grid-header-inner {
-  margin: 0.2em;
-  margin-left: '0.5em';
-}
-
-.zebulon-grid-dimension-headers {
+  /*margin: 0.2em;*/
+  /*margin-left: 0.5em;*/
 }
 
 .zebulon-grid-dimension-header {
   background-color: #fafad2;
 }
 .zebulon-grid-dimension-header-row {
-  border-bottom: solid .07em;
+  border-bottom: solid 0.07em;
 }
 .zebulon-grid-dimension-header-column {
-  border-right: solid .07em;
+  border-right: solid 0.07em;
 }
 .zebulon-grid-dimension-attribute-header {
   font-style: italic;
@@ -62,33 +79,37 @@
 }
 .zebulon-grid-dimension-header-inner {
   margin: 0.2em;
-  margin-left: '0.5em';
+  margin-left: "0.5em";
 }
-
 .zebulon-grid-data-cell {
   text-align: right;
 }
-
 .zebulon-grid-data-cell-uneven {
   background-color: rgb(230, 230, 230);
 }
-
 .zebulon-grid-data-cell-even {
   background-color: white;
 }
-
 .zebulon-grid-data-cell-selected {
   background-color: lightcyan;
 }
-
+.zebulon-grid-data-cell-focused {
+  border: solid 0.06em rgba(0, 0, 0, 0.5);
+}
+.zebulon-grid-data-cell-total {
+  background-color: rgba(190, 234, 175, 0.98);
+}
+.zebulon-grid-data-cell-grandtotal {
+  background-color: rgba(217, 226, 132, 0.98);
+}
 .react-contextmenu {
-  min-width: 9em;
+  min-width: 10em;
   color: #373a3c;
   text-align: left;
   background-color: #fff;
   background-clip: padding-box;
-  border: .01em solid rgba(0, 0, 0, .15);
-  border-radius: .25rem;
+  border: 0.05em solid rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
   outline: none;
   opacity: 0;
   pointer-events: none;
@@ -102,7 +123,7 @@
 }
 
 .react-contextmenu-item {
-  padding: .2em .2em;
+  padding: 0.2em 0.2em;
   font-weight: 400;
   line-height: 1.5;
   color: #373a3c;
@@ -125,18 +146,18 @@
 .react-contextmenu-item.react-contextmenu-item--disabled:hover {
   color: #878a8c;
   background-color: transparent;
-  border-color: rgba(0, 0, 0, .15);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .react-contextmenu-item--divider {
   margin-bottom: 3px;
   padding: 2px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, .15);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   cursor: inherit;
 }
 .react-contextmenu-item--divider:hover {
   background-color: transparent;
-  border-color: rgba(0, 0, 0, .15);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .react-contextmenu-item.react-contextmenu-submenu {
@@ -165,4 +186,14 @@
 
 .react-contextmenu-item-filtered {
   font-weight: bold;
+}
+.zebulon-scrollbar-bar {
+  background-color: lightgrey;
+  border: solid 0.03em grey;
+  border-radius: 0.25rem;
+}
+.zebulon-scrollbar-thumb {
+  background-color: grey;
+  border: solid 0.03em grey;
+  border-radius: 0.25rem;
 }

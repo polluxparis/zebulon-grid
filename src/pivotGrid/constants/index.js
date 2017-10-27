@@ -6,13 +6,14 @@ export const AXIS_SEPARATOR = "-//-";
 
 export const ROOT_ID = "__ROOT_ID__";
 export const EMPTY_ID = "__EMPTY_ID__";
-
+export const ScrollbarSize = 12;
 // Headers
 export const HeaderType = {
   MEASURE: 1, // measure header
   DIMENSION: 2, // dimension value (leaf)
   DIMENSION_HEADER: 3, // dimension header
-  GRAND_TOTAL: 4
+  GRAND_TOTAL: 4,
+  SUB_TOTAL: 5
 };
 
 // Axis
@@ -57,6 +58,7 @@ export const FETCH_DATA = "PIVOTGRID_FETCH_DATA";
 export const FETCH_FAILURE = "PIVOTGRID_FETCH_FAILURE";
 export const PUSH_DATA = "PIVOTGRID_PUSH_DATA";
 export const FETCH_SUCCESS = "PIVOTGRID_FETCH_SUCCESS";
+export const LOADING_CONFIG = "PIVOTGRID_LOADING_CONFIG";
 
 export const CHANGE_SORT_ORDER = "PIVOTGRID_CHANGE_SORT_ORDER";
 
@@ -74,3 +76,5 @@ export const EXPAND_COLLAPSE_ALL = "PIVOTGRID_EXPAND_COLLAPSE_ALL";
 export const SET_COLLAPSES = "PIVOTGRID_SET_COLLAPSES";
 
 export const SELECT_RANGE = "PIVOTGRID_SELECT_RANGE";
+export const SCROLL = "PIVOTGRID_SCROLL";
+export const TOGGLE_SUBTOTAL = "PIVOTGRID_TOGGLE_SUBTOTAL";

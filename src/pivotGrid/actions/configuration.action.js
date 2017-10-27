@@ -8,9 +8,13 @@ import {
   MOVE_MEASURE,
   MOVE_DIMENSION,
   ZOOM_IN,
-  ZOOM_OUT
+  ZOOM_OUT,
+  LOADING_CONFIG
 } from "../constants";
-
+export const loadingConfig = loading => ({
+  type: LOADING_CONFIG,
+  loading
+});
 export const setDimensions = (configObject, configurationFunctions) => ({
   type: SET_DIMENSIONS,
   dimensions: configObject.dimensions.map(dimension =>
@@ -24,7 +28,11 @@ export const setMeasures = (configObject, configurationFunctions) => ({
     measureFactory(measure, configurationFunctions)
   )
 });
-export const setConfigProperty = (configObject, property, defaultValue) => ({
+export const setConfigurationProperty = (
+  configObject,
+  property,
+  defaultValue
+) => ({
   type: SET_CONFIG_PROPERTY,
   property,
   value: configObject[property] || defaultValue

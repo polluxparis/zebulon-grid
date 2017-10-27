@@ -1,44 +1,77 @@
 import React, { Component } from "react";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-
 import PivotGrid from "./containers/PivotGrid";
 import reducer from "./reducers";
-import { applyConfigToStore, setData } from "./utils/configuration";
+import "./index.css";
+import {
+  defaultMenuFunctions,
+  defaultSizes,
+  applySizesToStore,
+  applyConfigurationToStore,
+  setData,
+  pushData
+} from "./utils/configuration";
 import * as actions from "./actions";
 
 class ZebulonGrid extends Component {
   componentWillMount() {
-    const { data, config, configurationFunctions, menuFunctions } = this.props;
-    const store = createStore(reducer);
-    applyConfigToStore(store, config, configurationFunctions, data);
-    this.setState({ store, configurationFunctions, menuFunctions });
+    const { data, configuration, configurationFunctions, sizes } = this.props;
+    this.store = createStore(
+      reducer,
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+        window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
+    applySizesToStore(this.store, { ...defaultSizes, ...sizes });
+    applyConfigurationToStore(
+      this.store,
+      configuration,
+      configurationFunctions,
+      data
+    );
+    // this.setState({
+    //   store,
+    //   configurationFunctions,
+    //   menuFunctions: menuFunctions || defaultMenuFunctions,
+    // });
   }
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.config !== nextProps.config) {
-      applyConfigToStore(
-        this.state.store,
-        nextProps.config,
-        this.state.configurationFunctions,
-        nextProps.data
+    const {
+      data,
+      configuration,
+      configurationFunctions,
+      pushedData,
+      sizes
+    } = nextProps;
+    // this.sizes = { ...defaultSizes, ...sizes };
+
+    if (sizes !== this.props.sizes) {
+      applySizesToStore(this.store, sizes);
+    }
+    if (this.props.configuration !== configuration) {
+      applyConfigurationToStore(
+        this.store,
+        configuration,
+        configurationFunctions,
+        data
       );
-    } else if (this.props.data !== nextProps.data) {
-      setData(this.state.store, nextProps.data);
+    } else if (this.props.data !== data) {
+      setData(this.store, data);
+    } else if (this.props.pushedData !== pushedData && pushedData.length) {
+      pushData(this.store, pushedData);
     }
   }
   render() {
-    const { store, menuFunctions } = this.state;
-
     return (
-      <Provider store={store}>
+      <Provider store={this.store}>
         <PivotGrid
-          menuFunctions={menuFunctions}
+          menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
           id={this.props.id}
-          drilldown={this.props.drilldown}
-          focusCells={this.props.focusCells}
-          height={this.props.height}
-          width={this.props.width}
+          // drilldown={this.props.drilldown}
+          // focusCells={this.props.focusCells}
+          // height={this.props.sizes.height}
+          // width={this.props.sizes.width}
+          ref={ref => (this.grid = ref)}
         />
       </Provider>
     );
@@ -48,22 +81,25 @@ class ZebulonGrid extends Component {
 Object.keys(actions).forEach(action => {
   /* eslint-disable func-names */
   ZebulonGrid.prototype[action] = function(...args) {
-    this.state.store.dispatch(actions[action](...args));
+    this.store.dispatch(actions[action](...args));
   };
   /* eslint-enable */
 });
 ZebulonGrid.prototype["setData"] = function(data) {
-  setData(this.state.store, data);
+  setData(this.store, data);
 };
 ZebulonGrid.prototype["getStore"] = function() {
-  return this.state.store.getState();
+  return this.store.getState();
 };
-ZebulonGrid.prototype["setConfig"] = function(config, data) {
-  applyConfigToStore(
-    this.state.store,
-    config,
+ZebulonGrid.prototype["setConfiguration"] = function(configuration, data) {
+  applyConfigurationToStore(
+    this.store,
+    configuration,
     this.props.configurationFunctions,
     data
   );
+};
+ZebulonGrid.prototype["setSizes"] = function(sizes) {
+  applySizesToStore(this.store, { ...defaultSizes, ...sizes });
 };
 export default ZebulonGrid;

@@ -4,7 +4,13 @@ import classNames from "classnames";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 
-import { MEASURE_ID, ROOT_ID, AxisType, toAxis } from "../../constants";
+import {
+  MEASURE_ID,
+  ROOT_ID,
+  TOTAL_ID,
+  AxisType,
+  toAxis
+} from "../../constants";
 import { ContextMenuTrigger } from "react-contextmenu";
 
 class DimensionHeader extends PureComponent {
@@ -32,8 +38,7 @@ class DimensionHeader extends PureComponent {
           toAxis(data.axis),
           toAxis(AxisType.DIMENSION)
         );
-      }
-      if (data.action === "add") {
+      } else if (data.action === "add") {
         this.props.moveDimension(
           data.newDimensionId,
           toAxis(AxisType.DIMENSION),
@@ -42,66 +47,65 @@ class DimensionHeader extends PureComponent {
           // except if it's the measures dimension. In this case, add before
           data.dimensionId === MEASURE_ID ? data.index : data.index + 1
         );
-      }
-      if (data.action === "sort") {
+      } else if (data.action === "sort") {
         this.props.toggleSortOrder(data.dimensionId);
-      }
-      if (data.action === "expand all") {
-        const keys = this.props.getDimensionKeys(data.axis, data.index, false);
-        this.props.expandCollapseAll(data.axis, keys);
-      }
-      if (data.action === "collapse all") {
-        const keys = this.props.getDimensionKeys(data.axis, data.index, true);
-        this.props.expandCollapseAll(data.axis, keys);
-      }
-      if (data.action === "filter") {
+      } else if (data.action === "expand all") {
+        const keys = this.props.getExpandCollapseKeys(
+          data.axis,
+          data.index,
+          false
+        );
+        this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
+      } else if (data.action === "collapse all") {
+        const keys = this.props.getExpandCollapseKeys(
+          data.axis,
+          data.index,
+          true
+        );
+        this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
+      } else if (data.action === "toggle subtotal") {
+        this.props.toggleSubTotal(data.dimensionId);
+      } else if (data.action === "toggle grandtotal") {
+        this.props.toggleSubTotal(`${toAxis(data.axis)}${TOTAL_ID}`);
       }
     }
   };
 
   render() {
     const {
-      dimensionId,
-      dimensionIndex,
-      sortDirection,
-      caption,
-      left,
-      top,
-      height,
-      width,
+      positions,
+      dimension,
       crossDimensionId,
-      axis,
-      isNotCollapsible,
-      isCollapsed,
       previewSizes,
       gridId,
       moveDimension,
-      isAttribute,
+
       collectMenu,
-      isDropTarget,
+
       isFiltered
     } = this.props;
 
     const ids = {};
-    if (axis === AxisType.ROWS) {
-      ids.right = dimensionId;
+    if (dimension.axis === AxisType.ROWS) {
+      ids.right = dimension.id;
       ids.bottom = crossDimensionId;
     } else {
-      ids.bottom = dimensionId;
+      ids.bottom = dimension.id;
       ids.right = crossDimensionId;
     }
-
+    const { left, top, width, height } = positions;
     const className = classNames({
       "zebulon-grid-cell": true,
       "zebulon-grid-dimension-header": true,
-      "zebulon-grid-dimension-header-column": axis === AxisType.COLUMNS,
-      "zebulon-grid-dimension-header-row": axis === AxisType.ROWS,
-      "zebulon-grid-dimension-attribute-header": isAttribute,
+      "zebulon-grid-dimension-header-column":
+        dimension.axis === AxisType.COLUMNS,
+      "zebulon-grid-dimension-header-row": dimension.axis === AxisType.ROWS,
+      "zebulon-grid-dimension-attribute-header": dimension.isAttribute,
       "zebulon-grid-dimension-filtered-header": isFiltered
     });
     let header = (
       <div
-        key={`fixed-dim-${dimensionId}`}
+        key={`fixed-dim-${dimension.id}`}
         className={className}
         style={{
           position: "absolute",
@@ -115,16 +119,17 @@ class DimensionHeader extends PureComponent {
         onClick={this.handleClickMenu}
       >
         <InnerHeader
-          axis={axis}
-          id={dimensionId}
-          index={dimensionIndex}
-          caption={caption}
-          isNotCollapsible={isNotCollapsible}
-          isCollapsed={isCollapsed}
+          axis={dimension.axis}
+          id={dimension.id}
+          index={dimension.depth}
+          caption={dimension.caption}
+          isNotCollapsible={!dimension.hasAttribute}
+          isCollapsed={dimension.isCollapsed}
           handleClick={this.handleClickSort}
           handleClickCollapse={this.handleClickCollapse}
           moveDimension={moveDimension}
-          isDropTarget={isDropTarget}
+          isDropTarget={true}
+          isDragSource={true}
           gridId={gridId}
         />
         <ResizeHandle
@@ -153,13 +158,15 @@ class DimensionHeader extends PureComponent {
         collect={collectMenu}
         onItemClick={this.handleClickMenu}
         type={"dimension-header"}
-        axis={axis}
-        isNotCollapsible={isNotCollapsible}
-        dimensionId={dimensionId}
-        sortDirection={sortDirection}
-        caption={caption}
-        index={dimensionIndex}
-        isAttribute={isAttribute}
+        axis={dimension.axis}
+        isNotCollapsible={!dimension.hasAttribute}
+        hasSubTotal={dimension.hasSubTotal}
+        hasGrandTotal={dimension.hasGrandTotal}
+        dimensionId={dimension.id}
+        sortDirection={dimension.sort.direction}
+        caption={dimension.caption}
+        index={dimension.depth}
+        isAttribute={dimension.isAttribute}
         style={{ width: "inherit" }}
       >
         {header}

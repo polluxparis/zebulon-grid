@@ -2,59 +2,35 @@ import { connect } from "react-redux";
 
 import { AxisType } from "../constants";
 import {
-  getCellWidthByKeySelector,
-  getColumnWidthSelector,
-  columnDimensionsSelector,
-  columnHeadersWidthSelector,
-  getLastChildWidthSelector,
-  layoutSelector,
-  columnsVisibleWidthSelector,
   previewSizesSelector,
-  columnLeavesSelector,
-  getAxisActivatedMeasuresSelector,
-  filteredDataSelector,
   getSelectedColumnRangeSelector,
-  crossPositionsSelector,
-  availableMeasuresSelector,
-  getColumnDimensionHeightSelector
+  getAxisActivatedMeasuresSelector,
+  availableMeasuresSelector
 } from "../selectors";
 import {
   toggleCollapse,
   selectRange,
   moveDimension,
   moveMeasure,
-  toggleMeasure
+  toggleMeasure,
+  setConfigurationProperty
 } from "../actions";
 import Headers from "../components/Headers/Headers";
 
 const mapStateToProps = (state, ownProps) => {
-  const leaves = columnLeavesSelector(state);
   return {
     axisType: AxisType.COLUMNS,
-    data: filteredDataSelector(state),
-    dimensions: columnDimensionsSelector(state),
+    gridId: ownProps.gridId,
+    getSelectedColumnRange: getSelectedColumnRangeSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     availableMeasures: availableMeasuresSelector(state),
-    columnCount: layoutSelector(state).columnHorizontalCount,
-    getColumnWidth: getColumnWidthSelector(state),
-    getRowHeight: getColumnDimensionHeightSelector(state),
-    getSizeByKey: getCellWidthByKeySelector(state),
-    crossPositions: crossPositionsSelector(state)[AxisType.COLUMNS],
-    height: columnHeadersWidthSelector(state),
-    width: columnsVisibleWidthSelector(state),
-    previewSizes: previewSizesSelector(state),
-    rowCount: layoutSelector(state).columnVerticalCount,
-    getLastChildSize: getLastChildWidthSelector(state),
-    leaves,
-    sizes: state.sizes,
-    gridId: ownProps.gridId,
-    getSelectedColumnRange: getSelectedColumnRangeSelector(state)
+    previewSizes: previewSizesSelector(state)
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  toggleCollapse: key => {
-    dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key }));
+  toggleCollapse: (key, n) => {
+    dispatch(toggleCollapse({ axisType: AxisType.COLUMNS, key, n }));
   },
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
@@ -65,6 +41,13 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId)),
+  toggleMeasuresAxis: axis =>
+    dispatch(
+      setConfigurationProperty(
+        { measureHeadersAxis: axis },
+        "measureHeadersAxis"
+      )
+    ),
   selectAxis: getSelectedColumnRange => header => {
     const selectedRange = getSelectedColumnRange(header);
     dispatch(selectRange(selectedRange));

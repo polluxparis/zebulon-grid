@@ -1,77 +1,34 @@
-import React, { PureComponent } from 'react';
-import { Grid as ReactVirtualizedGrid } from 'react-virtualized/dist/commonjs/Grid';
+import React from "react";
 
-import { isInRange, isUndefined } from '../../utils/generic';
-import DataCell from '../DataCell/DataCell';
-import { AXIS_SEPARATOR, HeaderType } from '../../constants';
+import { isInRange, isUndefined } from "../../utils/generic";
+import DataCell from "../DataCell/DataCell";
+import { AXIS_SEPARATOR, HeaderType } from "../../constants";
+import { ScrollableArea } from "../Controls/ScrollableArea";
 
-class DataCells extends PureComponent {
-  state = {
-    valuesCache: {}
-  };
-
-  componentWillReceiveProps() {
-    this.setState({ valuesCache: this.valuesCache });
+export class DataCells extends ScrollableArea {
+  constructor(props) {
+    super(props);
+    this.cellCache = {};
+    this.isPushing = 0;
   }
-
-  componentDidUpdate(prevProps) {
+  componentWillReceiveProps(newProps) {
+    this.isPushing = newProps.isPushing ? 1 + this.isPushing % 2 : 0;
     if (
-      prevProps.sizes !== this.props.sizes ||
-      prevProps.dimensions !== this.props.dimensions ||
-      prevProps.zoom !== this.props.zoom
+      !newProps.isPushing &&
+      (newProps.rows !== this.props.rows ||
+        newProps.columns !== this.props.columns)
     ) {
-      this.grid.recomputeGridSize();
+      this.cellCache = {};
     }
-    this.isUpdating = false;
   }
-
-  handleKeyDown = e => {
-    // Page down
-    if (e.key === 'PageDown') {
-      if (e.shiftKey) {
-      } else {
-      }
-      e.preventDefault();
-    }
-
-    // Page up
-    if (e.key === 'PageUp') {
-      if (e.shiftKey) {
-      } else {
-      }
-      e.preventDefault();
-    }
+  handleMouseDown = e => {
+    this.onSelect(e);
   };
-
-  handleMouseDown = (e, { columnIndex, rowIndex }) => {
-    if (e.button === 0) {
-      this.isMouseDown = true;
-      if (e.shiftKey) {
-        if (
-          !(
-            this.props.selectedRange.selectedCellEnd.columnIndex ===
-              columnIndex &&
-            this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
-          )
-        ) {
-          this.props.selectRange({
-            selectedCellEnd: { columnIndex, rowIndex },
-            focusedCell: { columnIndex, rowIndex }
-          });
-        }
-      } else {
-        this.props.selectCell({ columnIndex, rowIndex });
-      }
-    }
-  };
-
-  handleMouseUp = () => {
+  handleMouseUp = e => {
     this.isMouseDown = false;
   };
-
-  handleMouseOver = (e, { columnIndex, rowIndex }) => {
-    // buttons = 1 to help when mouse is up outside of the grid
-    if (this.isMouseDown && e.buttons === 1) {
+  handleMouseOver = ({ columnIndex, rowIndex, button }) => {
+    if (this.isMouseDown && button === 0) {
       if (
         !(
           this.props.selectedRange.selectedCellEnd.columnIndex ===
@@ -86,9 +43,73 @@ class DataCells extends PureComponent {
       }
     }
   };
-
-  handleDrilldown = cell => {
-    return this.props.drilldown(this.props.getCellInfos(cell));
+  onScroll = e => {
+    const { rows, columns, onScroll } = this.props;
+    if (e.type === "scrollbar") {
+      const scroll = { rows: rows.scroll, columns: columns.scroll };
+      if (e.initiator === "bar") {
+        if (e.direction === "horizontal") {
+          scroll.columns = {
+            index: Math.round(columns.length * e.positionRatio),
+            direction: 1
+          };
+          //   this.ratios.position.horizontal =
+          //     scroll.columns.index / (columns.length - 1);
+          //
+        } else {
+          scroll.rows = {
+            index: Math.round(rows.length * e.positionRatio),
+            direction: 1
+          };
+          // this.ratios.position.horizontal =
+          // scroll.rows.index / (rows.length - 1);
+        }
+        onScroll(scroll.rows, scroll.columns);
+      }
+      return true;
+    }
+    return false;
+  };
+  onSelect = ({ button, shiftKey, columnIndex, rowIndex }) => {
+    if (button === 0) {
+      this.isMouseDown = true;
+      if (shiftKey) {
+        this.props.selectRange({
+          selectedCellStart: this.props.selectedRange.selectedCellStart,
+          selectedCellEnd: { columnIndex, rowIndex }
+        });
+      } else {
+        this.props.selectCell({ columnIndex, rowIndex });
+      }
+    }
+  };
+  handleDoubleClick = cell => {
+    const keys = Object.keys(this.props.menuFunctions.dataCellFunctions);
+    if (keys.length) {
+      const menuFunction = this.props.menuFunctions.dataCellFunctions[keys[0]]
+        .function;
+      return menuFunction(this.props.getCellInfos(cell));
+    }
+  };
+  handleClickMenu = (e, data, target) => {
+    if (e.button === 0) {
+      if (data.functionType === "cell") {
+        this.props.menuFunctions.dataCellFunctions[data.action].function(
+          this.props.getCellInfos({
+            columnIndex: data.columnIndex,
+            rowIndex: data.rowIndex
+          })
+        );
+      } else if (data.functionType === "range") {
+        this.props.menuFunctions.rangeFunctions[data.action].function(
+          this.props.getRangeInfos(this.props.selectedRange)
+        );
+      } else if (data.functionType === "function") {
+        this.props.menuFunctions.gridFunctions[data.action].function();
+      } else if (data.action === "toggle-totals") {
+        this.props.setConfigProperty("totalsFirst", data.value);
+      }
+    }
   };
   collectMenu = props => {
     return {
@@ -96,44 +117,34 @@ class DataCells extends PureComponent {
       dimensions: this.props.dimensions,
       menuFunctions: this.props.menuFunctions,
       filters: this.props.filters,
-      zoom: this.props.zoom
+      zoom: this.props.zoom,
+      onItemClick: this.handleClickMenu,
+      configuration: this.props.configuration
     };
   };
-  handleClickMenu = (e, data, target) => {
-    if (e.button === 0) {
-      if (data.action === 'drilldown') {
-        this.handleDrilldown({
-          columnIndex: data.columnIndex,
-          rowIndex: data.rowIndex
-        });
-      } else if (data.functionType === 'cell') {
-        this.props.menuFunctions.dataCellFunctions[data.action].function(
-          this.props.getCellInfos({
-            columnIndex: data.columnIndex,
-            rowIndex: data.rowIndex
-          })
-        );
-      } else if (data.functionType === 'range') {
-        this.props.menuFunctions.rangeFunctions[data.action].function(
-          this.props.getRangeInfos(this.props.selectedRange)
-        );
-      } else if (data.functionType === 'function') {
-        this.props.menuFunctions.functions[data.action].function();
-      }
-    }
-  };
-  cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
+  cellRenderer = (
+    rowHeader,
+    columnHeader,
+    // key,
+    isEven,
+    offsetRow,
+    offsetColumn
+  ) => {
     const {
       getCellValue,
-      rowLeaves,
-      columnLeaves,
       measures,
       selectedRange,
-      gridId
+      gridId,
+      isPushing
     } = this.props;
-    const rowHeader = rowLeaves[rowIndex];
-    const columnHeader = columnLeaves[columnIndex];
-
+    const key = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
+    const style = {
+      position: "absolute",
+      top: rowHeader.sizes.main.position - offsetRow,
+      left: columnHeader.sizes.main.position - offsetColumn,
+      height: rowHeader.sizes.main.size,
+      width: columnHeader.sizes.main.size
+    };
     let measure;
     if (rowHeader.type === HeaderType.MEASURE) {
       measure = measures[rowHeader.id];
@@ -144,98 +155,91 @@ class DataCells extends PureComponent {
     if (isUndefined(measure)) {
       measure = { format: v => v, valueAccessor: () => null };
     }
-
     let selected = false;
     if (selectedRange.selectedCellStart && selectedRange.selectedCellEnd) {
       selected = isInRange(
-        { columnIndex, rowIndex },
+        {
+          columnIndex: columnHeader.index,
+          rowIndex: rowHeader.index
+        },
         selectedRange.selectedCellStart,
         selectedRange.selectedCellEnd
       );
     }
     let focused = false;
-    if (selectedRange.focusedCell) {
+    if (selectedRange.selectedCellEnd) {
       focused =
-        columnIndex === selectedRange.focusedCell.columnIndex &&
-        rowIndex === selectedRange.focusedCell.rowIndex;
+        columnHeader.index === selectedRange.selectedCellEnd.columnIndex &&
+        rowHeader.index === selectedRange.selectedCellEnd.rowIndex;
     }
-    // This causes all the data cells to be rendered when new cells are selected via mouse actions
-    // It is not optimal, we could implement a memoizer so that cells are not recalculated but it would
-    // bring complexity and this is good enough at the time.
-    const value = getCellValue(
-      measure.valueAccessor,
-      rowHeader.dataIndexes,
-      columnHeader.dataIndexes,
-      measure.aggregation
-    );
-    const cellKey = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
-    this.valuesCache[cellKey] = value;
-    let valueHasChanged = false;
-    if (this.isUpdating) {
-      const oldValue = this.state.valuesCache[cellKey];
-      // NaN is not equal to NaN... hence the last condition
-      if (oldValue !== undefined && value !== oldValue && !isNaN(oldValue)) {
-        valueHasChanged = true;
-      }
+    let valueHasChanged;
+    const cell = this.cellCache[key] || {};
+    if (cell.value === undefined || isPushing) {
+      const value = getCellValue(
+        measure.valueAccessor,
+        rowHeader.dataIndexes,
+        columnHeader.dataIndexes,
+        measure.aggregation
+      );
+      valueHasChanged = this.isPushing * (cell.value !== value);
+      cell.value = value;
+      cell.caption = measure.format(cell.value);
+      this.cellCache[key] = cell;
     }
-    const caption = measure.format(value);
     return (
       <DataCell
         key={key}
         valueHasChanged={valueHasChanged}
         style={style}
-        rowIndex={rowIndex}
-        columnIndex={columnIndex}
-        caption={caption}
-        drilldown={this.handleDrilldown}
+        rowIndex={rowHeader.index}
+        columnIndex={columnHeader.index}
+        caption={cell.caption}
+        gridId={gridId}
+        selected={selected}
+        focused={focused}
+        isTotal={Math.max(rowHeader.isTotal, columnHeader.isTotal)}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
-        handleClickMenu={this.handleClickMenu}
-        selected={selected}
-        focused={focused}
+        handleDoubleClick={this.handleDoubleClick}
         collectMenu={this.collectMenu}
-        gridId={gridId}
+        isEven={isEven}
       />
     );
   };
-
-  render() {
-    const {
-      getColumnWidth,
-      getRowHeight,
-      onScroll,
-      height,
-      width,
-      scrollToColumn,
-      scrollToRow,
-      onSectionRendered,
-      columnLeaves,
-      rowLeaves,
-      selectedRange
-    } = this.props;
-    this.valuesCache = {};
-    return (
-      <ReactVirtualizedGrid
-        cellRenderer={this.cellRenderer}
-        className="zebulon-grid-data-cells"
-        columnCount={columnLeaves.length}
-        columnWidth={getColumnWidth}
-        height={height}
-        onScroll={onScroll}
-        ref={ref => {
-          this.grid = ref;
-        }}
-        rowCount={rowLeaves.length}
-        rowHeight={getRowHeight}
-        onSectionRendered={onSectionRendered}
-        scrollToColumn={scrollToColumn}
-        scrollToRow={scrollToRow}
-        selectedRange={selectedRange}
-        width={width}
-      />
+  getContent = () => {
+    const { rows, columns } = this.props;
+    if (rows === undefined || columns === undefined) {
+      return [];
+    }
+    this.positionRatios = {
+      vertical: rows.positionRatio,
+      horizontal: columns.positionRatio
+    };
+    const cells = [];
+    rows.cells.map((row, rowIndex) =>
+      columns.cells.map((column, columnIndex) =>
+        cells.push(
+          this.cellRenderer(
+            row[0],
+            column[0],
+            !(rowIndex % 2),
+            rows.offset,
+            columns.offset
+          )
+        )
+      )
     );
-  }
+    return cells;
+  };
+  getRatios = () => {
+    const { rows, columns } = this.props;
+    return {
+      vertical: { display: rows.displayedRatio, position: rows.positionRatio },
+      horizontal: {
+        display: columns.displayedRatio,
+        position: columns.positionRatio
+      }
+    };
+  };
 }
-
-export default DataCells;

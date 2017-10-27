@@ -7,6 +7,6 @@ public
 specs
 docs
 config
-webpack.config.umd.js
+webpack.configuration.umd.js
 yarn.lock
 *.sublime-*

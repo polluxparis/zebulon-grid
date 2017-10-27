@@ -4,35 +4,35 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
-  columnLeavesSelector,
-  defaultCellSizesSelector,
-  layoutSelector,
-  rowLeavesSelector,
+  // rowHeadersSelector,
+  // columnHeadersSelector,
+  rowAndColumnHeadersSelector,
   selectedRangeSelector,
-  copySelector
+  copySelector,
+  defaultCellSizesSelector
+  // filteredPushedDataSelector
 } from "../selectors";
 import {
   updateCellSize,
-  setConfigProperty,
+  setConfigurationProperty,
   selectRange,
   selectCell,
+  scrollToIndex,
   zoom
 } from "../actions";
 
 const mapStateToProps = state => {
-  const rowLeaves = rowLeavesSelector(state);
-  const columnLeaves = columnLeavesSelector(state);
   return {
     status: state.status,
-    width: state.config.width,
-    layout: layoutSelector(state),
-    defaultCellSizes: defaultCellSizesSelector(state),
+    width: state.configuration.width,
+    height: state.configuration.height,
+    headers: rowAndColumnHeadersSelector(state),
     sizes: state.sizes,
-    columnLeaves,
-    rowLeaves,
     selectedRange: selectedRangeSelector(state),
-    zoomValue: state.config.zoom,
-    copy: copySelector(state)
+    zoomValue: state.configuration.zoom,
+    copy: copySelector(state),
+    defaultCellSizes: defaultCellSizesSelector(state),
+    pushedData: state.data.pushedData
   };
 };
 
@@ -55,49 +55,35 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   setSizes: ({ height, width }) => {
-    if (height) dispatch(setConfigProperty({ height, width }, "height"));
-    if (width) dispatch(setConfigProperty({ height, width }, "width"));
+    if (height) dispatch(setConfigurationProperty({ height, width }, "height"));
+    if (width) dispatch(setConfigurationProperty({ height, width }, "width"));
   },
-  selectRange: selectedRange => {
-    dispatch(selectRange(selectedRange));
-  },
-  selectCell: cell => {
-    dispatch(selectCell(cell));
-  },
-  zoom: type => {
-    dispatch(zoom(type));
-  }
+  selectRange: selectedRange => dispatch(selectRange(selectedRange)),
+  selectCell: cell => dispatch(selectCell(cell)),
+  zoom: type => dispatch(zoom(type)),
+  scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
+  scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll))
 });
 
 const mergeProps = (
-  {
-    status,
-    width,
-    layout,
-    headerSizes,
-    sizes,
-    defaultCellSizes,
-    selectedRange,
-    copy,
-    zoomValue
-  },
-  { updateCellSize, setSizes, selectRange, selectCell, zoom },
+  { sizes, defaultCellSizes, ...restStateProps },
+  { updateCellSize, ...restDispatchProps },
   ownProps
-) => ({
-  status,
-  width,
-  layout,
-  updateCellSize: ({ handle, offset, initialOffset }) =>
-    updateCellSize({ handle, offset, initialOffset, sizes, defaultCellSizes }),
-  setSizes,
-  selectRange,
-  selectCell,
-  selectedRange,
-  zoom,
-  copy,
-  zoomValue,
-  ...ownProps
-});
+) => {
+  return {
+    updateCellSize: ({ handle, offset, initialOffset }) =>
+      updateCellSize({
+        handle,
+        offset,
+        initialOffset,
+        sizes,
+        defaultCellSizes
+      }),
+    ...restStateProps,
+    ...restDispatchProps,
+    ...ownProps
+  };
+};
 
 export const GridWithoutStoreAndDndContext = connect(
   mapStateToProps,

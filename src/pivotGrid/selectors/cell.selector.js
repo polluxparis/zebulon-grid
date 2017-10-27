@@ -1,15 +1,21 @@
 import { createSelector } from "reselect";
 import { isNullOrUndefined, isUndefined, range } from "../utils/generic";
-import { intersectDataIndexes } from "../utils/headers";
-import { filteredDataSelector } from "./data.selector";
+import { inter } from "../utils/headers";
+// import { dataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
-  rowDimensionsSelector,
-  columnDimensionsSelector
+  rowVisibleDimensionsSelector,
+  columnVisibleDimensionsSelector
 } from "./dimensions.selector";
 import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import { MEASURE_ID, HeaderType } from "../constants";
-
+export const getFilteredIndex = leaf => {
+  if (leaf.isParentCollapsed) {
+    return getFilteredIndex(leaf.parent);
+  } else {
+    return leaf.filteredIndexes;
+  }
+};
 const cellValue = (
   data,
   valueAccessor,
@@ -17,7 +23,7 @@ const cellValue = (
   columnDataIndexes,
   aggregation = () => null
 ) => {
-  const intersection = intersectDataIndexes(rowDataIndexes, columnDataIndexes);
+  const intersection = inter(rowDataIndexes, columnDataIndexes);
   // Root headers have undefined data indexes
   const intersectionArray = isUndefined(intersection)
     ? range(0, data.length - 1)
@@ -25,9 +31,10 @@ const cellValue = (
   // Remove rows for which the accessor gives a null or undefined value
   // This allows better behaviour for cells which have a null value
   // for example getting an empty cell instead of zero
-  const intersectionWithNonNullOrUndefinedValue = intersectionArray.filter(
-    i => !isNullOrUndefined(valueAccessor(data[i]))
-  );
+  const values = intersectionArray
+    // .map(index => (data[index].isFiltered ? null : valueAccessor(data[index])))
+    .map(index => valueAccessor(data[index]))
+    .filter(value => !isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict
   // and keep only rows where the accessor gives a finite number
   // This removes Javascript operators weird behaviour with non finite number values.
@@ -35,15 +42,11 @@ const cellValue = (
   //  const intersectionWithNumericalValue = intersectionArray.filter(
   //   i => Number.isFinite(accessor(data[i]))
   // );
-  return aggregation(
-    valueAccessor,
-    intersectionWithNonNullOrUndefinedValue,
-    data
-  );
+  return aggregation(values, data);
 };
 
 export const getCellValueSelector = createSelector(
-  [filteredDataSelector],
+  [state => state.data.data],
   data => (
     valueAccessor,
     rowDataIndexes,
@@ -65,25 +68,26 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   const depth = axisDimensions.length;
   let dimension;
   const dimensions = [];
-  const row = isNullOrUndefined(leaf.dataIndexes)
-    ? null
-    : data[leaf.dataIndexes[0]];
+  // const row = isNullOrUndefined(leaf.dataIndexes)
+  // ? null
+  // : data[leaf.dataIndexes[0]];
   for (let index = depth - 1; index >= 0; index -= 1) {
     dimension = axisDimensions[index];
 
     // when a leaf is collapsed its parent  has a depth < leaf.depth -1
     // we  have to push an empty cell in this case
-    if (index > l.depth) {
-      dimensions.push({
-        axis,
-        dimension: {
-          id: dimension.id,
-          caption: dimension.caption,
-          isCollapsed: true
-        },
-        cell: { id: null, caption: null }
-      });
-    } else if (dimension.id === MEASURE_ID) {
+    // if (index > l.depth) {
+    //   dimensions.push({
+    //     axis,
+    //     dimension: {
+    //       id: dimension.id,
+    //       caption: dimension.caption,
+    //       isCollapsed: leaf.isParentCollapsed
+    //     },
+    //     cell: { id: null, caption: null }
+    //   });
+    // } else
+    if (dimension.id === MEASURE_ID) {
       dimensions.push({
         axis,
         dimension: {
@@ -100,18 +104,23 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
         dimension: {
           id: dimension.id,
           caption: dimension.caption,
-          isCollapsed: false
+          isCollapsed: l.isParentCollapsed
         },
-        cell: { id: l.id, caption: dimension.labelAccessor(row) }
+        cell: {
+          id: l.isParentCollapsed || l.depth !== index ? null : l.id,
+          caption: l.isParentCollapsed || l.depth !== index ? null : l.caption
+        }
       });
 
-      l = l.parent;
+      if (l.depth === index) {
+        l = l.parent;
+      }
     }
   }
   return dimensions.reverse();
 };
 export const getCellDimensionInfosSelector = createSelector(
-  [filteredDataSelector],
+  [state => state.data.data],
   data => (axisDimensions, axis, leaf, measures, dimensions) => {
     return cellDimensionInfos(
       data,
@@ -126,12 +135,12 @@ export const getCellDimensionInfosSelector = createSelector(
 
 export const getCellInfosSelector = createSelector(
   [
-    filteredDataSelector,
+    state => state.data.data,
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector
+    rowVisibleDimensionsSelector,
+    columnVisibleDimensionsSelector
   ],
   (
     data,
@@ -141,8 +150,10 @@ export const getCellInfosSelector = createSelector(
     rowDimensions,
     columnDimensions
   ) => cell => {
-    const rowLeaf = rowLeaves[cell.rowIndex];
-    const columnLeaf = columnLeaves[cell.columnIndex];
+    const columns = columnDimensions.filter(column => column.isVisible);
+    const rows = rowDimensions.filter(row => row.isVisible);
+    const rowLeaf = rowLeaves.leaves[cell.rowIndex];
+    const columnLeaf = columnLeaves.leaves[cell.columnIndex];
     let measure;
     if (rowLeaf.type === HeaderType.MEASURE) {
       measure = measures[rowLeaf.id];
@@ -157,38 +168,25 @@ export const getCellInfosSelector = createSelector(
       measure.aggregation
     );
     let dimensions = [];
-    dimensions = cellDimensionInfos(
-      data,
-      rowDimensions,
-      "rows",
-      rowLeaf,
-      measures
-    );
+    dimensions = cellDimensionInfos(data, rows, "rows", rowLeaf, measures);
     dimensions = dimensions.concat(
-      cellDimensionInfos(
-        data,
-        columnDimensions,
-        "columns",
-        columnLeaf,
-        measures
-      )
+      cellDimensionInfos(data, columns, "columns", columnLeaf, measures)
     );
-    const usedData = intersectDataIndexes(
-      rowLeaf.dataIndexes,
-      columnLeaf.dataIndexes
-    ).map(x => data[x]);
+    const usedData = inter(rowLeaf.dataIndexes, columnLeaf.dataIndexes).map(
+      x => data[x]
+    );
     return { value, dimensions, data: usedData };
   }
 );
 export const getRangeInfosSelector = createSelector(
   [
-    filteredDataSelector,
+    state => state.data.data,
     rowLeavesSelector,
     columnLeavesSelector,
     activatedMeasuresSelector,
-    rowDimensionsSelector,
-    columnDimensionsSelector,
-    state => state.config.measureHeadersAxis
+    rowVisibleDimensionsSelector,
+    columnVisibleDimensionsSelector,
+    state => state.configuration.measureHeadersAxis
   ],
   (
     data,
@@ -206,6 +204,8 @@ export const getRangeInfosSelector = createSelector(
     ) {
       return {};
     }
+    const columnDims = columnDimensions.filter(column => column.isVisible);
+    const rowDims = rowDimensions.filter(row => row.isVisible);
     const range = {
       selectedCellStart: {
         rowIndex: Math.min(
@@ -228,69 +228,65 @@ export const getRangeInfosSelector = createSelector(
         )
       }
     };
-    const rows = {};
+    const rows = [];
+    // letix = 0;
     for (
       let index = range.selectedCellStart.rowIndex;
       index <= range.selectedCellEnd.rowIndex;
       index += 1
     ) {
-      const rowLeaf = rowLeaves[index];
-      rows[index] = cellDimensionInfos(
-        data,
-        rowDimensions,
-        "rows",
-        rowLeaf,
-        measures
-      );
+      const rowLeaf = rowLeaves.leaves[index];
+      if (rowLeaf.isVisible) {
+        rowLeaf.dataIndexes = getFilteredIndex(rowLeaf);
+        const row = cellDimensionInfos(
+          data,
+          rowDims,
+          "rows",
+          rowLeaf,
+          measures
+        );
+        row.leaf = rowLeaf;
+        rows.push(row);
+      }
     }
-    const columns = {};
+    const columns = [];
     for (
       let index = range.selectedCellStart.columnIndex;
       index <= range.selectedCellEnd.columnIndex;
       index += 1
     ) {
-      const columnLeaf = columnLeaves[index];
-      columns[index] = cellDimensionInfos(
-        data,
-        columnDimensions,
-        "columns",
-        columnLeaf,
-        measures
-      );
+      const columnLeaf = columnLeaves.leaves[index];
+      if (columnLeaf.isVisible) {
+        columnLeaf.dataIndexes = getFilteredIndex(columnLeaf);
+        const column = cellDimensionInfos(
+          data,
+          columnDims,
+          "columns",
+          columnLeaf,
+          measures
+        );
+        column.leaf = columnLeaf;
+        columns.push(column);
+      }
     }
-    const values = {};
-    for (
-      let columnIndex = range.selectedCellStart.columnIndex;
-      columnIndex <= range.selectedCellEnd.columnIndex;
-      columnIndex += 1
-    ) {
-      const columnLeaf = columnLeaves[columnIndex];
-      values[columnIndex] = {};
-      for (
-        let rowIndex = range.selectedCellEnd.rowIndex;
-        rowIndex <= range.selectedCellEnd.rowIndex;
-        rowIndex += 1
-      ) {
-        const rowLeaf = rowLeaves[rowIndex];
+    const values = [];
+    rows.map((row, index) => {
+      values.push([]);
+      columns.map(column => {
         const measure =
-          rowLeaf.type === HeaderType.MEASURE
-            ? measures[rowLeaf.id]
-            : measures[columnLeaf.id];
+          row.leaf.type === HeaderType.MEASURE
+            ? measures[row.leaf.id]
+            : measures[column.leaf.id];
         const value = cellValue(
           data,
           measure.valueAccessor,
-          rowLeaf.dataIndexes,
-          columnLeaf.dataIndexes,
+          row.leaf.dataIndexes,
+          column.leaf.dataIndexes,
           measure.aggregation
         );
-        values[columnIndex][rowIndex] = value;
-
-        // const usedData = intersectDataIndexes(
-        //   rowLeaf.dataIndexes,
-        //   columnLeaf.dataIndexes
-        // ).map(x => data[x]);
-      }
-    }
+        values[index].push(value);
+      });
+    });
     return { values, columns, rows, range, measureHeadersAxis };
   }
 );

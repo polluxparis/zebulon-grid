@@ -2,10 +2,11 @@ import {
   fetchData,
   fetchFailure,
   fetchSuccess,
-  pushData,
+  loadingConfig,
+  applyPushedData,
   setDimensions,
   setMeasures,
-  setConfigProperty,
+  setConfigurationProperty,
   moveDimension,
   moveMeasure,
   setCollapses,
@@ -18,8 +19,27 @@ import {
   isNullOrUndefined,
   toAccessorFunction
 } from "./generic";
+// import { mergeData } from "../selectors";
 import { MEASURE_ID } from "../constants";
 import * as aggregations from "./aggregation";
+export const defaultConfigurationFunctions = {
+  formats: {},
+  accessors: {},
+  sorts: {},
+  aggregations: {}
+};
+export const defaultMenuFunctions = {
+  dataCellFunctions: {},
+  rangeFunctions: {},
+  gridFunctions: {}
+};
+export const defaultSizes = {
+  height: 800,
+  width: 1000,
+  cellHeight: 30,
+  cellWidth: 100,
+  zoom: 1
+};
 export const setData = (store, data) => {
   store.dispatch(fetchData());
   if (Array.isArray(data)) {
@@ -41,7 +61,7 @@ export const setData = (store, data) => {
   } else if (isObservable(data)) {
     data.subscribe(
       data => {
-        store.dispatch(pushData(data));
+        pushData(store, data);
       },
       error => store.dispatch(fetchFailure({ message: error }))
     );
@@ -56,50 +76,46 @@ export const setData = (store, data) => {
     );
   }
 };
-export const applyConfigToStore = (
+export const pushData = (store, data) => store.dispatch(applyPushedData(data));
+export const applySizesToStore = (store, sizes) => {
+  const prevSizes = store.getState().configuration;
+  const newSizes = { ...prevSizes, ...sizes };
+  store.dispatch(setConfigurationProperty(newSizes, "height", 800));
+  store.dispatch(setConfigurationProperty(newSizes, "width", 1000));
+  store.dispatch(setConfigurationProperty(newSizes, "zoom", 1));
+  store.dispatch(setConfigurationProperty(newSizes, "cellHeight", 30));
+  store.dispatch(setConfigurationProperty(newSizes, "cellWidth", 100));
+};
+export const applyConfigurationToStore = (
   store,
-  config,
-  configurationFunctions,
+  configuration,
+  configurationFunctions = defaultConfigurationFunctions,
   data
 ) => {
+  store.dispatch(loadingConfig(true));
   if (!isNullOrUndefined(data)) {
     setData(store, data);
   }
   //  global configuration
-  let measureHeadersAxis = "columns",
-    height = 600,
-    width = 800,
-    zoom = 1;
-  if (config.config) {
-    measureHeadersAxis = config.config.measureHeadersAxis || measureHeadersAxis;
-    height = config.config.height || height;
-    width = config.config.width || width;
-    zoom = config.config.zoom || zoom;
-  }
-
+  const measureHeadersAxis = configuration.measureHeadersAxis || "columns";
   store.dispatch(
-    setConfigProperty(config, "measureHeadersAxis", measureHeadersAxis)
+    setConfigurationProperty(
+      configuration,
+      "measureHeadersAxis",
+      measureHeadersAxis
+    )
   );
-  store.dispatch(setConfigProperty(config, "height", height));
-  store.dispatch(setConfigProperty(config, "width", width));
-  store.dispatch(setConfigProperty(config, "zoom", zoom));
-  store.dispatch(setConfigProperty(config, "cellHeight", 30));
-  store.dispatch(setConfigProperty(config, "cellWidth", 100));
-  // dimensions and measure configuration
-  let activeMeasures = config.activeMeasures,
-    columns = config.columns,
-    rows = config.rows;
-  if (config.axis) {
-    activeMeasures = config.axis.measures || activeMeasures;
-    columns = config.axis.columns || columns;
-    rows = config.axis.rows || rows;
+  let activeMeasures = configuration.activeMeasures,
+    columns = configuration.columns,
+    rows = configuration.rows;
+  if (configuration.axis) {
+    activeMeasures = configuration.axis.measures || activeMeasures;
+    columns = configuration.axis.columns || columns;
+    rows = configuration.axis.rows || rows;
   }
-  config.dimensions.push({ id: MEASURE_ID, caption: "" });
-  store.dispatch(setDimensions(config, configurationFunctions));
-  store.dispatch(setMeasures(config, configurationFunctions));
-
+  store.dispatch(setDimensions(configuration, configurationFunctions));
+  store.dispatch(setMeasures(configuration, configurationFunctions));
   const dimensionIdsPositioned = [];
-  // le dimensionIdsPositioned;
   rows.forEach((dimensionId, index) => {
     store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
     dimensionIdsPositioned.push(dimensionId);
@@ -108,18 +124,7 @@ export const applyConfigToStore = (
     store.dispatch(moveDimension(dimensionId, "dimensions", "columns", index));
     dimensionIdsPositioned.push(dimensionId);
   });
-  if (!dimensionIdsPositioned.includes(MEASURE_ID)) {
-    if (measureHeadersAxis === "columns") {
-      store.dispatch(
-        moveDimension(MEASURE_ID, "dimensions", "columns", columns.length)
-      );
-    } else {
-      store.dispatch(
-        moveDimension(MEASURE_ID, "dimensions", "rows", rows.length)
-      );
-    }
-  }
-  config.dimensions
+  configuration.dimensions
     .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
     .forEach((dimension, index) => {
       store.dispatch(
@@ -130,16 +135,26 @@ export const applyConfigToStore = (
   activeMeasures.forEach(measureId => {
     store.dispatch(moveMeasure(measureId));
   });
-  if (config.collapses) {
-    store.dispatch(setCollapses(config.collapses));
+  if (configuration.collapses) {
+    store.dispatch(
+      setCollapses({
+        ...configuration.collapses,
+        configurationRows: configuration.collapses.rows,
+        configurationColumns: configuration.collapses.columns
+      })
+    );
   }
-  if (config.sizes) {
-    store.dispatch(setSizes(config.sizes));
+  if (configuration.sizes) {
+    store.dispatch(setSizes(configuration.sizes));
   }
+  store.dispatch(loadingConfig(false));
 };
 
 // initialisation of dimensions from configuration
-export function dimensionFactory(dimensionConfig, configurationFunctions) {
+export function dimensionFactory(
+  dimensionConfiguration,
+  configurationFunctions
+) {
   const {
     id,
     caption,
@@ -149,8 +164,9 @@ export function dimensionFactory(dimensionConfig, configurationFunctions) {
     format,
     subTotal,
     attributeParents
-  } = dimensionConfig;
+  } = dimensionConfiguration;
   const { formats, accessors, sorts } = configurationFunctions;
+
   const dimSort = !isNullOrUndefined(sort)
     ? {
         direction: sort.direction,
@@ -190,7 +206,7 @@ export function dimensionFactory(dimensionConfig, configurationFunctions) {
   };
 }
 // initialisation of measures from configuration
-export function measureFactory(measureConfig, configurationFunctions) {
+export function measureFactory(measureConfiguration, configurationFunctions) {
   const {
     formats,
     accessors,
@@ -203,7 +219,7 @@ export function measureFactory(measureConfig, configurationFunctions) {
     format,
     aggregation,
     aggregationCaption
-  } = measureConfig;
+  } = measureConfiguration;
   const aggs = { ...aggregations, ...customAggregations };
   return {
     id,
