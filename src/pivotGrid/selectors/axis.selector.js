@@ -218,7 +218,8 @@ const getFinalLeaves = (
         isAttribute: false,
         isVisible: node.isVisible,
         nVisibles: node.isVisible + 0,
-        isTotal: node.isTotal
+        isTotal: node.isTotal,
+        isFiltered: node.isFiltered
       };
       node.orderedChildren.push(measure.id);
       leaves.push(node.children[measure.id]);
@@ -241,7 +242,7 @@ export const getAxisLeaves = (
   subtotals,
   totalsFirst,
   filteredIndexes,
-  index,
+  first,
   leaves = []
 ) => {
   if (!node) {
@@ -259,7 +260,7 @@ export const getAxisLeaves = (
     areCollapsed[node.key] || (parent.isCollapsed && isAttribute);
   node.isParentCollapsed =
     parent.isParentCollapsed || (parent.isCollapsed && !isAttribute);
-  node.isVisible = (parent.isVisible && index === 0) || !node.isParentCollapsed;
+  node.isVisible = (parent.isVisible && first) || !node.isParentCollapsed;
   // filtering
   // when a filter is set on one or several not diplayed dimensions=> filter data indexes
   // else filtering is made on leaves
@@ -347,9 +348,9 @@ export const getAxisLeaves = (
     // node.orderedChildren = node.orders[sortDimension.id];
 
     //  recursive loop on ordered children
-    children = children.map((id, index) => ({
-      id,
-      nVisibles: getAxisLeaves(
+    let first = true;
+    children = children.map((id, index) => {
+      const nVisibles = getAxisLeaves(
         axis,
         node.children[id],
         dimensions,
@@ -359,10 +360,17 @@ export const getAxisLeaves = (
         subtotals,
         totalsFirst,
         filteredIndexes,
-        index,
+        first,
         leaves
-      )
-    }));
+      );
+      if (nVisibles) {
+        first = false;
+      }
+      return {
+        id,
+        nVisibles
+      };
+    });
     children = children.filter(
       child =>
         child.nVisibles &&
@@ -455,7 +463,7 @@ export const rowLeavesSelector = createSelector(
           subtotals,
           totalsFirst,
           filteredIndexes,
-          0,
+          true,
           leaves
         );
       }
@@ -520,7 +528,7 @@ export const columnLeavesSelector = createSelector(
           subtotals,
           totalsFirst,
           filteredIndexes,
-          0,
+          true,
           leaves
         );
       }
@@ -545,9 +553,12 @@ const parentsVisibles = (node, nVisibles) => {
   }
 };
 const childrenVisibles = (node, measuresCount) => {
-  const children = Object.values(node.children || {});
+  const children = Object.values(node.children || {}).filter(
+    child => child.isFiltered
+  );
   if (children.length) {
-    let n = children.reduce((n, child, index) => {
+    let index = 0;
+    let n = children.reduce((n, child) => {
       const nCells = child.dimensionId === MEASURE_ID ? measuresCount : 1;
       const isCollapsed =
         node.isParentCollapsed || (node.isCollapsed && !child.isAttribute);
@@ -556,13 +567,16 @@ const childrenVisibles = (node, measuresCount) => {
         ? node.isCollapsed
         : child.isCollapsed;
       child.isParentCollapsed = isCollapsed;
-      n += childrenVisibles(child, measuresCount);
-      return n;
+      const n2 = childrenVisibles(child, measuresCount);
+      if (n2) {
+        index++;
+      }
+      return n + n2;
     }, 0);
-    if (node.subtotal) {
-      node.subtotal.isVisible = node.isVisible && !node.isParentCollapsed;
-      n += childrenVisibles(node.subtotal, measuresCount);
-    }
+    // if (node.subtotal) {
+    //   node.subtotal.isVisible = node.isVisible && !node.isParentCollapsed;
+    //   n += childrenVisibles(node.subtotal, measuresCount);
+    // }
     return n;
   } else {
     return node.isVisible + 0;

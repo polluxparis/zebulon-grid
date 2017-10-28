@@ -85,7 +85,7 @@ class Headers extends PureComponent {
         caption={(header.format || (x => x))(header.caption)}
         positionStyle={positionStyle}
         dimensionId={header.dimensionId}
-        isNotCollapsible={header.options.isNotCollapsible}
+        isNotCollapsible={header.options.isNotCollapsible || header.isTotal}
         isCollapsed={header.isCollapsed}
         collapseOffset={
           header.sizes.cross.collapsed ? header.sizes.cross.collapsed : 0
