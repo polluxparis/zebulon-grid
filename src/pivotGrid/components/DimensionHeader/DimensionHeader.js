@@ -16,22 +16,22 @@ import { ContextMenuTrigger } from "react-contextmenu";
 class DimensionHeader extends PureComponent {
   handleClickCollapse = e => {
     if (e.button === 0) {
-      const { toggleCollapseDimension, dimensionId } = this.props;
-      toggleCollapseDimension(dimensionId);
+      const { toggleCollapseDimension, dimension } = this.props;
+      toggleCollapseDimension(dimension.id);
     }
   };
   handleClickSort = e => {
     this.button = e.button;
     if (e.button === 0) {
-      const { toggleSortOrder, dimensionId } = this.props;
-      if (dimensionId !== MEASURE_ID && dimensionId !== ROOT_ID) {
-        toggleSortOrder(dimensionId);
+      const { toggleSortOrder, dimension } = this.props;
+      if (dimension.id !== MEASURE_ID && dimension.id !== ROOT_ID) {
+        toggleSortOrder(dimension.id);
       }
     }
   };
 
   handleClickMenu = (e, data, target) => {
-    if (e.button === 0) {
+    if (e.button === 0 && data) {
       if (data.action === "remove") {
         this.props.moveDimension(
           data.dimensionId,
@@ -47,8 +47,6 @@ class DimensionHeader extends PureComponent {
           // except if it's the measures dimension. In this case, add before
           data.dimensionId === MEASURE_ID ? data.index : data.index + 1
         );
-      } else if (data.action === "sort") {
-        this.props.toggleSortOrder(data.dimensionId);
       } else if (data.action === "expand all") {
         const keys = this.props.getExpandCollapseKeys(
           data.axis,
@@ -79,9 +77,7 @@ class DimensionHeader extends PureComponent {
       previewSizes,
       gridId,
       moveDimension,
-
       collectMenu,
-
       isFiltered
     } = this.props;
 
@@ -116,7 +112,7 @@ class DimensionHeader extends PureComponent {
           boxSizing: "border-box",
           display: "flex"
         }}
-        onClick={this.handleClickMenu}
+        onClick={this.handleClickSort}
       >
         <InnerHeader
           axis={dimension.axis}
@@ -125,7 +121,6 @@ class DimensionHeader extends PureComponent {
           caption={dimension.caption}
           isNotCollapsible={!dimension.hasAttribute}
           isCollapsed={dimension.isCollapsed}
-          handleClick={this.handleClickSort}
           handleClickCollapse={this.handleClickCollapse}
           moveDimension={moveDimension}
           isDropTarget={true}

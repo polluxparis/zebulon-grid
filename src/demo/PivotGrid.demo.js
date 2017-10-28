@@ -45,8 +45,8 @@ class PivotGridDemo extends Component {
     applyConfigToStore(store, basicConfig, configurationFunctions, data);
     this.state = {
       store,
-      height: basicconfiguration.height,
-      width: basicconfiguration.width
+      height: basicConfig.height,
+      width: basicConfig.width
     };
   }
 

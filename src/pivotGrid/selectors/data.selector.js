@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { intersec } from "../utils/headers";
 import { isUndefined } from "../utils/generic";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
+import { availableDimensionsSelector } from "./dimensions.selector";
 
 export const filteredIndexes = (dimensions, filters, loading) => {
   if (loading) {
@@ -52,11 +53,9 @@ export const dataFilteredIndexes = (
   });
 };
 export const notVisibleFiltersSelector = createSelector(
-  [state => state.dimensions, state => state.filters],
+  [availableDimensionsSelector, state => state.filters],
   (dimensions, filters) =>
-    Object.values(filters).filter(
-      filter => !dimensions[filter.dimensionId].axis
-    )
+    dimensions.map(dimension => filters[dimension.id]).filter(filter => filter)
 );
 export const filteredIndexesSelector = createSelector(
   [

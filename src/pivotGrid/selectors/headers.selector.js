@@ -2,7 +2,7 @@
 //  compute the header trees (rows and columns) with positions ans sizes...
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
-import { isNull } from "../utils/generic";
+import { isNull, isNullOrUndefined } from "../utils/generic";
 
 import {
   buildAxisTrees,
@@ -55,7 +55,7 @@ const parentsSizes = (
   measuresCount,
   direction
 ) => {
-  if (!header || header.id === ROOT_ID) {
+  if (!header || (header.id === ROOT_ID && !header.isTotal)) {
     return null;
   }
   // et main = mainSizes;
@@ -83,7 +83,10 @@ const parentsSizes = (
     }
   }
   header.sizes.affix = header.nVisibles === 1 ? 0 : affix;
-  if (header.parent.id !== ROOT_ID) {
+  if (
+    header.parent &&
+    (header.parent.id !== ROOT_ID || header.parent.isTotal)
+  ) {
     parentsSizes(
       header.parent,
       main,
@@ -100,7 +103,7 @@ const parentsSizes = (
   if (first) {
     if (
       dimensions[header.depth].isVisible &&
-      (header.parent.id === ROOT_ID || !header.isParentCollapsed)
+      (!header.isParentCollapsed || header.parent.id === ROOT_ID)
     ) {
       rowCells.push(header);
     }
@@ -121,6 +124,14 @@ const getLastDimension = dimensions =>
   dimensions.length -
   1 -
   ((dimensions[dimensions.length - 1] || {}).id === MEASURE_ID);
+const getCrossHeadersSize = (dimensions, crossPositions) => {
+  const lastDimension = getLastDimension(dimensions);
+  if (lastDimension === -1) {
+    return 0;
+  }
+  const last = crossPositions[dimensions[lastDimension].id];
+  return last.position + last.size;
+};
 const getCollapsedSizes = (dimensions, crossPositions) => {
   // pre compute collapses size
   const collapsedSizes = [];
@@ -174,6 +185,7 @@ const buildPositionedHeaders = (
   let index = scroll.index;
   let ix = 0;
   let lastSize;
+  const crossHeadersSize = getCrossHeadersSize(dimensions, crossPositions);
   while (size <= maxSize && index < leaves.length && index >= 0) {
     const header = leaves[index];
     const dimension = dimensions[header.depth];
@@ -189,9 +201,14 @@ const buildPositionedHeaders = (
         },
         cross: { ...crossPositions[dimension.id] }
       };
+      // grand total and subtotals
       if (header.isCollapsed) {
-        header.sizes.cross.collapsed = collapsedSizes[header.depth];
-        header.sizes.cross.size += collapsedSizes[header.depth];
+        header.sizes.cross.collapsed =
+          crossHeadersSize -
+          header.sizes.cross.position -
+          header.sizes.cross.size;
+        header.sizes.cross.size =
+          crossHeadersSize - header.sizes.cross.position;
       }
       parentsSizes(
         header.parent,
@@ -437,7 +454,7 @@ export const pushedDataSelector = createSelector(
         subtotals,
         totalsFirst,
         filteredIndexes,
-        0,
+        true,
         leaves
       );
       rowLeaves.leaves = leaves;
@@ -456,7 +473,7 @@ export const pushedDataSelector = createSelector(
         subtotals,
         totalsFirst,
         filteredIndexes,
-        0,
+        true,
         leaves
       );
       columnLeaves.leaves = leaves;
@@ -488,12 +505,15 @@ export const rowAndColumnHeadersSelector = createSelector(
     if (
       !(
         loadingConfig ||
-        rowAndColumnLeaves.rows.node === null ||
-        rowAndColumnLeaves.columns.node === null
+        isNullOrUndefined(rowAndColumnLeaves.rows.node) ||
+        isNullOrUndefined(rowAndColumnLeaves.columns.node)
       )
     ) {
       rows = getRowHeaders(rowAndColumnLeaves.rows, scrollToRow);
       columns = getColumnHeaders(rowAndColumnLeaves.columns, scrollToColumn);
+      if (isNullOrUndefined(rows) || isNullOrUndefined(rows)) {
+        return { rows, columns };
+      }
       combineRowsAndColumns(rows, columns);
       // corrections of diplay aberations
       let change = false;

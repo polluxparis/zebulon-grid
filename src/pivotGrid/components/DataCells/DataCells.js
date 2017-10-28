@@ -197,7 +197,7 @@ export class DataCells extends ScrollableArea {
         gridId={gridId}
         selected={selected}
         focused={focused}
-        isTotal={Math.max(rowHeader.isTotal, columnHeader.isTotal)}
+        isTotal={Math.max(rowHeader.isTotal, columnHeader.isTotal || 0)}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
