@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import ZebulonGrid from "../pivotGrid";
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
