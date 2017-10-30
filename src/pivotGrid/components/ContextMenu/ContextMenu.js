@@ -137,7 +137,7 @@ const externalMenu = (functionType, externalFunction, onClick) => {
       <SubMenu
         key={externalFunction.code}
         title={externalFunction.caption}
-        onClick={e => console.log("SubMenu", e)}
+        // onClick={e => console.log("SubMenu", e)}
       >
         {0}
       </SubMenu>

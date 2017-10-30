@@ -4,7 +4,10 @@ import {
   SET_COLLAPSES,
   SET_MEASURES,
   MOVE_DIMENSION,
-  TOGGLE_MEASURE
+  TOGGLE_MEASURE,
+  ADD_FILTER,
+  DELETE_FILTER,
+  TOGGLE_SUBTOTAL
 } from "../constants";
 
 /*
@@ -60,6 +63,9 @@ export default (
     // case ADD_FILTER:
     case SET_MEASURES:
     case MOVE_DIMENSION:
+    case ADD_FILTER:
+    case DELETE_FILTER:
+    case TOGGLE_SUBTOTAL:
     case TOGGLE_MEASURE:
       const rows = { ...state.configurationRows, ...state.rows };
       const columns = { ...state.configurationColumns, ...state.columns };

@@ -46,7 +46,7 @@ export const dataFilteredIndexes = (
           undefined
       )
     ) {
-      console.log("new index", index);
+      // console.log("new index", index);
       filteredIndexes.set(index + offset, true);
     }
   });

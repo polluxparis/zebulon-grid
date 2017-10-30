@@ -278,7 +278,7 @@ class PivotGrid extends Component {
     }
   };
   componentDidUpdate(prevProps) {
-    const { height, width, setSizes } = this.props;
+    const { height, width, setSizes, headers } = this.props;
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }

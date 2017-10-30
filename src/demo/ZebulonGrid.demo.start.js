@@ -67,9 +67,6 @@ class ZebulonGridDemo extends Component {
             menuFunctions={menuFunctions}
             configurationFunctions={configurationFunctions}
             sizes={this.state.sizes}
-            ref={ref => {
-              this.grid = ref;
-            }}
           />
         </ResizableBox>
         <div style={{ display: "flex", marginTop: ".5em" }}>

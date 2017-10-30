@@ -1,15 +1,4 @@
 import React from "react";
-
-// import ZebulonGrid from "../pivotGrid";
-// import "react-resizable/css/styles.css";
-// import { ResizableBox } from "react-resizable";
-// import {
-//   getPromiseMockDatasource,
-//   basicConfig,
-//   getRandomMockDatasource
-// } from "./mock";
-// import { configurationFunctions } from "./configurationFunctions";
-// import { menuFunctions } from "./menuFunctions";
 export const MEASURE_ID = "__measures__";
 export const customConfigurationFunctions = (
   prevConfigurationFunctions,
@@ -107,7 +96,7 @@ export const customConfigurationFunctions = (
   return { configurationFunctions, configuration, actionContent };
 };
 const cellDisplay = cell => {
-  console.log(cell);
+  // console.log(cell);
   const rows = cell.dimensions
     .filter(dimension => dimension.axis === "rows")
     .map(dimension => (

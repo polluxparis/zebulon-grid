@@ -49,7 +49,6 @@ export default class DataCell extends PureComponent {
         "zebulon-grid-data-cell-highlighted2": valueHasChanged === 2
       }
     );
-    // console.log("render cell");
     return (
       <ContextMenuTrigger
         id={`context-menu-${gridId}`}
@@ -76,4 +75,4 @@ export default class DataCell extends PureComponent {
     );
   }
 }
-// onMouseOver={this.handleMouseOver}
+

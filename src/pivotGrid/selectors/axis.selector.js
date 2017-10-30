@@ -8,7 +8,7 @@ import {
   dimensionsWithAxisSelector
 } from "./dimensions.selector";
 import { isNullOrUndefined } from "../utils/generic";
-import { getLeaves, resetLeaves } from "../utils/headers";
+import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
   TOTAL_ID,

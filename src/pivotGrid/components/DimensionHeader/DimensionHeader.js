@@ -145,7 +145,7 @@ class DimensionHeader extends PureComponent {
         />
       </div>
     );
-
+    // return header;
     return (
       <ContextMenuTrigger
         id={`context-menu-${gridId}`}

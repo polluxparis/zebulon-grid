@@ -1,4 +1,3 @@
-"use strict";
 import { KEY_SEPARATOR, ROOT_ID } from "../constants";
 import { isUndefined } from "./generic";
 
@@ -65,9 +64,7 @@ export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
   return acc;
 };
 export const resetLeaves = node => {
-  const children = Object.values(node.children).map(child =>
-    resetLeaves(child)
-  );
+  Object.values(node.children).map(child => resetLeaves(child));
   if (node.subtotal) {
     resetLeaves(node.subtotal);
   }
@@ -87,7 +84,15 @@ export const resetLeaves = node => {
   node = undefined;
   return null;
 };
-// export function getKey({
+
+export const resetDimensions = dimensions =>
+  Object.values(dimensions).map(dimension => {
+    Object.values(dimension.values).map(value => {
+      value.rowIndexes = null;
+      value = null;
+    });
+    dimension = null;
+  });
 //   headerType,
 //   parent,
 //   measureId,

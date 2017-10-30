@@ -149,12 +149,6 @@ const innerHeader = ({
       {header}
     </div>
   );
-  // id={id}
-  //       index={index}
-  //       moveDimension={moveDimension}
-  // drag and drop of dimension headers to move dimensions
-  // dimension header -> drag source
-  //             index={HeaderType.MEASURE && measuresCount > 1 ? 0 : null}
 
   if (isDragSource) {
     header = connectDragSource(header);

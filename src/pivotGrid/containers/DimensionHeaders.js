@@ -1,6 +1,4 @@
-"use strict";
 import { connect } from "react-redux";
-
 import {
   columnVisibleDimensionsSelector,
   rowVisibleDimensionsSelector,

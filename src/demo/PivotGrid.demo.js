@@ -25,7 +25,6 @@ import {
 import { configurationFunctions } from "./utils/configurationFunctions";
 import { menuFunctions } from "./utils/menuFunctions";
 import "./App.css";
-// console.log(actions);
 
 //
 class PivotGridDemo extends Component {
@@ -66,9 +65,6 @@ class PivotGridDemo extends Component {
               configurationFunctions={configurationFunctions}
               height={this.state.height}
               width={this.state.width}
-              drilldown={cell => {
-                console.log("drilldown", cell);
-              }}
             />
           </ResizableBox>
           <div>

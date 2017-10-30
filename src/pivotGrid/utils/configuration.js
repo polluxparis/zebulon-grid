@@ -1,4 +1,3 @@
-"use strict";
 import {
   fetchData,
   fetchFailure,
@@ -20,7 +19,7 @@ import {
   isNullOrUndefined,
   toAccessorFunction
 } from "./generic";
-import { resetLeaves } from "../utils/headers";
+import { resetLeaves, resetDimensions } from "../utils/headers";
 import { getAxisTreesSelector } from "../selectors";
 // import { mergeData } from "../selectors";
 import { MEASURE_ID } from "../constants";
@@ -51,7 +50,7 @@ export const setData = (store, data) => {
   if (axisTrees.columns) {
     resetLeaves(axisTrees.columns);
   }
-
+  resetDimensions(store.getState().dimensions);
   store.dispatch(fetchData());
   if (Array.isArray(data)) {
     if (data.length === 0) {

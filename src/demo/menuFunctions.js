@@ -3,11 +3,4 @@ export const menuFunctions = {
 	rangeFunctions: {},
 	gridFunctions: {}
 };
-const a = {
-	dataCellFunctions: {
-		drilldown: cell => {},
-		otherDrilldown: cell => {}
-	},
-	rangeFunctions: { range: range => {} },
-	gridFunctions: {}
-};
+
