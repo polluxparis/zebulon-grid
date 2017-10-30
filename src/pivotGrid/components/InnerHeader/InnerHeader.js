@@ -38,7 +38,9 @@ const headerSpec = {
           newAxis = toAxis(props.axis);
           index = props.index + 1;
         }
-        props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
+        if (toAxis(handle.axis) !== newAxis || handle.index !== index) {
+          props.moveDimension(handle.id, toAxis(handle.axis), newAxis, index);
+        }
       }
     }
   }

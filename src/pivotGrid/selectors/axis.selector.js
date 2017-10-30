@@ -1,7 +1,6 @@
 ///////////////////////////////////////////////////////////////////
 //  compute the axis header trees (rows and columns)
 ///////////////////////////////////////////////////////////////////
-
 import { createSelector } from "reselect";
 import {
   rowVisibleDimensionsSelector,
@@ -9,7 +8,7 @@ import {
   dimensionsWithAxisSelector
 } from "./dimensions.selector";
 import { isNullOrUndefined } from "../utils/generic";
-import { getLeaves } from "../utils/headers";
+import { getLeaves, resetLeaves } from "../utils/headers";
 import {
   ROOT_ID,
   TOTAL_ID,
@@ -81,7 +80,7 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
   }
   // Create sorting accessors
   const x = Date.now();
-  console.log("buildAxisTrees0", x, data.length);
+  // console.log("buildAxisTrees0", x, data.length);
   let newValue = false,
     newRows = false,
     newColumns = false;
@@ -119,7 +118,7 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
     });
   });
 
-  console.log("buildAxisTrees", data.length, Date.now() - x, rowRoot);
+  // console.log("buildAxisTrees", data.length, Date.now() - x, rowRoot);
   return {
     columns: columnRoot,
     rows: rowRoot,
@@ -128,13 +127,6 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
     newColumns
   };
 }
-// const mapAxis = (axisType, axises, dimensions) =>
-//   axises.map((dimensionId, index) => {
-//     const dimension = dimensions[dimensionId];
-//     dimension.axis = axisType;
-//     dimension.depth = index;
-//     dimension.last = index === axises.length - 1;
-//   });
 export const getAxisTreesSelector = createSelector(
   [
     state => state.data.data,
@@ -196,10 +188,14 @@ const getFinalLeaves = (
   leaves
 ) => {
   node.orderedChildren = [];
-  if (node.id === ROOT_ID && node.type === HeaderType.SUB_TOTAL) {
-    node.depth = 0;
-    node.caption = "Grand total";
-    node.isTotal = 2;
+  if (node.type === HeaderType.SUB_TOTAL) {
+    if (node.id === ROOT_ID) {
+      node.depth = 0;
+      node.caption = "Grand total";
+      node.isTotal = 2;
+    }
+    node.isVisible = !node.isParentCollapsed;
+    node.nVisibles = node.isVisible * measuresCount;
   }
   if (measures) {
     node.children = {};
@@ -315,14 +311,6 @@ export const getAxisLeaves = (
   if (nextDimension.id !== undefined) {
     let children = Object.values(node.children),
       sortDimension = nextDimension;
-    // filtering
-    // children = children.map(child => {
-    //   child.isFiltered =
-    //     !nextDimension.filter || nextDimension.filter[child.id] !== undefined;
-    //   return child;
-    // });
-    //  sorting
-    // if node is sorted by an attribute of the next dimension=> find attribute nodes
     if (
       nextDimension.orderBy !== undefined &&
       nextDimension.orderBy !== nextDimension.depth
@@ -330,23 +318,11 @@ export const getAxisLeaves = (
       sortDimension = dimensions[nextDimension.orderBy];
       children = getLeaves(node, [], nextDimension.orderBy, true);
     }
-    // else if (nextDimension.filter) {
-    //   children = children.filter(child => child.isFiltered);
-    // }
     children = sort(
       children,
       sortDimension.sortFunction,
       sortDimension !== nextDimension
     );
-    // node.orders = {
-    //   [sortDimension.id]: sort(
-    //     children,
-    //     sortDimension.sortFunction,
-    //     sortDimension !== nextDimension
-    //   )
-    // };
-    // node.orderedChildren = node.orders[sortDimension.id];
-
     //  recursive loop on ordered children
     let first = true;
     children = children.map((id, index) => {
@@ -385,27 +361,11 @@ export const getAxisLeaves = (
     }
     node.orders[sortDimension.id] = children;
     node.orderedChildren = node.orders[sortDimension.id];
-
-    // node.orderedChildren.forEach((key, index) => {
-    //   nVisibles += getAxisLeaves(
-    //     axis,
-    //     node.children[key],
-    //     dimensions,
-    //     measures,
-    //     measuresCount,
-    //     areCollapsed,
-    //     subtotals,
-    //     totalsFirst,
-    //     filteredIndexes,
-    //     index,
-    //     leaves
-    //   );
-    // });
   }
   if (nextDimension.id === undefined) {
     // push terminal leaves or, if measures are on the axis,1 leave per measure
     nVisibles = getFinalLeaves(node, measures, measuresCount, leaves);
-  } else if (subtotalNode && !totalsFirst && node.nVisibles) {
+  } else if (subtotalNode && !totalsFirst) {
     // push subtotals or grand total
     subtotalNode.nVisibles = getFinalLeaves(
       subtotalNode,
@@ -467,14 +427,14 @@ export const rowLeavesSelector = createSelector(
           leaves
         );
       }
-      console.log(
-        "rowLeavesSelector",
-        leaves.length,
-        nVisibles,
-        Date.now() - x,
-        node,
-        leaves
-      );
+      // console.log(
+      //   "rowLeavesSelector",
+      //   leaves.length,
+      //   nVisibles,
+      //   Date.now() - x,
+      //   node,
+      //   leaves
+      // );
       return { nVisibles, node, leaves };
     } else {
       return {};
@@ -532,14 +492,14 @@ export const columnLeavesSelector = createSelector(
           leaves
         );
       }
-      console.log(
-        "columnLeavesSelector",
-        leaves.length,
-        nVisibles,
-        Date.now() - x,
-        node,
-        leaves
-      );
+      // console.log(
+      //   "columnLeavesSelector",
+      //   leaves.length,
+      //   nVisibles,
+      //   Date.now() - x,
+      //   node,
+      //   leaves
+      // );
       return { nVisibles, node, leaves };
     } else {
       return {};
@@ -571,12 +531,13 @@ const childrenVisibles = (node, measuresCount) => {
       if (n2) {
         index++;
       }
+      if (child.subtotal) {
+        child.subtotal.isVisible = !child.isParentCollapsed;
+        child.subtotal.nVisible = child.subtotal.isVisible * measuresCount;
+        n += child.subtotal.nVisibles;
+      }
       return n + n2;
     }, 0);
-    // if (node.subtotal) {
-    //   node.subtotal.isVisible = node.isVisible && !node.isParentCollapsed;
-    //   n += childrenVisibles(node.subtotal, measuresCount);
-    // }
     return n;
   } else {
     return node.isVisible + 0;

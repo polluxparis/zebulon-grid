@@ -1,4 +1,6 @@
+"use strict";
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
@@ -66,7 +68,8 @@ class ZebulonGrid extends Component {
       <Provider store={this.store}>
         <PivotGrid
           menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-          id={this.props.id}
+          id={this.props.id || 0}
+          name="PivotGrid"
           // drilldown={this.props.drilldown}
           // focusCells={this.props.focusCells}
           // height={this.props.sizes.height}

@@ -120,6 +120,7 @@ const MeasureMenu = (id, trigger) => {
       <SubMenu title="Add" disabled={isDisabled}>
         {trigger.availableMeasures.map(measure => (
           <MenuItem
+            key={measure.id}
             onClick={trigger.onItemClick}
             data={{ action: "add", newMeasureId: measure.id }}
           >

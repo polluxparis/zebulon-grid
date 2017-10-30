@@ -33,6 +33,7 @@ class ZebulonGridDemo extends Component {
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
     this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
+    // this.options = this.bigDataSet ? [300, 200, 5] : [100, 40, 3];
     this.setState({
       data: getPromiseMockDatasource(1, ...this.options),
       actionContent: this.bigDataSet ? "Reload a 1 million rows dataset" : null

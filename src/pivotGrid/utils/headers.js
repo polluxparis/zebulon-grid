@@ -1,3 +1,4 @@
+"use strict";
 import { KEY_SEPARATOR, ROOT_ID } from "../constants";
 import { isUndefined } from "./generic";
 
@@ -63,7 +64,29 @@ export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
   }
   return acc;
 };
-
+export const resetLeaves = node => {
+  const children = Object.values(node.children).map(child =>
+    resetLeaves(child)
+  );
+  if (node.subtotal) {
+    resetLeaves(node.subtotal);
+  }
+  node.children = null;
+  node.subtotal = null;
+  node.dataRowIndexes = null;
+  node.orderedChildren = null;
+  node.filteredIndexes = null;
+  node.dataIndexes = null;
+  if (node.orders) {
+    Object.keys(node.orders).map(key => (node.orders[key] = null));
+  }
+  node.orders = null;
+  node.parent = null;
+  node.options = null;
+  node.sizes = null;
+  node = undefined;
+  return null;
+};
 // export function getKey({
 //   headerType,
 //   parent,

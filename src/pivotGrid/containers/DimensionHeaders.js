@@ -1,3 +1,4 @@
+"use strict";
 import { connect } from "react-redux";
 
 import {
@@ -9,7 +10,8 @@ import {
   previewSizesSelector,
   availableDimensionsSelector,
   getExpandCollapseKeysSelector,
-  toggleSortOrderSelector
+  toggleSortOrderSelector,
+  getAxisTreesSelector
 } from "../selectors";
 import DimensionHeaders from "../components/DimensionHeaders/DimensionHeaders";
 import {
@@ -19,7 +21,7 @@ import {
   expandCollapseAll,
   toggleSubTotal
 } from "../actions";
-
+import { resetLeaves } from "../utils/headers";
 const mapStateToProps = (state, ownProps) => {
   const columnDimensions = columnVisibleDimensionsSelector(state);
   const rowDimensions = rowVisibleDimensionsSelector(state);
@@ -35,7 +37,8 @@ const mapStateToProps = (state, ownProps) => {
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,
     sizes: state.sizes,
-    toggleSort: toggleSortOrderSelector(state)
+    toggleSort: toggleSortOrderSelector(state),
+    getAxisTrees: getAxisTreesSelector(state)
   };
 };
 const mapDispatchToProps = dispatch => ({
@@ -50,13 +53,19 @@ const mapDispatchToProps = dispatch => ({
   toggleSubTotal: dimensionId => dispatch(toggleSubTotal(dimensionId))
 });
 const mergeProps = (
-  { toggleSort, measures, ...restStateProps },
-  { toggleSortOrder, ...restDispatchProps },
+  { toggleSort, measures, getAxisTrees, ...restStateProps },
+  { toggleSortOrder, moveDimension, ...restDispatchProps },
   ownProps
 ) => ({
   toggleSortOrder: (axisType, depth) => {
     toggleSort(axisType, depth);
     toggleSortOrder(axisType, depth);
+  },
+  moveDimension: (dimensionId, oldAxis, newAxis, position) => {
+    const { rows, columns } = getAxisTrees;
+    resetLeaves(rows);
+    resetLeaves(columns);
+    return moveDimension(dimensionId, oldAxis, newAxis, position);
   },
   ...restStateProps,
   ...restDispatchProps,

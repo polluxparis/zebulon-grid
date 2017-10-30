@@ -27,10 +27,6 @@ class DimensionHeaders extends Component {
   };
   // -----------------------------------------------------
   collectMenu = props => {
-    // const dimension =
-    //   props.axis === AxisType.ROWS
-    //     ? this.props.rowDimensions[props.index]
-    //     : this.props.columnDimensions[props.index];
     return {
       ...props,
       availableDimensions: this.props.availableDimensions,

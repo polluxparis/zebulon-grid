@@ -1,3 +1,4 @@
+"use strict";
 import {
   fetchData,
   fetchFailure,
@@ -19,6 +20,8 @@ import {
   isNullOrUndefined,
   toAccessorFunction
 } from "./generic";
+import { resetLeaves } from "../utils/headers";
+import { getAxisTreesSelector } from "../selectors";
 // import { mergeData } from "../selectors";
 import { MEASURE_ID } from "../constants";
 import * as aggregations from "./aggregation";
@@ -41,6 +44,14 @@ export const defaultSizes = {
   zoom: 1
 };
 export const setData = (store, data) => {
+  const axisTrees = getAxisTreesSelector(store.getState());
+  if (axisTrees.rows) {
+    resetLeaves(axisTrees.rows);
+  }
+  if (axisTrees.columns) {
+    resetLeaves(axisTrees.columns);
+  }
+
   store.dispatch(fetchData());
   if (Array.isArray(data)) {
     if (data.length === 0) {

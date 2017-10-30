@@ -20,34 +20,33 @@ npm install zebulon-pivotgrid --save
 
 And in your code:
 ```js
-import zebulon-grid from 'zebulon-pivotgrid'
+import ZebulonGrid from 'zebulon-pivotgrid'
 ```
 
 ## Simple Example
 
 ```js
 import React, { Component } from "react";
-import ZebulonGrid from "zebulon-pivotgrid";
+import ReactDOM from "react-dom";
+import ZebulonGrid from "zebulon-grid";
 
 const buildData = (n0, n1, n2) => {
   let data = [];
-  for (let k = 0; k < dataRepetition; k += 1) {
-    for (let i0 = 0; i0 < n0; i0++) {
-      for (let i1 = 0; i1 < n1; i1++) {
-        for (let i2 = 0; i2 < n2; i2++) {
-          data.push({
-            totoId: i0,
-            totoLabel: `toto${i0}`,
-            titi: i1,
-            tutu: `tutu${i2}`,
-            qty: 1,
-            amt: 1
-          });
-        }
+  for (let i0 = 0; i0 < n0; i0++) {
+    for (let i1 = 0; i1 < n1; i1++) {
+      for (let i2 = 0; i2 < n2; i2++) {
+        data.push({
+          totoId: i0,
+          totoLabel: `toto${i0}`,
+          titi: i1,
+          tutu: `tutu${i2}`,
+          qty: Math.round(50 * Math.random()) + 1,
+          amt: Math.round(150 * Math.random()) + 3
+        });
       }
     }
-    return data;
   }
+  return data;
 };
 const buildConfiguration = () => ({
   measureHeadersAxis: "columns",
@@ -99,31 +98,36 @@ class MyPivotGrid extends Component {
     super(props);
     this.state = {};
   }
-  data = this.buildData(30, 12, 7);
-  configuration = this.buildConfiguration();
+  data = buildData(20, 12, 7);
+  configuration = buildConfiguration();
   render() {
     return (
       <ZebulonGrid
         data={this.data}
         configuration={this.configuration}
-        height={600}
-        width={1000}
+        sizes={{
+          height: 600,
+          width: 1000,
+          cellWidth: 80,
+          cellHeight: 28,
+          zoom: 0.9
+        }}
+
       />
     );
   }
 }
+ReactDOM.render(<MyPivotGrid />, document.getElementById("root"));
 ```
-
 ## React zebulon grid props
 | Property | Type | Description |
 |:---|:---|:---|
-| data | `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects. |
-| pushedData | `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects. |
-| menuFunctions | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
-| configuration | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
-| configurationFunctions | `PropTypes.object` | Items to choose from; can be an array of strings or an array of objects. |
-| height | `PropTypes.number` | Items to choose from; can be an array of strings or an array of objects. |
-| width | `PropTypes.number` | Items to choose from; can be an array of strings or an array of objects. |
+| configuration| `PropTypes.object` | Meta description  of the multidimensional matrix linked to the data set|
+| menuFunctions| `PropTypes.object` | Custom functions callable from the data cell area contextual menu. |
+| configurationFunctions| `PropTypes.object` | Named custom formats, accessors, sorts and aggregations. |
+| data| `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects or a promise. |
+| pushedData]| `PropTypes.arrayOf(PropTypes.object)` | Data set as an array of objects. |
+| sizes | `PropTypes.object)` | sizes of the grid (height, width), zoom, default cell sizes |
 
 ## Data set
 The data set (data property) can be either an array of similar objects or a promise that will be resolved as an array of objects.
@@ -188,8 +192,8 @@ They can be:
 * A name of an aggregation function specified specified in the configurationFunctions property.
 ####
 N.B. Aggregations (as weighted average) may require several data. In this case its accessor must return each needed data.
-### Sortings
-Sortings are objects thay may contains
+### Sorts
+Sorts are objects thay may contains
 ####
 * A sort key accessor
 * A sorting function.

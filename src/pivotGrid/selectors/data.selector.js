@@ -26,7 +26,6 @@ export const filteredIndexes = (dimensions, filters, loading) => {
       return dimensionIndexes.sort((a, b) => a - b);
     });
     const x = new Map(intersec(filteredIndexes).map(index => [index, true]));
-    // console.log("filteredIndexes", Date.now() - y), x.length;
     return x;
   } else {
     return undefined;
