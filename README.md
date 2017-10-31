@@ -254,7 +254,7 @@ Measures have:
       format: "amount"
     },...]
 ```
-###Axis
+### Axis
 Displayed dimensions and measures are assigned (ordered) either in row or in column. All measures must be on the same axis.
 ```js
 {
@@ -264,7 +264,7 @@ Displayed dimensions and measures are assigned (ordered) either in row or in col
   measureHeadersAxis: "columns"
 }
 ```
-###Others
+### Others
 Collapses, sizes and filters can be defined in the configuration property 
 ## Configuration functions
 The configurationFunctions property can bu used to define named custom formats, accessors, sorts and aggregations
