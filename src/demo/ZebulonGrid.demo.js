@@ -36,7 +36,23 @@ class ZebulonGridDemo extends Component {
     const node = document.getElementById("toto");
     this.setState({
       data: getPromiseMockDatasource(1, ...this.options),
-      actionContent: this.bigDataSet ? "Reload a 1 million rows dataset" : null
+      actionContent: this.bigDataSet ? (
+        <div>
+          <div>Reload a 1 million rows dataset :</div>
+          <div>500 Totos * 400 Titis * 5 Tutus</div>
+          <div>
+            N.B. Performances are linked to the length in axis, so if you set
+            Toto, Titi and Tutu in rows, you'll get 1M available rows in the
+            grid and it may be a little slow; just try to set Tutu in columns
+            (row / 5)
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div>Reload a 24000 rows dataset :</div>
+          <div>200 Totos * 40 Titis * 3 Tutus</div>
+        </div>
+      )
     });
   };
   pushData = () => {
