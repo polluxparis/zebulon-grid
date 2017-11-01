@@ -14,7 +14,7 @@ import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
-    this.options = [100, 100, 5];
+    this.options = [200, 40, 3];
     this.state = {
       // focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),

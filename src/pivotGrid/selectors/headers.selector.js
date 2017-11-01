@@ -53,7 +53,8 @@ const parentsSizes = (
   rowCells,
   dimensions,
   measuresCount,
-  direction
+  direction,
+  isCollapsibleAttribute
 ) => {
   if (!header || (header.id === ROOT_ID && !header.isTotal)) {
     return null;
@@ -68,10 +69,15 @@ const parentsSizes = (
       cross: { ...crossPositions[dimension.id] }
     };
     header.options = {
+      isCollapsibleAttribute:
+        header.isAttribute &&
+        header.depth < getLastDimension(dimensions) &&
+        (isCollapsibleAttribute || header.orderedChildren.length > 1),
       isNotCollapsible:
-        header.isAttribute ||
-        header.depth >= getLastDimension(dimensions) ||
-        header.span === measuresCount,
+        (header.isAttribute ||
+          header.depth >= getLastDimension(dimensions) ||
+          header.orderedChildren.length < 2) &&
+        !isCollapsibleAttribute,
       isAffixManaged: false,
       isDropTarget: false
     };
@@ -97,7 +103,8 @@ const parentsSizes = (
       rowCells,
       dimensions,
       measuresCount,
-      direction
+      direction,
+      header.options.isCollapsibleAttribute
     );
   }
   if (first) {
@@ -220,7 +227,8 @@ const buildPositionedHeaders = (
         rowCells,
         dimensions,
         measuresCount,
-        scroll.direction
+        scroll.direction,
+        false
       );
       if (header.isTotal && header.dimensionId === MEASURE_ID) {
         header.sizes.cross.position += collapsedSizes[header.parent.depth];
