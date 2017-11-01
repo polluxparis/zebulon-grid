@@ -1,7 +1,8 @@
 # Zebulon pivot grid
 React pivot grid component for large data sets.
 Manage measures (aggregated figures) by dimensions (axises) in rows or columns directly on the grid. 
-## available demo at: http://polluxparis.github.io/zebulon-grid/
+## Available demo at: http://polluxparis.github.io/zebulon-grid/
+#### Demo on demand for zebulon-grid connected to big data: thomas.bres@pollux.paris
 ## Main features
 * Pivoting by drag & drop of dimensions.
 * Sorting and filtering.
@@ -12,7 +13,7 @@ Manage measures (aggregated figures) by dimensions (axises) in rows or columns d
 * Custom measures, formats, sorts and external functions in the configuration objects.
 ## Getting started
 
-Install `zebulon-pivotgrid` using npm.
+Install `zebulon-grid` using npm.
 
 ```shell
 npm install zebulon-pivotgrid --save
@@ -20,7 +21,7 @@ npm install zebulon-pivotgrid --save
 
 And in your code:
 ```js
-import ZebulonGrid from 'zebulon-pivotgrid'
+import ZebulonGrid from 'zebulon-grid'
 ```
 
 ## Simple Example
