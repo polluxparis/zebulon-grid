@@ -257,8 +257,10 @@ class PivotGrid extends Component {
     if (!e.defaultPrevented) {
       e.preventDefault();
       const { rows, columns } = this.props.headers;
-      const direction = Math.sign(e.deltaY);
-      const leaves = e.altKey ? columns : rows;
+      const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
+      const leaves = sense === "columns" ? columns : rows;
+      const direction = Math.sign(sense === "columns" ? e.deltaX : e.deltaY);
+
       const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
       const offset = leaves.direction === direction && leaves.offset > 2;
       const index = this.nextVisible(
@@ -268,7 +270,7 @@ class PivotGrid extends Component {
         1
       );
       const scroll = { rows: rows.scroll, columns: columns.scroll };
-      if (e.altKey) {
+      if (sense === "columns") {
         scroll.columns = { index, direction: -direction };
         this.onScroll(scroll.rows, scroll.columns);
       } else {

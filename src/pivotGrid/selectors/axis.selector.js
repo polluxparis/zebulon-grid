@@ -326,9 +326,10 @@ export const getAxisLeaves = (
     //  recursive loop on ordered children
     let first = true;
     children = children.map((id, index) => {
+      const child = node.children[id];
       const nVisibles = getAxisLeaves(
         axis,
-        node.children[id],
+        child,
         dimensions,
         measures,
         measuresCount,
@@ -344,12 +345,14 @@ export const getAxisLeaves = (
       }
       return {
         id,
-        nVisibles
+        nVisibles,
+        isFiltered: child.isFiltered
       };
     });
+    // ! orders must include collapsed nodes but exclude nodes without child
     children = children.filter(
       child =>
-        child.nVisibles &&
+        child.isFiltered &&
         (!nextDimension.filter || nextDimension.filter[child.id])
     );
     children = children.map(child => {
@@ -533,13 +536,14 @@ const childrenVisibles = (node, measuresCount) => {
       }
       if (child.subtotal) {
         child.subtotal.isVisible = !child.isParentCollapsed;
-        child.subtotal.nVisible = child.subtotal.isVisible * measuresCount;
+        child.subtotal.nVisibles = child.subtotal.isVisible * measuresCount;
         n += child.subtotal.nVisibles;
       }
       return n + n2;
     }, 0);
     return n;
   } else {
+    node.nVisibles = 1;
     return node.isVisible + 0;
   }
 };
