@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+// import ReactDOM from "react-dom";
 import ZebulonGrid from "../pivotGrid";
 import "react-resizable/css/styles.css";
 import { ResizableBox } from "react-resizable";
@@ -33,7 +33,7 @@ class ZebulonGridDemo extends Component {
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
     this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
-    const node = document.getElementById("toto");
+    // const node = document.getElementById("toto");
     this.setState({
       data: getPromiseMockDatasource(1, ...this.options),
       actionContent: this.bigDataSet ? (
@@ -124,6 +124,7 @@ class ZebulonGridDemo extends Component {
             menuFunctions={this.state.menuFunctions}
             configurationFunctions={this.state.configurationFunctions}
             sizes={this.state.sizes}
+            ref={ref => (this.zebulon = ref)}
           />
         </ResizableBox>
         <div

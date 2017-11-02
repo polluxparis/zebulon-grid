@@ -1,21 +1,16 @@
-import { MEASURE_ID } from "../constants";
+// import { MEASURE_ID } from "../constants";
 import { getFilteredIndex } from "../selectors";
+// import { FileSaver } from "file-saver";
 
 function replaceNullAndUndefined(val) {
   if (val === null || val === undefined) {
     return "";
   }
-  return val;
+  return JSON.stringify(val);
 }
-// const getFilteredIndex = leaf => {
-//   if (leaf.isParentCollapsed) {
-//     return getFilteredIndex(leaf.parent);
-//   } else {
-//     return leaf.filteredIndexes;
-//   }
-// };
-const getSelectedText = ({
-  selectedRange,
+
+export const getSelectedElements = ({
+  range,
   rowLeaves,
   columnLeaves,
   rowDimensions,
@@ -25,44 +20,44 @@ const getSelectedText = ({
   getCellValue,
   getCellDimensionInfos
 }) => {
-  const mc = measureHeadersAxis === "columns";
-  const mr = measureHeadersAxis === "rows";
-  // Build rows headers array
-  const rowsRange = [
-    Math.min(
-      selectedRange.selectedCellStart.rowIndex,
-      selectedRange.selectedCellEnd.rowIndex
-    ),
-    Math.max(
-      selectedRange.selectedCellStart.rowIndex,
-      selectedRange.selectedCellEnd.rowIndex
-    ) + 1
-  ];
-  const selectedRowLeaves = rowLeaves.leaves
-    .slice(...rowsRange)
-    .filter(leaf => leaf.isVisible);
-
+  // const mc = measureHeadersAxis === "columns";
+  // const mr = measureHeadersAxis === "rows";
+  // Build headers array
+  let selectedRowLeaves = rowLeaves.leaves,
+    selectedColumnLeaves = columnLeaves.leaves;
+  if (range) {
+    const rowsRange = [
+      Math.min(
+        range.selectedCellStart.rowIndex,
+        range.selectedCellEnd.rowIndex
+      ),
+      Math.max(
+        range.selectedCellStart.rowIndex,
+        range.selectedCellEnd.rowIndex
+      ) + 1
+    ];
+    selectedRowLeaves = selectedRowLeaves.slice(...rowsRange);
+    const columnsRange = [
+      Math.min(
+        range.selectedCellStart.columnIndex,
+        range.selectedCellEnd.columnIndex
+      ),
+      Math.max(
+        range.selectedCellStart.columnIndex,
+        range.selectedCellEnd.columnIndex
+      ) + 1
+    ];
+    selectedColumnLeaves = selectedColumnLeaves.slice(...columnsRange);
+  }
+  selectedRowLeaves = selectedRowLeaves.filter(leaf => leaf.isVisible);
+  selectedColumnLeaves = selectedColumnLeaves.filter(leaf => leaf.isVisible);
   // get rows captions
-  const rowInfos = selectedRowLeaves.map(leaf => {
+  const rows = selectedRowLeaves.map(leaf => {
     leaf.dataIndexes = getFilteredIndex(leaf);
     return getCellDimensionInfos(rowDimensions, "rows", leaf, measures, []);
   });
-  // Build columns headers array
-  const columnsRange = [
-    Math.min(
-      selectedRange.selectedCellStart.columnIndex,
-      selectedRange.selectedCellEnd.columnIndex
-    ),
-    Math.max(
-      selectedRange.selectedCellStart.columnIndex,
-      selectedRange.selectedCellEnd.columnIndex
-    ) + 1
-  ];
-  const selectedColumnLeaves = columnLeaves.leaves
-    .slice(...columnsRange)
-    .filter(leaf => leaf.isVisible);
   // get columns captions
-  const columnsInfos = selectedColumnLeaves.map(leaf => {
+  const columns = selectedColumnLeaves.map(leaf => {
     leaf.dataIndexes = getFilteredIndex(leaf);
     return getCellDimensionInfos(
       columnDimensions,
@@ -74,36 +69,43 @@ const getSelectedText = ({
   });
   // Build data array
   let measure;
-  // let t = Date.now(),
-  //   t2;
-
   const cells = selectedRowLeaves.map((rowLeaf, index) => {
     if (measureHeadersAxis === "rows") {
       measure = measures[rowLeaf.id];
     }
-    return (
-      selectedColumnLeaves
-        // get getCellValue from the store
-        // maybe better to go without datacell and get caption directly
-        // be careful about rendering function though
-        .map(columnLeaf => {
-          if (measureHeadersAxis === "columns") {
-            measure = measures[columnLeaf.id];
-          }
-          return getCellValue(
-            measure.valueAccessor,
-            rowLeaf.dataIndexes,
-            columnLeaf.dataIndexes,
-            measure.aggregation
-          );
-        })
-    );
+    return selectedColumnLeaves.map(columnLeaf => {
+      if (measureHeadersAxis === "columns") {
+        measure = measures[columnLeaf.id];
+      }
+      return getCellValue(
+        measure.valueAccessor,
+        rowLeaf.dataIndexes,
+        columnLeaf.dataIndexes,
+        measure.aggregation
+      );
+    });
   });
-  // t2 = Date.now();
-  // console.log("cells", t2 - t);
-  // t = t2;
-  // build string with corner headers and column headers
-
+  return {
+    rows,
+    columns,
+    cells,
+    rowDimensions,
+    columnDimensions,
+    measureHeadersAxis
+  };
+};
+export const getSelectedText = (elements, type) => {
+  const columnSeparator = type === "csv" ? "," : "\t";
+  const {
+    rows,
+    columns,
+    cells,
+    rowDimensions,
+    columnDimensions,
+    measureHeadersAxis
+  } = elements;
+  const mc = measureHeadersAxis === "columns";
+  const mr = measureHeadersAxis === "rows";
   const output = [];
   let caption, outputHeaders;
   // // First rows with only the dimensions (top left area) + columns headers
@@ -119,13 +121,13 @@ const getSelectedText = ({
       } else {
         caption = "";
       }
-      outputHeaders += `${replaceNullAndUndefined(caption)}\t`;
+      outputHeaders += `${replaceNullAndUndefined(caption)}${columnSeparator}`;
     }
     // column headers
-    for (let x = 0; x < columnsInfos.length; x += 1) {
+    for (let x = 0; x < columns.length; x += 1) {
       outputHeaders += `${replaceNullAndUndefined(
-        columnsInfos[x][y].cell.caption
-      )}\t`;
+        columns[x][y].cell.caption
+      )}${columnSeparator}`;
     }
     outputHeaders = outputHeaders.slice(0, -1);
     output.push(outputHeaders);
@@ -134,15 +136,17 @@ const getSelectedText = ({
   // console.log("columns headers", t2 - t);
   // t = t2;
   let outputRow = "";
-  for (let y = 0; y < rowInfos.length; y += 1) {
+  for (let y = 0; y < rows.length; y += 1) {
     outputRow = "";
     // row headers
     for (let x = 0; x < width; x += 1) {
-      outputRow += `${replaceNullAndUndefined(rowInfos[y][x].cell.caption)}\t`;
+      outputRow += `${replaceNullAndUndefined(
+        rows[y][x].cell.caption
+      )}${columnSeparator}`;
     }
     // data cells
-    for (let x = 0; x < columnsInfos.length; x += 1) {
-      outputRow += `${replaceNullAndUndefined(cells[y][x])}\t`;
+    for (let x = 0; x < columns.length; x += 1) {
+      outputRow += `${replaceNullAndUndefined(cells[y][x])}${columnSeparator}`;
     }
     outputRow = outputRow.slice(0, -1);
     output.push(outputRow);
@@ -156,37 +160,14 @@ const getSelectedText = ({
   return output.join("\n");
 };
 
-export default function copy({
-  selectedRange,
-  columnLeaves,
-  rowLeaves,
-  rowDimensions,
-  columnDimensions,
-  measures,
-  getCellValue,
-  getCellDimensionInfos
-}) {
+export const copy = text => {
   try {
     const bodyElement = document.getElementsByTagName("body")[0];
     const clipboardTextArea = document.createElement("textarea");
-    const measureHeadersAxis =
-      columnDimensions[columnDimensions.length - 1].id === MEASURE_ID
-        ? "columns"
-        : "rows";
     clipboardTextArea.style.position = "absolute";
     clipboardTextArea.style.left = "-10000px";
     bodyElement.appendChild(clipboardTextArea);
-    clipboardTextArea.innerHTML = getSelectedText({
-      selectedRange,
-      rowLeaves,
-      columnLeaves,
-      rowDimensions,
-      columnDimensions,
-      measures,
-      measureHeadersAxis,
-      getCellValue,
-      getCellDimensionInfos
-    });
+    clipboardTextArea.innerHTML = text;
     // console.log("rows0", Date.now());
     clipboardTextArea.select();
     // console.log("rows1", Date.now());
@@ -199,4 +180,33 @@ export default function copy({
     console.error("error during copy", error);
     /* eslint-enable */
   }
-}
+};
+export const exportFile = (content, fileName, mime) => {
+  if (mime == null) {
+    mime = "text/csv";
+  }
+  var blob = new Blob([content], { type: mime });
+  var a = document.createElement("a");
+  a.download = fileName;
+  a.href = window.URL.createObjectURL(blob);
+  a.dataset.downloadurl = [mime, a.download, a.href].join(":");
+  var e = document.createEvent("MouseEvents");
+  e.initMouseEvent(
+    "click",
+    true,
+    false,
+    window,
+    0,
+    0,
+    0,
+    0,
+    0,
+    false,
+    false,
+    false,
+    false,
+    0,
+    null
+  );
+  return a.dispatchEvent(e);
+};

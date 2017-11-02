@@ -280,7 +280,7 @@ class PivotGrid extends Component {
     }
   };
   componentDidUpdate(prevProps) {
-    const { height, width, setSizes, headers } = this.props;
+    const { height, width, setSizes } = this.props;
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
@@ -290,7 +290,15 @@ class PivotGrid extends Component {
       // Works only if the grid is focused
       this.modifierKeyIsPressed
     ) {
-      this.props.copy();
+      this.props.copy(this.props.selectedRange);
+    }
+  };
+  handleExport = () => {
+    if (
+      // Works only if the grid is focused
+      this.modifierKeyIsPressed
+    ) {
+      this.props.copy(this.props.selectedRange);
     }
   };
 

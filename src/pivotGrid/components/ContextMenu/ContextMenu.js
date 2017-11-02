@@ -189,7 +189,7 @@ const DataCellMenu = (id, trigger) => {
     gridFunctions = (
       <SubMenu title="Grid">
         {keys.map(externalFunction =>
-          externalMenu("function", fct[externalFunction], trigger.onItemClick)
+          externalMenu("grid", fct[externalFunction], trigger.onItemClick)
         )}
       </SubMenu>
     );

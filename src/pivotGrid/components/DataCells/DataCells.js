@@ -4,7 +4,7 @@ import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
 import { AXIS_SEPARATOR, HeaderType } from "../../constants";
 import { ScrollableArea } from "../Controls/ScrollableArea";
-
+import { getSelectedText } from "../../services/copyService";
 export class DataCells extends ScrollableArea {
   constructor(props) {
     super(props);
@@ -104,8 +104,11 @@ export class DataCells extends ScrollableArea {
         this.props.menuFunctions.rangeFunctions[data.action].function(
           this.props.getRangeInfos(this.props.selectedRange)
         );
-      } else if (data.functionType === "function") {
-        this.props.menuFunctions.gridFunctions[data.action].function();
+      } else if (data.functionType === "grid") {
+        this.props.menuFunctions.gridFunctions[data.action].function({
+          grid: this.props.getGridInfos(),
+          toText: getSelectedText
+        });
       } else if (data.action === "toggle-totals") {
         this.props.setConfigProperty("totalsFirst", data.value);
       }

@@ -223,7 +223,36 @@ const rangeDisplay = range => {
   );
   return div;
 };
-const gridDisplay = grid => {};
+export const exportFile = (content, fileName, mime) => {
+  if (mime == null) {
+    mime = "text/csv";
+  }
+  var blob = new Blob([content], { type: mime });
+  var a = document.createElement("a");
+  a.download = fileName;
+  a.href = window.URL.createObjectURL(blob);
+  a.dataset.downloadurl = [mime, a.download, a.href].join(":");
+  var e = document.createEvent("MouseEvents");
+  e.initMouseEvent(
+    "click",
+    true,
+    false,
+    window,
+    0,
+    0,
+    0,
+    0,
+    0,
+    false,
+    false,
+    false,
+    false,
+    0,
+    null
+  );
+  return a.dispatchEvent(e);
+};
+
 export const customMenuFunctions = (prevMenuFunctions, callback) => {
   const menuFunctions = {
     dataCellFunctions: {
@@ -249,9 +278,10 @@ export const customMenuFunctions = (prevMenuFunctions, callback) => {
       grid: {
         code: "grid",
         type: "MenuItem",
-        caption: "Custom grid function",
+        caption: "Custom export as csv",
         // function: () => <div>toto</div>
-        function: grid => callback("grid", gridDisplay(grid))
+        function: ({ grid, toText }) =>
+          exportFile(toText(grid, "csv"), "zebulon.csv")
       }
     }
   };

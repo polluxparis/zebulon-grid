@@ -10,7 +10,12 @@ import {
   activatedMeasuresSelector
 } from "./dimensions.selector";
 import { getLeaves } from "../utils/headers";
-import copy from "../services/copyService";
+import {
+  copy,
+  getSelectedElements,
+  getSelectedText,
+  exportFile
+} from "../services/copyService";
 
 const getIndexfromKey = (leaves, key) =>
   leaves.leaves.findIndex(leaf => leaf.key === key);
@@ -60,7 +65,7 @@ export const selectedRangeSelector = createSelector(
   selectedRange => selectedRange
 );
 
-export const copySelector = createSelector(
+export const getElementsSelector = createSelector(
   [
     rowLeavesSelector,
     columnLeavesSelector,
@@ -69,7 +74,7 @@ export const copySelector = createSelector(
     activatedMeasuresSelector,
     getCellValueSelector,
     getCellDimensionInfosSelector,
-    selectedRangeSelector
+    state => state.configuration.measureHeadersAxis
   ],
   (
     rowLeaves,
@@ -79,16 +84,27 @@ export const copySelector = createSelector(
     measures,
     getCellValue,
     getCellDimensionInfos,
-    selectedRange
-  ) => () =>
-    copy({
-      selectedRange,
+    measureHeadersAxis
+  ) => range =>
+    getSelectedElements({
+      range,
       columnLeaves,
       rowLeaves,
       rowDimensions: rowDimensions.filter(row => row.isVisible),
       columnDimensions: columnDimensions.filter(column => column.isVisible),
       measures,
       getCellValue,
-      getCellDimensionInfos
+      getCellDimensionInfos,
+      measureHeadersAxis
     })
+);
+
+export const copySelector = createSelector(
+  [getElementsSelector],
+  getElements => range => copy(getSelectedText(getElements(range)))
+);
+export const exportSelector = createSelector(
+  [getElementsSelector],
+  getElements => range =>
+    exportFile(getSelectedText(getElements(range), "csv"), "toto.csv")
 );

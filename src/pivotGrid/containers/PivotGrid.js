@@ -9,6 +9,7 @@ import {
   rowAndColumnHeadersSelector,
   selectedRangeSelector,
   copySelector,
+  exportSelector,
   defaultCellSizesSelector
   // filteredPushedDataSelector
 } from "../selectors";
@@ -31,6 +32,7 @@ const mapStateToProps = state => {
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.configuration.zoom,
     copy: copySelector(state),
+    export: exportSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
     pushedData: state.data.pushedData
   };

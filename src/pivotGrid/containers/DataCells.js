@@ -6,7 +6,8 @@ import {
   getRangeInfosSelector,
   activatedMeasuresSelector,
   dimensionsSelector,
-  selectedRangeSelector
+  selectedRangeSelector,
+  getElementsSelector
 } from "../selectors";
 import { DataCells } from "../components/DataCells/DataCells";
 import { selectRange, selectCell, setConfigurationProperty } from "../actions";
@@ -24,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
     getCellValue,
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
+    getGridInfos: () => getElementsSelector(state)(),
     // height: state.configuration.height,
     // width: state.configuration.width,
     configuration: state.configuration,
