@@ -283,6 +283,14 @@ export const customMenuFunctions = (prevMenuFunctions, callback) => {
         function: ({ grid, toText }) =>
           exportFile(toText(grid, "csv"), "zebulon.csv")
       }
+      // ,
+      // test: {
+      //   code: "test",
+      //   type: "SubMenu",
+      //   caption: "test",
+      //   // function: () => <div>toto</div>
+      //   function: () => <div>Test</div>
+      // }
     }
   };
   const actionContent = (

@@ -28,7 +28,8 @@ export default class DataCell extends PureComponent {
       isTotal,
       collectMenu,
       gridId,
-      isEven
+      isEven,
+      highlighted
     } = this.props;
     const style = {
       boxSizing: "border-box",
@@ -45,8 +46,9 @@ export default class DataCell extends PureComponent {
         "zebulon-grid-data-cell-focused": focused,
         "zebulon-grid-data-cell-total": isTotal === 1,
         "zebulon-grid-data-cell-grandtotal": isTotal === 2,
-        "zebulon-grid-data-cell-highlighted": valueHasChanged === 1,
-        "zebulon-grid-data-cell-highlighted2": valueHasChanged === 2
+        "zebulon-grid-data-cell-changed": valueHasChanged === 1,
+        "zebulon-grid-data-cell-changed2": valueHasChanged === 2,
+        "zebulon-grid-data-cell-highlighted": highlighted
       }
     );
     return (
@@ -75,4 +77,3 @@ export default class DataCell extends PureComponent {
     );
   }
 }
-

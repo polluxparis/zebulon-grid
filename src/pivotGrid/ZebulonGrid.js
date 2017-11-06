@@ -61,14 +61,23 @@ class ZebulonGrid extends Component {
       pushData(this.store, pushedData);
     }
   }
+  // componentDidMount() {
+  //   this.element = document.getElementById(this.props.id || 0);
+  //   // this.element.addEventListener("copy", this.handleCopy);
+  //   // this.element.addEventListener("keydown", this.handleKeyDown);
+  // }
   render() {
     return (
-      <Provider store={this.store}>
-        <PivotGrid
-          menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-          id={this.props.id || 0}
-        />
-      </Provider>
+      <div id={`pivotgrid-${this.props.id || 0}`}>
+        <Provider store={this.store}>
+          <PivotGrid
+            menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
+            key={`pivotgrid-${this.props.id || 0}`}
+            gridId={`pivotgrid-${this.props.id || 0}`}
+            isActive={this.props.isActive}
+          />
+        </Provider>
+      </div>
     );
   }
 }

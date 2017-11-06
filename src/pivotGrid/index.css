@@ -8,17 +8,19 @@
   padding: 0.2em;
 }
 
-.zebulon-grid-data-cell-highlighted {
+.zebulon-grid-data-cell-changed {
   animation-name: anim-info-updated;
   animation-duration: 2s;
   animation-iteration-count: 1;
 }
-.zebulon-grid-data-cell-highlighted2 {
+.zebulon-grid-data-cell-changed2 {
   animation-name: anim-info-updated2;
   animation-duration: 2s;
   animation-iteration-count: 1;
 }
-
+.zebulon-grid-data-cell-highlighted {
+  border: solid 0.1em rgba(0, 0, 0, 0.5);
+}
 .zebulon-grid-column-headers {
   outline: none;
 }

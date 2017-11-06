@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { findDOMNode } from "react-dom";
 import { DropTarget } from "react-dnd";
 import { connectMenu } from "react-contextmenu";
 import ContextMenu from "../ContextMenu/ContextMenu";
@@ -82,14 +82,37 @@ import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 
 class PivotGrid extends Component {
   componentDidMount() {
+    // this.element = document.getElementById(this.props.id);
+    // if (this.element) {
     document.addEventListener("copy", this.handleCopy);
     document.addEventListener("keydown", this.handleKeyDown);
+    // }
   }
-
   componentDidUnMount() {
+    // if (this.element) {
     document.removeEventListener("copy", this.handleCopy);
     document.removeEventListener("keydown", this.handleKeyDown);
+    // }
   }
+  componentDidUpdate(prevProps) {
+    const { height, width, setSizes } = this.props;
+    if (height !== prevProps.height || width !== prevProps.width) {
+      setSizes({ height, width });
+    }
+    // if (!this.element) {
+    //   this.element = document.getElementById(this.props.id);
+    //   if (this.element) {
+    //     this.element.addEventListener("copy", this.handleCopy);
+    //     this.element.addEventListener("keydown", this.handleKeyDown);
+    //   }
+    // }
+  }
+  //  componentDidMount() {
+  //   this.element = document.getElementById(this.props.id);
+  //   // this.element.addEventListener("copy", this.handleCopy);
+  //   // this.element.addEventListener("keydown", this.handleKeyDown);
+  // }
+
   componentWillReceiveProps(nextProps) {
     this.isPushing = this.props.pushedData !== nextProps.pushedData;
   }
@@ -110,7 +133,11 @@ class PivotGrid extends Component {
     return index + ix;
   };
   handleKeyDown = e => {
-    if (!e.defaultPrevented) {
+    if (
+      !e.defaultPrevented && this.props.isActive === undefined
+        ? true
+        : this.props.isActive
+    ) {
       this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
       const { selectedRange, selectRange, selectCell, headers } = this.props;
       const { rows, columns } = headers;
@@ -279,18 +306,21 @@ class PivotGrid extends Component {
       }
     }
   };
-  componentDidUpdate(prevProps) {
-    const { height, width, setSizes } = this.props;
-    if (height !== prevProps.height || width !== prevProps.width) {
-      setSizes({ height, width });
-    }
-  }
-  handleCopy = () => {
+  // componentDidUpdate(prevProps) {
+  //   const { height, width, setSizes } = this.props;
+  //   if (height !== prevProps.height || width !== prevProps.width) {
+  //     setSizes({ height, width });
+  //   }
+  // }
+  handleCopy = e => {
     if (
       // Works only if the grid is focused
-      this.modifierKeyIsPressed
+      this.modifierKeyIsPressed && this.props.isActive === undefined
+        ? true
+        : this.props.isActive
     ) {
       this.props.copy(this.props.selectedRange);
+      // e.preventDefault();
     }
   };
   handleExport = () => {
@@ -328,7 +358,7 @@ class PivotGrid extends Component {
       drilldown,
       zoomValue,
       headers,
-      id: gridId
+      gridId
     } = this.props;
     const { rows, columns } = headers;
     let grid;
@@ -366,10 +396,17 @@ class PivotGrid extends Component {
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
         <div
-          style={{ width, height, position: "relative" }}
+          style={{
+            width,
+            height,
+            position: "relative"
+            // border: "solid 0.05em"
+          }}
           // tabIndex={0}
-          onKeyDown={this.handleKeyDown}
-          onKeyUp={this.handleKeyUp}
+          id={gridId}
+          // onCopy={this.handleCopy}
+          // onKeyDown={this.handleKeyDown}
+          // onKeyUp={this.handleKeyUp}
           onWheel={this.handleWheel}
         >
           <DragLayer gridId={gridId} />

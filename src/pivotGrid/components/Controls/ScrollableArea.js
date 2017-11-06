@@ -47,7 +47,10 @@ export class ScrollableArea extends Component {
         height / ratios.vertical.display
       );
       scrollbars.horizontal = {
-        length: Math.min(width, width / ratios.horizontal.display),
+        length: Math.min(
+          width - ScrollbarSize,
+          width / ratios.horizontal.display
+        ),
         width: 0
       };
     } else if (scrollbars.horizontal) {
@@ -56,7 +59,10 @@ export class ScrollableArea extends Component {
         width / ratios.horizontal.display
       );
       scrollbars.vertical = {
-        length: Math.min(height, height / ratios.vertical.display),
+        length: Math.min(
+          height - ScrollbarSize,
+          height / ratios.vertical.display
+        ),
         width: 0
       };
     } else {

@@ -279,6 +279,7 @@ const buildPositionedHeaders = (
     );
   }
   // console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
+  const hasScrollbar = ix < nVisibles || size > maxSize;
   return {
     size: Math.min(maxSize, size),
     containerSize,
@@ -295,12 +296,12 @@ const buildPositionedHeaders = (
     leaves,
     // headers,
     nVisibles,
-    hasScrollbar: ix < nVisibles || size > maxSize,
+    hasScrollbar,
     // displayedRatio: (ix - (size > maxSize)) / nVisibles,
     displayedRatio:
-      cells.length - (size > maxSize + 3) === nVisibles
+      cells.length - (size > maxSize + 2) === nVisibles
         ? maxSize / Math.min(maxSize, size)
-        : cells.length / nVisibles,
+        : (cells.length - (size > maxSize + 2)) / nVisibles,
     positionRatio:
       (scroll.direction === 1 ? scroll.index : index) / leaves.length,
     scroll

@@ -139,7 +139,7 @@ const externalMenu = (functionType, externalFunction, onClick) => {
         title={externalFunction.caption}
         // onClick={e => console.log("SubMenu", e)}
       >
-        {0}
+        {externalFunction.function()}
       </SubMenu>
     );
   } else if (externalFunction.type === "MenuItem") {
@@ -157,7 +157,7 @@ const externalMenu = (functionType, externalFunction, onClick) => {
 
 // {externalFunction.function()}
 const DataCellMenu = (id, trigger) => {
-  let fct = trigger.menuFunctions.dataCellFunctions,
+  let fct = trigger.menuFunctions.dataCellFunctions || {},
     keys,
     cellFunctions,
     rangeFunctions,
@@ -172,7 +172,7 @@ const DataCellMenu = (id, trigger) => {
       </SubMenu>
     );
   }
-  fct = trigger.menuFunctions.rangeFunctions;
+  fct = trigger.menuFunctions.rangeFunctions || {};
   keys = Object.keys(fct);
   if (keys.length) {
     rangeFunctions = (
@@ -183,7 +183,7 @@ const DataCellMenu = (id, trigger) => {
       </SubMenu>
     );
   }
-  fct = trigger.menuFunctions.gridFunctions;
+  fct = trigger.menuFunctions.gridFunctions || {};
   keys = Object.keys(fct);
   if (keys.length) {
     gridFunctions = (

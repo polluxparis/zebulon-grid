@@ -189,6 +189,7 @@ export class DataCells extends ScrollableArea {
       cell.caption = measure.format(cell.value);
       this.cellCache[key] = cell;
     }
+    const highlighted = false;
     return (
       <DataCell
         key={key}
@@ -200,6 +201,7 @@ export class DataCells extends ScrollableArea {
         gridId={gridId}
         selected={selected}
         focused={focused}
+        highlighted={highlighted}
         isTotal={Math.max(rowHeader.isTotal, columnHeader.isTotal || 0)}
         handleMouseDown={this.handleMouseDown}
         handleMouseOver={this.handleMouseOver}

@@ -10,7 +10,8 @@ import {
   moveDimension,
   moveMeasure,
   setCollapses,
-  setSizes
+  setSizes,
+  addFilter
 } from "../actions";
 import {
   isPromise,
@@ -156,6 +157,28 @@ export const applyConfigurationToStore = (
   }
   if (configuration.sizes) {
     store.dispatch(setSizes(configuration.sizes));
+  }
+  if (configuration.filters) {
+    configuration.filters.map(
+      ({ dimensionId, operator, term, exclude, values }) =>
+        store.dispatch(addFilter(dimensionId, operator, term, exclude, values))
+    );
+  }
+  if (configuration.configuration) {
+    if (configuration.configuration.zoom) {
+      store.dispatch(
+        setConfigurationProperty(configuration.configuration, "zoom", 1)
+      );
+    }
+    if (configuration.configuration.measureHeadersAxis) {
+      store.dispatch(
+        setConfigurationProperty(
+          configuration.configuration,
+          "measureHeadersAxis",
+          measureHeadersAxis
+        )
+      );
+    }
   }
   store.dispatch(loadingConfig(false));
 };
