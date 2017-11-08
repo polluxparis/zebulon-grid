@@ -258,6 +258,8 @@ const buildPositionedHeaders = (
     }
     index += scroll.direction;
   }
+  index -= scroll.direction;
+  // index = Math.min(Math.max(index, 0), leaves.length - 1);
   // when height(or width) increase and the grid is scrolled, it may not rest enough cells to feed the grid
   if (
     size < maxSize &&
@@ -280,6 +282,14 @@ const buildPositionedHeaders = (
   }
   // console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
   const hasScrollbar = ix < nVisibles || size > maxSize;
+  if (measuresCount > 1) {
+    console.log(
+      "selector",
+      scroll.direction,
+      (scroll.direction === 1 ? scroll.index : index + (size > maxSize)) /
+        leaves.length
+    );
+  }
   return {
     size: Math.min(maxSize, size),
     containerSize,
@@ -292,6 +302,7 @@ const buildPositionedHeaders = (
     direction: scroll.direction,
     startIndex: scroll.direction === 1 ? scroll.index : index,
     stopIndex: scroll.direction === -1 ? scroll.index : index,
+    // incompleteIndex=size===Math.min(maxSize, size)
     length: leaves.length,
     leaves,
     // headers,
@@ -299,11 +310,12 @@ const buildPositionedHeaders = (
     hasScrollbar,
     // displayedRatio: (ix - (size > maxSize)) / nVisibles,
     displayedRatio:
-      cells.length - (size > maxSize + 2) === nVisibles
+      cells.length - (size > maxSize) === nVisibles
         ? maxSize / Math.min(maxSize, size)
-        : (cells.length - (size > maxSize + 2)) / nVisibles,
+        : (cells.length - (size > maxSize)) / nVisibles,
     positionRatio:
-      (scroll.direction === 1 ? scroll.index : index) / leaves.length,
+      (scroll.direction === 1 ? scroll.index : index + (size > maxSize)) /
+      leaves.length,
     scroll
   };
 };
@@ -378,11 +390,14 @@ const combineRowsAndColumns = (rows, columns) => {
     (rows.hasScrollbar && !columns.hasScrollbar) ||
     (!rows.hasScrollbar && columns.hasScrollbar)
   ) {
-    if (rows.hasScrollbar && columns.size + ScrollbarSize > columns.maxSize) {
+    if (
+      rows.hasScrollbar &&
+      columns.size + ScrollbarSize > columns.containerSize - columns.crossSize
+    ) {
       columns.hasScrollbar = true;
     } else if (
       columns.hasScrollbar &&
-      rows.size + ScrollbarSize > rows.maxSize
+      rows.size + ScrollbarSize > rows.containerSize - rows.crossSize
     ) {
       rows.hasScrollbar = true;
     }

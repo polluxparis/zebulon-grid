@@ -103,14 +103,17 @@ class DimensionHeaders extends Component {
     const { columnDimensions, rowDimensions, height, width } = this.props;
     let headers = [];
     let lastCrossDimensionId;
-    lastCrossDimensionId = rowDimensions[rowDimensions.length - 1].id;
+    let crossDimensions = rowDimensions.filter(
+      dimension => dimension.isVisible
+    );
+    lastCrossDimensionId = crossDimensions[crossDimensions.length - 1].id;
     headers = this.headersRenderer(
       AxisType.COLUMNS,
       columnDimensions,
       lastCrossDimensionId
     );
-
-    lastCrossDimensionId = columnDimensions[columnDimensions.length - 1].id;
+    crossDimensions = columnDimensions.filter(dimension => dimension.isVisible);
+    lastCrossDimensionId = crossDimensions[crossDimensions.length - 1].id;
     headers = headers.concat(
       this.headersRenderer(AxisType.ROWS, rowDimensions, lastCrossDimensionId)
     );

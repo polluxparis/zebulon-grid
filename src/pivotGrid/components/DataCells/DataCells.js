@@ -43,30 +43,65 @@ export class DataCells extends ScrollableArea {
       }
     }
   };
+  nextVisible = (leaves, index, direction, offset) => {
+    let ix = 0,
+      n = 0;
+    if (offset === 0) {
+      ix = -direction;
+      n = -1;
+    }
+    while (
+      n < offset &&
+      (direction === 1 ? index + ix < leaves.length - 1 : index + ix > 0)
+    ) {
+      ix += direction;
+      n += leaves[index + ix].isVisible || 0;
+    }
+    return index + ix;
+  };
   onScroll = e => {
     const { rows, columns, onScroll } = this.props;
     if (e.type === "scrollbar") {
       const scroll = { rows: rows.scroll, columns: columns.scroll };
-      if (e.initiator === "bar") {
-        if (e.direction === "horizontal") {
-          scroll.columns = {
-            index: Math.round(columns.length * e.positionRatio),
-            direction: 1
-          };
-          //   this.ratios.position.horizontal =
-          //     scroll.columns.index / (columns.length - 1);
-          //
-        } else {
-          scroll.rows = {
-            index: Math.round(rows.length * e.positionRatio),
-            direction: 1
-          };
-          // this.ratios.position.horizontal =
-          // scroll.rows.index / (rows.length - 1);
-        }
-        onScroll(scroll.rows, scroll.columns);
+      let direction;
+      // if (e.initiator === "bar") {
+      if (e.direction === "horizontal") {
+        const index = Math.round(columns.length * e.positionRatio);
+        direction = Math.sign(this.props.columns.startIndex - index);
+
+        scroll.columns = {
+          index:
+            direction === -1
+              ? this.nextVisible(
+                  columns.leaves,
+                  index,
+                  -direction,
+                  columns.cells.length - 1
+                )
+              : index,
+          direction
+        };
+      } else {
+        const index = Math.round(rows.length * e.positionRatio);
+        direction = Math.sign(this.props.rows.startIndex - index);
+        scroll.rows = {
+          index:
+            direction === -1
+              ? this.nextVisible(
+                  rows.leaves,
+                  index,
+                  -direction,
+                  rows.cells.length - 1
+                )
+              : index,
+          direction
+        };
       }
-      return true;
+      if (direction) {
+        onScroll(scroll.rows, scroll.columns);
+        return true;
+      }
+      // }
     }
     return false;
   };

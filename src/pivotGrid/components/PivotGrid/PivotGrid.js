@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { findDOMNode } from "react-dom";
+// import { findDOMNode } from "react-dom";
 import { DropTarget } from "react-dnd";
 import { connectMenu } from "react-contextmenu";
 import ContextMenu from "../ContextMenu/ContextMenu";
@@ -263,15 +263,16 @@ class PivotGrid extends Component {
         if (
           axis === AxisType.ROWS &&
           rows.hasScrollbar &&
-          (cell.rowIndex >= rows.stopIndex || cell.rowIndex <= rows.startIndex)
+          ((direction === 1 && cell.rowIndex >= rows.stopIndex) ||
+            (direction === -1 && cell.rowIndex <= rows.startIndex))
         ) {
           scroll.rows = { index: cell.rowIndex, direction: -direction };
           this.onScroll(scroll.rows, scroll.columns);
         } else if (
           axis === AxisType.COLUMNS &&
           columns.hasScrollbar &&
-          (cell.columnIndex >= columns.stopIndex ||
-            cell.columnIndex <= columns.startIndex)
+          ((direction === 1 && cell.columnIndex >= columns.stopIndex) ||
+            (direction === -1 && cell.columnIndex <= columns.startIndex))
         ) {
           scroll.columns = { index: cell.columnIndex, direction: -direction };
           this.onScroll(scroll.rows, scroll.columns);
