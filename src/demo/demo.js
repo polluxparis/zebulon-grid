@@ -259,7 +259,7 @@ export const customMenuFunctions = (prevMenuFunctions, callback) => {
       ...prevMenuFunctions.dataCellFunctions,
       cell: {
         code: "cell",
-        caption: "Cell function",
+        caption: "Custom cell function",
         type: "MenuItem",
         function: cell => callback("cell", cellDisplay(cell))
       }

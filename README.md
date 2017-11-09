@@ -16,7 +16,7 @@ Manage measures (aggregated figures) by dimensions (axises) in rows or columns d
 Install `zebulon-grid` using npm.
 
 ```shell
-npm install zebulon-pivotgrid --save
+npm install zebulon-grid --save
 ```
 
 And in your code:

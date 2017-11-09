@@ -11,6 +11,7 @@ const headerSpec = {
     if (
       props.id === MEASURE_ID &&
       handle.id === MEASURE_ID &&
+      props.measureId &&
       handle.measureId !== props.measureId
     ) {
       props.moveMeasure(handle.measureId, props.measureId);

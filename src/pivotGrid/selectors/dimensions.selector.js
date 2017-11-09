@@ -60,7 +60,8 @@ const getVisibleDimensions = (
       id: MEASURE_ID,
       isVisible: true,
       sort: {},
-      caption: "Measures"
+      caption: "Measures",
+      axis
     });
   }
   if (!dims.length) {

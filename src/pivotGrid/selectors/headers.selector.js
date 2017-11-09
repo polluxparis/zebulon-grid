@@ -283,12 +283,12 @@ const buildPositionedHeaders = (
   // console.log("buildPositionedHeaders", Date.now() - x, scroll, cells);
   const hasScrollbar = ix < nVisibles || size > maxSize;
   if (measuresCount > 1) {
-    console.log(
-      "selector",
-      scroll.direction,
-      (scroll.direction === 1 ? scroll.index : index + (size > maxSize)) /
-        leaves.length
-    );
+    // console.log(
+    //   "selector",
+    //   scroll.direction,
+    //   (scroll.direction === 1 ? scroll.index : index + (size > maxSize)) /
+    //     leaves.length
+    // );
   }
   return {
     size: Math.min(maxSize, size),

@@ -67,31 +67,33 @@ export class DataCells extends ScrollableArea {
       // if (e.initiator === "bar") {
       if (e.direction === "horizontal") {
         const index = Math.round(columns.length * e.positionRatio);
-        direction = Math.sign(this.props.columns.startIndex - index);
+        direction = Math.sign(
+          this.props.columns.startIndex +
+            (scroll.columns.direction === -1 ? 1 : 0) -
+            index
+        );
 
         scroll.columns = {
           index:
             direction === -1
-              ? this.nextVisible(
-                  columns.leaves,
-                  index,
-                  -direction,
-                  columns.cells.length - 1
+              ? Math.round(
+                  columns.length * (e.positionRatio + columns.displayedRatio)
                 )
               : index,
           direction
         };
       } else {
         const index = Math.round(rows.length * e.positionRatio);
-        direction = Math.sign(this.props.rows.startIndex - index);
+        direction = Math.sign(
+          this.props.rows.startIndex +
+            (scroll.rows.direction === -1 ? 1 : 0) -
+            index
+        );
         scroll.rows = {
           index:
             direction === -1
-              ? this.nextVisible(
-                  rows.leaves,
-                  index,
-                  -direction,
-                  rows.cells.length - 1
+              ? Math.round(
+                  rows.length * (e.positionRatio + rows.displayedRatio)
                 )
               : index,
           direction

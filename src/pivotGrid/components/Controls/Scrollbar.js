@@ -1,101 +1,16 @@
 import React, { Component } from "react";
-import { DragSource, DropTarget } from "react-dnd";
-
-const thumbSpec = {
-  beginDrag(props) {
-    return props;
-  }
-};
-
-// const collectDragSource = (connect, monitor) => ({
-//   connectDragSource: connect.dragSource(),
-//   connectDragPreview: connect.dragPreview(),
-//   isDragging: monitor.isDragging()
-// });
 
 class ScrollbarInner extends Component {
-  handleMouseDown = e => {
-    const event = this.collect(e);
-    this.isDown = true;
-    this.previous = this.props.direction === "horizontal" ? event.x : event.y;
-    // console.log("down", event);
-  }; //this.props.handleMouseDown(this.collect(e));
-  handleMouseUp = e => {
-    this.isDown = false;
-    // console.log("up", this.collect(e));
-  };
-  // handleMouseMove = e => {
-  //   if (this.isDown) {
-  //     const event = this.collect(e);
-  //     const x = this.props.direction === "horizontal" ? event.x : event.y;
-  //     const delta = x - this.previous;
-  //     if (delta) {
-  //       event.positionRatio =
-  //         this.props.positionRatio + delta / this.props.length;
-  //       if (this.props.onScroll(event)) {
-  //         this.previous = x;
-  //         console.log(
-  //           "move",
-  //           delta,
-  //           this.previous,
-  //           x,
-  //           event.positionRatio,
-  //           event
-  //         );
-  //       }
-  //     }
-  //   }
-  // };
-  collect = e => {
-    const { button, shiftKey, target, clientX, clientY } = e;
-    // const initiator = e.target.id.startsWith("thumb") ? "thumb" : "bar";
-    const rect = target.getBoundingClientRect();
-    // console.log("collect", e.clientX, e.clientY, rect, e.target);
-    const { left, top } = rect;
-    let x = clientX - left,
-      y = clientY - top,
-      position = Math.max(
-        0,
-        Math.min(
-          (this.props.direction === "horizontal" ? x : y) - this.innerSize / 2,
-          this.props.length - this.innerSize
-        )
-      );
-    return {
-      type: "scrollbar",
-      id: this.props.id,
-      button,
-      shiftKey,
-      clientX,
-      clientY,
-      x,
-      y
-    };
-  };
   render() {
     return (
       <div
         className="zebulon-scrollbar-thumb"
         id={"thumb-" + this.props.id}
         style={this.props.style}
-        // onMouseDown={this.handleMouseDown}
-        // onMouseUp={this.handleMouseUp}
-        // onMouseMove={this.handleMouseMove}
       />
     );
   }
 }
-// const scrollbarInner = ({ id, style, connectDragSource }) => (
-//   // connectDragSource
-//   <div className="zebulon-scrollbar-thumb" id={`thumb-${id}`} style={style} />
-// );
-
-// const barSpec = {
-//   drop(props, monitor, component) {}
-// };
-// const collectDropTarget = connect => ({
-//   connectDropTarget: connect.dropTarget()
-// });
 
 export class Scrollbar extends Component {
   constructor(props) {
@@ -146,83 +61,40 @@ export class Scrollbar extends Component {
     }
     return innerStyle;
   };
-  collect = e => {
-    const { button, shiftKey, target, clientX, clientY } = e;
-    const initiator = e.target.id.startsWith("thumb") ? "thumb" : "bar";
-    const rect = target.getBoundingClientRect();
-    // console.log("collect", e.clientX, e.clientY, rect, e.target);
-    const { left, top } = rect;
-    let x = clientX - left,
-      y = clientY - top,
-      position = Math.max(
-        0,
-        Math.min(
-          (this.props.direction === "horizontal" ? x : y) - this.innerSize / 2,
-          this.props.length - this.innerSize
-        )
-      );
 
+  handleMouseDown = e => {
     const event = {
       type: "scrollbar",
       direction: this.props.direction,
-      button,
-      shiftKey,
-      clientX,
-      clientY,
-      x,
-      y,
-      // positionRatio: !this.isDragging
-      //   ? this.props.positionRatio
-      //   : position / this.props.length,
-      positionRatio: position / this.props.length,
-      position,
-      initiator
+      initiator: e.target.id.startsWith("thumb") ? "thumb" : "bar",
+      position: this.props.direction === "horizontal" ? e.clientX : e.clientY
     };
-    // this.position = position;
-    return event;
-  };
-  handleMouseDown = e => {
-    const event = this.collect(e);
     if (event.initiator === "thumb") {
       this.isDragging = true;
-      this.previous =
-        this.props.direction === "horizontal" ? event.clientX : event.clientY;
-      this.positionRatio = this.props.positionRatio;
-      // console.log("down", event.y, event.positionRatio, event);
+      this.props.handleDrag("startDrag", event);
     } else if (!this.isDragging) {
-      return this.props.onScroll(event);
+      const { left, top } = e.target.getBoundingClientRect();
+      event.relativePosition =
+        event.position - (this.props.direction === "horizontal" ? left : top);
+      return this.props.handleDrag("click", event);
     }
   };
-  handleMouseUp = e => (this.isDragging = false);
+  handleMouseUp = e => {
+    this.isDragging = false;
+    this.props.handleDrag("endDrag", { direction: this.props.direction });
+  };
   handleMouseMove = e => {
-    if (this.isDragging) {
-      const event = this.collect(e);
+    if (this.isDragging && e.buttons) {
+      const event = {
+        type: "scrollbar",
+        direction: this.props.direction,
+        position: this.props.direction === "horizontal" ? e.clientX : e.clientY
+      };
       e.preventDefault();
-      const x =
-        this.props.direction === "horizontal" ? event.clientX : event.clientY;
-      const delta = x - this.previous;
-      if (delta) {
-        event.positionRatio = Math.min(
-          Math.max(this.positionRatio + delta / this.props.length, 0),
-          1 - this.innerSize / this.props.length
-        );
-        event.position = this.props.length * event.positionRatio;
-        if (this.props.onScroll(event)) {
-          this.previous = x;
-          this.positionRatio = event.positionRatio;
-          // console.log(
-          //   "move",
-          //   delta,
-          //   this.previous,
-          //   x,
-          //   this.isDragging,
-          //   event.position,
-          //   this.props.length,
-          //   event.positionRatio,
-          //   event
-          // );
-        }
-      }
+      this.props.handleDrag("drag", event);
+    } else if (this.isDragging && !e.buttons) {
+      this.isDragging = false;
+      this.props.handleDrag("endDrag", { direction: this.props.direction });
     }
   };
 
