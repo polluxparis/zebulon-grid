@@ -396,6 +396,7 @@ class PivotGrid extends Component {
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
+        // position of Datacells must be absolute to avoid columns size distorsion
         <div
           style={{
             width,
@@ -444,6 +445,11 @@ class PivotGrid extends Component {
                 scrollbarsWidth={scrollbarsWidth}
                 onScroll={this.onScroll}
                 isPushing={this.isPushing}
+                style={{
+                  position: "absolute",
+                  top: rows.crossSize,
+                  left: columns.crossSize
+                }}
               />
             </div>
             <ConnectedMenu />
@@ -473,7 +479,7 @@ const collect = connect => ({
 PivotGrid.defaultProps = { id: 0 };
 // Add grid id to the type to ensure only correct drop target is used
 export default DropTarget(
-  props => `cell-resize-handle--${props.id || 0}`,
+  props => `cell-resize-handle--${props.gridId || 0}`,
   gridSpec,
   collect
 )(PivotGrid);

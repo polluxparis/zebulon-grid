@@ -134,9 +134,9 @@ export class ScrollableArea extends Component {
     };
     return event;
   };
-  handleDrag = (type, event) => {
+  _handleDrag = (type, event) => {
     const { length, innerSize } = this.scrollbars[event.direction];
-    event.thumbRatio = innerSize / length;
+    // event.thumbRatio = innerSize / length;
     const size = this.ratios[event.direction].display * length;
     if (type === "startDrag") {
       this.drag[event.direction] = {
@@ -147,7 +147,7 @@ export class ScrollableArea extends Component {
       // this.positionRatio = this.props.positionRatio;
     } else if (type === "endDrag") {
       this.drag[event.direction] = { isDragging: false };
-    } else if (type === "drag") {
+    } else if (type === "drag" && this.drag[event.direction].isDragging) {
       const drag = this.drag[event.direction];
       const delta = event.position - drag.previousPosition;
       if (delta) {
@@ -157,11 +157,18 @@ export class ScrollableArea extends Component {
         );
         // event.position = length * event.positionRatio;
         if (this.onScroll(event)) {
+          console.log(
+            "drag",
+            event.position,
+            event.positionRatio,
+            this.ratios[event.direction].position
+          );
           drag.previousPosition = event.position;
           drag.previousPositionRatio = event.positionRatio;
         }
       }
     } else if (type === "click") {
+      console.log("click area", event);
       event.positionRatio =
         Math.max(
           0,
@@ -170,20 +177,25 @@ export class ScrollableArea extends Component {
       this.onScroll(event);
     }
   };
-  handleMouseMove = e => {
+  _handleMouseMove = e => {
     if (
       (this.drag.vertical.isDragging || this.drag.horizontal.isDragging) &&
       e.buttons
     ) {
+      e.preventDefault();
       const direction = this.drag.vertical.isDragging
         ? "vertical"
         : "horizontal";
-      this.handleDrag("drag", {
+      this._handleDrag("drag", {
         type: "scrollbar",
         direction,
         position: direction === "horizontal" ? e.clientX : e.clientY
       });
     }
+  };
+  _handleMouseUp = e => {
+    this.drag.vertical.isDragging = false;
+    this.drag.horizontal.isDragging = false;
   };
   render() {
     const { height, width, gridId } = this.props;
@@ -197,9 +209,21 @@ export class ScrollableArea extends Component {
       height: scrollbars.vertical.length,
       width: scrollbars.horizontal.length
     };
+    // console.log("ratios", this.ratios.horizontal);
     return (
-      <div id={`grid ${gridId}`} onMouseMove={this.handleMouseMove}>
-        <div style={{ display: "flex" }}>
+      <div
+        id={`grid ${gridId}`}
+        style={this.props.style || {}}
+        onMouseMove={this._handleMouseMove}
+        onMouseUp={this._handleMouseUp}
+      >
+        <div
+          style={{
+            display: "flex",
+            position: "relative",
+            overflow: "hidden"
+          }}
+        >
           <div style={style}>{content}</div>
           <Scrollbar
             direction="vertical"
@@ -209,7 +233,7 @@ export class ScrollableArea extends Component {
             displayRatio={this.ratios.vertical.display}
             id={`vertical-scrollbar ${gridId}`}
             onScroll={this.onScroll}
-            handleDrag={this.handleDrag}
+            _handleDrag={this._handleDrag}
           />
         </div>
         <Scrollbar
@@ -220,7 +244,7 @@ export class ScrollableArea extends Component {
           displayRatio={this.ratios.horizontal.display}
           id={`horizontal-scrollbar ${gridId}`}
           onScroll={this.onScroll}
-          handleDrag={this.handleDrag}
+          _handleDrag={this._handleDrag}
         />
       </div>
     );

@@ -22,12 +22,14 @@ export class DataCells extends ScrollableArea {
     }
   }
   handleMouseDown = e => {
-    this.onSelect(e);
+    if (!e.defaultPrevented) {
+      this.onSelect(e);
+    }
   };
   handleMouseUp = e => {
     this.isMouseDown = false;
   };
-  handleMouseOver = ({ columnIndex, rowIndex, button }) => {
+  handleMouseOver = ({ columnIndex, rowIndex, button, buttons }) => {
     if (this.isMouseDown && button === 0) {
       if (
         !(
@@ -62,17 +64,19 @@ export class DataCells extends ScrollableArea {
   onScroll = e => {
     const { rows, columns, onScroll } = this.props;
     if (e.type === "scrollbar") {
-      const scroll = { rows: rows.scroll, columns: columns.scroll };
-      let direction;
+      const scroll = {
+        rows: { ...rows.scroll },
+        columns: { ...columns.scroll }
+      };
+      let direction, index;
       // if (e.initiator === "bar") {
       if (e.direction === "horizontal") {
-        const index = Math.round(columns.length * e.positionRatio);
+        index = Math.round(columns.length * e.positionRatio);
         direction = Math.sign(
           this.props.columns.startIndex +
             (scroll.columns.direction === -1 ? 1 : 0) -
             index
         );
-
         scroll.columns = {
           index:
             direction === -1
@@ -83,7 +87,7 @@ export class DataCells extends ScrollableArea {
           direction
         };
       } else {
-        const index = Math.round(rows.length * e.positionRatio);
+        index = Math.round(rows.length * e.positionRatio);
         direction = Math.sign(
           this.props.rows.startIndex +
             (scroll.rows.direction === -1 ? 1 : 0) -
@@ -99,6 +103,16 @@ export class DataCells extends ScrollableArea {
           direction
         };
       }
+      console.log(
+        "onscroll",
+        index,
+        this.props.columns.startIndex,
+        scroll.columns.index,
+        this.props.columns.direction,
+        scroll.columns.direction,
+        e.positionRatio,
+        columns.displayedRatio
+      );
       if (direction) {
         onScroll(scroll.rows, scroll.columns);
         return true;
@@ -116,6 +130,7 @@ export class DataCells extends ScrollableArea {
           selectedCellEnd: { columnIndex, rowIndex }
         });
       } else {
+        console.log("select", { columnIndex, rowIndex });
         this.props.selectCell({ columnIndex, rowIndex });
       }
     }

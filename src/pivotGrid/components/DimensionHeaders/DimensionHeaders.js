@@ -124,9 +124,9 @@ class DimensionHeaders extends Component {
       <div
         style={{
           position: "relative",
+          overflow: "hidden",
           height,
-          width,
-          overflow: "hidden"
+          width
         }}
         className="zebulon-grid-dimension-headers"
         onMouseDown={this.handleMouseDown}

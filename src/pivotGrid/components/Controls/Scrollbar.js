@@ -2,6 +2,9 @@ import React, { Component } from "react";
 
 class ScrollbarInner extends Component {
   render() {
+    // if (this.props.direction === "horizontal") {
+    //   console.log("scrollbar", this.props.style);
+    // }
     return (
       <div
         className="zebulon-scrollbar-thumb"
@@ -62,28 +65,30 @@ export class Scrollbar extends Component {
     return innerStyle;
   };
 
-  handleMouseDown = e => {
+  _handleMouseDown = e => {
     const event = {
       type: "scrollbar",
       direction: this.props.direction,
       initiator: e.target.id.startsWith("thumb") ? "thumb" : "bar",
       position: this.props.direction === "horizontal" ? e.clientX : e.clientY
     };
+    e.preventDefault();
     if (event.initiator === "thumb") {
       this.isDragging = true;
-      this.props.handleDrag("startDrag", event);
+      this.props._handleDrag("startDrag", event);
     } else if (!this.isDragging) {
       const { left, top } = e.target.getBoundingClientRect();
       event.relativePosition =
         event.position - (this.props.direction === "horizontal" ? left : top);
-      return this.props.handleDrag("click", event);
+      console.log("click", event);
+      return this.props._handleDrag("click", event);
     }
   };
-  handleMouseUp = e => {
+  _handleMouseUp = e => {
     this.isDragging = false;
-    this.props.handleDrag("endDrag", { direction: this.props.direction });
+    this.props._handleDrag("endDrag", { direction: this.props.direction });
   };
-  handleMouseMove = e => {
+  _handleMouseMove = e => {
     if (this.isDragging && e.buttons) {
       const event = {
         type: "scrollbar",
@@ -91,10 +96,10 @@ export class Scrollbar extends Component {
         position: this.props.direction === "horizontal" ? e.clientX : e.clientY
       };
       e.preventDefault();
-      this.props.handleDrag("drag", event);
+      this.props._handleDrag("drag", event);
     } else if (this.isDragging && !e.buttons) {
       this.isDragging = false;
-      this.props.handleDrag("endDrag", { direction: this.props.direction });
+      this.props._handleDrag("endDrag", { direction: this.props.direction });
     }
   };
 
@@ -103,14 +108,17 @@ export class Scrollbar extends Component {
     if (!width) {
       return null;
     }
+    // if (this.props.direction === "horizontal") {
+    //   console.log("scrollbar", this.props.positionRatio);
+    // }
     return (
       <div
         className="zebulon-scrollbar-bar"
         id={id}
         style={this.style}
-        onMouseDown={this.handleMouseDown}
-        onMouseUp={this.handleMouseUp}
-        onMouseMove={this.handleMouseMove}
+        onMouseDown={this._handleMouseDown}
+        onMouseUp={this._handleMouseUp}
+        onMouseMove={this._handleMouseMove}
       >
         <ScrollbarInner
           id={"thumb-" + id}
