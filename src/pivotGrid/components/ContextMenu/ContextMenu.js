@@ -11,7 +11,7 @@ import { MEASURE_ID, TOTAL_ID } from "../../constants";
 import Filter from "../../containers/Filter";
 
 const DimensionMenu = (id, trigger) => {
-  const { isNotCollapsible, hasSubTotal, hasGrandTotal } = trigger;
+  const { isNotCollapsible, hasSubTotal, hasGrandTotal, features } = trigger;
   const availableDimensions = trigger.availableDimensions.filter(
     dimension => dimension.id !== MEASURE_ID
   );
@@ -31,8 +31,9 @@ const DimensionMenu = (id, trigger) => {
   if (trigger.dimensionId === MEASURE_ID) {
     return <ReactContextMenu id={id}>{addDimensionSubMenu}</ReactContextMenu>;
   }
-  return (
-    <ReactContextMenu id={id}>
+  const menus = [];
+  if (features.sorting === "enabled") {
+    menus.push(
       <MenuItem
         onClick={trigger.onItemClick}
         disabled={trigger.dimensionId === TOTAL_ID}
@@ -40,44 +41,50 @@ const DimensionMenu = (id, trigger) => {
       >
         {`Sort  ${trigger.direction} `}
       </MenuItem>
-      {isNotCollapsible ? null : (
-        <div>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: "expand all" }}
-            disabled={isNotCollapsible}
-          >
-            Expand all
-          </MenuItem>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: "collapse all" }}
-            disabled={isNotCollapsible}
-          >
-            Collapse all
-          </MenuItem>
-        </div>
-      )}
-      {hasSubTotal === null ? null : (
-        <div>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: "toggle subtotal" }}
-          >
-            {(hasSubTotal ? "Remove" : "Add") + " subtotal"}
-          </MenuItem>
-        </div>
-      )}
-      {hasGrandTotal === null ? null : (
-        <div>
-          <MenuItem
-            onClick={trigger.onItemClick}
-            data={{ action: "toggle grandtotal" }}
-          >
-            {(hasGrandTotal ? "Remove" : "Add") + " grand total"}
-          </MenuItem>
-        </div>
-      )}
+    );
+  }
+  if (!isNotCollapsible && features.expandCollapse === "enabled") {
+    menus.push(
+      <MenuItem
+        onClick={trigger.onItemClick}
+        data={{ action: "expand all" }}
+        disabled={isNotCollapsible}
+      >
+        Expand all
+      </MenuItem>,
+      <MenuItem
+        onClick={trigger.onItemClick}
+        data={{ action: "collapse all" }}
+        disabled={isNotCollapsible}
+      >
+        Collapse all
+      </MenuItem>
+    );
+  }
+  if (features.totals === "enabled") {
+    if (hasSubTotal !== null) {
+      menus.push(
+        <MenuItem
+          onClick={trigger.onItemClick}
+          data={{ action: "toggle subtotal" }}
+        >
+          {(hasSubTotal ? "Remove" : "Add") + " subtotal"}
+        </MenuItem>
+      );
+    }
+    if (hasGrandTotal !== null) {
+      menus.push(
+        <MenuItem
+          onClick={trigger.onItemClick}
+          data={{ action: "toggle grandtotal" }}
+        >
+          {(hasGrandTotal ? "Remove" : "Add") + " grand total"}
+        </MenuItem>
+      );
+    }
+  }
+  if (features.filters === "enabled") {
+    menus.push(
       <SubMenu
         title="Filter"
         disabled={trigger.dimensionId === TOTAL_ID}
@@ -91,45 +98,58 @@ const DimensionMenu = (id, trigger) => {
           <Filter dimensionId={trigger.dimensionId} />
         </div>
       </SubMenu>
+    );
+  }
+  if (features.dimensions === "enabled") {
+    menus.push(
       <MenuItem
         onClick={trigger.onItemClick}
         disabled={trigger.dimensionId === TOTAL_ID}
         data={{ action: "remove" }}
       >
         Remove
-      </MenuItem>
-      {addDimensionSubMenu}
-    </ReactContextMenu>
-  );
+      </MenuItem>,
+      addDimensionSubMenu
+    );
+  }
+  if (menus.length) {
+    return <ReactContextMenu id={id}>{menus}</ReactContextMenu>;
+  } else {
+    return null;
+  }
 };
 
 const MeasureMenu = (id, trigger) => {
   const isDisabled = trigger.availableMeasures.length === 0;
-  return (
-    <ReactContextMenu id={id}>
-      <MenuItem onClick={trigger.onItemClick} data={{ action: "move" }}>
-        Move measures
-      </MenuItem>
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: "remove" }}
-        disabled={Object.keys(trigger.measures || {}).length < 2}
-      >
-        Remove
-      </MenuItem>
-      <SubMenu title="Add" disabled={isDisabled}>
-        {trigger.availableMeasures.map(measure => (
-          <MenuItem
-            key={measure.id}
-            onClick={trigger.onItemClick}
-            data={{ action: "add", newMeasureId: measure.id }}
-          >
-            {measure.caption}
-          </MenuItem>
-        ))}
-      </SubMenu>
-    </ReactContextMenu>
-  );
+  if (trigger.features.measures === "enabled") {
+    return (
+      <ReactContextMenu id={id}>
+        <MenuItem onClick={trigger.onItemClick} data={{ action: "move" }}>
+          Move measures
+        </MenuItem>
+        <MenuItem
+          onClick={trigger.onItemClick}
+          data={{ action: "remove" }}
+          disabled={Object.keys(trigger.measures || {}).length < 2}
+        >
+          Remove
+        </MenuItem>
+        <SubMenu title="Add" disabled={isDisabled}>
+          {trigger.availableMeasures.map(measure => (
+            <MenuItem
+              key={measure.id}
+              onClick={trigger.onItemClick}
+              data={{ action: "add", newMeasureId: measure.id }}
+            >
+              {measure.caption}
+            </MenuItem>
+          ))}
+        </SubMenu>
+      </ReactContextMenu>
+    );
+  } else {
+    return null;
+  }
 };
 const externalMenu = (functionType, externalFunction, onClick) => {
   if (externalFunction.type === "SubMenu") {
@@ -162,9 +182,11 @@ const DataCellMenu = (id, trigger) => {
     cellFunctions,
     rangeFunctions,
     gridFunctions;
+  const menus = [];
+  const features = trigger.configuration.features;
   keys = Object.keys(fct);
   if (keys.length) {
-    cellFunctions = (
+    menus.push(
       <SubMenu title="Cell">
         {keys.map(externalFunction =>
           externalMenu("cell", fct[externalFunction], trigger.onItemClick)
@@ -175,7 +197,7 @@ const DataCellMenu = (id, trigger) => {
   fct = trigger.menuFunctions.rangeFunctions || {};
   keys = Object.keys(fct);
   if (keys.length) {
-    rangeFunctions = (
+    menus.push(
       <SubMenu title="Range">
         {keys.map(externalFunction =>
           externalMenu("range", fct[externalFunction], trigger.onItemClick)
@@ -186,7 +208,7 @@ const DataCellMenu = (id, trigger) => {
   fct = trigger.menuFunctions.gridFunctions || {};
   keys = Object.keys(fct);
   if (keys.length) {
-    gridFunctions = (
+    menus.push(
       <SubMenu title="Grid">
         {keys.map(externalFunction =>
           externalMenu("grid", fct[externalFunction], trigger.onItemClick)
@@ -194,11 +216,8 @@ const DataCellMenu = (id, trigger) => {
       </SubMenu>
     );
   }
-  return (
-    <ReactContextMenu id={id}>
-      {cellFunctions}
-      {rangeFunctions}
-      {gridFunctions}
+  if (features.filters === "enabled") {
+    menus.push(
       <SubMenu title="Filters">
         {trigger.dimensions
           .filter(dimension => dimension.id !== MEASURE_ID)
@@ -221,6 +240,10 @@ const DataCellMenu = (id, trigger) => {
             </SubMenu>
           ))}
       </SubMenu>
+    );
+  }
+  if (features.configuration === "enabled") {
+    menus.push(
       <SubMenu
         key={"configuration"}
         title="Configuration"
@@ -248,14 +271,19 @@ const DataCellMenu = (id, trigger) => {
             (trigger.configuration.totalsFirst ? "after" : "before")}
         </MenuItem>
       </SubMenu>
-    </ReactContextMenu>
-  );
+    );
+  }
+  if (menus.length) {
+    return <ReactContextMenu id={id}>{menus}</ReactContextMenu>;
+  } else {
+    return null;
+  }
 };
 
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id}>''</ReactContextMenu>;
+    return <ReactContextMenu id={id} />;
   }
 
   if (trigger.type === "dimension-header") {

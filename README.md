@@ -265,6 +265,20 @@ Displayed dimensions and measures are assigned (ordered) either in row or in col
   measureHeadersAxis: "columns"
 }
 ```
+### Features
+Features provided by the component are available by default on the grid. They can be disabled by changing the values from "enabled" to anything else. 
+```js
+features = {
+  dimensions: "enabled",
+  measures: "enabled",
+  resize: "enabled",
+  expandCollapse: "enabled",
+  totals: "enabled",
+  filters: "enabled",
+  sorting: "enabled",
+  configuration: "enabled"
+}
+```
 ### Others
 Collapses, sizes and filters can be defined in the configuration property 
 ## Configuration functions

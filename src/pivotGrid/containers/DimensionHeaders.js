@@ -35,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
     width: rowHeadersWidthSelector(state),
     gridId: ownProps.gridId,
     sizes: state.sizes,
+    features: state.configuration.features,
     toggleSort: toggleSortOrderSelector(state),
     getAxisTrees: getAxisTreesSelector(state)
   };

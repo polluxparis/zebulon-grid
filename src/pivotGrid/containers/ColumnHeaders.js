@@ -24,7 +24,8 @@ const mapStateToProps = (state, ownProps) => {
     getSelectedColumnRange: getSelectedColumnRangeSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     availableMeasures: availableMeasuresSelector(state),
-    previewSizes: previewSizesSelector(state)
+    previewSizes: previewSizesSelector(state),
+    features: state.configuration.features
   };
 };
 

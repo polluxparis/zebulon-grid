@@ -184,10 +184,12 @@ const getFinalLeaves = (
   node,
   measures,
   measuresCount,
-  // filteredIndexes,
+  dimension,
+  filteredIndexes,
   leaves
 ) => {
   node.orderedChildren = [];
+  // node.filteredIndexes = [];
   if (node.type === HeaderType.SUB_TOTAL) {
     if (node.id === ROOT_ID) {
       node.depth = 0;
@@ -196,6 +198,19 @@ const getFinalLeaves = (
     }
     node.isVisible = !node.isParentCollapsed;
     node.nVisibles = node.isVisible * measuresCount;
+  }
+  // filtering
+  // when a filter is set on one or several not diplayed dimensions=> filter data indexes
+  // else filtering is made on leaves
+  if (!node.isTotal && node.id !== ROOT_ID && filteredIndexes) {
+    node.filteredIndexes = node.dataRowIndexes.filter(index =>
+      filteredIndexes.get(index)
+    );
+  } else {
+    node.filteredIndexes = node.dataRowIndexes;
+  }
+  if (node.filteredIndexes && !node.filteredIndexes.length) {
+    return 0;
   }
   if (measures) {
     node.children = {};
@@ -257,35 +272,16 @@ export const getAxisLeaves = (
   node.isParentCollapsed =
     parent.isParentCollapsed || (parent.isCollapsed && !isAttribute);
   node.isVisible = (parent.isVisible && first) || !node.isParentCollapsed;
-  // filtering
-  // when a filter is set on one or several not diplayed dimensions=> filter data indexes
-  // else filtering is made on leaves
-  node.isFiltered = true;
-  if (dimension.filter && !dimension.filter[node.id]) {
-    node.isFiltered = false;
-    node.isVisible = false;
-    node.nVisibles = 0;
-    return 0;
-  }
-  if (node.id !== ROOT_ID && filteredIndexes) {
-    node.filteredIndexes = node.dataRowIndexes.filter(index =>
-      filteredIndexes.get(index)
-    );
-    if (node.filteredIndexes.length === 0) {
-      node.isVisible = false;
-      node.nVisibles = 0;
-      node.isFiltered = false;
-      return 0;
-    }
-  } else {
-    node.filteredIndexes = node.dataRowIndexes;
-  }
+  node.isFiltered =
+    !dimension.filter || dimension.filter[node.id] !== undefined;
+  node.filteredIndexes = [];
   //  totals
   const totalKey = node.id === ROOT_ID ? toAxis(axis) + TOTAL_ID : dimension.id;
   if (
     nextDimension.id !== undefined &&
     subtotals[totalKey] &&
-    !dimension.isAttribute
+    !dimension.isAttribute &&
+    node.isFiltered
   ) {
     subtotalNode = {
       ...node,
@@ -303,12 +299,14 @@ export const getAxisLeaves = (
         subtotalNode,
         measures,
         measuresCount,
+        dimension,
+        filteredIndexes,
         leaves
       );
     }
   }
   node.subtotal = subtotalNode;
-  if (nextDimension.id !== undefined) {
+  if (nextDimension.id !== undefined && node.isFiltered) {
     let children = Object.values(node.children),
       sortDimension = nextDimension;
     if (
@@ -346,6 +344,7 @@ export const getAxisLeaves = (
       return {
         id,
         nVisibles,
+        filteredIndexes: child.filteredIndexes,
         isFiltered: child.isFiltered
       };
     });
@@ -353,29 +352,55 @@ export const getAxisLeaves = (
     children = children.filter(
       child =>
         child.isFiltered &&
-        (!nextDimension.filter || nextDimension.filter[child.id])
+        (!nextDimension.filter || nextDimension.filter[child.id] !== undefined)
     );
     children = children.map(child => {
       nVisibles += child.nVisibles;
+      // node.filteredIndexes.push(...child.filteredIndexes);
+      node.filteredIndexes = node.filteredIndexes.concat(child.filteredIndexes);
       return child.id;
     });
+    node.filteredIndexes.sort((a, b) => a - b);
     if (!node.orders) {
       node.orders = {};
     }
     node.orders[sortDimension.id] = children;
     node.orderedChildren = node.orders[sortDimension.id];
   }
-  if (nextDimension.id === undefined) {
+  if (nextDimension.id === undefined && node.isFiltered) {
     // push terminal leaves or, if measures are on the axis,1 leave per measure
-    nVisibles = getFinalLeaves(node, measures, measuresCount, leaves);
-  } else if (subtotalNode && !totalsFirst) {
+    nVisibles = getFinalLeaves(
+      node,
+      measures,
+      measuresCount,
+      dimension,
+      filteredIndexes,
+      leaves
+    );
+  }
+  if (node.filteredIndexes && !node.filteredIndexes.length) {
+    node.isVisible = false;
+    node.nVisibles = 0;
+    node.isFiltered = false;
+  }
+  if (subtotalNode && node.isVisible && !totalsFirst) {
     // push subtotals or grand total
     subtotalNode.nVisibles = getFinalLeaves(
       subtotalNode,
       measures,
       measuresCount,
+      dimension,
+      filteredIndexes,
       leaves
     );
+  }
+  if (subtotalNode) {
+    subtotalNode.filteredIndexes = node.filteredIndexes;
+    subtotalNode.isFiltered = node.isFiltered;
+    if (!node.isFiltered) {
+      subtotalNode.isVisible = false;
+      subtotalNode.nVisibles = 0;
+    }
   }
   node.nVisibles = nVisibles;
   return nVisibles + (subtotalNode !== null ? subtotalNode.nVisibles : 0);
@@ -430,15 +455,12 @@ export const rowLeavesSelector = createSelector(
           leaves
         );
       }
-      // console.log(
-      //   "rowLeavesSelector",
-      //   leaves.length,
-      //   nVisibles,
-      //   Date.now() - x,
-      //   node,
-      //   leaves
-      // );
-      return { nVisibles, node, leaves };
+
+      return {
+        nVisibles,
+        node,
+        leaves: totalsFirst ? leaves.filter(leaf => leaf.isFiltered) : leaves
+      };
     } else {
       return {};
     }
@@ -495,15 +517,11 @@ export const columnLeavesSelector = createSelector(
           leaves
         );
       }
-      // console.log(
-      //   "columnLeavesSelector",
-      //   leaves.length,
-      //   nVisibles,
-      //   Date.now() - x,
-      //   node,
-      //   leaves
-      // );
-      return { nVisibles, node, leaves };
+      return {
+        nVisibles,
+        node,
+        leaves: totalsFirst ? leaves.filter(leaf => leaf.isFiltered) : leaves
+      };
     } else {
       return {};
     }

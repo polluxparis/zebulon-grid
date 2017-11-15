@@ -18,7 +18,8 @@ class Headers extends PureComponent {
     return {
       ...props,
       availableMeasures: this.props.availableMeasures,
-      measures: this.props.measures
+      measures: this.props.measures,
+      features: this.props.features
     };
   };
 
@@ -44,7 +45,8 @@ class Headers extends PureComponent {
       toggleCollapse,
       axisType,
       previewSizes,
-      measures
+      measures,
+      features
     } = this.props;
     const positionStyle = {
       position: "absolute",
@@ -105,6 +107,7 @@ class Headers extends PureComponent {
         collectMenu={this.collectMenu}
         previewSizes={previewSizes}
         measuresCount={measures === null || Object.keys(measures).length}
+        features={features}
       />
     );
   };

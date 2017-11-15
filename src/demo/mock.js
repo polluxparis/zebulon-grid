@@ -224,6 +224,7 @@ export const basicConfig = {
   // activeMeasures: ["qty", "amt", "price"],
   activeMeasures: ["qty", "amt"],
   collapses: { rows: { 99: true, 98: true }, columns: {} }
+  // features: {}
 };
 export const basicConfig2 = {
   measureHeadersAxis: "columns",

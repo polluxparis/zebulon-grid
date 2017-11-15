@@ -15,14 +15,14 @@ import { ContextMenuTrigger } from "react-contextmenu";
 
 class DimensionHeader extends PureComponent {
   handleClickCollapse = e => {
-    if (e.button === 0) {
+    if (e.button === 0 && this.props.features.expandCollapse === "enabled") {
       const { toggleCollapseDimension, dimension } = this.props;
       toggleCollapseDimension(dimension.id);
     }
   };
   handleClickSort = e => {
     this.button = e.button;
-    if (e.button === 0) {
+    if (e.button === 0 && this.props.features.sorting === "enabled") {
       const { toggleSortOrder, dimension } = this.props;
       if (dimension.id !== MEASURE_ID && dimension.id !== ROOT_ID) {
         toggleSortOrder(dimension.id);
@@ -78,7 +78,8 @@ class DimensionHeader extends PureComponent {
       gridId,
       moveDimension,
       collectMenu,
-      isFiltered
+      isFiltered,
+      features
     } = this.props;
 
     const ids = {};
@@ -99,6 +100,31 @@ class DimensionHeader extends PureComponent {
       "zebulon-grid-dimension-attribute-header": dimension.isAttribute,
       "zebulon-grid-dimension-filtered-header": isFiltered
     });
+    let resizeHandle = [];
+    if (features.resize === "enabled") {
+      resizeHandle = [
+        <ResizeHandle
+          position="right"
+          size={height}
+          id={ids.right}
+          axis={AxisType.ROWS}
+          gridId={gridId}
+          previewSize={previewSizes.height}
+        />,
+        <ResizeHandle
+          position="bottom"
+          size={width}
+          gridId={gridId}
+          id={ids.bottom}
+          axis={AxisType.COLUMNS}
+          previewSize={previewSizes.width}
+        />
+      ];
+    }
+    let menuTrigger = null;
+    if (true) {
+      menuTrigger = `context-menu-${gridId}`;
+    }
     let header = (
       <div
         key={`fixed-dim-${dimension.id}`}
@@ -119,36 +145,24 @@ class DimensionHeader extends PureComponent {
           id={dimension.id}
           index={dimension.depth}
           caption={dimension.caption}
-          isNotCollapsible={!dimension.hasAttribute}
+          isNotCollapsible={
+            !dimension.hasAttribute ||
+            this.props.features.expandCollapse !== "enabled"
+          }
           isCollapsed={dimension.isCollapsed}
           handleClickCollapse={this.handleClickCollapse}
           moveDimension={moveDimension}
-          isDropTarget={true}
-          isDragSource={true}
+          isDropTarget={this.props.features.dimensions === "enabled"}
+          isDragSource={this.props.features.dimensions === "enabled"}
           gridId={gridId}
         />
-        <ResizeHandle
-          position="right"
-          size={height}
-          id={ids.right}
-          axis={AxisType.ROWS}
-          gridId={gridId}
-          previewSize={previewSizes.height}
-        />
-        <ResizeHandle
-          position="bottom"
-          size={width}
-          gridId={gridId}
-          id={ids.bottom}
-          axis={AxisType.COLUMNS}
-          previewSize={previewSizes.width}
-        />
+        {resizeHandle}
       </div>
     );
     // return header;
     return (
       <ContextMenuTrigger
-        id={`context-menu-${gridId}`}
+        id={menuTrigger}
         holdToDisplay={-1}
         collect={collectMenu}
         onItemClick={this.handleClickMenu}

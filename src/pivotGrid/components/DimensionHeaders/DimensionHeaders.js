@@ -32,7 +32,8 @@ class DimensionHeaders extends Component {
       availableDimensions: this.props.availableDimensions,
       direction: props.sortDirection === "asc" ? "descending" : "ascending",
       dimensionFilter: this.props.filters[props.dimensionId],
-      isNotCollapsible: this.collapsibles[props.dimensionId] < 2
+      isNotCollapsible: this.collapsibles[props.dimensionId] < 2,
+      features: this.props.features
     };
   };
   // ---------------------------------------------------
@@ -48,7 +49,8 @@ class DimensionHeaders extends Component {
       toggleSubTotal,
       crossPositions,
       height,
-      width
+      width,
+      features
     } = this.props;
     const headers = [];
 
@@ -92,6 +94,7 @@ class DimensionHeaders extends Component {
             expandCollapseAll={expandCollapseAll}
             collectMenu={this.collectMenu}
             isFiltered={!isNullOrUndefined(this.props.filters[dimension.id])}
+            features={features}
           />
         );
       }

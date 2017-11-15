@@ -62,7 +62,8 @@ export class Filter extends Component {
       items: [...props.items],
       filter: { ...props.filter },
       rowCount: props.items.length,
-      startIndex: 0
+      startIndex: 0,
+      checkAll: false
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -98,7 +99,7 @@ export class Filter extends Component {
   };
   onChangeCheck = (id, index) => {
     const filter = this.state.filter;
-    const checked = !filter[id];
+    const checked = filter[id] === undefined;
     if (checked) {
       filter[id] = id;
     } else {

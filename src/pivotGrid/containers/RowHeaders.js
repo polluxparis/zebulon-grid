@@ -23,6 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     height: state.configuration.height,
     width: state.configuration.width,
     previewSizes: previewSizesSelector(state),
+    features: state.configuration.features,
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),

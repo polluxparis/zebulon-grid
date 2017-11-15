@@ -116,6 +116,18 @@ export const applyConfigurationToStore = (
       measureHeadersAxis
     )
   );
+  store.dispatch(
+    setConfigurationProperty(configuration, "features", {
+      dimensions: "enabled",
+      measures: "enabled",
+      resize: "enabled",
+      expandCollapse: "enabled",
+      totals: "enabled",
+      filters: "enabled",
+      sorting: "enabled",
+      configuration: "enabled"
+    })
+  );
   let activeMeasures = configuration.activeMeasures,
     columns = configuration.columns,
     rows = configuration.rows;

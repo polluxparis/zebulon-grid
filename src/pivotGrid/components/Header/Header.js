@@ -8,11 +8,13 @@ import { ContextMenuTrigger } from "react-contextmenu";
 import { expandCollapseNode } from "../../selectors";
 class Header extends Component {
   handleClickCollapse = () => {
-    const { toggleCollapse, header, measuresCount } = this.props;
-    toggleCollapse(
-      header.key,
-      expandCollapseNode(header, undefined, measuresCount)
-    );
+    if (this.props.features.expandCollapse === "enabled") {
+      const { toggleCollapse, header, measuresCount } = this.props;
+      toggleCollapse(
+        header.key,
+        expandCollapseNode(header, undefined, measuresCount)
+      );
+    }
   };
   handleClick = () => {
     this.props.selectAxis(this.props.header);
@@ -48,7 +50,8 @@ class Header extends Component {
       toggleMeasuresAxis,
       collectMenu,
       isDropTarget,
-      isDragSource
+      isDragSource,
+      features
     } = this.props;
     let style = positionStyle;
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
@@ -63,6 +66,33 @@ class Header extends Component {
       "zebulon-grid-header-total": header.isTotal === 1,
       "zebulon-grid-header-grandtotal": header.isTotal === 2
     });
+    let resizeHandle = [];
+    if (features.resize === "enabled") {
+      resizeHandle = [
+        <ResizeHandle
+          position="right"
+          size={positionStyle.height}
+          id={rightKey}
+          axis={axis}
+          header={rightHeader}
+          previewSize={previewSizes.height}
+          gridId={gridId}
+        />,
+        <ResizeHandle
+          position="bottom"
+          size={positionStyle.width}
+          id={bottomKey}
+          gridId={gridId}
+          axis={axis}
+          header={bottomHeader}
+          previewSize={previewSizes.width}
+        />
+      ];
+    }
+    let menuTrigger = null;
+    if (true) {
+      menuTrigger = `context-menu-${gridId}`;
+    }
     const head = (
       <div
         className={className}
@@ -79,7 +109,9 @@ class Header extends Component {
           measureId={dimensionId === MEASURE_ID ? header.id : null}
           index={header.index}
           caption={caption}
-          isNotCollapsible={isNotCollapsible}
+          isNotCollapsible={
+            isNotCollapsible || this.props.features.expandCollapse !== "enabled"
+          }
           isCollapsed={isCollapsed}
           collapseOffset={collapseOffset}
           handleClickCollapse={this.handleClickCollapse}
@@ -88,34 +120,21 @@ class Header extends Component {
           moveDimension={moveDimension}
           moveMeasure={moveMeasure}
           toggleMeasuresAxis={toggleMeasuresAxis}
-          isDropTarget={isDropTarget}
-          isDragSource={isDragSource}
+          isDropTarget={
+            isDropTarget && this.props.features.dimensions === "enabled"
+          }
+          isDragSource={
+            isDragSource && this.props.features.measures === "enabled"
+          }
           gridId={gridId}
         />
-        <ResizeHandle
-          position="right"
-          size={positionStyle.height}
-          id={rightKey}
-          axis={axis}
-          header={rightHeader}
-          previewSize={previewSizes.height}
-          gridId={gridId}
-        />
-        <ResizeHandle
-          position="bottom"
-          size={positionStyle.width}
-          id={bottomKey}
-          gridId={gridId}
-          axis={axis}
-          header={bottomHeader}
-          previewSize={previewSizes.width}
-        />
+        {resizeHandle}
       </div>
     );
     if (dimensionId === MEASURE_ID) {
       return (
         <ContextMenuTrigger
-          id={`context-menu-${gridId}`}
+          id={menuTrigger}
           holdToDisplay={-1}
           collect={collectMenu}
           onItemClick={this.handleClickMenu}
