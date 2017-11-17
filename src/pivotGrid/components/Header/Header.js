@@ -70,6 +70,7 @@ class Header extends Component {
     if (features.resize === "enabled") {
       resizeHandle = [
         <ResizeHandle
+          key="right"
           position="right"
           size={positionStyle.height}
           id={rightKey}
@@ -79,6 +80,7 @@ class Header extends Component {
           gridId={gridId}
         />,
         <ResizeHandle
+          key="bottom"
           position="bottom"
           size={positionStyle.width}
           id={bottomKey}

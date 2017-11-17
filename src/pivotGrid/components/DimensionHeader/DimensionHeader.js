@@ -104,6 +104,7 @@ class DimensionHeader extends PureComponent {
     if (features.resize === "enabled") {
       resizeHandle = [
         <ResizeHandle
+          key="right"
           position="right"
           size={height}
           id={ids.right}
@@ -112,6 +113,7 @@ class DimensionHeader extends PureComponent {
           previewSize={previewSizes.height}
         />,
         <ResizeHandle
+          key="bottom"
           position="bottom"
           size={width}
           gridId={gridId}

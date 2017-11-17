@@ -16,7 +16,11 @@ const DimensionMenu = (id, trigger) => {
     dimension => dimension.id !== MEASURE_ID
   );
   const addDimensionSubMenu = (
-    <SubMenu title="Add dimension" disabled={availableDimensions.length === 0}>
+    <SubMenu
+      title="Add dimension"
+      disabled={availableDimensions.length === 0}
+      key={-1}
+    >
       {availableDimensions.map(dimension => (
         <MenuItem
           key={dimension.id}
@@ -38,6 +42,7 @@ const DimensionMenu = (id, trigger) => {
         onClick={trigger.onItemClick}
         disabled={trigger.dimensionId === TOTAL_ID}
         data={{ action: "sort" }}
+        key={menus.length}
       >
         {`Sort  ${trigger.direction} `}
       </MenuItem>
@@ -49,6 +54,7 @@ const DimensionMenu = (id, trigger) => {
         onClick={trigger.onItemClick}
         data={{ action: "expand all" }}
         disabled={isNotCollapsible}
+        key={menus.length}
       >
         Expand all
       </MenuItem>,
@@ -67,6 +73,7 @@ const DimensionMenu = (id, trigger) => {
         <MenuItem
           onClick={trigger.onItemClick}
           data={{ action: "toggle subtotal" }}
+          key={menus.length}
         >
           {(hasSubTotal ? "Remove" : "Add") + " subtotal"}
         </MenuItem>
@@ -77,6 +84,7 @@ const DimensionMenu = (id, trigger) => {
         <MenuItem
           onClick={trigger.onItemClick}
           data={{ action: "toggle grandtotal" }}
+          key={menus.length}
         >
           {(hasGrandTotal ? "Remove" : "Add") + " grand total"}
         </MenuItem>
@@ -88,6 +96,7 @@ const DimensionMenu = (id, trigger) => {
       <SubMenu
         title="Filter"
         disabled={trigger.dimensionId === TOTAL_ID}
+        key={menus.length}
         style={
           !isNullOrUndefined(trigger.dimensionFilter) ? (
             { fontWeight: "bold" }
@@ -106,6 +115,7 @@ const DimensionMenu = (id, trigger) => {
         onClick={trigger.onItemClick}
         disabled={trigger.dimensionId === TOTAL_ID}
         data={{ action: "remove" }}
+        key={menus.length}
       >
         Remove
       </MenuItem>,
@@ -187,7 +197,7 @@ const DataCellMenu = (id, trigger) => {
   keys = Object.keys(fct);
   if (keys.length) {
     menus.push(
-      <SubMenu title="Cell">
+      <SubMenu title="Cell" key={menus.length}>
         {keys.map(externalFunction =>
           externalMenu("cell", fct[externalFunction], trigger.onItemClick)
         )}
@@ -198,7 +208,7 @@ const DataCellMenu = (id, trigger) => {
   keys = Object.keys(fct);
   if (keys.length) {
     menus.push(
-      <SubMenu title="Range">
+      <SubMenu title="Range" key={menus.length}>
         {keys.map(externalFunction =>
           externalMenu("range", fct[externalFunction], trigger.onItemClick)
         )}
@@ -209,7 +219,7 @@ const DataCellMenu = (id, trigger) => {
   keys = Object.keys(fct);
   if (keys.length) {
     menus.push(
-      <SubMenu title="Grid">
+      <SubMenu title="Grid" key={menus.length}>
         {keys.map(externalFunction =>
           externalMenu("grid", fct[externalFunction], trigger.onItemClick)
         )}
@@ -218,7 +228,7 @@ const DataCellMenu = (id, trigger) => {
   }
   if (features.filters === "enabled") {
     menus.push(
-      <SubMenu title="Filters">
+      <SubMenu title="Filters" key={menus.length}>
         {trigger.dimensions
           .filter(dimension => dimension.id !== MEASURE_ID)
           .map(dimension => (
@@ -245,9 +255,9 @@ const DataCellMenu = (id, trigger) => {
   if (features.configuration === "enabled") {
     menus.push(
       <SubMenu
-        key={"configuration"}
         title="Configuration"
         style={{ width: "fitContent" }}
+        key={menus.length}
       >
         <SubMenu key={"cell-height"} title={"Default cell height"}>
           <div style={{ textAlign: "right", backgroundColor: "lightgrey" }}>
@@ -283,7 +293,8 @@ const DataCellMenu = (id, trigger) => {
 const ContextMenu = props => {
   const { id, trigger } = props;
   if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id} />;
+    return <ReactContextMenu id={id}> </ReactContextMenu>;
+    return null;
   }
 
   if (trigger.type === "dimension-header") {
