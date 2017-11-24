@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies*/
 import { Observable } from "rx-lite";
 /* eslint-enable */
-// import * as 'from' './Format';
 
 export function getMockDatasource(
   dataRepetition = 1,
@@ -79,6 +78,20 @@ export function getRandomMockDatasource(
   }
   return res;
 }
+
+export const overwritedData = () => {
+  const obj = {};
+  obj.toto = 1;
+  obj.toto_lb = `toto ${String(1)}`;
+  obj.toto_0 = `att0 ${String(1)}`;
+  obj.toto_1 = `att1 ${String(199)}`;
+  obj.titi = 1;
+  obj.titi_lb = `titi ${String(1)}`;
+  // obj.tutu = "2";
+  obj.qty = 100; // Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
+  // obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
+  return [obj];
+};
 export function getMockDatasource2(
   dataRepetition = 1,
   nToto = 10,
@@ -149,12 +162,13 @@ export const getPromiseMockDatasource = (
   );
   return p;
 };
-export const basicConfig = {
+export const basicConfig = callbacks => ({
   measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
   cellWidth: 100,
+  totalsFirst: true,
 
   dimensions: [
     {
@@ -223,10 +237,12 @@ export const basicConfig = {
   rows: ["toto", "titi"],
   // activeMeasures: ["qty", "amt", "price"],
   activeMeasures: ["qty", "amt"],
-  collapses: { rows: { 99: true, 98: true }, columns: {} }
+  collapses: { rows: { 99: true, 98: true }, columns: {} },
+  subtotals: { toto: true, rows__total__: true },
+  callbacks
   // features: {}
-};
-export const basicConfig2 = {
+});
+export const basicConfig2 = callbacks => ({
   measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
@@ -294,5 +310,6 @@ export const basicConfig2 = {
   ],
   columns: ["titi"],
   rows: ["toto2", "toto att 0", "toto att 1", "tutu"],
-  activeMeasures: ["qty", "amt", "price"]
-};
+  activeMeasures: ["qty", "amt", "price"],
+  callbacks
+});

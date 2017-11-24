@@ -62,6 +62,7 @@ const DimensionMenu = (id, trigger) => {
         onClick={trigger.onItemClick}
         data={{ action: "collapse all" }}
         disabled={isNotCollapsible}
+        key={menus.length}
       >
         Collapse all
       </MenuItem>

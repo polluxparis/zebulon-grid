@@ -78,7 +78,7 @@ export const resetLeaves = node => {
     Object.keys(node.orders).map(key => (node.orders[key] = null));
   }
   node.orders = null;
-  node.parent = null;
+  // node.parent = null;
   node.options = null;
   node.sizes = null;
   node = undefined;

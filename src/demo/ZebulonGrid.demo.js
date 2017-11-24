@@ -6,7 +6,8 @@ import { ResizableBox } from "react-resizable";
 import {
   getPromiseMockDatasource,
   basicConfig,
-  getRandomMockDatasource
+  getRandomMockDatasource,
+  overwritedData
 } from "./mock";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
@@ -19,7 +20,7 @@ class ZebulonGridDemo extends Component {
       // focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),
       pushedData: [],
-      configuration: basicConfig,
+      configuration: basicConfig({ onEdit: this.onEdit }),
       configurationFunctions,
       menuFunctions,
       sizes: {
@@ -30,6 +31,16 @@ class ZebulonGridDemo extends Component {
     };
     this.bigDataSet = false;
   }
+  // componentDidUpdate(prevProps) {
+  //   const element = document.getElementById(
+  //     `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
+  //       .selectedRange.selectedCellEnd.columnIndex}`
+  //   );
+  //   if (element) {
+  //     element.select();
+  //   }
+  //   console.log("demo");
+  // }
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
     this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
@@ -109,9 +120,19 @@ class ZebulonGridDemo extends Component {
     });
   };
 
+  onEdit = ({ oldValue, newValue }) => {
+    this.setState({
+      actionContent: `Old value: ${oldValue} - New value:${newValue}`
+    });
+  };
+  // test = () =>
+  //   this.setState({
+  //     pushedData: overwritedData()
+  //   });
   render() {
     return (
       <div id="toto" style={{ fontFamily: "sans-serif" }}>
+        <div style={{ height: 100 }} />
         <ResizableBox
           height={this.state.sizes.height}
           width={this.state.sizes.width}

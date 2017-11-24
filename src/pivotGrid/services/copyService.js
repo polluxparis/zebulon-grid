@@ -146,7 +146,9 @@ export const getSelectedText = (elements, type) => {
     }
     // data cells
     for (let x = 0; x < columns.length; x += 1) {
-      outputRow += `${replaceNullAndUndefined(cells[y][x])}${columnSeparator}`;
+      outputRow += `${replaceNullAndUndefined(
+        cells[y][x].value
+      )}${columnSeparator}`;
     }
     outputRow = outputRow.slice(0, -1);
     output.push(outputRow);

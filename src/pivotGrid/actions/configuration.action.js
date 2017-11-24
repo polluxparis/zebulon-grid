@@ -28,6 +28,11 @@ export const setMeasures = (configObject, configurationFunctions) => ({
     measureFactory(measure, configurationFunctions)
   )
 });
+export const setProperty = (property, value) => ({
+  type: SET_CONFIG_PROPERTY,
+  property,
+  value: value
+});
 export const setConfigurationProperty = (
   configObject,
   property,

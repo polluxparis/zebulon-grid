@@ -104,6 +104,9 @@
 .zebulon-grid-data-cell-grandtotal {
   background-color: rgba(217, 226, 132, 0.98);
 }
+.zebulon-grid-data-cell-edited {
+  text-decoration: underline blue;
+}
 .react-contextmenu {
   min-width: 10em;
   color: #373a3c;
@@ -198,4 +201,71 @@
   background-color: grey;
   border: solid 0.03em grey;
   border-radius: 0.25rem;
+}
+
+.tool-tip {
+  padding: 5px;
+  position: absolute;
+  z-index: 9999;
+  cursor: default;
+  animation: 0.5s fadeIn;
+  border: 0.05em solid;
+  min-height: 30px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.react-hint__content {
+  padding: 10px;
+  border-radius: 5px;
+  background: #000;
+  color: #fff;
+}
+
+.react-hint:after {
+  content: "";
+  width: 0;
+  height: 0;
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 5px solid transparent;
+}
+
+.react-hint--top:after {
+  top: auto;
+  border-bottom: none;
+  border-top-color: #000;
+}
+
+.react-hint--left:after {
+  left: auto;
+  border-right: none;
+  border-left-color: #000;
+}
+
+.react-hint--right:after {
+  right: auto;
+  border-left: none;
+  border-right-color: #000;
+}
+
+.react-hint--bottom:after {
+  bottom: auto;
+  border-top: none;
+  border-bottom-color: #000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

@@ -2,17 +2,23 @@ import React from "react";
 
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
-import { AXIS_SEPARATOR, HeaderType } from "../../constants";
+import { MEASURE_ID, AXIS_SEPARATOR, HeaderType } from "../../constants";
 import { ScrollableArea } from "../Controls/ScrollableArea";
 import { getSelectedText } from "../../services/copyService";
+import { ReactHint } from "../Controls/ToolTip";
 export class DataCells extends ScrollableArea {
   constructor(props) {
     super(props);
     this.cellCache = {};
     this.isPushing = 0;
+    this.editable = false;
+    this.comment = undefined;
+    this.state = { toolTip: { style: { opacity: 0 }, modal: false } };
   }
   componentWillReceiveProps(newProps) {
-    this.isPushing = newProps.isPushing ? 1 + this.isPushing % 2 : 0;
+    this.isPushing =
+      newProps.isPushing && !this.isEditing ? 1 + this.isPushing % 2 : 0;
+    this.isEditing = false;
     if (
       !newProps.isPushing &&
       (newProps.rows !== this.props.rows ||
@@ -20,7 +26,40 @@ export class DataCells extends ScrollableArea {
     ) {
       this.cellCache = {};
     }
+    if (
+      this.editable &&
+      (this.props.rows.leaves !== newProps.rows.leaves ||
+        this.props.columns.leaves !== newProps.columns.leaves ||
+        this.props.selectedRange.selectedCellEnd.rowIndex !==
+          newProps.selectedRange.selectedCellEnd.rowIndex ||
+        this.props.selectedRange.selectedCellEnd.columnIndex !==
+          newProps.selectedRange.selectedCellEnd.columnIndex)
+    ) {
+      if (this.oldValue !== this.newValue || this.comment) {
+        const {
+          rowIndex,
+          columnIndex
+        } = this.props.selectedRange.selectedCellEnd;
+        this.editData(
+          this.props.rows.leaves[rowIndex],
+          this.props.columns.leaves[columnIndex]
+        );
+      }
+      this.focusChanged = true;
+    }
   }
+  // componentDidUpdate(prevProps) {
+  //   const element = document.getElementById(
+  //     `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
+  //       .selectedRange.selectedCellEnd.columnIndex}`
+  //   );
+  //   // if (element) {
+  //   //   element.focus();
+  //   //   element.select();
+  //   // }
+  //   console.log("datacells", element);
+  // }
+
   handleMouseDown = e => {
     if (!e.defaultPrevented) {
       this.onSelect(e);
@@ -29,19 +68,123 @@ export class DataCells extends ScrollableArea {
   handleMouseUp = e => {
     this.isMouseDown = false;
   };
-  handleMouseOver = ({ columnIndex, rowIndex, button, buttons }) => {
-    if (this.isMouseDown && button === 0) {
-      if (
-        !(
-          this.props.selectedRange.selectedCellEnd.columnIndex ===
-            columnIndex &&
-          this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
-        )
-      ) {
-        this.props.selectRange({
-          selectedCellEnd: { columnIndex, rowIndex },
-          focusedCell: { columnIndex, rowIndex }
-        });
+  // -----------------------------------------------------------
+  // comments
+  commentsClose = () => {
+    this.comment = undefined;
+    this.setState({
+      toolTip: {
+        style: { opacity: 0, zIndex: 0 }
+      }
+    });
+  };
+  handleOnCommentOk = e => {
+    // const element = document.getElementById("comment");
+    this.setState({
+      toolTip: {
+        style: { opacity: 0, zIndex: 0 }
+      }
+    });
+  };
+  handleOnCommentChange = e => {
+    // const element = document.getElementById("comment");
+    this.comment = e.target.value;
+  };
+  handleComments = e => {
+    // if (!this.isEditing) {
+    if (e.edited || e.editComment) {
+      // console.log("edited", e);
+      const style = {
+        ...e.style,
+        opacity: 1,
+        zIndex: 1000,
+        height: "fit-content",
+        width: "fit-content",
+        position: "fixed",
+        top: e.y + e.style.height,
+        left: e.x
+      };
+      let comment = (
+        <ul style={{ paddingLeft: 20, maxWidth: 300 }}>
+          {e.comments.map((comment, index) => {
+            return (
+              <li key={index}>
+                {comment
+                  .split("\n")
+                  .map((comment, index) => <div key={index}>{comment}</div>)}
+              </li>
+            );
+          })}
+        </ul>
+      );
+      let modal = false;
+      if (e.editComment) {
+        style.autofocus = true;
+        comment = (
+          <div>
+            <div style={{ textAlign: "center", fontWeight: "bold" }}>
+              Comments
+            </div>
+            {comment}
+            <textarea
+              rows="10"
+              cols="50"
+              id="comment"
+              value={this.comment}
+              onChange={this.handleOnCommentChange}
+            />
+            <div style={{ diplay: "flex" }} />
+            <button
+              style={{ marginRight: ".5em" }}
+              onClick={this.handleOnCommentOk}
+            >
+              Ok
+            </button>
+            <button
+              style={{ marginRight: ".5em" }}
+              onClick={this.commentsClose}
+            >
+              Cancel
+            </button>
+          </div>
+        );
+        // this.isEditing = true;
+        modal = true;
+      }
+      this.setState({
+        toolTip: {
+          comment,
+          style,
+          modal
+        }
+      });
+    } else if (
+      this.state.toolTip.style.opacity === 1 &&
+      !this.state.toolTip.modal
+    ) {
+      this.commentsClose();
+    }
+    // }
+  };
+  // ------------------------------------
+  handleMouseOver = e => {
+    if (!this.state.toolTip.modal) {
+      const { columnIndex, rowIndex, button, buttons } = e;
+      if (this.isMouseDown && button === 0 && !e.openComment) {
+        if (
+          !(
+            this.props.selectedRange.selectedCellEnd.columnIndex ===
+              columnIndex &&
+            this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
+          )
+        ) {
+          this.props.selectRange({
+            selectedCellEnd: { columnIndex, rowIndex },
+            focusedCell: { columnIndex, rowIndex }
+          });
+        }
+      } else {
+        this.handleComments(e);
       }
     }
   };
@@ -103,34 +246,40 @@ export class DataCells extends ScrollableArea {
           direction
         };
       }
-      console.log(
-        "onscroll",
-        index,
-        this.props.columns.startIndex,
-        scroll.columns.index,
-        this.props.columns.direction,
-        scroll.columns.direction,
-        e.positionRatio,
-        columns.displayedRatio
-      );
       if (direction) {
         onScroll(scroll.rows, scroll.columns);
         return true;
       }
-      // }
     }
     return false;
   };
-  onSelect = ({ button, shiftKey, columnIndex, rowIndex }) => {
+  onSelect = e => {
+    // console.log(e);
+    const { button, shiftKey, columnIndex, rowIndex, value } = e;
     if (button === 0) {
+      // check if cell value has changed
+      const focusedCell = this.props.selectedRange.selectedCellEnd;
+      if (
+        this.editable &&
+        (focusedCell.columnIndex !== columnIndex ||
+          focusedCell.rowIndex !== rowIndex) &&
+        this.oldValue !== this.newValue
+      ) {
+        this.editData(
+          this.props.rows.leaves[focusedCell.rowIndex],
+          this.props.columns.leaves[focusedCell.columnIndex]
+        );
+      }
       this.isMouseDown = true;
+      this.oldValue = value;
+      this.newValue = value;
       if (shiftKey) {
         this.props.selectRange({
           selectedCellStart: this.props.selectedRange.selectedCellStart,
           selectedCellEnd: { columnIndex, rowIndex }
         });
       } else {
-        console.log("select", { columnIndex, rowIndex });
+        // console.log("select", { columnIndex, rowIndex });
         this.props.selectCell({ columnIndex, rowIndex });
       }
     }
@@ -165,6 +314,40 @@ export class DataCells extends ScrollableArea {
         this.props.setConfigProperty("totalsFirst", data.value);
       }
     }
+  };
+  editData = (rowLeaf, columnLeaf) => {
+    // , this.oldValue, this.newValue
+    const { rows, columns } = this.props;
+    const { newValue, oldValue, comment } = this;
+    if (newValue - oldValue || this.comment) {
+      const data = this.props.buidData(
+        rowLeaf,
+        columnLeaf,
+        oldValue,
+        newValue,
+        comment
+      );
+      this.isEditing = true;
+      this.props.editData([data]);
+      if (this.props.configuration.callbacks.onEdit) {
+      }
+      this.props.configuration.callbacks.onEdit({
+        data,
+        oldValue,
+        newValue,
+        comment
+      });
+    }
+    this.comment = undefined;
+    this.oldValue = this.newValue;
+    if (this.state.toolTip.modal) {
+      this.commentsClose();
+    }
+  };
+  handleOnChange = (value, key) => {
+    // console.log(e.target);
+    this.newValue = Number(value);
+    this.cellCache[key].value = this.newValue;
   };
   collectMenu = props => {
     return {
@@ -234,22 +417,32 @@ export class DataCells extends ScrollableArea {
         measure.valueAccessor,
         rowHeader.dataIndexes,
         columnHeader.dataIndexes,
-        measure.aggregation
+        measure.aggregation,
+        measure.id
       );
-      valueHasChanged = this.isPushing * (cell.value !== value);
-      cell.value = value;
+      valueHasChanged = this.isPushing * (cell.value !== value.value);
+      cell.value = value.value;
+      cell.edited = value.edited;
+      cell.comments = value.comments;
       cell.caption = measure.format(cell.value);
       this.cellCache[key] = cell;
+    }
+    if (focused && this.focusChanged) {
+      this.oldValue = cell.value;
+      this.newValue = cell.value;
+      this.focusChanged = false;
     }
     const highlighted = false;
     return (
       <DataCell
+        headersKey={key}
         key={key}
         valueHasChanged={valueHasChanged}
         style={style}
         rowIndex={rowHeader.index}
         columnIndex={columnHeader.index}
         caption={cell.caption}
+        value={cell.value}
         gridId={gridId}
         selected={selected}
         focused={focused}
@@ -259,8 +452,13 @@ export class DataCells extends ScrollableArea {
         handleMouseOver={this.handleMouseOver}
         handleMouseUp={this.handleMouseUp}
         handleDoubleClick={this.handleDoubleClick}
+        handleOnChange={this.handleOnChange}
         collectMenu={this.collectMenu}
         isEven={isEven}
+        editable={this.editable}
+        edited={cell.edited}
+        comments={cell.comments}
+        handleComments={this.handleComments}
       />
     );
   };
@@ -273,8 +471,13 @@ export class DataCells extends ScrollableArea {
       vertical: rows.positionRatio,
       horizontal: columns.positionRatio
     };
-    const cells = [];
-    rows.cells.map((row, rowIndex) =>
+    const cells = [
+      <div key={-1} className="tool-tip" style={this.state.toolTip.style}>
+        {this.state.toolTip.comment}
+      </div>
+    ];
+    // console.log("render", this.state.toolTip);
+    rows.cells.forEach((row, rowIndex) =>
       columns.cells.map((column, columnIndex) =>
         cells.push(
           this.cellRenderer(

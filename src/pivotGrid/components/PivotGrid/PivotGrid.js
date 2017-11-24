@@ -99,6 +99,16 @@ class PivotGrid extends Component {
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
+    // const element = document.getElementById(
+    //   `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
+    //     .selectedRange.selectedCellEnd.columnIndex}`
+    // );
+    // if (element) {
+    //   // element.focus();
+    //   // element.select();
+    // }
+    // console.log("pivotgrid", element);
+
     // if (!this.element) {
     //   this.element = document.getElementById(this.props.id);
     //   if (this.element) {
