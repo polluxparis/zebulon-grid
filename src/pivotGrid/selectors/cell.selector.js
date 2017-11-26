@@ -33,15 +33,35 @@ const cellValue = (
   // This allows better behaviour for cells which have a null value
   // for example getting an empty cell instead of zero
   let edited = false,
-    comments = [];
+    row = {},
+    comments = [],
+    nullLastNewValue = false;
+
   const values = intersectionArray
     // .map(index => (data[index].isFiltered ? null : valueAccessor(data[index])))
     .map(index => {
-      if (data[index].editedMeasure === measureId) {
-        edited = true;
-        comments.push(data[index].comment);
+      row = data[index];
+      let comment = row._comment;
+      if (measureId && row._editedMeasure === measureId) {
+        if (row._newValue - row._oldValue) {
+          edited = true;
+          nullLastNewValue = row._newValue === null;
+          // row._edited = true;
+          comment =
+            "Value from " +
+            String(row._oldValue) +
+            " to " +
+            String(row._newValue) +
+            (comment ? "\n" + comment : "");
+        } else {
+          nullLastNewValue = false;
+        }
+      }
+      if (comment) {
+        comments.push(comment);
       }
       return valueAccessor(data[index]);
+      // return (value===0&&)?value:null;
     })
     .filter(value => !isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict
@@ -51,7 +71,11 @@ const cellValue = (
   //  const intersectionWithNumericalValue = intersectionArray.filter(
   //   i => Number.isFinite(accessor(data[i]))
   // );
-  return { edited, comments, value: aggregation(values, data) };
+  let value = aggregation(values, data);
+  if (value === 0 && nullLastNewValue) {
+    value = null;
+  }
+  return { edited, comments, value };
 };
 
 export const getCellValueSelector = createSelector(
@@ -328,23 +352,19 @@ export const buildDataSelector = createSelector(
     newValue,
     comment
   ) => {
-    const data = { comment: "" };
+    const data = {};
     const value = newValue - oldValue;
 
     buildData(dimensions, measures, rowLeaf, value, data);
     buildData(dimensions, measures, columnLeaf, value, data);
-    data.editedMeasure =
+    data._editedMeasure =
       measureHeadersAxis === "rows" ? rowLeaf.id : columnLeaf.id;
     if (value !== 0) {
-      data.comment =
-        "value changed from " +
-        String(oldValue) +
-        " to " +
-        String(newValue) +
-        ".";
+      data._oldValue = oldValue;
+      data._newValue = newValue;
     }
     if (!(isNullOrUndefined(comment) || comment === "")) {
-      data.comment += "\n" + comment;
+      data._comment = comment;
     }
     return data;
   }

@@ -10,6 +10,7 @@ import {
   selectedRangeSelector,
   copySelector,
   exportSelector,
+  pasteSelector,
   defaultCellSizesSelector
   // filteredPushedDataSelector
 } from "../selectors";
@@ -19,7 +20,8 @@ import {
   selectRange,
   selectCell,
   scrollToIndex,
-  zoom
+  zoom,
+  applyPushedData
 } from "../actions";
 
 const mapStateToProps = state => {
@@ -32,9 +34,14 @@ const mapStateToProps = state => {
     selectedRange: selectedRangeSelector(state),
     zoomValue: state.configuration.zoom,
     copy: copySelector(state),
+    paste: pasteSelector(state),
     export: exportSelector(state),
     defaultCellSizes: defaultCellSizesSelector(state),
-    pushedData: state.data.pushedData
+    pushedData: state.data.pushedData,
+    onEdit: state.configuration.callbacks.onEdit,
+    editable:
+      state.configuration.edition.activated &&
+      state.configuration.edition.editable
   };
 };
 
@@ -64,12 +71,13 @@ const mapDispatchToProps = dispatch => ({
   selectCell: cell => dispatch(selectCell(cell)),
   zoom: type => dispatch(zoom(type)),
   scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
-  scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll))
+  scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll)),
+  editData: data => dispatch(applyPushedData(data))
 });
 
 const mergeProps = (
-  { sizes, defaultCellSizes, ...restStateProps },
-  { updateCellSize, ...restDispatchProps },
+  { sizes, defaultCellSizes, paste, onEdit, ...restStateProps },
+  { updateCellSize, editData, ...restDispatchProps },
   ownProps
 ) => {
   return {
@@ -81,6 +89,13 @@ const mergeProps = (
         sizes,
         defaultCellSizes
       }),
+    paste: (clipboard, cell) => {
+      const data = paste(clipboard, cell);
+      editData(data);
+      if (onEdit) {
+        data.map(row => onEdit(row));
+      }
+    },
     ...restStateProps,
     ...restDispatchProps,
     ...ownProps

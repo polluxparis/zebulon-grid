@@ -12,6 +12,7 @@ import {
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
+import { exportFile, getFileObject } from "../pivotGrid/services/copyService";
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +31,7 @@ class ZebulonGridDemo extends Component {
       actionContent: null
     };
     this.bigDataSet = false;
+    this.data = [];
   }
   // componentDidUpdate(prevProps) {
   //   const element = document.getElementById(
@@ -120,15 +122,27 @@ class ZebulonGridDemo extends Component {
     });
   };
 
-  onEdit = ({ oldValue, newValue }) => {
+  onEdit = data => {
     this.setState({
-      actionContent: `Old value: ${oldValue} - New value:${newValue}`
+      actionContent: `Old value: ${data._oldValue} - New value:${data._newValue}`
     });
+    this.data.push(data);
   };
-  // test = () =>
-  //   this.setState({
-  //     pushedData: overwritedData()
-  //   });
+  onSave = () => {
+    exportFile(JSON.stringify(this.data), "toto.json");
+  };
+  onLoad = () => {
+    // getFileObject("file:///c:/Users/thomas/Downloads/toto.json", fileObject => {
+    //   console.log(fileObject);
+    // });
+    const file = document.getElementById("file-selector").files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.object = eval(reader.result);
+      console.log(reader.result);
+    };
+    reader.readAsText(file);
+  };
   render() {
     return (
       <div id="toto" style={{ fontFamily: "sans-serif" }}>
@@ -174,7 +188,7 @@ class ZebulonGridDemo extends Component {
               ? "Add"
               : "Remove"} custom menu functions`}
           </button>
-          <div>
+          <div style={{ marginRight: ".5em" }}>
             <input
               id="option"
               checked={this.bigDataSet}
@@ -183,6 +197,26 @@ class ZebulonGridDemo extends Component {
             />
             <label htmlFor="option">Try a 1M rows dataset</label>
           </div>
+          <button
+            style={{ marginRight: ".5em" }}
+            type="button"
+            onClick={this.onSave}
+          >
+            Save
+          </button>
+          <button
+            style={{ marginRight: ".5em" }}
+            type="button"
+            onClick={() => document.getElementById("file-selector").click()}
+          >
+            Load
+          </button>
+          <input
+            type="file"
+            id="file-selector"
+            onChange={this.onLoad}
+            style={{ marginRight: ".5em", display: "none" }}
+          />
         </div>
         <div
           style={{

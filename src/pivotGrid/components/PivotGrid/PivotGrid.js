@@ -85,12 +85,14 @@ class PivotGrid extends Component {
     // this.element = document.getElementById(this.props.id);
     // if (this.element) {
     document.addEventListener("copy", this.handleCopy);
+    document.addEventListener("paste", this.handlePaste);
     document.addEventListener("keydown", this.handleKeyDown);
     // }
   }
   componentDidUnMount() {
     // if (this.element) {
     document.removeEventListener("copy", this.handleCopy);
+    document.removeEventListener("paste", this.handlePaste);
     document.removeEventListener("keydown", this.handleKeyDown);
     // }
   }
@@ -332,6 +334,26 @@ class PivotGrid extends Component {
     ) {
       this.props.copy(this.props.selectedRange);
       // e.preventDefault();
+    }
+  };
+  handlePaste = e => {
+    if (
+      // Works only if the grid is focused
+      this.props.editable &&
+      this.modifierKeyIsPressed &&
+      this.props.isActive === undefined
+        ? true
+        : this.props.isActive
+    ) {
+      const data = this.props.paste(
+        e.clipboardData.getData("text"),
+        this.props.selectedRange.selectedCellEnd
+      );
+      // e.preventDefault();
+      // let x = e.clipboardData.getData("text");
+      // x = x.split("\n");
+      // x = x.map(line => line.split("\t"));
+      // console.log("paste", x, e.clipboardData.getData("text"), e);
     }
   };
   handleExport = () => {

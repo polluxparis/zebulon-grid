@@ -120,6 +120,7 @@ export const applyConfigurationToStore = (
     configuration.totalsFirst ||
     false;
   store.dispatch(setProperty("totalsFirst", totalsFirst));
+  store.dispatch(setProperty("edition", configuration.edition || {}));
   store.dispatch(
     setConfigurationProperty(configuration, "features", {
       dimensions: "enabled",

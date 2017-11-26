@@ -169,6 +169,7 @@ export const basicConfig = callbacks => ({
   cellHeight: 30,
   cellWidth: 100,
   totalsFirst: true,
+  edition: { editable: true },
 
   dimensions: [
     {

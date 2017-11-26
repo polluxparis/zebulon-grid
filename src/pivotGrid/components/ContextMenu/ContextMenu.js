@@ -254,6 +254,34 @@ const DataCellMenu = (id, trigger) => {
     );
   }
   if (features.configuration === "enabled") {
+    const editionMode = trigger.configuration.edition.editable ? (
+      <MenuItem
+        key={"toggle-edition-mode"}
+        onClick={trigger.onItemClick}
+        data={{
+          action: "toggle-edition-mode",
+          value: !trigger.configuration.edition.activated
+        }}
+      >
+        {"Set grid in " +
+          (trigger.configuration.edition.activated
+            ? "read only mode"
+            : "edition mode")}
+      </MenuItem>
+    ) : null;
+    const comments = trigger.configuration.edition.editable ? (
+      <MenuItem
+        key={"toggle-comments"}
+        onClick={trigger.onItemClick}
+        data={{
+          action: "toggle-comments",
+          value: !trigger.configuration.edition.comments
+        }}
+      >
+        {(trigger.configuration.edition.comments ? "Hide " : "Show ") +
+          "comments"}
+      </MenuItem>
+    ) : null;
     menus.push(
       <SubMenu
         title="Configuration"
@@ -281,6 +309,8 @@ const DataCellMenu = (id, trigger) => {
           {"Set totals " +
             (trigger.configuration.totalsFirst ? "after" : "before")}
         </MenuItem>
+        {editionMode}
+        {comments}
       </SubMenu>
     );
   }

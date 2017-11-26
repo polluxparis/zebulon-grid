@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import classnames from "classnames";
 import { ContextMenuTrigger } from "react-contextmenu";
 import { rightArrow } from "../../icons";
+import { isNullOrUndefined } from "../../utils/generic";
 
 export default class DataCell extends PureComponent {
   collect = e => {
@@ -65,8 +66,14 @@ export default class DataCell extends PureComponent {
   handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
   handleDoubleClick = e => this.props.handleDoubleClick(this.collect(e));
   handleOnChange = e => {
-    this.setState({ value: e.target.value });
-    this.props.handleOnChange(e.target.value, this.props.headersKey);
+    const newValue =
+      e.target.value === ""
+        ? null
+        : isNaN(Number(e.target.value))
+          ? this.state.value
+          : Number(e.target.value);
+    this.setState({ value: newValue });
+    this.props.handleOnChange(newValue, this.props.headersKey);
     // console.log(
     //   "changed",
     //   this.props.rowIndex,
@@ -148,7 +155,7 @@ export default class DataCell extends PureComponent {
             // autofocus
             // tabindex="1"
             id={`input ${rowIndex} - ${columnIndex}`}
-            value={this.state.value || ""}
+            value={this.state.value}
             onChange={this.handleOnChange}
             // onBlur={handleOverwriteData}
             // value={`${value}`}
