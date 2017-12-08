@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
     getGridInfos: () => getElementsSelector(state)(),
-    buidData: (rowLeaf, columnLeaf, oldValue, newValue, comment) =>
+    buildData: (rowLeaf, columnLeaf, oldValue, newValue, comment) =>
       buildDataSelector(state)(
         rowLeaf,
         columnLeaf,

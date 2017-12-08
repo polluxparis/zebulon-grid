@@ -107,7 +107,49 @@
 .zebulon-grid-data-cell-edited {
   text-decoration: underline blue;
 }
-.react-contextmenu {
+/*-----------------------------------------------*/
+.zebulon-contextmenu-item {
+  padding: 2px;
+  background-color: white;
+  height: 20px;
+  width: -webkit-fill-available;
+  min-width: 50px;
+  z-index: 100;
+  opacity: 1;
+  display: flex;
+  justify-content: space-between;
+  /*border-radius: 0.25rem;*/
+}
+.zebulon-contextmenu-item-separation {
+  border-top: solid 0.05em rgba(0, 0, 0, 0.5);
+}
+.zebulon-contextmenu-item-disable {
+  color: lightgrey;
+}
+.zebulon-contextmenu-item-checked {
+}
+.zebulon-contextmenu-item-selected {
+  background-color: lightgrey;
+}
+/*.zebulon-contextmenu-sub-menu {
+  content: "▶";
+}*/
+/*.zebulon-contextmenu-separator {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0em;
+}*/
+.zebulon-contextmenu-group {
+  width: max-content;
+  min-width: 80px;
+  height: fit-content;
+  border: solid 0.05em rgba(0, 0, 0, 0.5);
+  /*border-radius: 0.25rem;*/
+  cursor: pointer;
+  z-index: 100;
+}
+/*-----------------------------------------------*/
+/*.react-contextmenu {
   min-width: 10em;
   color: #373a3c;
   text-align: left;
@@ -192,6 +234,8 @@
 .react-contextmenu-item-filtered {
   font-weight: bold;
 }
+*/
+/*------------------------------------*/
 .zebulon-scrollbar-bar {
   background-color: lightgrey;
   border: solid 0.03em grey;
@@ -203,7 +247,7 @@
   border-radius: 0.25rem;
 }
 
-.tool-tip {
+.zebulon-tool-tip {
   padding: 5px;
   position: absolute;
   z-index: 9999;
@@ -214,8 +258,8 @@
   background-color: white;
   border-radius: 5px;
 }
-
-.react-hint__content {
+/*------------------------------------*/
+/*.react-hint__content {
   padding: 10px;
   border-radius: 5px;
   background: #000;
@@ -269,3 +313,4 @@
     opacity: 1;
   }
 }
+*/

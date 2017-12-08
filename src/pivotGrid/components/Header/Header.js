@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-
+import { ContextualMenuClient } from "../Controls/ContextualMenu";
 import { AxisType, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
-import { ContextMenuTrigger } from "react-contextmenu";
+// import { ContextMenuTrigger } from "react-contextmenu";
 import { expandCollapseNode } from "../../selectors";
 class Header extends Component {
   handleClickCollapse = () => {
@@ -20,19 +20,19 @@ class Header extends Component {
     this.props.selectAxis(this.props.header);
   };
 
-  handleClickMenu = (e, data, target) => {
-    if (e.button === 0) {
-      if (data.action === "move") {
-        this.props.toggleMeasuresAxis(
-          this.props.axis === AxisType.ROWS ? "columns" : "rows"
-        );
-      } else if (data.action === "remove") {
-        this.props.toggleMeasure(data.measureId);
-      } else if (data.action === "add") {
-        this.props.toggleMeasure(data.newMeasureId);
-      }
-    }
-  };
+  // handleClickMenu = (e, data, target) => {
+  //   if (e.button === 0) {
+  //     if (data.action === "move") {
+  //       this.props.toggleMeasuresAxis(
+  //         this.props.axis === AxisType.ROWS ? "columns" : "rows"
+  //       );
+  //     } else if (data.action === "remove") {
+  //       this.props.toggleMeasure(data.measureId);
+  //     } else if (data.action === "add") {
+  //       this.props.toggleMeasure(data.newMeasureId);
+  //     }
+  //   }
+  // };
   render() {
     const {
       axis,
@@ -48,6 +48,7 @@ class Header extends Component {
       moveDimension,
       moveMeasure,
       toggleMeasuresAxis,
+      toggleMeasure,
       collectMenu,
       isDropTarget,
       isDragSource,
@@ -134,21 +135,36 @@ class Header extends Component {
       </div>
     );
     if (dimensionId === MEASURE_ID) {
+      // return (
+      //   <ContextMenuTrigger
+      //     id={menuTrigger}
+      //     holdToDisplay={-1}
+      //     collect={collectMenu}
+      //     onItemClick={this.handleClickMenu}
+      //     type={`header-${axis}`}
+      //     axis={axis}
+      //     dimensionId={dimensionId}
+      //     measureId={header.id}
+      //     caption={caption}
+      //     style={{ width: "inherit" }}
+      //   >
+      //     {head}
+      //   </ContextMenuTrigger>
+      // );
       return (
-        <ContextMenuTrigger
-          id={menuTrigger}
-          holdToDisplay={-1}
-          collect={collectMenu}
-          onItemClick={this.handleClickMenu}
-          type={`header-${axis}`}
-          axis={axis}
-          dimensionId={dimensionId}
-          measureId={header.id}
-          caption={caption}
-          style={{ width: "inherit" }}
+        <ContextualMenuClient
+          menuId="measure-menu"
+          id={`measure-menu-${header.id}`}
+          collect={() =>
+            collectMenu({
+              axis,
+              measureId: header.id,
+              toggleMeasuresAxis,
+              toggleMeasure
+            })}
         >
           {head}
-        </ContextMenuTrigger>
+        </ContextualMenuClient>
       );
     } else {
       return head;

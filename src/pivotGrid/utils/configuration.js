@@ -159,10 +159,11 @@ export const applyConfigurationToStore = (
         moveDimension(dimension.id, "dimensions", "dimensions", index)
       );
     });
-
-  activeMeasures.forEach(measureId => {
-    store.dispatch(moveMeasure(measureId));
-  });
+  if (activeMeasures) {
+    activeMeasures.forEach(measureId => {
+      store.dispatch(moveMeasure(measureId));
+    });
+  }
   if (configuration.collapses) {
     store.dispatch(
       setCollapses({

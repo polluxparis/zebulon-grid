@@ -4,15 +4,12 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import PivotGrid from "../components/PivotGrid/PivotGrid";
 import {
-  // rowHeadersSelector,
-  // columnHeadersSelector,
   rowAndColumnHeadersSelector,
   selectedRangeSelector,
   copySelector,
   exportSelector,
   pasteSelector,
   defaultCellSizesSelector
-  // filteredPushedDataSelector
 } from "../selectors";
 import {
   updateCellSize,
@@ -72,7 +69,8 @@ const mapDispatchToProps = dispatch => ({
   zoom: type => dispatch(zoom(type)),
   scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
   scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll)),
-  editData: data => dispatch(applyPushedData(data))
+  editData: data => dispatch(applyPushedData(data)),
+  scrollToCell: () => {}
 });
 
 const mergeProps = (

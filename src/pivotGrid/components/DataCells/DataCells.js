@@ -5,7 +5,7 @@ import DataCell from "../DataCell/DataCell";
 import { MEASURE_ID, AXIS_SEPARATOR, HeaderType } from "../../constants";
 import { ScrollableArea } from "../Controls/ScrollableArea";
 import { getSelectedText } from "../../services/copyService";
-import { ReactHint } from "../Controls/ToolTip";
+// import { ReactHint } from "../Controls/ContextualMenu";
 export class DataCells extends ScrollableArea {
   // -------------------------------------
   // life cycle
@@ -65,18 +65,15 @@ export class DataCells extends ScrollableArea {
   // -----------------------------------------------------------
   commentsClose = () => {
     this.comment = undefined;
-    this.setState({
-      toolTip: {
-        style: { opacity: 0, zIndex: 0 }
-      }
-    });
+    this.handleOnCommentOk();
+    this.isMouseDown = false;
   };
   handleOnCommentOk = e => {
-    this.setState({
-      toolTip: {
-        style: { opacity: 0, zIndex: 0 }
-      }
-    });
+    const toolTip = {
+      style: { opacity: 0, zIndex: 0 }
+    };
+    this.setState({ toolTip });
+    this.props.setToolTip(toolTip);
   };
   handleOnCommentChange = e => {
     this.comment = e.target.value;
@@ -108,7 +105,7 @@ export class DataCells extends ScrollableArea {
       );
       let modal = false;
       if (e.editComment) {
-        style.autofocus = true;
+        // style.autofocus = true;
         comment = (
           <div>
             <div style={{ textAlign: "center", fontWeight: "bold" }}>
@@ -119,7 +116,9 @@ export class DataCells extends ScrollableArea {
               rows="10"
               cols="50"
               id="comment"
-              value={this.comment}
+              tabIndex={0}
+              autoFocus={true}
+              // value={this.comment}
               onChange={this.handleOnCommentChange}
             />
             <div style={{ diplay: "flex" }} />
@@ -140,13 +139,13 @@ export class DataCells extends ScrollableArea {
         // this.isEditing = true;
         modal = true;
       }
-      this.setState({
-        toolTip: {
-          comment,
-          style,
-          modal
-        }
-      });
+      const toolTip = {
+        comment,
+        style,
+        modal
+      };
+      this.setState({ toolTip });
+      this.props.setToolTip(toolTip);
     } else if (
       this.state.toolTip.style.opacity === 1 &&
       !this.state.toolTip.modal
@@ -157,12 +156,15 @@ export class DataCells extends ScrollableArea {
   // -----------------------------------------------------------
   // edition
   // -----------------------------------------------------------
-
+  handleOnChange = (value, key) => {
+    this.newValue = value;
+    this.cellCache[key].value = value;
+  };
   editData = (rowLeaf, columnLeaf) => {
     const { rows, columns } = this.props;
     const { newValue, oldValue, comment } = this;
-    if (newValue - oldValue || this.comment) {
-      const data = this.props.buidData(
+    if (newValue !== oldValue || this.comment) {
+      const data = this.props.buildData(
         rowLeaf,
         columnLeaf,
         oldValue,
@@ -181,10 +183,7 @@ export class DataCells extends ScrollableArea {
       this.commentsClose();
     }
   };
-  handleOnChange = (value, key) => {
-    this.newValue = value;
-    this.cellCache[key].value = value;
-  };
+
   // ------------------------------------------------
   // events
   // ------------------------------------------------
@@ -211,14 +210,15 @@ export class DataCells extends ScrollableArea {
       }
     }
   };
-
   handleMouseDown = e => {
     if (!e.defaultPrevented) {
       this.onSelect(e);
     }
   };
   handleMouseUp = e => {
+    console.log("mouse up", e.target);
     this.isMouseDown = false;
+    e.stopPropagation();
   };
 
   onSelect = e => {
@@ -260,37 +260,47 @@ export class DataCells extends ScrollableArea {
       return menuFunction(this.props.getCellInfos(cell));
     }
   };
-  handleClickMenu = (e, data, target) => {
-    if (e.button === 0) {
-      if (data.functionType === "cell") {
-        this.props.menuFunctions.dataCellFunctions[data.action].function(
-          this.props.getCellInfos({
-            columnIndex: data.columnIndex,
-            rowIndex: data.rowIndex
-          })
-        );
-      } else if (data.functionType === "range") {
-        this.props.menuFunctions.rangeFunctions[data.action].function(
-          this.props.getRangeInfos(this.props.selectedRange)
-        );
-      } else if (data.functionType === "grid") {
-        this.props.menuFunctions.gridFunctions[data.action].function({
-          grid: this.props.getGridInfos(),
-          toText: getSelectedText
-        });
-      } else if (data.action === "toggle-totals") {
-        this.props.setConfigProperty("totalsFirst", data.value);
-      } else if (data.action === "toggle-edition-mode") {
-        this.props.setConfigProperty("edition", {
-          ...this.props.configuration.edition,
-          activated: data.value
-        });
-      } else if (data.action === "toggle-comments") {
-        this.props.setConfigProperty("edition", {
-          ...this.props.configuration.edition,
-          comments: data.value
-        });
-      }
+
+  collectMenu = props => {
+    return {
+      ...props,
+      dimensions: this.props.dimensions,
+      menuFunctions: this.props.menuFunctions,
+      filters: this.props.filters,
+      // zoom: this.props.zoom,
+      onItemClick: this.handleClickMenu,
+      configuration: this.props.configuration
+    };
+  };
+  handleClickMenu = (type, fct, data) => {
+    if (type === "Cell") {
+      this.props.menuFunctions.dataCellFunctions[fct].function(
+        this.props.getCellInfos({
+          columnIndex: data.columnIndex,
+          rowIndex: data.rowIndex
+        })
+      );
+    } else if (type === "Range") {
+      this.props.menuFunctions.rangeFunctions[fct].function(
+        this.props.getRangeInfos(this.props.selectedRange)
+      );
+    } else if (type === "Grid") {
+      this.props.menuFunctions.gridFunctions[fct].function({
+        grid: this.props.getGridInfos(),
+        toText: getSelectedText
+      });
+    } else if (type === "Totals") {
+      this.props.setConfigProperty("totalsFirst", data.value);
+    } else if (type === "Edition") {
+      this.props.setConfigProperty("edition", {
+        ...this.props.configuration.edition,
+        activated: data.value
+      });
+    } else if (type === "Comments") {
+      this.props.setConfigProperty("edition", {
+        ...this.props.configuration.edition,
+        comments: data.value
+      });
     }
   };
   // -----------------------------------------
@@ -360,17 +370,6 @@ export class DataCells extends ScrollableArea {
       }
     }
     return false;
-  };
-  collectMenu = props => {
-    return {
-      ...props,
-      dimensions: this.props.dimensions,
-      menuFunctions: this.props.menuFunctions,
-      filters: this.props.filters,
-      zoom: this.props.zoom,
-      onItemClick: this.handleClickMenu,
-      configuration: this.props.configuration
-    };
   };
   // -----------------------------------------
   // rendering
@@ -486,11 +485,15 @@ export class DataCells extends ScrollableArea {
       vertical: rows.positionRatio,
       horizontal: columns.positionRatio
     };
-    const cells = [
-      <div key={-1} className="tool-tip" style={this.state.toolTip.style}>
-        {this.state.toolTip.comment}
-      </div>
-    ];
+    const cells = [];
+    // (  <div
+    //     key={"tool-tip"}
+    //     className="zebulon-tool-tip"
+    //     style={this.state.toolTip.style}
+    //   >
+    //     {this.state.toolTip.comment}
+    //   </div>)
+    // ];
     // console.log("render", this.state.toolTip);
     rows.cells.forEach((row, rowIndex) =>
       columns.cells.map((column, columnIndex) =>

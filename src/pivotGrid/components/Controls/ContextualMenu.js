@@ -118,8 +118,8 @@ export class MenuItem extends Component {
 		);
 	}
 }
-const TOOLTIP_EVENT = "TOOLTIP_EVENT";
-export class ToolTip extends Component {
+const MENU_EVENT = "MENU_EVENT";
+export class ContextualMenu extends Component {
 	constructor(props) {
 		super(props);
 		this.state = { menu: null };
@@ -211,7 +211,7 @@ export class ToolTip extends Component {
 	}
 }
 
-export class ToolTipClient extends Component {
+export class ContextualMenuClient extends Component {
 	constructor(props) {
 		super(props);
 	}
@@ -232,7 +232,7 @@ export class ToolTipClient extends Component {
 				}
 			});
 			window.dispatchEvent(event);
-
+			// console.log("click menu", e.target, this.props);
 			return true;
 		}
 	};

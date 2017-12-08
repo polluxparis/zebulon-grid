@@ -43,7 +43,7 @@ const cellValue = (
       row = data[index];
       let comment = row._comment;
       if (measureId && row._editedMeasure === measureId) {
-        if (row._newValue - row._oldValue) {
+        if (row._newValue !== row._oldValue) {
           edited = true;
           nullLastNewValue = row._newValue === null;
           // row._edited = true;
@@ -56,12 +56,11 @@ const cellValue = (
         } else {
           nullLastNewValue = false;
         }
-      }
-      if (comment) {
-        comments.push(comment);
+        if (comment) {
+          comments.push(comment);
+        }
       }
       return valueAccessor(data[index]);
-      // return (value===0&&)?value:null;
     })
     .filter(value => !isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict
@@ -359,7 +358,7 @@ export const buildDataSelector = createSelector(
     buildData(dimensions, measures, columnLeaf, value, data);
     data._editedMeasure =
       measureHeadersAxis === "rows" ? rowLeaf.id : columnLeaf.id;
-    if (value !== 0) {
+    if (newValue !== oldValue) {
       data._oldValue = oldValue;
       data._newValue = newValue;
     }

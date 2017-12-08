@@ -29,11 +29,6 @@ class ZebulonGrid extends Component {
       configurationFunctions,
       data
     );
-    // this.setState({
-    //   store,
-    //   configurationFunctions,
-    //   menuFunctions: menuFunctions || defaultMenuFunctions,
-    // });
   }
   componentWillReceiveProps(nextProps) {
     const {

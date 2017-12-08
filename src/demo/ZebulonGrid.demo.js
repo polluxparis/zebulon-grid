@@ -13,6 +13,7 @@ import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile, getFileObject } from "../pivotGrid/services/copyService";
+
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
@@ -143,10 +144,27 @@ class ZebulonGridDemo extends Component {
     };
     reader.readAsText(file);
   };
+  onClickMenu = (e, id) => {
+    if (e.button === 2) {
+      e.preventDefault();
+      e.persist();
+      e.stopPropagation();
+      // e.button = 0;
+      this.setState({
+        menuVisible: !this.state.menuVisible,
+        menuParent: { top: e.target.offsetTop, left: e.target.offsetLeft }
+      });
+      console.log("click menu", e.target, id);
+    }
+    return false;
+  };
+  // <ContextualMenu key="contextual-menu" getMenu={getMenu} />
+  //  // <ContextualMenuClient menuId={1}>
+  //   <div id="-2" style={{ height: 30, width: 30, border: "solid" }} />
+  // </ContextualMenuClient>
   render() {
     return (
       <div id="toto" style={{ fontFamily: "sans-serif" }}>
-        <div style={{ height: 100 }} />
         <ResizableBox
           height={this.state.sizes.height}
           width={this.state.sizes.width}
@@ -197,20 +215,6 @@ class ZebulonGridDemo extends Component {
             />
             <label htmlFor="option">Try a 1M rows dataset</label>
           </div>
-          <button
-            style={{ marginRight: ".5em" }}
-            type="button"
-            onClick={this.onSave}
-          >
-            Save
-          </button>
-          <button
-            style={{ marginRight: ".5em" }}
-            type="button"
-            onClick={() => document.getElementById("file-selector").click()}
-          >
-            Load
-          </button>
           <input
             type="file"
             id="file-selector"
@@ -312,3 +316,17 @@ class ZebulonGridDemo extends Component {
   }
 }
 export default ZebulonGridDemo;
+// (<button
+//   style={{ marginRight: ".5em" }}
+//   type="button"
+//   onClick={this.onSave}
+// >
+//   Save
+// </button>
+// <button
+//   style={{ marginRight: ".5em" }}
+//   type="button"
+//   onClick={() => document.getElementById("file-selector").click()}
+// >
+//   Load
+// </button>)

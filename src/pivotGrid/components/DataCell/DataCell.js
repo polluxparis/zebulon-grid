@@ -3,11 +3,12 @@ import classnames from "classnames";
 import { ContextMenuTrigger } from "react-contextmenu";
 import { rightArrow } from "../../icons";
 import { isNullOrUndefined } from "../../utils/generic";
-
+import { ContextualMenuClient } from "../Controls/ContextualMenu";
 export default class DataCell extends PureComponent {
+  // export default class DataCell extends ContextualMenuClient {
+
   collect = e => {
     const { button, shiftKey } = e;
-
     const {
       columnIndex,
       rowIndex,
@@ -61,7 +62,16 @@ export default class DataCell extends PureComponent {
     // console.log("comment", event);
     this.props.handleComments(event);
   };
-  handleMouseDown = e => this.props.handleMouseDown(this.collect(e));
+  handleMouseDown = e => {
+    // if (e.button === 2) {
+    //   e.preventDefault();
+    //   e.persist();
+    //   e.stopPropagation();
+    // } else {
+    this.props.handleMouseDown(this.collect(e));
+    // }
+  };
+
   handleMouseOver = e => this.props.handleMouseOver(this.collect(e));
   handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
   handleDoubleClick = e => this.props.handleDoubleClick(this.collect(e));
@@ -124,8 +134,6 @@ export default class DataCell extends PureComponent {
     );
     let cell;
     if (focused && editable && !isTotal) {
-      // console.log("focused", rowIndex, columnIndex, value);
-
       cell = (
         <div
           id={`${rowIndex} - ${columnIndex}`}
@@ -142,24 +150,23 @@ export default class DataCell extends PureComponent {
               position: "absolute",
               zIndex: 3
             }}
+            // draggable={false}
             onClick={this.handleComments}
           />
           <input
             type="text"
             className={className}
+            // draggable={false}
             style={{
               height: "-webkit-fill-available",
               width: "-webkit-fill-available",
               position: "absolute"
             }}
-            // autofocus
-            // tabindex="1"
+            autoFocus={true}
+            tabIndex="0"
             id={`input ${rowIndex} - ${columnIndex}`}
-            value={this.state.value}
+            value={this.state.value === null ? "" : this.state.value}
             onChange={this.handleOnChange}
-            // onBlur={handleOverwriteData}
-            // value={`${value}`}
-            // style={{ ...style, ...this.props.style }}
             onMouseDown={this.handleMouseDown}
             onMouseUp={this.props.handleMouseUp}
             onDoubleClick={this.handleDoubleClick}
@@ -182,19 +189,19 @@ export default class DataCell extends PureComponent {
         </div>
       );
     }
+
     return (
-      <ContextMenuTrigger
-        id={`context-menu-${gridId}`}
-        holdToDisplay={-1}
-        collect={collectMenu}
-        onItemClick={this.props.handleClickMenu}
-        type={"data-cell"}
-        style={{ width: "inherit" }}
-        rowIndex={rowIndex}
-        columnIndex={columnIndex}
+      <ContextualMenuClient
+        menuId="grid-menu"
+        id={`grid-menu-${rowIndex} - ${columnIndex}`}
+        collect={() =>
+          collectMenu({
+            rowIndex,
+            columnIndex
+          })}
       >
         {cell}
-      </ContextMenuTrigger>
+      </ContextualMenuClient>
     );
   }
 }

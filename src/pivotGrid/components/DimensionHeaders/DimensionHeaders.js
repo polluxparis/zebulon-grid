@@ -30,9 +30,9 @@ class DimensionHeaders extends Component {
     return {
       ...props,
       availableDimensions: this.props.availableDimensions,
-      direction: props.sortDirection === "asc" ? "descending" : "ascending",
-      dimensionFilter: this.props.filters[props.dimensionId],
-      isNotCollapsible: this.collapsibles[props.dimensionId] < 2,
+      // direction: props.sortDirection === "asc" ? "descending" : "ascending",
+      dimensionFilter: this.props.filters[props.dimension.id],
+      isNotCollapsible: this.collapsibles[props.dimension.id] < 2,
       features: this.props.features
     };
   };
