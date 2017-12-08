@@ -1,4 +1,4 @@
-// import { MEASURE_ID } from "../constants";
+import { MEASURE_ID } from "../constants";
 import { getFilteredIndex } from "../selectors";
 // import { FileSaver } from "file-saver";
 
@@ -8,6 +8,71 @@ function replaceNullAndUndefined(val) {
   }
   return JSON.stringify(val);
 }
+export const getElementsToPaste = ({
+  rowLeaves,
+  columnLeaves,
+  measures,
+  getCellValue,
+  buidData,
+  clipboard,
+  cell
+}) => {
+  try {
+    let { columnIndex, rowIndex } = cell;
+    const lines = clipboard.replace("\r", "").split("\n");
+    lines.pop();
+    const cells = lines.map(line => line.split("\t"));
+    const nRows = lines.length,
+      nColumns = cells[0].length;
+    let iRow = 0,
+      iColumn = 0,
+      measure,
+      data = [];
+    while (iRow < nRows && iRow < rowLeaves.leaves.length) {
+      const rowLeaf = rowLeaves.leaves[rowIndex];
+      if (rowLeaf.isVisible) {
+        if (rowLeaf.dimensionId === MEASURE_ID) {
+          measure = measures[rowLeaf.id];
+        }
+        while (iColumn < nColumns && iColumn < columnLeaves.leaves.length) {
+          const columnLeaf = columnLeaves.leaves[columnIndex];
+          if (columnLeaf.isVisible) {
+            if (columnLeaf.dimensionId === MEASURE_ID) {
+              measure = measures[columnLeaf.id];
+            }
+            const oldValue = getCellValue(
+                measure.valueAccessor,
+                rowLeaf.dataIndexes,
+                columnLeaf.dataIndexes,
+                measure.aggregation
+              ).value,
+              newValue =
+                cells[iRow][iColumn] === ""
+                  ? null
+                  : Number(cells[iRow][iColumn]);
+            if (isNaN(newValue)) {
+              console.log("not numeric data", cells[iRow][iColumn]);
+              return [];
+            }
+            data.push(buidData(rowLeaf, columnLeaf, oldValue, newValue));
+            iColumn++;
+          }
+          columnIndex++;
+        }
+        iRow++;
+        iColumn = 0;
+        columnIndex = cell.columnIndex;
+      }
+      rowIndex++;
+    }
+    return data;
+  } catch (error) {
+    /* eslint-disable no-console */
+    console.error("error during copy", error);
+    return [];
+    /* eslint-enable */
+  }
+};
 
 export const getSelectedElements = ({
   range,
@@ -146,7 +211,9 @@ export const getSelectedText = (elements, type) => {
     }
     // data cells
     for (let x = 0; x < columns.length; x += 1) {
-      outputRow += `${replaceNullAndUndefined(cells[y][x])}${columnSeparator}`;
+      outputRow += `${replaceNullAndUndefined(
+        cells[y][x].value
+      )}${columnSeparator}`;
     }
     outputRow = outputRow.slice(0, -1);
     output.push(outputRow);
@@ -185,28 +252,67 @@ export const exportFile = (content, fileName, mime) => {
   if (mime == null) {
     mime = "text/csv";
   }
-  var blob = new Blob([content], { type: mime });
-  var a = document.createElement("a");
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement("a");
   a.download = fileName;
   a.href = window.URL.createObjectURL(blob);
   a.dataset.downloadurl = [mime, a.download, a.href].join(":");
-  var e = document.createEvent("MouseEvents");
-  e.initMouseEvent(
-    "click",
-    true,
-    false,
-    window,
-    0,
-    0,
-    0,
-    0,
-    0,
-    false,
-    false,
-    false,
-    false,
-    0,
-    null
-  );
-  return a.dispatchEvent(e);
+  // const e = document.createEvent("MouseEvents");
+  // e.initMouseEvent(
+  //   "click",
+  //   true,
+  //   false,
+  //   window,
+  //   0,
+  //   0,
+  //   0,
+  //   0,
+  //   0,
+  //   false,
+  //   false,
+  //   false,
+  //   false,
+  //   0,
+  //   null
+  // );
+  // return a.dispatchEvent(e);
+};
+const getFileBlob = (url, cb) => {
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(event) {
+    // XMLHttpRequest.DONE === 4
+    if (this.readyState === XMLHttpRequest.DONE) {
+      if (this.status === 200) {
+        console.log("Réponse reçu: %s", this.responseText);
+      } else {
+        console.log(
+          "Status de la réponse: %d (%s)",
+          this.status,
+          this.statusText
+        );
+      }
+    }
+  };
+  xhr.open("GET", url, true);
+  // xhr.responseType = "blob";
+  // xhr.addEventListener("load", () => {
+  //   cb(xhr.response);
+  // });
+  xhr.send(null);
+};
+
+const blobToFile = (blob, name) => {
+  blob.lastModifiedDate = new Date();
+  blob.name = name;
+  return blob;
+};
+
+export const getFileObject = (filePathOrUrl, cb) => {
+  getFileBlob(filePathOrUrl, blob => {
+    const file = blobToFile(blob, "toto.json");
+    const reader = new FileReader();
+    reader.onload = e => cb(reader.result);
+    reader.readAsText(file);
+    // cb(blobToFile(blob, "toto.json"));
+  });
 };

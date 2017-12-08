@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 // import { findDOMNode } from "react-dom";
 import { DropTarget } from "react-dnd";
-import { connectMenu } from "react-contextmenu";
-import ContextMenu from "../ContextMenu/ContextMenu";
+// import { connectMenu } from "react-contextmenu";
+import { getMenu } from "../ContextMenu/ContextMenu";
 
 // import ArrowKeyStepper from '../../containers/ArrowKeyStepper';
 import DataCells from "../../containers/DataCells";
@@ -12,6 +12,7 @@ import RowHeaders from "../../containers/RowHeaders";
 import DragLayer from "./DragLayer";
 // import { isEmpty } from "../../utils/generic";
 import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
+import { ContextualMenu } from "../Controls/ContextualMenu";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -81,16 +82,22 @@ import { ZOOM_IN, ZOOM_OUT, AxisType, ScrollbarSize } from "../../constants";
 //   </div>;
 
 class PivotGrid extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { toolTip: { style: { opacity: 0 }, modal: false } };
+  }
   componentDidMount() {
     // this.element = document.getElementById(this.props.id);
     // if (this.element) {
     document.addEventListener("copy", this.handleCopy);
+    document.addEventListener("paste", this.handlePaste);
     document.addEventListener("keydown", this.handleKeyDown);
     // }
   }
   componentDidUnMount() {
     // if (this.element) {
     document.removeEventListener("copy", this.handleCopy);
+    document.removeEventListener("paste", this.handlePaste);
     document.removeEventListener("keydown", this.handleKeyDown);
     // }
   }
@@ -99,6 +106,16 @@ class PivotGrid extends Component {
     if (height !== prevProps.height || width !== prevProps.width) {
       setSizes({ height, width });
     }
+    // const element = document.getElementById(
+    //   `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
+    //     .selectedRange.selectedCellEnd.columnIndex}`
+    // );
+    // if (element) {
+    //   // element.focus();
+    //   // element.select();
+    // }
+    // console.log("pivotgrid", element);
+
     // if (!this.element) {
     //   this.element = document.getElementById(this.props.id);
     //   if (this.element) {
@@ -115,6 +132,15 @@ class PivotGrid extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.isPushing = this.props.pushedData !== nextProps.pushedData;
+    if (
+      this.contextualMenu &&
+      this.contextualMenu.state.menu &&
+      this.contextualMenu.state.menu.visible
+      // &&
+      // !nextProps.isActive
+    ) {
+      this.contextualMenu.close();
+    }
   }
   nextVisible = (leaves, index, direction, offset) => {
     let ix = 0,
@@ -133,6 +159,21 @@ class PivotGrid extends Component {
     return index + ix;
   };
   handleKeyDown = e => {
+    if (
+      this.contextualMenu &&
+      this.contextualMenu.state.menu &&
+      this.contextualMenu.state.menu.visible
+    ) {
+      if (this.contextualMenu.handleKeyDown(e)) {
+        return;
+      }
+    }
+    if (
+      this.state.toolTip.modal &&
+      (e.key === "Tab" || e.key === "Enter" || e.key === "Escape")
+    ) {
+      return;
+    }
     if (
       !e.defaultPrevented && this.props.isActive === undefined
         ? true
@@ -172,7 +213,7 @@ class PivotGrid extends Component {
           e.preventDefault();
         }
         // arrow keys
-      } else if (e.which > 32 && e.which < 41) {
+      } else if ((e.which > 32 && e.which < 41) || e.which === 9) {
         let direction, cell, axis;
         if (e.key === "ArrowDown" || e.key === "ArrowUp") {
           direction = e.key === "ArrowDown" ? 1 : -1;
@@ -186,8 +227,16 @@ class PivotGrid extends Component {
               1
             )
           };
-        } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-          direction = e.key === "ArrowRight" ? 1 : -1;
+        } else if (
+          e.key === "ArrowRight" ||
+          e.key === "ArrowLeft" ||
+          e.key === "Tab"
+        ) {
+          if (document.activeElement.tagName === "INPUT" && e.key !== "Tab") {
+            return;
+          }
+          direction =
+            e.key === "ArrowRight" || (e.key === "Tab" && !e.shiftKey) ? 1 : -1;
           axis = AxisType.COLUMNS;
           cell = {
             columnIndex: this.nextVisible(
@@ -250,7 +299,7 @@ class PivotGrid extends Component {
           }
         }
         // selection
-        if (e.shiftKey) {
+        if (e.shiftKey && e.key !== "Tab") {
           selectRange({
             ...selectedRange,
             selectedCellEnd: cell
@@ -324,6 +373,26 @@ class PivotGrid extends Component {
       // e.preventDefault();
     }
   };
+  handlePaste = e => {
+    if (
+      // Works only if the grid is focused
+      this.props.editable &&
+      this.modifierKeyIsPressed &&
+      this.props.isActive === undefined
+        ? true
+        : this.props.isActive
+    ) {
+      const data = this.props.paste(
+        e.clipboardData.getData("text"),
+        this.props.selectedRange.selectedCellEnd
+      );
+      // e.preventDefault();
+      // let x = e.clipboardData.getData("text");
+      // x = x.split("\n");
+      // x = x.map(line => line.split("\t"));
+      // console.log("paste", x, e.clipboardData.getData("text"), e);
+    }
+  };
   handleExport = () => {
     if (
       // Works only if the grid is focused
@@ -392,7 +461,7 @@ class PivotGrid extends Component {
           columns.size
         )
       };
-      const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
+      // const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
         // Position must be relative so that the absolutely positioned DragLayer behaves correctly
@@ -402,13 +471,8 @@ class PivotGrid extends Component {
             width,
             height,
             position: "relative"
-            // border: "solid 0.05em"
           }}
-          // tabIndex={0}
           id={gridId}
-          // onCopy={this.handleCopy}
-          // onKeyDown={this.handleKeyDown}
-          // onKeyUp={this.handleKeyUp}
           onWheel={this.handleWheel}
         >
           <DragLayer gridId={gridId} />
@@ -416,6 +480,18 @@ class PivotGrid extends Component {
             className="zebulon-grid-zebulon-grid"
             style={{ fontSize: `${zoomValue * 100}%` }}
           >
+            <ContextualMenu
+              key="contextual-menu"
+              getMenu={getMenu}
+              ref={ref => (this.contextualMenu = ref)}
+            />
+            <div
+              key={"tool-tip"}
+              className="zebulon-tool-tip"
+              style={this.state.toolTip.style}
+            >
+              {this.state.toolTip.comment}
+            </div>
             <div style={{ display: "flex" }}>
               <DimensionHeaders gridId={gridId} />
               <ColumnHeaders
@@ -445,6 +521,7 @@ class PivotGrid extends Component {
                 scrollbarsWidth={scrollbarsWidth}
                 onScroll={this.onScroll}
                 isPushing={this.isPushing}
+                setToolTip={toolTip => this.setState({ toolTip })}
                 style={{
                   position: "absolute",
                   top: rows.crossSize,
@@ -452,7 +529,6 @@ class PivotGrid extends Component {
                 }}
               />
             </div>
-            <ConnectedMenu />
           </div>
         </div>
       );

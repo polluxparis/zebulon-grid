@@ -115,7 +115,9 @@ const cellDisplay = cell => {
           : dimension.dimension.caption} : ${dimension.cell.caption}`}
       </li>
     ));
-  const value = <li key={"value"}>{Math.round(cell.value * 10000) / 10000}</li>;
+  const value = (
+    <li key={"value"}>{Math.round(cell.value.value * 10000) / 10000}</li>
+  );
   return (
     <div style={{ display: "flex" }}>
       <div style={{ width: 150 }}>
@@ -155,7 +157,7 @@ const rangeDisplay = range => {
       values[
         measure.leaf.caption
       ] += range.rows.reduce((value, dimension, indexRow) => {
-        value += range.values[indexRow][indexColumn];
+        value += range.values[indexRow][indexColumn].value;
         return value;
       }, 0);
       return values;
@@ -168,7 +170,7 @@ const rangeDisplay = range => {
       values[
         measure.leaf.caption
       ] += range.columns.reduce((value, dimension, indexColumn) => {
-        value += range.values[indexRow][indexColumn];
+        value += range.values[indexRow][indexColumn].value;
         return value;
       }, 0);
       return values;

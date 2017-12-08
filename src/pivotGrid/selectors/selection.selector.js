@@ -2,7 +2,8 @@ import { createSelector } from "reselect";
 import { rowLeavesSelector, columnLeavesSelector } from "./axis.selector";
 import {
   getCellValueSelector,
-  getCellDimensionInfosSelector
+  getCellDimensionInfosSelector,
+  buildDataSelector
 } from "./cell.selector";
 import {
   rowVisibleDimensionsSelector,
@@ -14,6 +15,7 @@ import {
   copy,
   getSelectedElements,
   getSelectedText,
+  getElementsToPaste,
   exportFile
 } from "../services/copyService";
 
@@ -107,4 +109,26 @@ export const exportSelector = createSelector(
   [getElementsSelector],
   getElements => range =>
     exportFile(getSelectedText(getElements(range), "csv"), "toto.csv")
+);
+export const pasteSelector = createSelector(
+  [
+    rowLeavesSelector,
+    columnLeavesSelector,
+    activatedMeasuresSelector,
+    getCellValueSelector,
+    buildDataSelector
+  ],
+  (rowLeaves, columnLeaves, measures, getCellValue, buidData) => (
+    clipboard,
+    cell
+  ) =>
+    getElementsToPaste({
+      rowLeaves,
+      columnLeaves,
+      measures,
+      getCellValue,
+      buidData,
+      clipboard,
+      cell
+    })
 );

@@ -259,6 +259,7 @@ export const getAxisLeaves = (
   if (!node) {
     return 0;
   }
+
   let nVisibles = 0,
     subtotalNode = null;
   // last dimension
@@ -429,6 +430,14 @@ export const rowLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
+      // no measures on measure axis
+      if (measures !== null && measures.length === 0) {
+        return {
+          nVisibles: 0,
+          node,
+          leaves: []
+        };
+      }
       const x = Date.now();
       const leaves = [];
       let nVisibles;
@@ -491,6 +500,14 @@ export const columnLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
+      // no measures on measure axis
+      if (measures !== null && measures.length === 0) {
+        return {
+          nVisibles: 0,
+          node,
+          leaves: []
+        };
+      }
       const x = Date.now();
       const leaves = [];
       let nVisibles;

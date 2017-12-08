@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies*/
 import { Observable } from "rx-lite";
 /* eslint-enable */
-// import * as 'from' './Format';
 
 export function getMockDatasource(
   dataRepetition = 1,
@@ -31,6 +30,15 @@ export function getMockDatasource(
       }
     }
   }
+  // const res2 = getRandomMockDatasource();
+  // const res_2 = join(
+  //   res,
+  //   ["toto", "titi"],
+  //   res2,
+  //   ["toto", "titi"],
+  //   row => ({ x: row.qty, y: row.amt }),
+  //   false
+  // );
   return res;
 }
 // const getObj = (o, i, u) => {
@@ -79,6 +87,20 @@ export function getRandomMockDatasource(
   }
   return res;
 }
+
+export const overwritedData = () => {
+  const obj = {};
+  obj.toto = 1;
+  obj.toto_lb = `toto ${String(1)}`;
+  obj.toto_0 = `att0 ${String(1)}`;
+  obj.toto_1 = `att1 ${String(199)}`;
+  obj.titi = 1;
+  obj.titi_lb = `titi ${String(1)}`;
+  // obj.tutu = "2";
+  obj.qty = 100; // Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
+  // obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
+  return [obj];
+};
 export function getMockDatasource2(
   dataRepetition = 1,
   nToto = 10,
@@ -149,12 +171,14 @@ export const getPromiseMockDatasource = (
   );
   return p;
 };
-export const basicConfig = {
+export const basicConfig = callbacks => ({
   measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
   cellWidth: 100,
+  totalsFirst: true,
+  edition: { editable: true },
 
   dimensions: [
     {
@@ -217,16 +241,15 @@ export const basicConfig = {
     //   format: "price"
     // }
   ],
-  // columns: ["titi"],
-  // rows: ["toto", "toto att 0", "toto att 1", "tutu"],
-  columns: ["tutu"],
-  rows: ["toto", "titi"],
-  // activeMeasures: ["qty", "amt", "price"],
+  columns: ["titi"],
+  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
   activeMeasures: ["qty", "amt"],
-  collapses: { rows: { 99: true, 98: true }, columns: {} }
+  collapses: { rows: { 99: true, 98: true }, columns: {} },
+  subtotals: { toto: true, rows__total__: true },
+  callbacks
   // features: {}
-};
-export const basicConfig2 = {
+});
+export const basicConfig2 = callbacks => ({
   measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
@@ -294,5 +317,171 @@ export const basicConfig2 = {
   ],
   columns: ["titi"],
   rows: ["toto2", "toto att 0", "toto att 1", "tutu"],
-  activeMeasures: ["qty", "amt", "price"]
+  activeMeasures: ["qty", "amt", "price"],
+  callbacks
+});
+export const getMenu = (id, data) => ({
+  id: 1,
+  type: "menu",
+  caption: "Menu",
+  position: "bottom",
+  children: [
+    {
+      id: 2,
+      type: "sub-menu",
+      caption: "SubMenu1",
+      // accelerator: "Ctrl+A",
+      opened: false,
+      selected: true,
+      children: [
+        {
+          id: 3,
+          type: "menu-item",
+          caption: "Item1",
+          onClick: () => {
+            console.log("tutu");
+          },
+          // accelerator: "Ctrl+C",
+          checked: true
+        },
+        {
+          id: 4,
+          type: "menu-item",
+          caption: "Item2",
+          onClick: () => {
+            console.log("tata");
+          },
+          disable: true
+        },
+        {
+          id: 6,
+          type: "sub-menu",
+          caption: "SubMenu6",
+          separation: true,
+          children: [
+            {
+              id: 7,
+              type: "menu-item",
+              caption: "Item7",
+              onClick: () => {
+                console.log("7");
+              }
+            },
+            {
+              id: 8,
+              type: "menu-item",
+              caption: "Item8",
+              onClick: () => {
+                console.log("8");
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 9,
+      type: "sub-menu",
+      caption: "SubMenu2",
+      checked: true,
+      children: [
+        {
+          id: 10,
+          type: "menu-item",
+          caption: "Item10",
+          onClick: () => {
+            console.log("10");
+          }
+        },
+        {
+          id: 11,
+          type: "menu-item",
+          caption: "Item11",
+          onClick: () => {
+            console.log("11");
+          }
+        }
+      ]
+    },
+    {
+      id: 12,
+      type: "sub-menu",
+      caption: "SubMenu3",
+      checked: true,
+      onClick: () => {
+        console.log("toto");
+      },
+      disabled: false
+    }
+  ]
+});
+// const getKeys1 = (table, keys) =>
+//   table.map(row => JSON.stringify(keys.map(key => row[key])));
+
+// const getKeys2 = (table, keys) =>
+//   table.reduce((acc, row, index) => {
+//     const key = JSON.stringify(keys.map(key => row[key]));
+//     const indexes = acc[key];
+//     if (!indexes) {
+//       acc[key] = [index];
+//     } else {
+//       indexes.push(index);
+//     }
+//     return acc;
+//   }, {});
+// const join = (table1, keys1, table2, keys2, columns2, external) => {
+//   const k1 = getKeys1(table1, keys1);
+//   const k2 = getKeys2(table2, keys2);
+//   const resultTable = [];
+//   k1.forEach((key, index1) => {
+//     const row1 = table1[index1];
+//     const indexes = k2[key];
+//     if (!indexes) {
+//       if (external) {
+//         resultTable.push({ ...row1 });
+//       }
+//     } else {
+//       indexes.forEach(index2 => {
+//         const row2 = table2[index2];
+//         columns2.forEach(column => (row1[column] = row2[column]));
+//         //  resultTable.push({ ...row1, ...columns2(row2) });
+//         resultTable.push(row1);
+//       });
+//     }
+//   });
+//   return resultTable;
+// };
+/*
+
+// const keys2 = getKeys2(table2, keys2);
+config:"{\"dimensions\": [{\"id\": \"ptf\",\"name\": \"Portfolio\",\"primary_key\": \"ptf\",\"label_key\": \"ptf_lb\",\"order_key\":\"ptf_lb\"},"
+config,:"{\"id\": \"thp\",\"name\": \"Thirdparty\",\"primary_key\": \"thp\",\"label_key\": \"thp_lb\",\"order_key\": \"thp_lb\"}],";
+config,:"\"measures\": [{\"id\": \"x\",\"code\": \"x\",\"name\": \"X\",\"format\": \"amount\",\"operation\":\"sum\"}],";
+config,:"  \"columns\": [\"thp\"],\"rows\": [\"ptf\"], \"activeMeasures\": [\"x\"]}";
+ */
+/*
+const a = {
+  dimensions: [
+    {
+      id: "ptf",
+      name: "Portfolio",
+      primary_key: "ptf",
+      label_key: "ptf_lb",
+      order_key: "ptf_lb"
+    },
+    {
+      id: "thp",
+      name: "Thirdparty",
+      primary_key: "thp",
+      label_key: "thp_lb",
+      order_key: "thp_lb"
+    }
+  ],
+  measures: [
+    { id: "x", code: "x", name: "X", format: "amount", operation: "sum" }
+  ],
+  columns: ["thp"],
+  rows: ["ptf"],
+  activeMeasures: ["x"]
 };
+*/

@@ -6,11 +6,14 @@ import { ResizableBox } from "react-resizable";
 import {
   getPromiseMockDatasource,
   basicConfig,
-  getRandomMockDatasource
+  getRandomMockDatasource,
+  overwritedData
 } from "./mock";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
+import { exportFile, getFileObject } from "../pivotGrid/services/copyService";
+
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +22,7 @@ class ZebulonGridDemo extends Component {
       // focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),
       pushedData: [],
-      configuration: basicConfig,
+      configuration: basicConfig({ onEdit: this.onEdit }),
       configurationFunctions,
       menuFunctions,
       sizes: {
@@ -29,7 +32,18 @@ class ZebulonGridDemo extends Component {
       actionContent: null
     };
     this.bigDataSet = false;
+    this.data = [];
   }
+  // componentDidUpdate(prevProps) {
+  //   const element = document.getElementById(
+  //     `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
+  //       .selectedRange.selectedCellEnd.columnIndex}`
+  //   );
+  //   if (element) {
+  //     element.select();
+  //   }
+  //   console.log("demo");
+  // }
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
     this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
@@ -109,6 +123,45 @@ class ZebulonGridDemo extends Component {
     });
   };
 
+  onEdit = data => {
+    this.setState({
+      actionContent: `Old value: ${data._oldValue} - New value:${data._newValue}`
+    });
+    this.data.push(data);
+  };
+  onSave = () => {
+    exportFile(JSON.stringify(this.data), "toto.json");
+  };
+  onLoad = () => {
+    // getFileObject("file:///c:/Users/thomas/Downloads/toto.json", fileObject => {
+    //   console.log(fileObject);
+    // });
+    const file = document.getElementById("file-selector").files[0];
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.object = eval(reader.result);
+      console.log(reader.result);
+    };
+    reader.readAsText(file);
+  };
+  onClickMenu = (e, id) => {
+    if (e.button === 2) {
+      e.preventDefault();
+      e.persist();
+      e.stopPropagation();
+      // e.button = 0;
+      this.setState({
+        menuVisible: !this.state.menuVisible,
+        menuParent: { top: e.target.offsetTop, left: e.target.offsetLeft }
+      });
+      console.log("click menu", e.target, id);
+    }
+    return false;
+  };
+  // <ContextualMenu key="contextual-menu" getMenu={getMenu} />
+  //  // <ContextualMenuClient menuId={1}>
+  //   <div id="-2" style={{ height: 30, width: 30, border: "solid" }} />
+  // </ContextualMenuClient>
   render() {
     return (
       <div id="toto" style={{ fontFamily: "sans-serif" }}>
@@ -153,7 +206,7 @@ class ZebulonGridDemo extends Component {
               ? "Add"
               : "Remove"} custom menu functions`}
           </button>
-          <div>
+          <div style={{ marginRight: ".5em" }}>
             <input
               id="option"
               checked={this.bigDataSet}
@@ -162,6 +215,12 @@ class ZebulonGridDemo extends Component {
             />
             <label htmlFor="option">Try a 1M rows dataset</label>
           </div>
+          <input
+            type="file"
+            id="file-selector"
+            onChange={this.onLoad}
+            style={{ marginRight: ".5em", display: "none" }}
+          />
         </div>
         <div
           style={{
@@ -257,3 +316,17 @@ class ZebulonGridDemo extends Component {
   }
 }
 export default ZebulonGridDemo;
+// (<button
+//   style={{ marginRight: ".5em" }}
+//   type="button"
+//   onClick={this.onSave}
+// >
+//   Save
+// </button>
+// <button
+//   style={{ marginRight: ".5em" }}
+//   type="button"
+//   onClick={() => document.getElementById("file-selector").click()}
+// >
+//   Load
+// </button>)

@@ -104,7 +104,52 @@
 .zebulon-grid-data-cell-grandtotal {
   background-color: rgba(217, 226, 132, 0.98);
 }
-.react-contextmenu {
+.zebulon-grid-data-cell-edited {
+  text-decoration: underline blue;
+}
+/*-----------------------------------------------*/
+.zebulon-contextmenu-item {
+  padding: 2px;
+  background-color: white;
+  height: 20px;
+  width: -webkit-fill-available;
+  min-width: 50px;
+  z-index: 100;
+  opacity: 1;
+  display: flex;
+  justify-content: space-between;
+  /*border-radius: 0.25rem;*/
+}
+.zebulon-contextmenu-item-separation {
+  border-top: solid 0.05em rgba(0, 0, 0, 0.5);
+}
+.zebulon-contextmenu-item-disable {
+  color: lightgrey;
+}
+.zebulon-contextmenu-item-checked {
+}
+.zebulon-contextmenu-item-selected {
+  background-color: lightgrey;
+}
+/*.zebulon-contextmenu-sub-menu {
+  content: "▶";
+}*/
+/*.zebulon-contextmenu-separator {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0em;
+}*/
+.zebulon-contextmenu-group {
+  width: max-content;
+  min-width: 80px;
+  height: fit-content;
+  border: solid 0.05em rgba(0, 0, 0, 0.5);
+  /*border-radius: 0.25rem;*/
+  cursor: pointer;
+  z-index: 100;
+}
+/*-----------------------------------------------*/
+/*.react-contextmenu {
   min-width: 10em;
   color: #373a3c;
   text-align: left;
@@ -189,6 +234,8 @@
 .react-contextmenu-item-filtered {
   font-weight: bold;
 }
+*/
+/*------------------------------------*/
 .zebulon-scrollbar-bar {
   background-color: lightgrey;
   border: solid 0.03em grey;
@@ -199,3 +246,71 @@
   border: solid 0.03em grey;
   border-radius: 0.25rem;
 }
+
+.zebulon-tool-tip {
+  padding: 5px;
+  position: absolute;
+  z-index: 9999;
+  cursor: default;
+  animation: 0.5s fadeIn;
+  border: 0.05em solid;
+  min-height: 30px;
+  background-color: white;
+  border-radius: 5px;
+}
+/*------------------------------------*/
+/*.react-hint__content {
+  padding: 10px;
+  border-radius: 5px;
+  background: #000;
+  color: #fff;
+}
+
+.react-hint:after {
+  content: "";
+  width: 0;
+  height: 0;
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 5px solid transparent;
+}
+
+.react-hint--top:after {
+  top: auto;
+  border-bottom: none;
+  border-top-color: #000;
+}
+
+.react-hint--left:after {
+  left: auto;
+  border-right: none;
+  border-left-color: #000;
+}
+
+.react-hint--right:after {
+  right: auto;
+  border-left: none;
+  border-right-color: #000;
+}
+
+.react-hint--bottom:after {
+  bottom: auto;
+  border-top: none;
+  border-bottom-color: #000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+*/

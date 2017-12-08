@@ -1,309 +1,369 @@
 import React from "react";
-import {
-  ContextMenu as ReactContextMenu,
-  MenuItem,
-  SubMenu
-} from "react-contextmenu";
+import { AxisType, toAxis, TOTAL_ID, MEASURE_ID } from "../../constants";
 import classnames from "classnames";
-
 import { isNullOrUndefined } from "../../utils/generic";
-import { MEASURE_ID, TOTAL_ID } from "../../constants";
 import Filter from "../../containers/Filter";
 
-const DimensionMenu = (id, trigger) => {
-  const { isNotCollapsible, hasSubTotal, hasGrandTotal, features } = trigger;
-  const availableDimensions = trigger.availableDimensions.filter(
-    dimension => dimension.id !== MEASURE_ID
-  );
-  const addDimensionSubMenu = (
-    <SubMenu
-      title="Add dimension"
-      disabled={availableDimensions.length === 0}
-      key={-1}
-    >
-      {availableDimensions.map(dimension => (
-        <MenuItem
-          key={dimension.id}
-          onClick={trigger.onItemClick}
-          data={{ action: "add", newDimensionId: dimension.id }}
-        >
-          {dimension.caption}
-        </MenuItem>
-      ))}
-    </SubMenu>
-  );
-  if (trigger.dimensionId === MEASURE_ID) {
-    return <ReactContextMenu id={id}>{addDimensionSubMenu}</ReactContextMenu>;
+const menuFunctions = (type, fct, data, menus) => {
+  const keys = Object.keys(fct);
+  if (keys.length) {
+    menus.push({
+      id: menus.length,
+      type: "sub-menu",
+      caption: type,
+      children: keys.map((f, index) => ({
+        id: 100 * (menus.length - 1) + index,
+        type: "menu-item",
+        caption: fct[f].caption,
+        onClick: () =>
+          data.onItemClick(type, fct[f].code, {
+            rowIndex: data.rowIndex,
+            columnIndex: data.columnIndex,
+            value: null
+          })
+      }))
+    });
   }
+};
+const getGridMenu = data => {
   const menus = [];
-  if (features.sorting === "enabled") {
-    menus.push(
-      <MenuItem
-        onClick={trigger.onItemClick}
-        disabled={trigger.dimensionId === TOTAL_ID}
-        data={{ action: "sort" }}
-        key={menus.length}
-      >
-        {`Sort  ${trigger.direction} `}
-      </MenuItem>
-    );
-  }
-  if (!isNotCollapsible && features.expandCollapse === "enabled") {
-    menus.push(
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: "expand all" }}
-        disabled={isNotCollapsible}
-        key={menus.length}
-      >
-        Expand all
-      </MenuItem>,
-      <MenuItem
-        onClick={trigger.onItemClick}
-        data={{ action: "collapse all" }}
-        disabled={isNotCollapsible}
-      >
-        Collapse all
-      </MenuItem>
-    );
-  }
-  if (features.totals === "enabled") {
-    if (hasSubTotal !== null) {
-      menus.push(
-        <MenuItem
-          onClick={trigger.onItemClick}
-          data={{ action: "toggle subtotal" }}
-          key={menus.length}
-        >
-          {(hasSubTotal ? "Remove" : "Add") + " subtotal"}
-        </MenuItem>
-      );
-    }
-    if (hasGrandTotal !== null) {
-      menus.push(
-        <MenuItem
-          onClick={trigger.onItemClick}
-          data={{ action: "toggle grandtotal" }}
-          key={menus.length}
-        >
-          {(hasGrandTotal ? "Remove" : "Add") + " grand total"}
-        </MenuItem>
-      );
-    }
-  }
-  if (features.filters === "enabled") {
-    menus.push(
-      <SubMenu
-        title="Filter"
-        disabled={trigger.dimensionId === TOTAL_ID}
-        key={menus.length}
-        style={
-          !isNullOrUndefined(trigger.dimensionFilter) ? (
-            { fontWeight: "bold" }
-          ) : null
-        }
-      >
-        <div style={{ maxHeight: 600 }}>
-          <Filter dimensionId={trigger.dimensionId} />
-        </div>
-      </SubMenu>
-    );
-  }
-  if (features.dimensions === "enabled") {
-    menus.push(
-      <MenuItem
-        onClick={trigger.onItemClick}
-        disabled={trigger.dimensionId === TOTAL_ID}
-        data={{ action: "remove" }}
-        key={menus.length}
-      >
-        Remove
-      </MenuItem>,
-      addDimensionSubMenu
-    );
-  }
-  if (menus.length) {
-    return <ReactContextMenu id={id}>{menus}</ReactContextMenu>;
-  } else {
-    return null;
-  }
-};
-
-const MeasureMenu = (id, trigger) => {
-  const isDisabled = trigger.availableMeasures.length === 0;
-  if (trigger.features.measures === "enabled") {
-    return (
-      <ReactContextMenu id={id}>
-        <MenuItem onClick={trigger.onItemClick} data={{ action: "move" }}>
-          Move measures
-        </MenuItem>
-        <MenuItem
-          onClick={trigger.onItemClick}
-          data={{ action: "remove" }}
-          disabled={Object.keys(trigger.measures || {}).length < 2}
-        >
-          Remove
-        </MenuItem>
-        <SubMenu title="Add" disabled={isDisabled}>
-          {trigger.availableMeasures.map(measure => (
-            <MenuItem
-              key={measure.id}
-              onClick={trigger.onItemClick}
-              data={{ action: "add", newMeasureId: measure.id }}
-            >
-              {measure.caption}
-            </MenuItem>
-          ))}
-        </SubMenu>
-      </ReactContextMenu>
-    );
-  } else {
-    return null;
-  }
-};
-const externalMenu = (functionType, externalFunction, onClick) => {
-  if (externalFunction.type === "SubMenu") {
-    return (
-      <SubMenu
-        key={externalFunction.code}
-        title={externalFunction.caption}
-        // onClick={e => console.log("SubMenu", e)}
-      >
-        {externalFunction.function()}
-      </SubMenu>
-    );
-  } else if (externalFunction.type === "MenuItem") {
-    return (
-      <MenuItem
-        key={externalFunction.code}
-        onClick={onClick}
-        data={{ action: externalFunction.code, functionType }}
-      >
-        {externalFunction.caption}
-      </MenuItem>
-    );
-  }
-};
-
-// {externalFunction.function()}
-const DataCellMenu = (id, trigger) => {
-  let fct = trigger.menuFunctions.dataCellFunctions || {},
+  const features = data.configuration.features;
+  let fct = data.menuFunctions.dataCellFunctions || {},
     keys,
     cellFunctions,
     rangeFunctions,
     gridFunctions;
-  const menus = [];
-  const features = trigger.configuration.features;
-  keys = Object.keys(fct);
-  if (keys.length) {
-    menus.push(
-      <SubMenu title="Cell" key={menus.length}>
-        {keys.map(externalFunction =>
-          externalMenu("cell", fct[externalFunction], trigger.onItemClick)
-        )}
-      </SubMenu>
-    );
-  }
-  fct = trigger.menuFunctions.rangeFunctions || {};
-  keys = Object.keys(fct);
-  if (keys.length) {
-    menus.push(
-      <SubMenu title="Range" key={menus.length}>
-        {keys.map(externalFunction =>
-          externalMenu("range", fct[externalFunction], trigger.onItemClick)
-        )}
-      </SubMenu>
-    );
-  }
-  fct = trigger.menuFunctions.gridFunctions || {};
-  keys = Object.keys(fct);
-  if (keys.length) {
-    menus.push(
-      <SubMenu title="Grid" key={menus.length}>
-        {keys.map(externalFunction =>
-          externalMenu("grid", fct[externalFunction], trigger.onItemClick)
-        )}
-      </SubMenu>
-    );
-  }
+  menuFunctions(
+    "Cell",
+    data.menuFunctions.dataCellFunctions || {},
+    data,
+    menus
+  );
+  menuFunctions("Range", data.menuFunctions.rangeFunctions || {}, data, menus);
+  menuFunctions("Grid", data.menuFunctions.gridFunctions || {}, data, menus);
   if (features.filters === "enabled") {
-    menus.push(
-      <SubMenu title="Filters" key={menus.length}>
-        {trigger.dimensions
-          .filter(dimension => dimension.id !== MEASURE_ID)
-          .map(dimension => (
-            <SubMenu
-              key={dimension.id}
-              title={
-                <span
-                  className={classnames({
-                    "react-contextmenu-item-filtered": !isNullOrUndefined(
-                      trigger.filters[dimension.id]
-                    )
-                  })}
+    menus.push({
+      id: menus.length,
+      type: "sub-menu",
+      separation: menus.length > 0,
+      caption: "Filters",
+      children: data.dimensions
+        .filter(dimension => dimension.id !== MEASURE_ID)
+        .map((dimension, index) => ({
+          id: 100 * (menus.length - 1) + index,
+          type: "sub-menu",
+          caption: dimension.caption,
+          checked: data.filters[dimension.id] !== undefined,
+          children: [
+            {
+              id: 1000 * (menus.length - 1) + index,
+              type: "jsx",
+              content: (
+                <div
+                  style={{
+                    maxHeight: 600,
+                    backgroundColor: "white",
+                    border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+                  }}
                 >
-                  {dimension.caption}
-                </span>
-              }
-            >
-              <Filter dimensionId={dimension.id} />
-            </SubMenu>
-          ))}
-      </SubMenu>
-    );
+                  <Filter dimensionId={dimension.id} />
+                </div>
+              )
+            }
+          ]
+        }))
+    });
   }
   if (features.configuration === "enabled") {
-    menus.push(
-      <SubMenu
-        title="Configuration"
-        style={{ width: "fitContent" }}
-        key={menus.length}
-      >
-        <SubMenu key={"cell-height"} title={"Default cell height"}>
-          <div style={{ textAlign: "right", backgroundColor: "lightgrey" }}>
-            {trigger.configuration.cellHeight}
-          </div>
-        </SubMenu>
-        <SubMenu key={"cell-width"} title={"Default cell width"}>
-          <div style={{ textAlign: "right", backgroundColor: "lightgrey" }}>
-            {trigger.configuration.cellWidth}
-          </div>
-        </SubMenu>
-        <MenuItem
-          key={"toggle-subtotals"}
-          onClick={trigger.onItemClick}
-          data={{
-            action: "toggle-totals",
-            value: !trigger.configuration.totalsFirst
-          }}
-        >
-          {"Set totals " +
-            (trigger.configuration.totalsFirst ? "after" : "before")}
-        </MenuItem>
-      </SubMenu>
-    );
+    const children = [
+      {
+        id: 100 * menus.length,
+        type: "sub-menu",
+        caption: "Default cell height",
+        children: [
+          {
+            id: 1000 * (menus.length - 1),
+            type: "jsx",
+            content: (
+              <div
+                style={{
+                  textAlign: "right",
+                  backgroundColor: "lightgrey",
+                  minWidth: 50,
+                  padding: 2
+                }}
+              >
+                {data.configuration.cellHeight}
+              </div>
+            )
+          }
+        ]
+      },
+      {
+        id: 100 * menus.length + 1,
+        type: "sub-menu",
+        caption: "Default cell width",
+        children: [
+          {
+            id: 1000 * (menus.length - 1) + 1,
+            type: "jsx",
+            content: (
+              <div
+                style={{
+                  textAlign: "right",
+                  backgroundColor: "lightgrey",
+                  minWidth: 50,
+                  padding: 2
+                }}
+              >
+                {data.configuration.cellWidth}
+              </div>
+            )
+          }
+        ]
+      },
+      {
+        id: 100 * menus.length + 2,
+        type: "menu-item",
+        separation: true,
+        caption: "Totals before",
+        checked: data.configuration.totalsFirst,
+        onClick: () =>
+          data.onItemClick("Totals", null, {
+            value: !data.configuration.totalsFirst
+          })
+      }
+    ];
+    if (data.configuration.edition.editable) {
+      children.push({
+        id: 100 * menus.length + children.length,
+        type: "menu-item",
+        separation: true,
+        caption: "Edition mode",
+        checked: data.configuration.edition.activated,
+        onClick: () =>
+          data.onItemClick("Edition", null, {
+            value: !data.configuration.edition.activated
+          })
+      });
+      children.push({
+        id: 100 * menus.length + children.length,
+        type: "menu-item",
+        caption: "Comments tool tips",
+        checked: data.configuration.edition.comments,
+        onClick: () =>
+          data.onItemClick("Comments", null, {
+            value: !data.configuration.edition.comments
+          })
+      });
+    }
+    menus.push({
+      id: menus.length,
+      type: "sub-menu",
+      separation: menus.length > 0,
+      caption: "Configuration",
+      children
+    });
   }
   if (menus.length) {
-    return <ReactContextMenu id={id}>{menus}</ReactContextMenu>;
+    return {
+      type: "menu",
+      position: "bottom",
+      children: menus
+    };
   } else {
     return null;
   }
 };
 
-const ContextMenu = props => {
-  const { id, trigger } = props;
-  if (isNullOrUndefined(trigger)) {
-    return <ReactContextMenu id={id}> </ReactContextMenu>;
+const getMeasureMenu = data => {
+  if (data.features.measures === "enabled") {
+    return {
+      type: "menu",
+      position: "bottom",
+      children: [
+        {
+          id: 1,
+          type: "menu-item",
+          caption: "Move measures",
+          onClick: () =>
+            data.toggleMeasuresAxis(
+              data.axis === AxisType.ROWS ? "columns" : "rows"
+            )
+        },
+        {
+          id: 2,
+          type: "menu-item",
+          caption: "Remove",
+          onClick: () => data.toggleMeasure(data.measureId),
+          disable: data.measures.length === 1
+        },
+        {
+          id: 3,
+          type: "sub-menu",
+          caption: "Add",
+          disable: data.availableMeasures.length === 0,
+          children: data.availableMeasures.map((measure, index) => ({
+            id: 4 + index,
+            type: "menu-item",
+            caption: measure.caption,
+            onClick: () => data.toggleMeasure(measure.id)
+          }))
+        }
+      ]
+    };
+  } else {
     return null;
   }
-
-  if (trigger.type === "dimension-header") {
-    return DimensionMenu(id, trigger);
-  } else if (trigger.type === `header-${trigger.axis}`) {
-    return MeasureMenu(id, trigger);
-  } else if (trigger.type === "data-cell") {
-    return DataCellMenu(id, trigger);
+};
+const getDimensionMenu = data => {
+  const {
+    features,
+    isNotCollapsible,
+    dimension,
+    toggleSubTotal,
+    toggleSortOrder,
+    collapseAll,
+    moveDimension
+  } = data;
+  const { hasAttribute, hasSubTotal, hasGrandTotal } = dimension;
+  const availableDimensions = data.availableDimensions.filter(
+    dimension => dimension.id !== MEASURE_ID
+  );
+  const menus = [];
+  if (features.sorting === "enabled") {
+    menus.push({
+      id: menus.length,
+      type: "menu-item",
+      caption: `Sort  ${dimension.sort.direction === "asc"
+        ? "descending"
+        : "ascending"}`,
+      onClick: () => toggleSortOrder(dimension.id)
+    });
+  }
+  if (!isNotCollapsible && features.expandCollapse === "enabled") {
+    menus.push(
+      {
+        id: menus.length,
+        type: "menu-item",
+        caption: "Expand all",
+        separation: menus.length > 0,
+        disabled: isNotCollapsible,
+        onClick: () => collapseAll(false)
+      },
+      {
+        id: menus.length + 1,
+        type: "menu-item",
+        caption: "Collapse all",
+        disabled: isNotCollapsible,
+        onClick: () => collapseAll(true)
+      }
+    );
+  }
+  if (features.totals === "enabled") {
+    if (hasSubTotal !== null) {
+      menus.push({
+        id: menus.length,
+        type: "menu-item",
+        separation: menus.length > 0,
+        caption: "Sub total",
+        checked: hasSubTotal,
+        onClick: () => toggleSubTotal(dimension.id)
+      });
+    }
+    if (hasGrandTotal !== null) {
+      menus.push({
+        id: menus.length,
+        type: "menu-item",
+        caption: "Grand total",
+        checked: hasGrandTotal,
+        onClick: () => toggleSubTotal(`${toAxis(dimension.axis)}${TOTAL_ID}`)
+      });
+    }
+  }
+  if (features.filters === "enabled" && dimension.id !== TOTAL_ID) {
+    menus.push({
+      id: menus.length,
+      type: "sub-menu",
+      caption: "Filter",
+      separation: menus.length > 0,
+      checked: data.dimensionFilter !== undefined,
+      children: [
+        {
+          id: 100,
+          type: "jsx",
+          navigation: true,
+          // caption: "Filter",
+          content: (
+            <div
+              key="filters"
+              style={{
+                maxHeight: 600,
+                backgroundColor: "white",
+                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+              }}
+            >
+              <Filter dimensionId={dimension.id} />
+            </div>
+          )
+        }
+      ]
+    });
+  }
+  if (features.dimensions === "enabled") {
+    if (dimension.id !== TOTAL_ID) {
+      menus.push({
+        id: menus.length,
+        type: "menu-item",
+        separation: menus.length > 0,
+        caption: "Remove",
+        onClick: () =>
+          moveDimension(
+            dimension.id,
+            toAxis(dimension.axis),
+            toAxis(AxisType.DIMENSION)
+          )
+      });
+      menus.push({
+        id: menus.length,
+        type: "sub-menu",
+        caption: "Add",
+        disable: availableDimensions.length === 0,
+        children: availableDimensions.map((dim, index) => ({
+          id: 100 * (menus.length - 1) + index,
+          type: "menu-item",
+          caption: dim.caption,
+          onClick: () =>
+            moveDimension(
+              dim.id,
+              toAxis(AxisType.DIMENSION),
+              toAxis(dimension.axis),
+              dimension.id === MEASURE_ID
+                ? dimension.depth
+                : dimension.depth + 1
+            )
+        }))
+      });
+    }
+  }
+  if (menus.length) {
+    return {
+      type: "menu",
+      position: "bottom",
+      children: menus
+    };
+  } else {
+    return null;
+  }
+};
+export const getMenu = (id, data) => {
+  if (id === "dimension-menu") {
+    return getDimensionMenu(data);
+  } else if (id === "measure-menu") {
+    return getMeasureMenu(data);
+  } else if (id === "grid-menu") {
+    return getGridMenu(data);
   }
 };
 
-export default ContextMenu;
+// export default ContextMenu;

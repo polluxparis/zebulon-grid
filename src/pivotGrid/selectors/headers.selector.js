@@ -170,9 +170,9 @@ const buildPositionedHeaders = (
   leaves,
   scroll
 ) => {
-  if (!leaves.length) {
-    return undefined;
-  }
+  // if (!leaves.length) {
+  //   return undefined;
+  // }
   // const x = Date.now();
   const maxSize = containerSize - crossSize;
   let size = 0,
@@ -543,6 +543,7 @@ export const rowAndColumnHeadersSelector = createSelector(
       let change = false;
       if (
         columns.direction === -1 &&
+        columns.cells.length &&
         columns.cells[columns.cells.length - 1][0].sizes.main.position -
           columns.offset >
           0
@@ -554,6 +555,7 @@ export const rowAndColumnHeadersSelector = createSelector(
       }
       if (
         rows.direction === -1 &&
+        rows.cells.length &&
         rows.cells[rows.cells.length - 1][0].sizes.main.position - rows.offset >
           0
       ) {

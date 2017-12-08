@@ -47,12 +47,10 @@ class FilterValues extends ScrollableArea {
   };
   onScroll = e => {
     if (e.type === "scrollbar") {
-      //   if (e.initiator === "bar" && e.direction === "vertical") {
       const startIndex = Math.round(this.props.rowCount * e.positionRatio);
       this.ratios.vertical.position = startIndex / this.props.rowCount;
       this.props.onScroll(startIndex);
     }
-    // }
   };
 }
 export class Filter extends Component {
@@ -74,7 +72,6 @@ export class Filter extends Component {
     });
   }
   onScroll = startIndex => {
-    // console.log(startIndex);
     this.setState({ startIndex });
   };
   onWheel = e => {
@@ -126,20 +123,6 @@ export class Filter extends Component {
       changed: !this.state.changed
     });
   };
-  //  changed={this.state.changed}
-  // itemRenderer = ({ index, key, isScrolling, style }) => {
-  //   const { id, label } = this.state.items[index];
-  //   return (
-  //     <div key={key} style={style}>
-  //       <input
-  //         type="checkbox"
-  //         checked={this.state.filter[id] !== undefined}
-  //         onChange={() => this.onChangeCheck(id, index)}
-  //       />
-  //       <span onClick={() => this.onChangeCheck(id, index)}>{label}</span>
-  //     </div>
-  //   );
-  // };
   handleClick = () => {
     const filterKeys = Object.values(this.state.filter);
     const filter =

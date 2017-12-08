@@ -7,10 +7,16 @@ import {
   activatedMeasuresSelector,
   dimensionsSelector,
   selectedRangeSelector,
-  getElementsSelector
+  getElementsSelector,
+  buildDataSelector
 } from "../selectors";
 import { DataCells } from "../components/DataCells/DataCells";
-import { selectRange, selectCell, setConfigurationProperty } from "../actions";
+import {
+  selectRange,
+  selectCell,
+  setConfigurationProperty,
+  applyPushedData
+} from "../actions";
 
 const mapStateToProps = (state, ownProps) => {
   const measures = activatedMeasuresSelector(state);
@@ -26,6 +32,14 @@ const mapStateToProps = (state, ownProps) => {
     getCellInfos: getCellInfosSelector(state),
     getRangeInfos: getRangeInfosSelector(state),
     getGridInfos: () => getElementsSelector(state)(),
+    buildData: (rowLeaf, columnLeaf, oldValue, newValue, comment) =>
+      buildDataSelector(state)(
+        rowLeaf,
+        columnLeaf,
+        oldValue,
+        newValue,
+        comment
+      ),
     // height: state.configuration.height,
     // width: state.configuration.width,
     configuration: state.configuration,
@@ -41,6 +55,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(selectCell(cell));
   },
   setConfigProperty: (prop, value) =>
-    dispatch(setConfigurationProperty({ [prop]: value }, prop))
+    dispatch(setConfigurationProperty({ [prop]: value }, prop)),
+  editData: data => dispatch(applyPushedData(data))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DataCells);

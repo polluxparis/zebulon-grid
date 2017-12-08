@@ -4,14 +4,7 @@
   "homepage": "http://polluxparis.github.io/zebulon-grid",
   "license": "MIT",
   "description": "Pivot grid written in React",
-  "tags": [
-    "pivot table",
-    "pivot grid",
-    "grid",
-    "pivot",
-    "react",
-    "javascript"
-  ],
+  "tags": ["pivot table", "pivot grid", "grid", "pivot", "react", "javascript"],
   "author": "Emile et Thomas Bres <thomas.bres@pollux.paris>",
   "main": "lib/index.js",
   "devDependencies": {
@@ -23,11 +16,12 @@
     "cross-env": "3.1.4",
     "enzyme": "^2.8.2",
     "eslint": "^4.5.0",
-    "eslint-config-prettier": "^2.1.1",
     "eslint-plugin-prettier": "^2.1.1",
+    "eslint-config-prettier": "^2.1.1",
     "fps-measurer": "^0.0.2",
     "gh-pages": "^1.0.0",
     "postcss-cli": "^2.6.0",
+    "react": "^16.0.0",
     "react-addons-perf": "^15.4.2",
     "react-dom": "^16.0.0",
     "react-resizable": "^1.6.0",
@@ -37,11 +31,10 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
     "classnames": "^2.2.5",
     "object.values": "^1.0.4",
-    "react-contextmenu": "^2.9.1",
+    "react": "^16.0.0",
+    "react-contextmenu": "^2.6.3",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-redux": "^5.0.6",
@@ -59,23 +52,20 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "lint": "eslint src/**/*.js",
-    "compile:js": "rimraf lib && cross-env NODE_ENV=production babel src/pivotGrid -d lib --presets es2015,react-app --ignore test.js",
-    "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
+    "compile:js":
+      "rimraf lib && cross-env NODE_ENV=production babel src/pivotGrid -d lib --presets es2015,react-app --ignore test.js",
+    "compile:css":
+      "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
   "babel": {
-    "presets": [
-      "react-app"
-    ]
+    "presets": ["react-app"]
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "prettier"
-    ],
+    "extends": ["react-app", "prettier"],
     "env": {
       "browser": true,
       "jest": true
