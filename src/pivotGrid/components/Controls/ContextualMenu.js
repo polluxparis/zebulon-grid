@@ -9,6 +9,7 @@ const buildItems = (items, style, level, handleMenuEvent) => {
 			style={style}
 		>
 			{items.map((item, index) => {
+				item.level = level;
 				if (item.type === "jsx") {
 					return item.content;
 				} else {

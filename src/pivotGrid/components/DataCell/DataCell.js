@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classnames from "classnames";
-import { ContextMenuTrigger } from "react-contextmenu";
+// import { ContextMenuTrigger } from "react-contextmenu";
 import { rightArrow } from "../../icons";
 import { isNullOrUndefined } from "../../utils/generic";
 import { ContextualMenuClient } from "../Controls/ContextualMenu";
@@ -150,13 +150,11 @@ export default class DataCell extends PureComponent {
               position: "absolute",
               zIndex: 3
             }}
-            // draggable={false}
             onClick={this.handleComments}
           />
           <input
             type="text"
             className={className}
-            // draggable={false}
             style={{
               height: "-webkit-fill-available",
               width: "-webkit-fill-available",
@@ -171,6 +169,7 @@ export default class DataCell extends PureComponent {
             onMouseUp={this.props.handleMouseUp}
             onDoubleClick={this.handleDoubleClick}
             onMouseOver={this.handleMouseOver}
+            onDragStart={e => e.preventDefault()}
           />
         </div>
       );
@@ -194,6 +193,7 @@ export default class DataCell extends PureComponent {
       <ContextualMenuClient
         menuId="grid-menu"
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
+        draggable={false}
         collect={() =>
           collectMenu({
             rowIndex,

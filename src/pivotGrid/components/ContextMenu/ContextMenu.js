@@ -58,6 +58,7 @@ const getGridMenu = data => {
             {
               id: 1000 * (menus.length - 1) + index,
               type: "jsx",
+              navigation: true,
               content: (
                 <div
                   style={{
@@ -185,7 +186,8 @@ const getMeasureMenu = data => {
         {
           id: 1,
           type: "menu-item",
-          caption: "Move measures",
+          caption: "Measures in rows",
+          checked: data.axis === AxisType.ROWS,
           onClick: () =>
             data.toggleMeasuresAxis(
               data.axis === AxisType.ROWS ? "columns" : "rows"
@@ -194,14 +196,14 @@ const getMeasureMenu = data => {
         {
           id: 2,
           type: "menu-item",
-          caption: "Remove",
-          onClick: () => data.toggleMeasure(data.measureId),
+          caption: `Remove ${data.header.caption}`,
+          onClick: () => data.toggleMeasure(data.header.id),
           disable: data.measures.length === 1
         },
         {
           id: 3,
           type: "sub-menu",
-          caption: "Add",
+          caption: "Add measure",
           disable: data.availableMeasures.length === 0,
           children: data.availableMeasures.map((measure, index) => ({
             id: 4 + index,
@@ -316,7 +318,7 @@ const getDimensionMenu = data => {
         id: menus.length,
         type: "menu-item",
         separation: menus.length > 0,
-        caption: "Remove",
+        caption: `Remove ${dimension.caption}`,
         onClick: () =>
           moveDimension(
             dimension.id,
@@ -327,7 +329,7 @@ const getDimensionMenu = data => {
       menus.push({
         id: menus.length,
         type: "sub-menu",
-        caption: "Add",
+        caption: "Add dimension",
         disable: availableDimensions.length === 0,
         children: availableDimensions.map((dim, index) => ({
           id: 100 * (menus.length - 1) + index,

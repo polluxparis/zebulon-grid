@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { DragLayer } from "react-dnd";
 
-const collectDragLayer = monitor => ({
-  item: monitor.getItem(),
-  itemType: monitor.getItemType(),
-  clientOffset: monitor.getClientOffset(),
-  initialClientOffset: monitor.getInitialClientOffset(),
-  isDragging: monitor.isDragging()
-});
+const collectDragLayer = monitor => {
+  return {
+    item: monitor.getItem(),
+    itemType: monitor.getItemType(),
+    clientOffset: monitor.getClientOffset(),
+    initialClientOffset: monitor.getInitialClientOffset(),
+    isDragging: monitor.isDragging()
+  };
+};
 
 class CustomDragLayer extends Component {
   constructor() {
@@ -80,17 +82,19 @@ class CustomDragLayer extends Component {
           this.element = element;
         }}
         style={
-          this.props.isDragging
-            ? {
-                position: "absolute",
-                pointerEvents: "none",
-                zIndex: 100,
-                left: 0,
-                top: 0,
-                width: "100%",
-                height: "100%"
-              }
-            : { display: "none" }
+          this.props.isDragging ? (
+            {
+              position: "absolute",
+              pointerEvents: "none",
+              zIndex: 100,
+              left: 0,
+              top: 0,
+              width: "100%",
+              height: "100%"
+            }
+          ) : (
+            { display: "none" }
+          )
         }
       >
         {resizeBar}

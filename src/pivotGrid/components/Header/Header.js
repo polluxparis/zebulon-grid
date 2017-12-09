@@ -158,7 +158,7 @@ class Header extends Component {
           collect={() =>
             collectMenu({
               axis,
-              measureId: header.id,
+              header,
               toggleMeasuresAxis,
               toggleMeasure
             })}

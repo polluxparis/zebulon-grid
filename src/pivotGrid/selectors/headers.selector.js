@@ -37,7 +37,8 @@ import {
   TOTAL_ID,
   MEASURE_ID,
   ScrollbarSize,
-  AxisType
+  AxisType,
+  HeaderType
 } from "../constants";
 
 ///////////////////////////////////////////////////////////////////
@@ -114,7 +115,15 @@ const parentsSizes = (
     ) {
       rowCells.push(header);
     }
-    if (header.isCollapsed) {
+    if (
+      header.isCollapsed &&
+      (header.type === HeaderType.GRAND_TOTAL ||
+        header.type === HeaderType.SUB_TOTAL)
+    ) {
+      header.sizes.cross.collapsed =
+        crossPositions[MEASURE_ID].position - header.sizes.cross.size;
+      header.sizes.cross.size = crossPositions[MEASURE_ID].position;
+    } else if (header.isCollapsed) {
       header.sizes.cross.collapsed = collapsedSizes[header.depth];
       header.sizes.cross.size += collapsedSizes[header.depth];
     }
@@ -209,13 +218,26 @@ const buildPositionedHeaders = (
         cross: { ...crossPositions[dimension.id] }
       };
       // grand total and subtotals
-      if (header.isCollapsed) {
+      if (
+        header.isCollapsed
+        // ||
+        // (header.dimensionId === MEASURE_ID &&
+        //   (header.parent.type === HeaderType.GRAND_TOTAL ||
+        //     header.parent.type === HeaderType.SUB_TOTAL))
+      ) {
         header.sizes.cross.collapsed =
           crossHeadersSize -
           header.sizes.cross.position -
           header.sizes.cross.size;
         header.sizes.cross.size =
           crossHeadersSize - header.sizes.cross.position;
+      } else if (
+        header.dimensionId === MEASURE_ID &&
+        (header.parent.type === HeaderType.GRAND_TOTAL ||
+          header.parent.type === HeaderType.SUB_TOTAL)
+      ) {
+        header.sizes.cross.position = crossHeadersSize;
+        console.log("sizes", header.sizes);
       }
       parentsSizes(
         header.parent,
