@@ -36,8 +36,8 @@ class ZebulonGridDemo extends Component {
   }
   // componentDidUpdate(prevProps) {
   //   const element = document.getElementById(
-  //     `input ${this.props.selectedRange.selectedCellEnd.rowIndex} - ${this.props
-  //       .selectedRange.selectedCellEnd.columnIndex}`
+  //     `input ${this.props.selectedRange.selectedCellEnd.rows} - ${this.props
+  //       .selectedRange.selectedCellEnd.columns}`
   //   );
   //   if (element) {
   //     element.select();
@@ -164,7 +164,8 @@ class ZebulonGridDemo extends Component {
   // </ContextualMenuClient>
   render() {
     return (
-      <div id="toto" style={{ fontFamily: "sans-serif" }}>
+      <div id="zebulon" style={{ fontFamily: "sans-serif" }}>
+        <div style={{ height: 50 }} />
         <ResizableBox
           height={this.state.sizes.height}
           width={this.state.sizes.width}
@@ -178,6 +179,7 @@ class ZebulonGridDemo extends Component {
             configurationFunctions={this.state.configurationFunctions}
             sizes={this.state.sizes}
             ref={ref => (this.zebulon = ref)}
+            display="configuration"
           />
         </ResizableBox>
         <div

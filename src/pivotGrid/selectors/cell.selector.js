@@ -186,8 +186,8 @@ export const getCellInfosSelector = createSelector(
   ) => cell => {
     const columns = columnDimensions.filter(column => column.isVisible);
     const rows = rowDimensions.filter(row => row.isVisible);
-    const rowLeaf = rowLeaves.leaves[cell.rowIndex];
-    const columnLeaf = columnLeaves.leaves[cell.columnIndex];
+    const rowLeaf = rowLeaves.leaves[cell.rows];
+    const columnLeaf = columnLeaves.leaves[cell.columns];
     let measure;
     if (rowLeaf.type === HeaderType.MEASURE) {
       measure = measures[rowLeaf.id];
@@ -242,31 +242,25 @@ export const getRangeInfosSelector = createSelector(
     const rowDims = rowDimensions.filter(row => row.isVisible);
     const range = {
       selectedCellStart: {
-        rowIndex: Math.min(
-          rg.selectedCellStart.rowIndex,
-          rg.selectedCellEnd.rowIndex
-        ),
-        columnIndex: Math.min(
-          rg.selectedCellStart.columnIndex,
-          rg.selectedCellEnd.columnIndex
+        rows: Math.min(rg.selectedCellStart.rows, rg.selectedCellEnd.rows),
+        columns: Math.min(
+          rg.selectedCellStart.columns,
+          rg.selectedCellEnd.columns
         )
       },
       selectedCellEnd: {
-        rowIndex: Math.max(
-          rg.selectedCellStart.rowIndex,
-          rg.selectedCellEnd.rowIndex
-        ),
-        columnIndex: Math.max(
-          rg.selectedCellStart.columnIndex,
-          rg.selectedCellEnd.columnIndex
+        rows: Math.max(rg.selectedCellStart.rows, rg.selectedCellEnd.rows),
+        columns: Math.max(
+          rg.selectedCellStart.columns,
+          rg.selectedCellEnd.columns
         )
       }
     };
     const rows = [];
     // letix = 0;
     for (
-      let index = range.selectedCellStart.rowIndex;
-      index <= range.selectedCellEnd.rowIndex;
+      let index = range.selectedCellStart.rows;
+      index <= range.selectedCellEnd.rows;
       index += 1
     ) {
       const rowLeaf = rowLeaves.leaves[index];
@@ -285,8 +279,8 @@ export const getRangeInfosSelector = createSelector(
     }
     const columns = [];
     for (
-      let index = range.selectedCellStart.columnIndex;
-      index <= range.selectedCellEnd.columnIndex;
+      let index = range.selectedCellStart.columns;
+      index <= range.selectedCellEnd.columns;
       index += 1
     ) {
       const columnLeaf = columnLeaves.leaves[index];

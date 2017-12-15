@@ -2,8 +2,8 @@ import { SELECT_RANGE, MOVE_DIMENSION, FETCH_DATA, SCROLL } from "../constants";
 
 export default (
   state = {
-    selectedCellStart: { rowIndex: null, columnIndex: null },
-    selectedCellEnd: { rowIndex: null, columnIndex: null },
+    selectedCellStart: { rows: null, columns: null },
+    selectedCellEnd: { rows: null, columns: null },
     scrollToRow: { index: 0, direction: 1 },
     scrollToColumn: { index: 0, direction: 1 }
   },
@@ -15,8 +15,8 @@ export default (
     case MOVE_DIMENSION:
       return {
         ...state,
-        selectedCellStart: { rowIndex: null, columnIndex: null },
-        selectedCellEnd: { rowIndex: null, columnIndex: null }
+        selectedCellStart: { rows: null, columns: null },
+        selectedCellEnd: { rows: null, columns: null }
       };
     case SELECT_RANGE:
       return {

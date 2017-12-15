@@ -4,7 +4,7 @@
  * @return {Boolean}
  */
 export function isNumber(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Number]';
+  return Object.prototype.toString.apply(obj) === "[object Number]";
 }
 /**
  * Returns whether or not obj is a Date object.
@@ -12,7 +12,7 @@ export function isNumber(obj) {
  * @return {Boolean}
  */
 export function isDate(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Date]';
+  return Object.prototype.toString.apply(obj) === "[object Date]";
 }
 /**
  * Returns whether or not obj is a string
@@ -20,12 +20,12 @@ export function isDate(obj) {
  * @return {Boolean}
  */
 export function isString(obj) {
-  return typeof obj === 'string';
+  return typeof obj === "string";
 }
 
 export function isStringOrNumber(obj) {
   const type = typeof obj;
-  return type === 'string' || type === 'number';
+  return type === "string" || type === "number";
 }
 /**
  * Returns whether or not obj is a regular expression object
@@ -33,7 +33,7 @@ export function isStringOrNumber(obj) {
  * @return {Boolean}
  */
 export function isRegExp(obj) {
-  return Object.prototype.toString.apply(obj) === '[object RegExp]';
+  return Object.prototype.toString.apply(obj) === "[object RegExp]";
 }
 /**
  * Returns whether or not obj is a function object
@@ -41,7 +41,7 @@ export function isRegExp(obj) {
  * @return {Boolean}
  */
 export function isFunction(obj) {
-  return Object.prototype.toString.apply(obj) === '[object Function]';
+  return Object.prototype.toString.apply(obj) === "[object Function]";
 }
 
 /**
@@ -77,7 +77,7 @@ export function isObservable(obj) {
  * Escapes all RegExp special characters.
  */
 export function escapeRegex(re) {
-  return re.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return re.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 /**
  * Returns the first element in the array that satisfies the given predicate
@@ -98,9 +98,9 @@ export function findInArray(array, predicate) {
 }
 
 export function isInRange(
-  { columnIndex, rowIndex },
-  { columnIndex: columnIndexStart, rowIndex: rowIndexStart },
-  { columnIndex: columnIndexEnd, rowIndex: rowIndexEnd }
+  { columns: columnIndex, rows: rowIndex },
+  { columns: columnIndexStart, rows: rowIndexStart },
+  { columns: columnIndexEnd, rows: rowIndexEnd }
 ) {
   let inRows = false;
   if (columnIndexStart <= columnIndexEnd) {
@@ -130,7 +130,7 @@ export function isNullOrUndefined(obj) {
 }
 
 export function toAccessorFunction(accessor) {
-  if (typeof accessor === 'string') {
+  if (typeof accessor === "string") {
     return row => row[accessor];
   }
   return accessor;
@@ -146,3 +146,41 @@ export const range = (a, b) =>
       }
     })(a, b)
   );
+// date functions
+// export const isDate = d => d instanceof Date && !isNaN(d.valueOf());
+export const dateToString = (d, fmt) => {
+  // format not managed yet
+  if (!isDate(d)) {
+    return undefined;
+  }
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+};
+
+const daysByMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+export const stringToDate = (s, fmt) => {
+  // format not managed yet
+  //  a voir culture
+  if (!s) {
+    return null;
+  }
+  const ds = s.split(/[.:/ ]+/g);
+  const d = ds.map(v => parseInt(v));
+  if (d.length !== 3) {
+    return undefined;
+  }
+  // a voir 12 mois nb days...
+  // months 0..11 ??????
+  if (ds[1] > 12) {
+    return undefined;
+  }
+  if (ds[2] < 2000 || ds[2] > 3000) {
+    return undefined;
+  }
+  const nDays = daysByMonth[d[1] - 1] + (d[1] === 2 && !(d[2] % 4));
+  if (d[0] > nDays) {
+    return undefined;
+  }
+  return !isNaN(Date.parse(`${ds[2]}-${ds[1]}-${ds[0]}`))
+    ? new Date(`${ds[2]}-${ds[1].padStart(2, 0)}-${ds[0].padStart(2, 0)}`)
+    : undefined;
+};

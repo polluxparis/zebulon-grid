@@ -34,7 +34,7 @@ const buildMenu = (menu, top, left, handleEvent) => {
 			groups = [];
 		let style = {
 			position: "absolute",
-			top,
+			top: top,
 			left,
 			display: "flex"
 		};
@@ -62,7 +62,12 @@ const buildMenu = (menu, top, left, handleEvent) => {
 			</div>
 		);
 	} else {
-		return <div id="contextual-menu" />;
+		return (
+			<div
+				id="contextual-menu"
+				style={{ height: 0, width: 0, position: "relative" }}
+			/>
+		);
 	}
 };
 export class MenuItem extends Component {
@@ -129,6 +134,7 @@ export class ContextualMenu extends Component {
 	}
 	componentDidMount() {
 		window.addEventListener("MENU_EVENT", this.handleEvent);
+		this.div = document.getElementById(this.props.gridId);
 	}
 	componentDidUnMount() {
 		window.removeEventListener("MENU_EVENT", this.handleEvent);
@@ -137,11 +143,16 @@ export class ContextualMenu extends Component {
 		this.setState({ menu: {} });
 	};
 	handleEvent = e => {
-		const { position, menuId, data } = e.detail;
-		const menu = this.props.getMenu(menuId, data);
-		if (menu) {
-			menu.visible = true;
-			this.setState({ menu, data, position });
+		const { position, menuId, data, gridId } = e.detail;
+		if (gridId === this.props.gridId) {
+			const rect = this.div.getBoundingClientRect();
+			position.y -= rect.y;
+			position.x -= rect.x;
+			const menu = this.props.getMenu(menuId, data);
+			if (menu) {
+				menu.visible = true;
+				this.setState({ menu, data, position });
+			}
 		}
 	};
 	handleMenuEvent = (e, item, data) => {
@@ -222,8 +233,10 @@ export class ContextualMenuClient extends Component {
 			e.preventDefault();
 			e.persist();
 			e.stopPropagation();
+			console.log(e.clientY, e.y, e.offsetY, e.pageY, e.target);
 			const event = new CustomEvent(MENU_EVENT, {
 				detail: {
+					gridId: this.props.gridId,
 					ref: this.ref,
 					position: { x: e.clientX, y: e.clientY },
 					menuId: this.props.menuId,

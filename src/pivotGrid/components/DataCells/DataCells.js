@@ -3,9 +3,9 @@ import React from "react";
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
 import { MEASURE_ID, AXIS_SEPARATOR, HeaderType } from "../../constants";
-import { ScrollableArea } from "../Controls/ScrollableArea";
+import { ScrollableArea } from "../controls/ScrollableArea";
 import { getSelectedText } from "../../services/copyService";
-// import { ReactHint } from "../Controls/ContextualMenu";
+// import { ReactHint } from "../controls/ContextualMenu";
 export class DataCells extends ScrollableArea {
   // -------------------------------------
   // life cycle
@@ -37,10 +37,10 @@ export class DataCells extends ScrollableArea {
       this.editable &&
       (this.props.rows.leaves !== newProps.rows.leaves ||
         this.props.columns.leaves !== newProps.columns.leaves ||
-        this.props.selectedRange.selectedCellEnd.rowIndex !==
-          newProps.selectedRange.selectedCellEnd.rowIndex ||
-        this.props.selectedRange.selectedCellEnd.columnIndex !==
-          newProps.selectedRange.selectedCellEnd.columnIndex)
+        this.props.selectedRange.selectedCellEnd.rows !==
+          newProps.selectedRange.selectedCellEnd.rows ||
+        this.props.selectedRange.selectedCellEnd.columns !==
+          newProps.selectedRange.selectedCellEnd.columns)
     ) {
       if (this.oldValue !== this.newValue || this.comment) {
         const {
@@ -193,14 +193,13 @@ export class DataCells extends ScrollableArea {
       if (this.isMouseDown && button === 0 && !e.openComment) {
         if (
           !(
-            this.props.selectedRange.selectedCellEnd.columnIndex ===
-              columnIndex &&
-            this.props.selectedRange.selectedCellEnd.rowIndex === rowIndex
+            this.props.selectedRange.selectedCellEnd.columns === columnIndex &&
+            this.props.selectedRange.selectedCellEnd.rows === rowIndex
           )
         ) {
           this.props.selectRange({
-            selectedCellEnd: { columnIndex, rowIndex },
-            focusedCell: { columnIndex, rowIndex }
+            selectedCellEnd: { columns: columnIndex, rows: rowIndex },
+            focusedCell: { columns: columnIndex, rows: rowIndex }
           });
         }
       } else if (this.commentsVisible) {
@@ -244,11 +243,11 @@ export class DataCells extends ScrollableArea {
       if (shiftKey) {
         this.props.selectRange({
           selectedCellStart: this.props.selectedRange.selectedCellStart,
-          selectedCellEnd: { columnIndex, rowIndex }
+          selectedCellEnd: { columns: columnIndex, rows: rowIndex }
         });
       } else {
         // console.log("select", { columnIndex, rowIndex });
-        this.props.selectCell({ columnIndex, rowIndex });
+        this.props.selectCell({ columns: columnIndex, rows: rowIndex });
       }
     }
   };
@@ -411,8 +410,8 @@ export class DataCells extends ScrollableArea {
     if (selectedRange.selectedCellStart && selectedRange.selectedCellEnd) {
       selected = isInRange(
         {
-          columnIndex: columnHeader.index,
-          rowIndex: rowHeader.index
+          columns: columnHeader.index,
+          rows: rowHeader.index
         },
         selectedRange.selectedCellStart,
         selectedRange.selectedCellEnd
@@ -421,8 +420,8 @@ export class DataCells extends ScrollableArea {
     let focused = false;
     if (selectedRange.selectedCellEnd) {
       focused =
-        columnHeader.index === selectedRange.selectedCellEnd.columnIndex &&
-        rowHeader.index === selectedRange.selectedCellEnd.rowIndex;
+        columnHeader.index === selectedRange.selectedCellEnd.columns &&
+        rowHeader.index === selectedRange.selectedCellEnd.rows;
     }
     let valueHasChanged;
     const cell = this.cellCache[key] || {};

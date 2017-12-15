@@ -104,3 +104,54 @@ export const dimensionFiltersSelector = createSelector(
   [state => state.filters],
   filters => dimensionId => filters[dimensionId]
 );
+
+export const indexedRowsSelector = createSelector(
+  [state => state.data.data],
+  data =>
+    data.map((row, index) => {
+      row.index_ = index;
+      return row;
+    })
+);
+export const computeData = (data, meta) => {
+  const metaFormula = meta
+    .filter(column => column.tp === "Computed")
+    .forEach(column => (column.f = eval("(row)=>" + column.formula)));
+  data.forEcach(row =>
+    metaFormula.forEach(column => (row[column.id] = column.f(row)))
+  );
+};
+export const metaSelector = createSelector(
+  [state => state.data.data, state => state.data.meta],
+  (data, meta) => {
+    let position = 0;
+    if (!meta && data.length) {
+      const row = data[0];
+      return Object.keys(row).map((key, index) => {
+        const dataType = typeof row[key];
+        let alignement = "unset";
+        if (dataType === "string") {
+          alignement = "left";
+        } else if (dataType === "number") {
+          alignement = "right";
+        } else if (dataType === "date") {
+          alignement = "center";
+        }
+        const width = 100;
+        const meta = {
+          id: key,
+          tp: "Initial",
+          width,
+          dataType,
+          alignement,
+          position,
+          index_: index
+        };
+        position += width;
+        return meta;
+      });
+    } else {
+      return meta;
+    }
+  }
+);

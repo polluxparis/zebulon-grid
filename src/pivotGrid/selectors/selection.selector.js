@@ -38,10 +38,10 @@ export const getSelectedColumnRangeSelector = createSelector(
     const startIndex = getColumnIndexFromKey(columnLeaves[0].key);
     const stopIndex = startIndex + columnLeaves.length - 1;
     return {
-      selectedCellStart: { columnIndex: startIndex, rowIndex: 0 },
+      selectedCellStart: { columns: startIndex, rows: 0 },
       selectedCellEnd: {
-        columnIndex: stopIndex,
-        rowIndex: rowLeaves.leaves.length - 1
+        columns: stopIndex,
+        rows: rowLeaves.leaves.length - 1
       }
     };
   }
@@ -53,10 +53,10 @@ export const getSelectedRowRangeSelector = createSelector(
     const startIndex = getRowIndexFromKey(rowLeaves[0].key);
     const stopIndex = startIndex + rowLeaves.length - 1;
     return {
-      selectedCellStart: { columnIndex: 0, rowIndex: startIndex },
+      selectedCellStart: { columns: 0, rows: startIndex },
       selectedCellEnd: {
-        columnIndex: columnLeaves.leaves.length - 1,
-        rowIndex: stopIndex
+        columns: columnLeaves.leaves.length - 1,
+        rows: stopIndex
       }
     };
   }

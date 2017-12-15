@@ -3,7 +3,7 @@ import classnames from "classnames";
 // import { ContextMenuTrigger } from "react-contextmenu";
 import { rightArrow } from "../../icons";
 import { isNullOrUndefined } from "../../utils/generic";
-import { ContextualMenuClient } from "../Controls/ContextualMenu";
+import { ContextualMenuClient } from "../controls/ContextualMenu";
 export default class DataCell extends PureComponent {
   // export default class DataCell extends ContextualMenuClient {
 
@@ -193,6 +193,7 @@ export default class DataCell extends PureComponent {
       <ContextualMenuClient
         menuId="grid-menu"
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
+        gridId={gridId}
         draggable={false}
         collect={() =>
           collectMenu({

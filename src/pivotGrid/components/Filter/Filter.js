@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { addFilter, deleteFilter } from "../actions";
 // import { List } from "react-virtualized";
-import { ScrollableArea } from "../Controls/ScrollableArea";
+import { ScrollableArea } from "../controls/ScrollableArea";
 class FilterValues extends ScrollableArea {
   getRatios = () => {
     const { height, rowCount, rowHeight, startIndex } = this.props;
@@ -192,75 +192,3 @@ export class Filter extends Component {
     );
   }
 }
-// export class Filter extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.items = {};
-//     for (let i = 0; i < 1000; i++) {
-//       this.items[i] = { id: i, label: `Checkbox ${i}`, checked: false };
-//     }
-//   }
-//   onChange = () => {};
-//   itemRenderer = ({ index }) => {
-//     console.log(index);
-//     const { id, label, checked } = this.items[index];
-//     return (
-//       <div key={id}>
-//         <input
-//           type="checkbox"
-//           value={id}
-//           checked={checked}
-//           onChange={this.onChange}
-//         />
-//         <label onClick={this.onChange} for={id}>
-//           {label}
-//         </label>
-//       </div>
-//     );
-//   };
-//   render() {
-//     // const { rowHeight } = this.props;
-//     // let i0;
-//     const rowHeight = 20,
-//       rowCount = 1000;
-
-//     return (
-//       <form
-//         style={{
-//           width: "fit-content",
-//           height: "fit-content"
-//         }}
-//       >
-//         <div style={{ textAlign: "center" }}>
-//           {this.props.title || "Filter"}
-//         </div>
-//         <div>
-//           <input
-//             type="text"
-//             style={{
-//               width: "94%",
-//               margin: "2%",
-//               placeholder: "toto",
-//               textAlign: "left"
-//             }}
-//             autoFocus={true}
-//             value={this.value}
-//             onChange={null}
-//           />
-//         </div>
-//         <div>
-//           <input id="-1" type="checkbox" value="0" />
-//           <label for="-1">Select all</label>
-//           <List
-//             height={10 * rowHeight}
-//             width={200}
-//             rowCount={rowCount}
-//             rowHeight={rowHeight}
-//             rowRenderer={this.itemRenderer}
-//           />
-//         </div>
-//         <button style={{ width: "96%", margin: "2%" }}>Apply filter</button>
-//       </form>
-//     );
-//   }
-// }

@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import { ContextualMenuClient } from "../Controls/ContextualMenu";
+import { ContextualMenuClient } from "../controls/ContextualMenu";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 
@@ -177,6 +177,7 @@ class DimensionHeader extends PureComponent {
     return (
       <ContextualMenuClient
         menuId="dimension-menu"
+        gridId={gridId}
         id={`dimensions-menu-${dimension.id}`}
         collect={() =>
           collectMenu({

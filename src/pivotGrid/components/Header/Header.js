@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import { ContextualMenuClient } from "../Controls/ContextualMenu";
+import { ContextualMenuClient } from "../controls/ContextualMenu";
 import { AxisType, MEASURE_ID } from "../../constants";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
@@ -154,6 +154,7 @@ class Header extends Component {
       return (
         <ContextualMenuClient
           menuId="measure-menu"
+          gridId={gridId}
           id={`measure-menu-${header.id}`}
           collect={() =>
             collectMenu({

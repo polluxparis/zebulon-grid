@@ -87,8 +87,9 @@ export class ScrollableArea extends Component {
     this.scrollbars = scrollbars;
     return scrollbars;
   };
+  _getContent = () => this.getContent();
   getContent = () => [];
-  onScroll = e => {
+  onScrollEvent = e => {
     if (e.type === "scrollbar") {
       if (e.initiator === "bar") {
         if (e.direction === "horizontal") {
@@ -156,7 +157,7 @@ export class ScrollableArea extends Component {
           1 - size / length
         );
         // event.position = length * event.positionRatio;
-        if (this.onScroll(event)) {
+        if (this.onScrollEvent(event)) {
           console.log(
             "drag",
             event.position,
@@ -174,7 +175,7 @@ export class ScrollableArea extends Component {
           0,
           Math.min(event.relativePosition - size / 2, length - size)
         ) / length;
-      this.onScroll(event);
+      this.onScrollEvent(event);
     }
   };
   _handleMouseMove = e => {
@@ -202,7 +203,7 @@ export class ScrollableArea extends Component {
 
     this.ratios = this.getRatios(height, width);
     const scrollbars = this.getScrollbars(height, width, this.ratios);
-    const content = this.getContent(height, width);
+    const content = this._getContent(height, width);
     const style = {
       position: "relative",
       overflow: "hidden",
@@ -224,7 +225,9 @@ export class ScrollableArea extends Component {
             overflow: "hidden"
           }}
         >
-          <div style={style}>{content}</div>
+          <div id="scrollable-area" style={style}>
+            {content}
+          </div>
           <Scrollbar
             direction="vertical"
             width={scrollbars.vertical.width}
@@ -232,7 +235,7 @@ export class ScrollableArea extends Component {
             positionRatio={this.ratios.vertical.position}
             displayRatio={this.ratios.vertical.display}
             id={`vertical-scrollbar ${gridId}`}
-            onScroll={this.onScroll}
+            onScroll={this.onScrollEvent}
             _handleDrag={this._handleDrag}
           />
         </div>
@@ -243,7 +246,7 @@ export class ScrollableArea extends Component {
           positionRatio={this.ratios.horizontal.position}
           displayRatio={this.ratios.horizontal.display}
           id={`horizontal-scrollbar ${gridId}`}
-          onScroll={this.onScroll}
+          onScroll={this.onScrollEvent}
           _handleDrag={this._handleDrag}
         />
       </div>

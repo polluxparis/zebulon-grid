@@ -1,6 +1,7 @@
 .zebulon-grid-zebulon-grid {
   font-family: sans-serif;
 }
+
 .zebulon-grid-cell {
   user-select: none;
   cursor: default;
@@ -38,6 +39,58 @@
   outline: none;
 }
 
+.zebulon-grid-select {
+  font: inherit;
+  height: inherit;
+}
+
+.zebulon-table-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  height: inherit;
+  box-sizing: border-box;
+  border: solid lightgrey thin;
+  padding: 0.2em;
+}
+.zebulon-table-cell-selected {
+  background-color: lightcyan;
+}
+.zebulon-table-cell-focused {
+  border: solid 0.06em rgba(0, 0, 0, 0.5);
+}
+.zebulon-table-filter {
+  overflow: hidden;
+  white-space: nowrap;
+  height: inherit;
+  box-sizing: border-box;
+  padding: 0.2em;
+}
+.zebulon-table-header {
+  outline: none;
+  background-color: #eef8fb;
+  overflow: hidden;
+  white-space: nowrap;
+  height: inherit;
+  box-sizing: border-box;
+  text-align: center;
+  border: solid grey thin;
+  padding: 0.2em;
+}
+.zebulon-table-status {
+  outline: none;
+  background-color: lightgrey;
+  box-sizing: border-box;
+  text-align: center;
+  border: solid grey thin;
+  padding: 0.2em;
+}
+.zebulon-table-corner {
+  outline: none;
+  background-color: #eef8fb;
+  height: inherit;
+  /*border: solid grey thin;*/
+  box-sizing: border-box;
+}
 @keyframes anim-info-updated {
   0% {
     background-color: red;
@@ -257,6 +310,32 @@
   min-height: 30px;
   background-color: white;
   border-radius: 5px;
+}
+.zebulon-tabs-list {
+  /*border-bottom: 1px solid #aaa;*/
+  /* margin: 0 0 10px;
+  padding: 0px;*/
+  width: inherit;
+  justify-content: space-around;
+}
+.zebulon-tabs-tab {
+  border: 1px solid #aaa;
+  /*border-bottom: unset;*/
+  /*border-bottom: 1px solid #aaa;*/
+  /* margin: 0 0 10px;
+  padding: 0px;*/
+  /*border-color: black;*/
+  text-align: center;
+  border-radius: 5px 5px 0 0;
+  width: -webkit-fill-available;
+  cursor: pointer;
+}
+.zebulon-tabs-tab-selected {
+  background-color: lightgrey;
+  border-bottom: unset;
+  /*background: #fff;*/
+  /*border-color: #aaa;*/
+  color: black;
 }
 /*------------------------------------*/
 /*.react-hint__content {

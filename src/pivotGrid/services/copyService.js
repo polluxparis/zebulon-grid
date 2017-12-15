@@ -92,25 +92,14 @@ export const getSelectedElements = ({
     selectedColumnLeaves = columnLeaves.leaves;
   if (range) {
     const rowsRange = [
-      Math.min(
-        range.selectedCellStart.rowIndex,
-        range.selectedCellEnd.rowIndex
-      ),
-      Math.max(
-        range.selectedCellStart.rowIndex,
-        range.selectedCellEnd.rowIndex
-      ) + 1
+      Math.min(range.selectedCellStart.rows, range.selectedCellEnd.rows),
+      Math.max(range.selectedCellStart.rows, range.selectedCellEnd.rows) + 1
     ];
     selectedRowLeaves = selectedRowLeaves.slice(...rowsRange);
     const columnsRange = [
-      Math.min(
-        range.selectedCellStart.columnIndex,
-        range.selectedCellEnd.columnIndex
-      ),
-      Math.max(
-        range.selectedCellStart.columnIndex,
-        range.selectedCellEnd.columnIndex
-      ) + 1
+      Math.min(range.selectedCellStart.columns, range.selectedCellEnd.columns),
+      Math.max(range.selectedCellStart.columns, range.selectedCellEnd.columns) +
+        1
     ];
     selectedColumnLeaves = selectedColumnLeaves.slice(...columnsRange);
   }
