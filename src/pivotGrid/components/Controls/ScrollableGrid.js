@@ -27,6 +27,9 @@ export class ScrollableGrid extends ScrollableArea {
     const range = extension
       ? { ...this.selectedRange(), end: cell }
       : { start: cell, end: cell };
+    if (range.start.rows === undefined) {
+      range.start = range.end;
+    }
     this.setState({ selectedRange: range });
     if (this.props.selectRange) {
       this.props.selectRange(this.state.selectedRange);

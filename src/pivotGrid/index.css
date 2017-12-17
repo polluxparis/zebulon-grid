@@ -43,7 +43,14 @@
   font: inherit;
   height: inherit;
 }
-
+.zebulon-input {
+  height: inherit;
+  width: inherit;
+  border: unset;
+  box-sizing: border-box;
+  padding: 0;
+  background-color: inherit;
+}
 .zebulon-table-cell {
   overflow: hidden;
   white-space: nowrap;
@@ -51,6 +58,8 @@
   box-sizing: border-box;
   border: solid lightgrey thin;
   padding: 0.2em;
+  outline: none;
+  user-select: none;
 }
 .zebulon-table-cell-selected {
   background-color: lightcyan;
@@ -58,14 +67,11 @@
 .zebulon-table-cell-focused {
   border: solid 0.06em rgba(0, 0, 0, 0.5);
 }
-.zebulon-table-filter {
-  overflow: hidden;
-  white-space: nowrap;
-  height: inherit;
-  box-sizing: border-box;
-  padding: 0.2em;
+.zebulon-table-cell-editable {
+  padding: 0;
 }
 .zebulon-table-header {
+  user-select: none;
   outline: none;
   background-color: #eef8fb;
   overflow: hidden;
@@ -75,6 +81,9 @@
   text-align: center;
   border: solid grey thin;
   padding: 0.2em;
+}
+.zebulon-table-filter {
+  padding: 0;
 }
 .zebulon-table-status {
   outline: none;
@@ -88,8 +97,9 @@
   outline: none;
   background-color: #eef8fb;
   height: inherit;
-  /*border: solid grey thin;*/
+  border: solid grey thin;
   box-sizing: border-box;
+  z-index: 1;
 }
 @keyframes anim-info-updated {
   0% {

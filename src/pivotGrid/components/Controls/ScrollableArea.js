@@ -217,6 +217,7 @@ export class ScrollableArea extends Component {
         style={this.props.style || {}}
         onMouseMove={this._handleMouseMove}
         onMouseUp={this._handleMouseUp}
+        // onKeyDown={e => this.console.log("KEYDOWN", e1)}
       >
         <div
           style={{

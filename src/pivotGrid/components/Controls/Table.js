@@ -7,6 +7,7 @@ export class Table extends Component {
     super(props);
     this.state = {
       data: props.data,
+      filteredData: props.data,
       meta: props.meta,
       updatedRows: {},
       scroll: {
@@ -19,6 +20,8 @@ export class Table extends Component {
           position: 0
         }
       },
+      sorts: {},
+      filters: {},
       selectedRange: { start: {}, end: {} }
     };
     // this.meta = this.getMeta(props.meta, props.data);
@@ -30,6 +33,7 @@ export class Table extends Component {
     ) {
       this.setState({
         data: nextProps.data,
+        filteredData: this.filters(nextProps.data),
         meta: nextProps.meta
       });
     }
@@ -47,8 +51,8 @@ export class Table extends Component {
   //-----------------------------------------
   handleAction = button => {
     if (button.action) {
-      const { selectedCell, updatedRows, data, meta } = this.state;
-      button.action({ selectedCell, updatedRows, data, meta });
+      const { selectedRange, updatedRows, data, meta } = this.state;
+      button.action({ selectedRange, updatedRows, data, meta });
     }
   };
   rowCheck = row => true;
@@ -65,6 +69,7 @@ export class Table extends Component {
     }
     row[column.id] = e;
   };
+
   handleDelete = row => {
     let updatedRow = this.state.updatedRows[row.index_];
     if (!updatedRow) {
@@ -80,16 +85,80 @@ export class Table extends Component {
     });
   };
   handleNew = index => {
-    let data = [...this.state.data];
+    let filteredData = [...this.state.filteredData];
     const updatedRows = {
       ...this.state.updatedRows,
-      [data.length]: { new_: true }
+      [this.state.data.length]: { new_: true }
     };
-    data = data
+    const row = { index_: this.state.data.length };
+    this.state.data.push(row);
+    filteredData = filteredData
       .slice(0, index)
-      .concat({ index_: data.length })
-      .concat(data.slice(index));
-    this.setState({ data, updatedRows });
+      .concat(row)
+      .concat(filteredData.slice(index));
+    this.setState({ filteredData, updatedRows });
+  };
+  // ----------------------------------------
+  // filtering
+  // ----------------------------------------
+  filters = data => {
+    const filters = Object.values(this.state.filters);
+    if (!filters.length) {
+      return data;
+    }
+    const filter = row =>
+      filters.reduce((acc, filter) => acc && filter.f(row), true);
+    return data.filter(filter);
+  };
+  onChangeFilter = (e, column) => {
+    // console.log("filter", e, column);
+    if (e !== column.v) {
+      if (column.dataType === "number") {
+        column.f = row => row[column.id] >= e;
+      } else if (column.dataType === "string") {
+        column.f = row => row[column.id].startsWith(e);
+      }
+      column.v = e;
+      this.setState({
+        filters: { ...this.state.filters, [column.id]: column },
+        filteredData: this.filters(this.state.data)
+      });
+    }
+  };
+
+  // ----------------------------------------
+  //sorting
+  // ----------------------------------------
+  sorts = (data, sorting) => {
+    const sorts = Object.keys(sorting).filter(
+      key => sorting[key] !== undefined
+    );
+    const sort = (rowA, rowB) =>
+      sorts.reduce(
+        (acc, sort) =>
+          acc === 0
+            ? ((rowA[sort] > rowB[sort]) - (rowB[sort] > rowA[sort])) *
+              (sorting[sort] === "asc" ? 1 : -1)
+            : acc,
+        0
+      );
+    data.sort(sort);
+  };
+  onSort = column => {
+    // if (this.state.filteredData===this.state.data)
+    if (column.sort === undefined) {
+      column.sort = "asc";
+    } else if (column.sort === "asc") {
+      column.sort = "desc";
+    } else if (column.sort === "desc") {
+      column.sort = undefined;
+    }
+    const sorts = { ...this.state.sorts, [column.id]: column.sort };
+    if (column.sort === undefined) {
+      delete sorts[column.id];
+    }
+    this.sorts(this.state.filteredData, sorts);
+    this.setState({ filteredData: this.state.filteredData, sorts });
   };
   // handleSave = () => {
   //   let ok = true;
@@ -130,13 +199,13 @@ export class Table extends Component {
   // };
   handleClickButton = index => {
     const button = this.props.actions[index];
-    const rowIndex = this.state.selectedCell.rowIndex;
+    const rowIndex = this.state.selectedRange.rowIndex;
     let row = {};
     if (rowIndex !== undefined) {
       row = this.state.data[rowIndex];
     }
     if (
-      this.state.selectedCell ||
+      this.state.selectedRange ||
       !(button.type === "delete" || button.type === "select")
     ) {
       if (button.type === "delete") {
@@ -160,9 +229,6 @@ export class Table extends Component {
       width = this.props.width;
     const { visible } = this.props;
 
-    //    <Filters meta={meta} data={data} scroll={this.state.scroll.column}>
-    //      {filters}
-    //    </Filters>)
     if (!visible) {
       return null;
     }
@@ -203,6 +269,17 @@ export class Table extends Component {
         }}
       >
         <Headers
+          type="header"
+          onSort={this.onSort}
+          meta={this.state.meta}
+          data={this.state.data}
+          height={rowHeight}
+          width={width}
+          scroll={this.state.scroll.columns}
+        />
+        <Headers
+          type="filter"
+          onChange={this.onChangeFilter}
           meta={this.state.meta}
           data={this.state.data}
           height={rowHeight}
@@ -211,21 +288,21 @@ export class Table extends Component {
         />
         <div style={{ display: "-webkit-box" }}>
           <Status
-            data={this.state.data}
-            height={height - rowHeight - (actions.length ? 30 : 0)}
+            data={this.state.filteredData}
+            height={height - 2 * rowHeight - (actions.length ? 30 : 0)}
             rowHeight={rowHeight}
             scroll={this.state.scroll.rows}
             updatedRows={this.state.updatedRows}
           />
           <Rows
             meta={this.state.meta}
-            data={this.state.data}
-            height={height - rowHeight - (actions.length ? 30 : 0)}
+            data={this.state.filteredData}
+            height={height - 2 * rowHeight - (actions.length ? 30 : 0)}
             width={width - rowHeight}
             rowHeight={rowHeight}
             scroll={this.state.scroll}
             onScroll={this.onScroll}
-            // selectedCell={this.state.selectedCell}
+            // selectedRange={this.state.selectedRange}
             selectRange={this.selectCell}
             onChange={this.onChange}
             updatedRows={this.state.updatedRows}

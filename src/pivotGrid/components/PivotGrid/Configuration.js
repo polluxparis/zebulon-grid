@@ -24,6 +24,15 @@ export default class Configuration extends Component {
 				select: ["", "Computed", "Analytics"]
 			},
 			{
+				id: "dataType",
+				caption: "Data type",
+				width: 100,
+				dataType: "string",
+				// accessor: (row, status) => (status.new_ ? row.tp : row.tp),
+				editable: (row, status) => status.new_,
+				select: ["", "number", "string", "date", "boolean"]
+			},
+			{
 				id: "caption",
 				caption: "Caption",
 				width: 150,
@@ -43,6 +52,14 @@ export default class Configuration extends Component {
 				width: 200,
 				dataType: "string",
 				editable: true
+			},
+			{
+				id: "filterType",
+				caption: "Filter",
+				width: 100,
+				dataType: "string",
+				editable: (row, status) => status.new_,
+				select: ["", "dafault", "interval", "list", "values"]
 			},
 			{
 				id: "formula",

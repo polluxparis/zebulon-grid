@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classnames from "classnames";
+import { Input, InputInterval } from "./Input";
 export const editCell = (
   style,
   className,
@@ -30,14 +31,90 @@ export const editCell = (
     </div>
   );
 };
-
+const filter = (column, shift, width, onChange) => {
+  const className = "zebulon-table-header zebulon-table-filter";
+  const textAlign =
+    column.alignement ||
+    (column.dataType === "number"
+      ? "right"
+      : column.dataType === "number" ? "center" : "left");
+  if (column.filterType === "interval") {
+    return (
+      <InputInterval
+        key={column.id}
+        // code={column.id}
+        className={className}
+        // hasFocus={hasFocus}
+        // className="zebulon-table-header"
+        style={{
+          position: "absolute",
+          left: shift,
+          width
+        }}
+        dataType={column.dataType}
+        format={column.format || (value => value)}
+        onChange={() => {}} //onChange}
+      />
+    );
+  } else {
+    return (
+      <Input
+        key={column.id}
+        code={column.id}
+        className={className}
+        style={{
+          position: "absolute",
+          left: shift,
+          width,
+          textAlign
+        }}
+        // hasFocus={hasFocus}
+        editable={true}
+        dataType={column.dataType || "string"}
+        format={column.format}
+        inputType="filter"
+        value={column.v}
+        onChange={e => {
+          onChange(e, column);
+        }} //event => onChange(event)}
+        isEditable={true}
+      />
+    );
+  }
+};
+const header = (column, shift, width, onSort) => {
+  let sort = "";
+  if (column.sort === "asc") {
+    sort = "↑";
+  } else if (column.sort === "desc") {
+    sort = "↓";
+  }
+  return (
+    <div
+      key={column.id}
+      className="zebulon-table-header"
+      onClick={() => onSort(column)}
+      style={{
+        position: "absolute",
+        left: shift,
+        width,
+        justifyContent: "space-between",
+        display: "flex"
+      }}
+    >
+      <div>{column.caption || column.id}</div>
+      <div>{sort}</div>
+    </div>
+  );
+};
+// ↑↓
 export class Headers extends Component {
   constructor(props) {
     super(props);
   }
   render() {
     let { shift, startIndex: index } = this.props.scroll;
-    const { meta, width, height } = this.props;
+    const { meta, width, height, type, onChange, onSort } = this.props;
     const cells = [
       <div
         key="status"
@@ -52,19 +129,17 @@ export class Headers extends Component {
     shift += height;
     while (index < meta.length && shift < width) {
       const column = meta[index];
-      cells.push(
-        <div
-          key={`${-2} - ${index}`}
-          className="zebulon-table-header"
-          style={{
-            position: "absolute",
-            left: shift,
-            width: column.width
-          }}
-        >
-          {column.caption || column.id}
-        </div>
-      );
+      const columnWidth =
+        index === 0
+          ? column.width - shift + height
+          : Math.min(column.width, width - shift);
+      let div;
+      if (type === "header") {
+        div = header(column, shift, columnWidth, onSort);
+      } else if (type === "filter") {
+        div = filter(column, shift, columnWidth, onChange);
+      }
+      cells.push(div);
       shift += column.width;
       index += 1;
     }
@@ -74,8 +149,8 @@ export class Headers extends Component {
         style={{
           width,
           height,
-          overflow: "hidden",
-          position: "relative"
+          overflow: "hidden"
+          // position: "absolute"
         }}
       >
         {cells}
@@ -119,7 +194,8 @@ export class Status extends Component {
           width: rowHeight,
           height,
           overflow: "hidden",
-          position: "relative"
+          position: "relative",
+          diplay: "flex"
         }}
       >
         {cells}
@@ -127,8 +203,84 @@ export class Status extends Component {
     );
   }
 }
-export class Filters extends Component {
-  render() {
-    return <div style={{ display: "flex" }}>titt</div>;
-  }
-}
+
+// export class Filters extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
+//   render() {
+//     let { shift, startIndex: index } = this.props.scroll;
+//     const { meta, width, height } = this.props;
+//     const cells = [
+//       <div
+//         key="status"
+//         className="zebulon-table-corner"
+//         style={{
+//           position: "absolute",
+//           width: height,
+//           left: 0
+//         }}
+//       />
+//     ];
+//     shift += height;
+//     while (index < meta.length && shift < width) {
+//       const column = meta[index];
+//       cells.push(filter(column, shift, false, { value: column.caption }));
+//       shift += column.width;
+//       index += 1;
+//     }
+//     return (
+//       <div
+//         key={-2}
+//         style={{
+//           width,
+//           height,
+//           overflow: "hidden",
+//           position: "relative"
+//         }}
+//       >
+//         {cells}
+//       </div>
+//     );
+//   }
+// render() {
+//   let { shift, startIndex: index } = this.props.scroll;
+//   const { meta, width, height } = this.props;
+//   const cells = [
+//     <div
+//       key="status"
+//       className="zebulon-table-corner"
+//       style={{
+//         position: "absolute",
+//         width: height,
+//         left: 0
+//       }}
+//     />
+//   ];
+//   shift += height;
+//   while (index < meta.length && shift < width) {
+//     const column = meta[index];
+//     cells.push(filter(column, shift, false, { value: column.caption }));
+//     shift += column.width;
+//     index += 1;
+//   }
+//   return (
+//     <div
+//       key={-2}
+//       style={{
+//         width,
+//         height,
+//         overflow: "hidden",
+//         position: "relative"
+//       }}
+//     >
+//       {cells}
+//     </div>
+//   );
+// }
+// }
+// export class Filters extends Component {
+//   render() {
+//     return <div style={{ display: "flex" }}>titt</div>;
+//   }
+// }

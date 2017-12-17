@@ -12,20 +12,22 @@ export const cell = (
   focused,
   selected,
   onClick,
+  onMouseOver,
   onChange,
   onDoubleClick,
   onFocus
 ) => {
-  const className = classnames({
-    "zebulon-table-cell": true,
-    "zebulon-table-cell-selected": selected,
-    "zebulon-table-cell-focused": focused
-  });
   const editable =
     focused &&
     (typeof (column.editable || false) === "function"
       ? column.editable(row, updatedRows[row.index_] || {})
       : column.editable);
+  const className = classnames({
+    "zebulon-table-cell": true,
+    "zebulon-table-cell-selected": selected,
+    "zebulon-table-cell-focused": focused,
+    "zebulon-table-cell-editable": editable
+  });
   return editable ? (
     <Input
       style={style}
@@ -43,7 +45,6 @@ export const cell = (
       editable={true}
       select={column.select}
       key={`cell-${row.index_}-${column.id}`}
-      // onFocus={e => onFocus(e, row, column)}
       onChange={e => onChange(e, row, column)}
     />
   ) : (
@@ -51,8 +52,9 @@ export const cell = (
       key={`cell-${row.index_}-${column.id}`}
       className={className}
       style={style}
-      onClick={e => onClick(e, row, column)}
+      onClick={onClick}
       onDoubleClick={e => onDoubleClick(e, row, column)}
+      onMouseOver={onMouseOver}
     >
       {(column.format || (x => x))(
         column.accessor
@@ -120,6 +122,13 @@ export class Rows extends ScrollableGrid {
         onClick = e => {
           e.preventDefault();
           this.selectCell({ rows: rowIndex, columns: columnIndex }, e.shiftKey);
+        },
+        onMouseOver = e => {
+          e.preventDefault();
+          if (e.buttons === 1) {
+            console.log(e.button, e.buttons, rowIndex, columnIndex);
+            this.selectCell({ rows: rowIndex, columns: columnIndex }, true);
+          }
         };
 
       cells.push(
@@ -141,6 +150,7 @@ export class Rows extends ScrollableGrid {
           focused,
           selected,
           onClick,
+          onMouseOver,
           this.props.onChange,
           () => {}, //onDoubleClick,
           () => {} //onFocus,
@@ -191,7 +201,10 @@ export class Rows extends ScrollableGrid {
     }
     return (
       <div
-        style={{ position: "relative", top: this.props.scroll.rows.shift }}
+        style={{
+          // position: "relative",
+          top: this.props.scroll.rows.shift
+        }}
         onWheel={this.onWheel}
         // onKeyDown={this.onKeyDown}
       >
@@ -249,70 +262,4 @@ export class Rows extends ScrollableGrid {
     scroll[sense] = { index, direction, startIndex, shift, position };
     this.props.onScroll(scroll);
   };
-  // onScroll = e => {
-  //   const { height, width, meta, rowHeight, scroll, data } = this.props;
-
-  //   if (e.type === "scrollbar") {
-  //     const rowCount = this.props.data.length;
-  //     const lastColumn = meta[meta.length - 1];
-  //     const scroll = this.props.scroll;
-  //     let direction, index, startIndex, shift;
-  //     const newScroll = {
-  //       rows: { ...scroll.rows },
-  //       columns: { ...scroll.columns }
-  //     };
-  //     // scroll by position
-  //     const columnsWidth = width - this.scrollbars.vertical.width;
-  //     const position =
-  //       (lastColumn.position + lastColumn.width) * e.positionRatio;
-  //     if (e.direction === "horizontal") {
-  //       const column = meta.find(
-  //         column =>
-  //           position >= column.position &&
-  //           position <= column.position + column.width
-  //       );
-  //       shift = column.position - position;
-  //       direction = 1;
-  //       newScroll.columns = {
-  //         index: column.index_,
-  //         direction,
-  //         startIndex: column.index_,
-  //         shift,
-  //         position
-  //       };
-  //       // scroll by row step
-  //     } else if (e.direction === "vertical") {
-  //       // const display = height / (data.length * rowHeight);
-  //       const visibleHeight = height - this.scrollbars.horizontal.width;
-  //       const nRows = Math.ceil(visibleHeight / rowHeight);
-  //       index = Math.round(rowCount * e.positionRatio);
-  //       direction = Math.sign(
-  //         scroll.rows.startIndex +
-  //           (scroll.rows.direction === -1 ? 1 : 0) -
-  //           index
-  //       );
-  //       if (direction === 1) {
-  //         startIndex = index;
-  //         shift = 0;
-  //       } else {
-  //       }
-  //       newScroll.rows = {
-  //         index: Math.min(
-  //           index + (direction === -1 ? nRows - 1 : 0),
-  //           data.length - nRows
-  //         ),
-  //         direction,
-  //         startIndex: index,
-  //         shift: direction === -1 ? visibleHeight - nRows * rowHeight : 0
-  //       };
-  //     }
-  //     if (direction) {
-  //       this.props.onScroll({
-  //         rows: newScroll.rows,
-  //         columns: newScroll.columns
-  //       });
-  //       return true;
-  //     }
-  //   }
-  // };
 }

@@ -88,8 +88,6 @@ export class Input extends Component {
   render() {
     let divStyle = {};
     let style = {
-      height: "inherit",
-      width: "inherit",
       textAlign: this.props.style.textAlign
     };
     let type = "text",
@@ -114,9 +112,10 @@ export class Input extends Component {
     if (this.props.select) {
       input = (
         <select
-          className="zebulon-grid-select"
+          className="zebulon-input zebulon-grid-select"
           onChange={this.handleChange}
           value={this.state.value}
+          style={style}
         >
           {this.props.select.map((item, index) => (
             <option key={index} value={typeof item === "object" ? 1 : item}>
@@ -130,7 +129,8 @@ export class Input extends Component {
         <input
           type={type}
           id={this.props.id || "input"}
-          className={this.props.className}
+          key={this.props.id}
+          className="zebulon-input"
           autoFocus={true}
           style={style}
           value={this.state.value || ""}
@@ -149,13 +149,15 @@ export class Input extends Component {
     // }
     // }
     // const { onChange } = this.props;
-
+    console.log("style", this.props.style);
     return (
       <div
         id="div-input"
+        key={this.props.id}
+        className={this.props.className}
+        style={this.props.style}
         onClick={this.props.onClick || (() => {})}
         onDoubleClick={this.props.onDoubleClick || (() => {})}
-        style={this.props.style}
       >
         {input}
         {checkboxLabel}
@@ -200,7 +202,7 @@ export class InputInterval extends Component {
   render() {
     const { dataType, format, style, hasFocus } = this.props;
     return (
-      <div>
+      <div key={this.props.id} style={this.props.style}>
         <div
           style={{
             textAlign: "center",
