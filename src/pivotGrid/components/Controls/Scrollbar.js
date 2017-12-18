@@ -33,7 +33,15 @@ export class Scrollbar extends Component {
     }
   }
   computeScrollbar = props => {
-    const { direction, length, width, positionRatio, displayRatio } = props;
+    const {
+      direction,
+      length,
+      width,
+      positionRatio,
+      displayRatio,
+      left,
+      top
+    } = props;
 
     let innerStyle;
     this.innerSize = Math.max(30, length * displayRatio);
@@ -41,8 +49,11 @@ export class Scrollbar extends Component {
     this.positionRatio = positionRatio;
     if (direction === "horizontal") {
       this.style = {
+        // position: "absolute",
         height: width,
         width: length
+        // left,
+        // top
       };
       innerStyle = {
         position: "relative",
@@ -80,7 +91,7 @@ export class Scrollbar extends Component {
       const { left, top } = e.target.getBoundingClientRect();
       event.relativePosition =
         event.position - (this.props.direction === "horizontal" ? left : top);
-      console.log("click", event);
+      console.log("click", left, e.clientX, event);
       return this.props._handleDrag("click", event);
     }
   };

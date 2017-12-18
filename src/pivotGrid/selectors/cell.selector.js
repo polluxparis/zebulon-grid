@@ -233,36 +233,26 @@ export const getRangeInfosSelector = createSelector(
   ) => rg => {
     if (
       isNullOrUndefined(rg) ||
-      isNullOrUndefined(rg.selectedCellStart) ||
-      isNullOrUndefined(rg.selectedCellEnd)
+      isNullOrUndefined(rg.start) ||
+      isNullOrUndefined(rg.end)
     ) {
       return {};
     }
     const columnDims = columnDimensions.filter(column => column.isVisible);
     const rowDims = rowDimensions.filter(row => row.isVisible);
     const range = {
-      selectedCellStart: {
-        rows: Math.min(rg.selectedCellStart.rows, rg.selectedCellEnd.rows),
-        columns: Math.min(
-          rg.selectedCellStart.columns,
-          rg.selectedCellEnd.columns
-        )
+      start: {
+        rows: Math.min(rg.start.rows, rg.end.rows),
+        columns: Math.min(rg.start.columns, rg.end.columns)
       },
-      selectedCellEnd: {
-        rows: Math.max(rg.selectedCellStart.rows, rg.selectedCellEnd.rows),
-        columns: Math.max(
-          rg.selectedCellStart.columns,
-          rg.selectedCellEnd.columns
-        )
+      end: {
+        rows: Math.max(rg.start.rows, rg.end.rows),
+        columns: Math.max(rg.start.columns, rg.end.columns)
       }
     };
     const rows = [];
     // letix = 0;
-    for (
-      let index = range.selectedCellStart.rows;
-      index <= range.selectedCellEnd.rows;
-      index += 1
-    ) {
+    for (let index = range.start.rows; index <= range.end.rows; index += 1) {
       const rowLeaf = rowLeaves.leaves[index];
       if (rowLeaf.isVisible) {
         rowLeaf.dataIndexes = getFilteredIndex(rowLeaf);
@@ -279,8 +269,8 @@ export const getRangeInfosSelector = createSelector(
     }
     const columns = [];
     for (
-      let index = range.selectedCellStart.columns;
-      index <= range.selectedCellEnd.columns;
+      let index = range.start.columns;
+      index <= range.end.columns;
       index += 1
     ) {
       const columnLeaf = columnLeaves.leaves[index];

@@ -76,19 +76,13 @@ export class Rows extends ScrollableGrid {
         position: scroll.rows.index / data.length
       },
       horizontal: {
-        display: width / columnsWidth,
+        display:
+          (width - (data.length * rowHeight > height ? 12 : 0)) / columnsWidth,
         position: scroll.columns.position / columnsWidth
       }
     };
   };
-  // onChange = (e, row, column) => {
-  //   row[column.id] = e;
-  //   row.updated_ = true;
-  //   //console.log("onChange", e, row, column);
-  //   if (this.props.onChange) {
-  //     this.props.onChange(e, row, column);
-  //   }
-  // };
+
   rowRenderer = (
     row,
     updatedRows,
@@ -169,7 +163,7 @@ export class Rows extends ScrollableGrid {
   getContent = () => {
     const items = [];
     let i = 0,
-      index = this.state.scroll.rows.startIndex;
+      index = this.props.scroll.rows.startIndex;
     const {
       data,
       meta,
@@ -202,64 +196,63 @@ export class Rows extends ScrollableGrid {
     return (
       <div
         style={{
-          // position: "relative",
+          position: "absolute",
           top: this.props.scroll.rows.shift
         }}
         onWheel={this.onWheel}
-        // onKeyDown={this.onKeyDown}
       >
         {items}
       </div>
     );
   };
-  onWheel = e => {
-    e.preventDefault();
-    const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
-    const { height, rowHeight, width, data, meta, scroll } = this.props;
-    let { shift, index, startIndex, position } = scroll[sense];
-    let direction =
-      sense === "columns" ? -Math.sign(e.deltaX) : -Math.sign(e.deltaY);
-    const visibleHeight = height - this.scrollbars.horizontal.width;
-    const nRows = Math.ceil(visibleHeight / rowHeight);
+  // onWheel = e => {
+  //   e.preventDefault();
+  //   const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
+  //   const { height, rowHeight, width, data, meta, scroll } = this.props;
+  //   let { shift, index, startIndex, position } = scroll[sense];
+  //   let direction =
+  //     sense === "columns" ? -Math.sign(e.deltaX) : -Math.sign(e.deltaY);
+  //   const visibleHeight = height - this.scrollbars.horizontal.width;
+  //   const nRows = Math.ceil(visibleHeight / rowHeight);
 
-    if (sense === "rows") {
-      if (nRows > data.length) {
-        direction = 1;
-      }
-      shift = direction === 1 ? 0 : visibleHeight - nRows * rowHeight;
-      if (direction === -1) {
-        startIndex = Math.max(
-          Math.min(
-            scroll.rows.startIndex + (scroll[sense].direction === direction),
-            data.length - nRows
-          ),
-          0
-        );
-        index = startIndex + nRows - 1;
-      } else {
-        index = Math.max(
-          scroll.rows.startIndex - (scroll[sense].direction === direction),
-          0
-        );
-        startIndex = index;
-      }
-    } else {
-      direction = 1;
-      const lastColumn = meta[meta.length - 1];
-      position = Math.min(
-        Math.max(position + e.deltaX, 0),
-        lastColumn.position + lastColumn.width - width
-      );
-      const column = meta.find(
-        column =>
-          position >= column.position &&
-          position <= column.position + column.width
-      );
-      shift = column.position - position;
-      index = column.index;
-      startIndex = index;
-    }
-    scroll[sense] = { index, direction, startIndex, shift, position };
-    this.props.onScroll(scroll);
-  };
+  //   if (sense === "rows") {
+  //     if (nRows > data.length) {
+  //       direction = 1;
+  //     }
+  //     shift = direction === 1 ? 0 : visibleHeight - nRows * rowHeight;
+  //     if (direction === -1) {
+  //       startIndex = Math.max(
+  //         Math.min(
+  //           scroll.rows.startIndex + (scroll[sense].direction === direction),
+  //           data.length - nRows
+  //         ),
+  //         0
+  //       );
+  //       index = startIndex + nRows - 1;
+  //     } else {
+  //       index = Math.max(
+  //         scroll.rows.startIndex - (scroll[sense].direction === direction),
+  //         0
+  //       );
+  //       startIndex = index;
+  //     }
+  //   } else {
+  //     direction = 1;
+  //     const lastColumn = meta[meta.length - 1];
+  //     position = Math.min(
+  //       Math.max(position + e.deltaX, 0),
+  //       lastColumn.position + lastColumn.width - width
+  //     );
+  //     const column = meta.find(
+  //       column =>
+  //         position >= column.position &&
+  //         position <= column.position + column.width
+  //     );
+  //     shift = column.position - position;
+  //     index = column.index;
+  //     startIndex = index;
+  //   }
+  //   scroll[sense] = { index, direction, startIndex, shift, position };
+  //   this.props.onScroll(scroll);
+  // };
 }

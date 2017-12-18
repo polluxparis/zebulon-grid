@@ -38,8 +38,8 @@ export const getSelectedColumnRangeSelector = createSelector(
     const startIndex = getColumnIndexFromKey(columnLeaves[0].key);
     const stopIndex = startIndex + columnLeaves.length - 1;
     return {
-      selectedCellStart: { columns: startIndex, rows: 0 },
-      selectedCellEnd: {
+      start: { columns: startIndex, rows: 0 },
+      end: {
         columns: stopIndex,
         rows: rowLeaves.leaves.length - 1
       }
@@ -53,8 +53,8 @@ export const getSelectedRowRangeSelector = createSelector(
     const startIndex = getRowIndexFromKey(rowLeaves[0].key);
     const stopIndex = startIndex + rowLeaves.length - 1;
     return {
-      selectedCellStart: { columns: 0, rows: startIndex },
-      selectedCellEnd: {
+      start: { columns: 0, rows: startIndex },
+      end: {
         columns: columnLeaves.leaves.length - 1,
         rows: stopIndex
       }

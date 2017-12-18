@@ -116,7 +116,7 @@ export class Table extends Component {
       if (column.dataType === "number") {
         column.f = row => row[column.id] >= e;
       } else if (column.dataType === "string") {
-        column.f = row => row[column.id].startsWith(e);
+        column.f = row => (row[column.id] || "").startsWith(e || "");
       }
       column.v = e;
       this.setState({
@@ -138,14 +138,22 @@ export class Table extends Component {
         (acc, sort) =>
           acc === 0
             ? ((rowA[sort] > rowB[sort]) - (rowB[sort] > rowA[sort])) *
-              (sorting[sort] === "asc" ? 1 : -1)
+              (sorting[sort].direction === "asc" ? 1 : -1)
             : acc,
         0
       );
     data.sort(sort);
   };
-  onSort = column => {
+  onSort = (column, double) => {
     // if (this.state.filteredData===this.state.data)
+    let sorts = { ...this.state.sorts };
+    if (double) {
+      Object.keys(sorts).forEach(
+        columnId => (this.props.meta[sorts[columnId].index].sort = undefined)
+      );
+      sorts = {};
+    }
+    console.log("click", column, double);
     if (column.sort === undefined) {
       column.sort = "asc";
     } else if (column.sort === "asc") {
@@ -153,7 +161,7 @@ export class Table extends Component {
     } else if (column.sort === "desc") {
       column.sort = undefined;
     }
-    const sorts = { ...this.state.sorts, [column.id]: column.sort };
+    sorts[column.id] = { index: column.index_, direction: column.sort };
     if (column.sort === undefined) {
       delete sorts[column.id];
     }

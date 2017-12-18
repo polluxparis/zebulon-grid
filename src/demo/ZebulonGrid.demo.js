@@ -36,8 +36,8 @@ class ZebulonGridDemo extends Component {
   }
   // componentDidUpdate(prevProps) {
   //   const element = document.getElementById(
-  //     `input ${this.props.selectedRange.selectedCellEnd.rows} - ${this.props
-  //       .selectedRange.selectedCellEnd.columns}`
+  //     `input ${this.props.selectedRange.end.rows} - ${this.props
+  //       .selectedRange.end.columns}`
   //   );
   //   if (element) {
   //     element.select();

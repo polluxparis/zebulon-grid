@@ -2,11 +2,17 @@ import React from "react";
 
 import { isInRange, isUndefined } from "../../utils/generic";
 import DataCell from "../DataCell/DataCell";
-import { MEASURE_ID, AXIS_SEPARATOR, HeaderType } from "../../constants";
-import { ScrollableArea } from "../controls/ScrollableArea";
+import {
+  MEASURE_ID,
+  AXIS_SEPARATOR,
+  HeaderType,
+  AxisType,
+  toAxis
+} from "../../constants";
+import { ScrollableGrid } from "../controls/ScrollableGrid";
 import { getSelectedText } from "../../services/copyService";
 // import { ReactHint } from "../controls/ContextualMenu";
-export class DataCells extends ScrollableArea {
+export class DataCells extends ScrollableGrid {
   // -------------------------------------
   // life cycle
   // -------------------------------------
@@ -37,16 +43,12 @@ export class DataCells extends ScrollableArea {
       this.editable &&
       (this.props.rows.leaves !== newProps.rows.leaves ||
         this.props.columns.leaves !== newProps.columns.leaves ||
-        this.props.selectedRange.selectedCellEnd.rows !==
-          newProps.selectedRange.selectedCellEnd.rows ||
-        this.props.selectedRange.selectedCellEnd.columns !==
-          newProps.selectedRange.selectedCellEnd.columns)
+        this.props.selectedRange.end.rows !== newProps.selectedRange.end.rows ||
+        this.props.selectedRange.end.columns !==
+          newProps.selectedRange.end.columns)
     ) {
       if (this.oldValue !== this.newValue || this.comment) {
-        const {
-          rowIndex,
-          columnIndex
-        } = this.props.selectedRange.selectedCellEnd;
+        const { rowIndex, columnIndex } = this.props.selectedRange.end;
         this.editData(
           this.props.rows.leaves[rowIndex],
           this.props.columns.leaves[columnIndex]
@@ -59,6 +61,9 @@ export class DataCells extends ScrollableArea {
       newProps.configuration.edition.editable &&
       newProps.configuration.edition.activated;
     this.commentsVisible = newProps.configuration.edition.comments;
+  }
+  componentDidMount() {
+    this.props.getRef(this);
   }
   // -----------------------------------------------------------
   // comments
@@ -193,12 +198,12 @@ export class DataCells extends ScrollableArea {
       if (this.isMouseDown && button === 0 && !e.openComment) {
         if (
           !(
-            this.props.selectedRange.selectedCellEnd.columns === columnIndex &&
-            this.props.selectedRange.selectedCellEnd.rows === rowIndex
+            this.props.selectedRange.end.columns === columnIndex &&
+            this.props.selectedRange.end.rows === rowIndex
           )
         ) {
           this.props.selectRange({
-            selectedCellEnd: { columns: columnIndex, rows: rowIndex },
+            end: { columns: columnIndex, rows: rowIndex },
             focusedCell: { columns: columnIndex, rows: rowIndex }
           });
         }
@@ -225,7 +230,7 @@ export class DataCells extends ScrollableArea {
     const { button, shiftKey, columnIndex, rowIndex, value } = e;
     if (button === 0) {
       // check if cell value has changed
-      const focusedCell = this.props.selectedRange.selectedCellEnd;
+      const focusedCell = this.props.selectedRange.end;
       if (
         this.editable &&
         (focusedCell.columnIndex !== columnIndex ||
@@ -242,8 +247,8 @@ export class DataCells extends ScrollableArea {
       this.newValue = value;
       if (shiftKey) {
         this.props.selectRange({
-          selectedCellStart: this.props.selectedRange.selectedCellStart,
-          selectedCellEnd: { columns: columnIndex, rows: rowIndex }
+          start: this.props.selectedRange.start,
+          end: { columns: columnIndex, rows: rowIndex }
         });
       } else {
         // console.log("select", { columnIndex, rowIndex });
@@ -303,8 +308,10 @@ export class DataCells extends ScrollableArea {
     }
   };
   // -----------------------------------------
-  // scrolling
+  // scrolling and selection
   // -----------------------------------------
+  selectedRange = () => this.props.selectedRange;
+  selectedCell = () => ({ ...this.props.selectedRange.end });
   nextVisible = (leaves, index, direction, offset) => {
     let ix = 0,
       n = 0;
@@ -321,53 +328,117 @@ export class DataCells extends ScrollableArea {
     }
     return index + ix;
   };
-  onScroll = e => {
-    const { rows, columns, onScroll } = this.props;
-    if (e.type === "scrollbar") {
-      const scroll = {
-        rows: { ...rows.scroll },
-        columns: { ...columns.scroll }
+  lastIndex = (axis, direction) => {
+    const axisLeaves =
+      axis === AxisType.COLUMNS ? this.props.columns : this.props.rows;
+    return this.nextVisible(
+      axisLeaves.leaves,
+      direction === 1 ? axisLeaves.length - 1 : 0,
+      -direction,
+      0
+    );
+  };
+  nextIndex = (axis, direction, index, offset) => {
+    const axisLeaves =
+      axis === AxisType.COLUMNS ? this.props.columns : this.props.rows;
+    return this.nextVisible(axisLeaves.leaves, index, direction, offset);
+  };
+  nextPageIndex = (axis, direction, index) => {
+    const axisLeaves =
+      axis === AxisType.COLUMNS ? this.props.columns : this.props.rows;
+    return this.nextVisible(
+      axisLeaves.leaves,
+      index,
+      direction,
+      axisLeaves.cells.length - 1
+    );
+  };
+  scrollOnKey = (cell, axis, direction) => {
+    const { rows, columns } = this.props;
+    const axisLeaves = axis === AxisType.COLUMNS ? columns : rows;
+    const scroll = { rows: rows.scroll, columns: columns.scroll };
+    if (
+      axisLeaves.hasScrollbar &&
+      ((direction === 1 && cell[toAxis(axis)] >= axisLeaves.stopIndex) ||
+        (direction === -1 && cell[toAxis(axis)] <= axisLeaves.startIndex))
+    ) {
+      scroll[toAxis(axis)] = {
+        index: cell[toAxis(axis)],
+        direction: -direction
       };
-      let direction, index;
-      // if (e.initiator === "bar") {
-      if (e.direction === "horizontal") {
-        index = Math.round(columns.length * e.positionRatio);
-        direction = Math.sign(
-          this.props.columns.startIndex +
-            (scroll.columns.direction === -1 ? 1 : 0) -
-            index
-        );
-        scroll.columns = {
-          index:
-            direction === -1
-              ? Math.round(
-                  columns.length * (e.positionRatio + columns.displayedRatio)
-                )
-              : index,
-          direction
-        };
-      } else {
-        index = Math.round(rows.length * e.positionRatio);
-        direction = Math.sign(
-          this.props.rows.startIndex +
-            (scroll.rows.direction === -1 ? 1 : 0) -
-            index
-        );
-        scroll.rows = {
-          index:
-            direction === -1
-              ? Math.round(
-                  rows.length * (e.positionRatio + rows.displayedRatio)
-                )
-              : index,
-          direction
-        };
-      }
-      if (direction) {
-        onScroll(scroll.rows, scroll.columns);
-        return true;
-      }
+      this.props.onScroll(scroll.rows, scroll.columns);
     }
+  };
+  onWheel = e => {
+    if (!e.defaultPrevented) {
+      e.preventDefault();
+      const { rows, columns, onScroll } = this.props;
+      const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
+      const leaves = sense === "columns" ? columns : rows;
+      const direction = Math.sign(sense === "columns" ? e.deltaX : e.deltaY);
+
+      const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
+      const offset = leaves.direction === direction && leaves.offset > 2;
+      const index = this.nextVisible(
+        leaves.leaves,
+        prevIndex - offset,
+        direction,
+        1
+      );
+      const scroll = { rows: rows.scroll, columns: columns.scroll };
+      if (sense === "columns") {
+        scroll.columns = { index, direction: -direction };
+      } else {
+        scroll.rows = { index, direction: -direction };
+      }
+      onScroll(scroll.rows, scroll.columns);
+    }
+  };
+  onScroll = (axis, dir, ix, positionRatio) => {
+    const { rows, columns, onScroll } = this.props;
+    // if (e.type === "scrollbar") {
+    const scroll = {
+      rows: { ...rows.scroll },
+      columns: { ...columns.scroll }
+    };
+    let direction, index;
+    // if (e.initiator === "bar") {
+    if (axis === AxisType.COLUMNS) {
+      index = Math.round(columns.length * positionRatio);
+      direction = Math.sign(
+        this.props.columns.startIndex +
+          (scroll.columns.direction === -1 ? 1 : 0) -
+          index
+      );
+      scroll.columns = {
+        index:
+          direction === -1
+            ? Math.round(
+                columns.length * (positionRatio + columns.displayedRatio)
+              )
+            : index,
+        direction
+      };
+    } else {
+      index = Math.round(rows.length * positionRatio);
+      direction = Math.sign(
+        this.props.rows.startIndex +
+          (scroll.rows.direction === -1 ? 1 : 0) -
+          index
+      );
+      scroll.rows = {
+        index:
+          direction === -1
+            ? Math.round(rows.length * (positionRatio + rows.displayedRatio))
+            : index,
+        direction
+      };
+    }
+    if (direction) {
+      onScroll(scroll.rows, scroll.columns);
+      return true;
+    }
+    // }
     return false;
   };
   // -----------------------------------------
@@ -407,21 +478,21 @@ export class DataCells extends ScrollableArea {
       measure = { format: v => v, valueAccessor: () => null };
     }
     let selected = false;
-    if (selectedRange.selectedCellStart && selectedRange.selectedCellEnd) {
+    if (selectedRange.start && selectedRange.end) {
       selected = isInRange(
         {
           columns: columnHeader.index,
           rows: rowHeader.index
         },
-        selectedRange.selectedCellStart,
-        selectedRange.selectedCellEnd
+        selectedRange.start,
+        selectedRange.end
       );
     }
     let focused = false;
-    if (selectedRange.selectedCellEnd) {
+    if (selectedRange.end) {
       focused =
-        columnHeader.index === selectedRange.selectedCellEnd.columns &&
-        rowHeader.index === selectedRange.selectedCellEnd.rows;
+        columnHeader.index === selectedRange.end.columns &&
+        rowHeader.index === selectedRange.end.rows;
     }
     let valueHasChanged;
     const cell = this.cellCache[key] || {};
@@ -475,7 +546,7 @@ export class DataCells extends ScrollableArea {
       />
     );
   };
-  getContent = () => {
+  _getContent = () => {
     const { rows, columns } = this.props;
     if (rows === undefined || columns === undefined) {
       return [];

@@ -158,24 +158,24 @@ export class ScrollableArea extends Component {
         );
         // event.position = length * event.positionRatio;
         if (this.onScrollEvent(event)) {
-          console.log(
-            "drag",
-            event.position,
-            event.positionRatio,
-            this.ratios[event.direction].position
-          );
+          // console.log(
+          //   "drag",
+          //   event.position,
+          //   event.positionRatio,
+          //   this.ratios[event.direction].position
+          // );
           drag.previousPosition = event.position;
           drag.previousPositionRatio = event.positionRatio;
         }
       }
     } else if (type === "click") {
-      console.log("click area", event);
       event.positionRatio =
         Math.max(
           0,
           Math.min(event.relativePosition - size / 2, length - size)
         ) / length;
       this.onScrollEvent(event);
+      console.log("click area", length, size, event);
     }
   };
   _handleMouseMove = e => {
@@ -222,8 +222,9 @@ export class ScrollableArea extends Component {
         <div
           style={{
             display: "flex",
-            position: "relative",
-            overflow: "hidden"
+            // position: "relative",
+            overflow: "hidden",
+            width
           }}
         >
           <div id="scrollable-area" style={style}>
@@ -232,6 +233,8 @@ export class ScrollableArea extends Component {
           <Scrollbar
             direction="vertical"
             width={scrollbars.vertical.width}
+            // left={scrollbars.horizontal.length}
+            // top={0}
             length={scrollbars.vertical.length}
             positionRatio={this.ratios.vertical.position}
             displayRatio={this.ratios.vertical.display}
@@ -243,6 +246,8 @@ export class ScrollableArea extends Component {
         <Scrollbar
           direction="horizontal"
           width={scrollbars.horizontal.width}
+          // left={0}
+          // top={scrollbars.vertical.length}
           length={scrollbars.horizontal.length}
           positionRatio={this.ratios.horizontal.position}
           displayRatio={this.ratios.horizontal.display}

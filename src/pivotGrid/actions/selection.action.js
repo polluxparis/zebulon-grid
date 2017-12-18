@@ -11,8 +11,8 @@ export const selectCell = cell => {
 	return {
 		type: SELECT_RANGE,
 		selectedRange: {
-			selectedCellStart: cell,
-			selectedCellEnd: cell
+			start: cell,
+			end: cell
 		}
 	};
 };

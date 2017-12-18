@@ -82,7 +82,7 @@ const filter = (column, shift, width, onChange) => {
     );
   }
 };
-const header = (column, shift, width, onSort) => {
+const header = (column, shift, width, handleClick) => {
   let sort = "";
   if (column.sort === "asc") {
     sort = "↑";
@@ -93,7 +93,8 @@ const header = (column, shift, width, onSort) => {
     <div
       key={column.id}
       className="zebulon-table-header"
-      onClick={() => onSort(column)}
+      onClick={() => handleClick(column, false)}
+      onDoubleClick={() => handleClick(column, true)}
       style={{
         position: "absolute",
         left: shift,
@@ -112,9 +113,27 @@ export class Headers extends Component {
   constructor(props) {
     super(props);
   }
+  handleClick = (column, double) => {
+    const { onSort } = this.props;
+    if (!double) {
+      this.timer = setTimeout(() => {
+        if (!this.prevent) {
+          onSort(column, false);
+        }
+        this.prevent = false;
+      }, 200);
+    } else {
+      clearTimeout(this.timer);
+      this.prevent = true;
+      onSort(column, true);
+    }
+  };
+  // onDoubleClick = () => {
+  //   onSort(e, column, true);
+  // };
   render() {
     let { shift, startIndex: index } = this.props.scroll;
-    const { meta, width, height, type, onChange, onSort } = this.props;
+    const { meta, width, height, type, onChange } = this.props;
     const cells = [
       <div
         key="status"
@@ -135,7 +154,7 @@ export class Headers extends Component {
           : Math.min(column.width, width - shift);
       let div;
       if (type === "header") {
-        div = header(column, shift, columnWidth, onSort);
+        div = header(column, shift, columnWidth, this.handleClick);
       } else if (type === "filter") {
         div = filter(column, shift, columnWidth, onChange);
       }
