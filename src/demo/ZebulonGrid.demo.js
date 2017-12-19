@@ -6,13 +6,13 @@ import { ResizableBox } from "react-resizable";
 import {
   getPromiseMockDatasource,
   basicConfig,
-  getRandomMockDatasource,
-  overwritedData
+  getRandomMockDatasource
+  // overwritedData
 } from "./mock";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
-import { exportFile, getFileObject } from "../pivotGrid/services/copyService";
+import { exportFile } from "../pivotGrid/services/copyService";
 
 class ZebulonGridDemo extends Component {
   constructor(props) {
@@ -165,7 +165,15 @@ class ZebulonGridDemo extends Component {
   render() {
     return (
       <div id="zebulon" style={{ fontFamily: "sans-serif" }}>
-        <div style={{ height: 50 }} />
+        <div style={{ height: 50 }}>
+          <input
+            type="checkbox"
+            id="configuration"
+            onChange={() => this.setState({ display: !this.state.display })}
+            checked={this.state.display}
+          />
+          <label for="configuration">Configuration</label>
+        </div>
         <ResizableBox
           height={this.state.sizes.height}
           width={this.state.sizes.width}
@@ -179,7 +187,7 @@ class ZebulonGridDemo extends Component {
             configurationFunctions={this.state.configurationFunctions}
             sizes={this.state.sizes}
             ref={ref => (this.zebulon = ref)}
-            display="configuration"
+            display={this.state.display ? "configuration" : "pivotgrid"}
           />
         </ResizableBox>
         <div

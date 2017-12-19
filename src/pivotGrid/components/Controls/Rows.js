@@ -120,7 +120,7 @@ export class Rows extends ScrollableGrid {
         onMouseOver = e => {
           e.preventDefault();
           if (e.buttons === 1) {
-            console.log(e.button, e.buttons, rowIndex, columnIndex);
+            // console.log(e.button, e.buttons, rowIndex, columnIndex);
             this.selectCell({ rows: rowIndex, columns: columnIndex }, true);
           }
         };

@@ -220,7 +220,7 @@ export class DataCells extends ScrollableGrid {
     }
   };
   handleMouseUp = e => {
-    console.log("mouse up", e.target);
+    // console.log("mouse up", e.target);
     this.isMouseDown = false;
     e.stopPropagation();
   };

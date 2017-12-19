@@ -90,6 +90,9 @@ export class Input extends Component {
     let style = {
       textAlign: this.props.style.textAlign
     };
+    if (this.props.inputType == "filter") {
+      style.padding = ".4em";
+    }
     let type = "text",
       input,
       checkboxLabel;
@@ -116,6 +119,9 @@ export class Input extends Component {
           onChange={this.handleChange}
           value={this.state.value}
           style={style}
+          autoFocus={true}
+
+          // onEnter={() => console.log("enter")}
         >
           {this.props.select.map((item, index) => (
             <option key={index} value={typeof item === "object" ? 1 : item}>
@@ -131,7 +137,7 @@ export class Input extends Component {
           id={this.props.id || "input"}
           key={this.props.id}
           className="zebulon-input"
-          autoFocus={true}
+          autoFocus={this.props.inputType !== "filter"}
           style={style}
           value={this.state.value || ""}
           checked={this.state.value || false}
@@ -139,6 +145,7 @@ export class Input extends Component {
           onChange={this.handleChange}
           ref={ref => (this.focused = ref)}
           tabIndex={0}
+          onFocus={e => (this.props.openFilter || (() => {}))(e)}
         />
       );
     }
@@ -149,7 +156,7 @@ export class Input extends Component {
     // }
     // }
     // const { onChange } = this.props;
-    console.log("style", this.props.style);
+    // console.log("style", this.props.style);
     return (
       <div
         id="div-input"
@@ -158,6 +165,7 @@ export class Input extends Component {
         style={this.props.style}
         onClick={this.props.onClick || (() => {})}
         onDoubleClick={this.props.onDoubleClick || (() => {})}
+        // onFocus={() => console.log("focus")}
       >
         {input}
         {checkboxLabel}

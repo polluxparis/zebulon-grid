@@ -120,10 +120,15 @@ export class ScrollableGrid extends ScrollableArea {
         }
       });
       e.preventDefault();
+      // } else if (e.which === 13) {
+      //   console.log("enter", e);
     } else if ((e.which > 32 && e.which < 41) || e.which === 9) {
       // arrow keys
       let direction, cell, axis;
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (document.activeElement.tagName === "SELECT") {
+          return;
+        }
         direction = e.key === "ArrowDown" ? 1 : -1;
         axis = AxisType.ROWS;
         cell = this.nextCell(axis, direction, 1);
@@ -201,7 +206,7 @@ export class ScrollableGrid extends ScrollableArea {
 
         shift = Math.min(0, column.position - position);
       }
-      console.log("scroll", direction, shift, position);
+      // console.log("scroll", direction, shift, position);
       newScroll.columns = {
         index,
         direction,

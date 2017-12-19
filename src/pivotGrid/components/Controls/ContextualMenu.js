@@ -197,7 +197,7 @@ export class ContextualMenu extends Component {
 		}
 	};
 	handleKeyDown = (e, item) => {
-		console.log("keydown menu event", e.key, this.navigation);
+		// console.log("keydown menu event", e.key, this.navigation);
 		if (this.state.menu.visible) {
 			// escape
 			if (e.which === 27) {
@@ -233,7 +233,7 @@ export class ContextualMenuClient extends Component {
 			e.preventDefault();
 			e.persist();
 			e.stopPropagation();
-			console.log(e.clientY, e.y, e.offsetY, e.pageY, e.target);
+			// console.log(e.clientY, e.y, e.offsetY, e.pageY, e.target);
 			const event = new CustomEvent(MENU_EVENT, {
 				detail: {
 					gridId: this.props.gridId,

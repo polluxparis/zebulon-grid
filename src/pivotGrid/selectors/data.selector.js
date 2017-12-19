@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { intersec } from "../utils/headers";
-import { isUndefined } from "../utils/generic";
+import { isUndefined, isDate, dateToString } from "../utils/generic";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
 import { availableDimensionsSelector } from "./dimensions.selector";
 
@@ -38,7 +38,7 @@ export const dataFilteredIndexes = (
   filteredIndexes,
   offset
 ) => {
-  data.map((row, index) => {
+  data.forEach((row, index) => {
     if (
       filters.every(
         filter =>
@@ -128,14 +128,22 @@ export const metaSelector = createSelector(
     if (!meta && data.length) {
       const row = data[0];
       return Object.keys(row).map((key, index) => {
-        const dataType = typeof row[key];
+        let dataType = typeof row[key],
+          format,
+          filterType;
+        if (dataType === "object" && isDate(row[key])) {
+          dataType = "date";
+          format = dateToString;
+        }
         let alignement = "unset";
         if (dataType === "string") {
           alignement = "left";
         } else if (dataType === "number") {
           alignement = "right";
+          filterType = "between";
         } else if (dataType === "date") {
           alignement = "center";
+          filterType = "between";
         }
         const width = 100;
         const meta = {
@@ -145,7 +153,11 @@ export const metaSelector = createSelector(
           dataType,
           alignement,
           position,
-          index_: index
+          index_: index,
+          format,
+          filterType,
+          v: null,
+          vTo: null
         };
         position += width;
         return meta;

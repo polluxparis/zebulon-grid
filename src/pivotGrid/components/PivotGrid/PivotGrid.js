@@ -14,8 +14,8 @@ import DragLayer from "./DragLayer";
 import {
   ZOOM_IN,
   ZOOM_OUT,
-  AxisType,
-  toAxis,
+  // AxisType,
+  // toAxis,
   ScrollbarSize
 } from "../../constants";
 import { ContextualMenu } from "../controls/ContextualMenu";
@@ -169,14 +169,14 @@ class PivotGrid extends Component {
         : this.props.isActive
     ) {
       this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-      const { selectedRange, selectRange, selectCell, headers } = this.props;
-      const { rows, columns } = headers;
+      const { headers } = this.props;
+      // const { rows, columns } = headers;
       if (
         (e.which > 32 && e.which < 41) ||
         e.which === 9 ||
         (e.which === 65 && (e.metaKey || e.ctrlKey))
       ) {
-        const cell = this.dataCells.handleNavigationKeys(e);
+        this.dataCells.handleNavigationKeys(e);
       } else if (e.metaKey || e.ctrlKey) {
         // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
         if (e.key === "+" || e.key === "=") {
@@ -374,7 +374,7 @@ class PivotGrid extends Component {
                 isPushing={this.isPushing}
                 setToolTip={toolTip => this.setState({ toolTip })}
                 style={{
-                  position: "absolute",
+                  // position: "absolute",
                   top: rows.crossSize,
                   left: columns.crossSize
                 }}

@@ -86,8 +86,8 @@ export const resetLeaves = node => {
 };
 
 export const resetDimensions = dimensions =>
-  Object.values(dimensions).map(dimension => {
-    Object.values(dimension.values).map(value => {
+  Object.values(dimensions).forEach(dimension => {
+    Object.values(dimension.values).forEach(value => {
       value.rowIndexes = null;
       value = null;
     });

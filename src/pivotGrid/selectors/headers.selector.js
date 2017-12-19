@@ -237,7 +237,7 @@ const buildPositionedHeaders = (
           header.parent.type === HeaderType.SUB_TOTAL)
       ) {
         header.sizes.cross.position = crossHeadersSize;
-        console.log("sizes", header.sizes);
+        // console.log("sizes", header.sizes);
       }
       parentsSizes(
         header.parent,

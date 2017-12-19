@@ -31,21 +31,20 @@ export const editCell = (
     </div>
   );
 };
-const filter = (column, shift, width, onChange) => {
+const filter = (column, shift, width, filterTo, onChange, openFilter) => {
   const className = "zebulon-table-header zebulon-table-filter";
   const textAlign =
-    column.alignement ||
-    (column.dataType === "number"
+    column.filterType === "values"
       ? "right"
-      : column.dataType === "number" ? "center" : "left");
+      : column.alignement ||
+        (column.dataType === "number"
+          ? "right"
+          : column.dataType === "number" ? "center" : "left");
   if (column.filterType === "interval") {
     return (
       <InputInterval
         key={column.id}
-        // code={column.id}
         className={className}
-        // hasFocus={hasFocus}
-        // className="zebulon-table-header"
         style={{
           position: "absolute",
           left: shift,
@@ -60,7 +59,7 @@ const filter = (column, shift, width, onChange) => {
     return (
       <Input
         key={column.id}
-        code={column.id}
+        id={column.index_}
         className={className}
         style={{
           position: "absolute",
@@ -73,10 +72,21 @@ const filter = (column, shift, width, onChange) => {
         dataType={column.dataType || "string"}
         format={column.format}
         inputType="filter"
-        value={column.v}
+        value={
+          column.filterType === "values" ? column.v ? (
+            "Ỵ"
+          ) : (
+            ""
+          ) : filterTo ? (
+            column.vTo
+          ) : (
+            column.v
+          )
+        }
         onChange={e => {
-          onChange(e, column);
-        }} //event => onChange(event)}
+          onChange(e, column, filterTo);
+        }}
+        openFilter={e => openFilter(e, column)}
         isEditable={true}
       />
     );
@@ -133,7 +143,15 @@ export class Headers extends Component {
   // };
   render() {
     let { shift, startIndex: index } = this.props.scroll;
-    const { meta, width, height, type, onChange } = this.props;
+    const {
+      meta,
+      width,
+      height,
+      type,
+      onChange,
+      openFilter,
+      filterTo
+    } = this.props;
     const cells = [
       <div
         key="status"
@@ -156,25 +174,39 @@ export class Headers extends Component {
       if (type === "header") {
         div = header(column, shift, columnWidth, this.handleClick);
       } else if (type === "filter") {
-        div = filter(column, shift, columnWidth, onChange);
+        div = filter(
+          column,
+          shift,
+          columnWidth,
+          filterTo,
+          onChange,
+          column.filterType === "values" ? openFilter : () => {}
+        );
       }
-      cells.push(div);
+      if (!filterTo || column.filterType === "between") {
+        cells.push(div);
+      }
       shift += column.width;
       index += 1;
     }
-    return (
-      <div
-        key={-2}
-        style={{
-          width,
-          height,
-          overflow: "hidden"
-          // position: "absolute"
-        }}
-      >
-        {cells}
-      </div>
-    );
+    if (cells.length) {
+      return (
+        <div
+          key={-2}
+          id={type}
+          style={{
+            width,
+            height,
+            overflow: "hidden"
+            // position: "absolute"
+          }}
+        >
+          {cells}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 export class Status extends Component {

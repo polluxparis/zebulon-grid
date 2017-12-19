@@ -11,7 +11,7 @@ class FilterValues extends ScrollableArea {
         position: startIndex / rowCount
       },
       horizontal: {
-        display: 1.2,
+        display: 1.1,
         position: 0
       }
     };
@@ -31,7 +31,7 @@ class FilterValues extends ScrollableArea {
     while (index < rowCount && i < height / rowHeight) {
       const { id, label } = this.props.items[index];
       items.push(
-        <div key={index} style={{ height: rowHeight, width }}>
+        <div key={index} style={{ height: rowHeight, width: "inherit" }}>
           <input
             type="checkbox"
             checked={filter[id] !== undefined}
@@ -45,7 +45,7 @@ class FilterValues extends ScrollableArea {
     }
     return items;
   };
-  onScroll = e => {
+  onScrollEvent = e => {
     if (e.type === "scrollbar") {
       const startIndex = Math.round(this.props.rowCount * e.positionRatio);
       this.ratios.vertical.position = startIndex / this.props.rowCount;
@@ -74,19 +74,22 @@ export class Filter extends Component {
   onScroll = startIndex => {
     this.setState({ startIndex });
   };
+
   onWheel = e => {
     e.preventDefault();
     const direction = Math.sign(e.deltaY);
     const startIndex =
       direction === 1
-        ? Math.min(this.state.startIndex + 1, this.state.rowCount - 1)
+        ? Math.min(this.state.startIndex + 1, this.state.rowCount - 10)
         : Math.max(this.state.startIndex - 1, 0);
     this.onScroll(startIndex);
   };
   filterItems = value => {
     const v = value.toLowerCase();
     const items = this.props.items.filter(item => {
-      return item.label.toLowerCase().startsWith(v);
+      return String(item.label)
+        .toLowerCase()
+        .startsWith(v);
     });
     this.setState({
       items,
@@ -137,6 +140,7 @@ export class Filter extends Component {
     return (
       <div
         style={{
+          ...this.props.style,
           width: "fit-content",
           height: "fit-content"
         }}
@@ -169,8 +173,9 @@ export class Filter extends Component {
           />
           Select all
           <FilterValues
-            width={200}
+            width="inherit"
             height={10 * rowHeight}
+            style={{ width: "98%", justifyContent: "space-between" }}
             rowCount={this.state.rowCount}
             rowHeight={rowHeight}
             items={this.state.items}

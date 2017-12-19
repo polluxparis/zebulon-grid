@@ -25,11 +25,17 @@ export function getMockDatasource(
           obj.tutu = String(Math.round((nTutu - 1) * Math.random()));
           obj.qty = Math.round(400 * Math.random()) + 125; // +9999999999.1234567890123456
           obj.amt = Math.round(5000 * Math.random()) + 310; // +9999999999.1234567890123456
+          obj.d = new Date(
+            2015 + Math.round(4 * Math.random()),
+            Math.round(12 * Math.random()),
+            Math.round(31 * Math.random())
+          );
           res.push(obj);
         }
       }
     }
   }
+  //obj.d = new Date(new Date().setDate(20)).toISOString();
   // const res2 = getRandomMockDatasource();
   // const res_2 = join(
   //   res,

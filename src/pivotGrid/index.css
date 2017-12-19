@@ -175,7 +175,8 @@
   padding: 2px;
   background-color: white;
   height: 20px;
-  width: -webkit-fill-available;
+  /*width: -webkit-fill-available;*/
+  width: stretch;
   min-width: 50px;
   z-index: 100;
   opacity: 1;

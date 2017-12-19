@@ -164,7 +164,7 @@ export const stringToDate = (s, fmt) => {
     return null;
   }
   const ds = s.split(/[.:/ ]+/g);
-  const d = ds.map(v => parseInt(v));
+  const d = ds.map(v => parseInt(v, 8));
   if (d.length !== 3) {
     return undefined;
   }

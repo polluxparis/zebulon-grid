@@ -58,8 +58,17 @@ export default class Configuration extends Component {
 				caption: "Filter",
 				width: 100,
 				dataType: "string",
-				editable: (row, status) => status.new_,
-				select: ["", "dafault", "interval", "list", "values"]
+				editable: true,
+				select: [
+					"",
+					"starts",
+					"=",
+					">=",
+					"<=",
+					"between",
+					"list",
+					"values"
+				]
 			},
 			{
 				id: "formula",
@@ -125,7 +134,7 @@ export default class Configuration extends Component {
 		});
 	};
 	init = props => {
-		let position = 0;
+		// let position = 0;
 		this.metaPositions(this.metaProperties);
 		// this.metaProperties.forEach(column => {
 		// 	column.position = position;

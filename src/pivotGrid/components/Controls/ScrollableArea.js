@@ -214,17 +214,19 @@ export class ScrollableArea extends Component {
     return (
       <div
         id={`grid ${gridId}`}
-        style={this.props.style || {}}
+        // style={this.props.style || {}}
         onMouseMove={this._handleMouseMove}
         onMouseUp={this._handleMouseUp}
         // onKeyDown={e => this.console.log("KEYDOWN", e1)}
       >
         <div
+          id="toto"
           style={{
+            width,
+            ...(this.props.style || {}),
             display: "flex",
-            // position: "relative",
-            overflow: "hidden",
-            width
+            overflow: "hidden"
+            // width
           }}
         >
           <div id="scrollable-area" style={style}>

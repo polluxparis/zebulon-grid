@@ -91,7 +91,7 @@ export class Scrollbar extends Component {
       const { left, top } = e.target.getBoundingClientRect();
       event.relativePosition =
         event.position - (this.props.direction === "horizontal" ? left : top);
-      console.log("click", left, e.clientX, event);
+      // console.log("click", left, e.clientX, event);
       return this.props._handleDrag("click", event);
     }
   };

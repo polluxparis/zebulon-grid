@@ -288,9 +288,9 @@ export const getRangeInfosSelector = createSelector(
       }
     }
     const values = [];
-    rows.map((row, index) => {
+    rows.forEach((row, index) => {
       values.push([]);
-      columns.map(column => {
+      columns.forEach(column => {
         const measure =
           row.leaf.type === HeaderType.MEASURE
             ? measures[row.leaf.id]
