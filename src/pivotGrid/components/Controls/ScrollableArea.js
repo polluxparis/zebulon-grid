@@ -50,7 +50,7 @@ export class ScrollableArea extends Component {
       scrollbars.horizontal = {
         length: Math.min(
           width - ScrollbarSize,
-          width / ratios.horizontal.display
+          (width - ScrollbarSize) / ratios.horizontal.display
         ),
         width: 0
       };
@@ -62,7 +62,7 @@ export class ScrollableArea extends Component {
       scrollbars.vertical = {
         length: Math.min(
           height - ScrollbarSize,
-          height / ratios.vertical.display
+          (height - ScrollbarSize) / ratios.vertical.display
         ),
         width: 0
       };

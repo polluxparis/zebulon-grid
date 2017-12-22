@@ -18,11 +18,12 @@ export class ScrollableGrid extends ScrollableArea {
       selectedRange: { start: {}, end: {} }
     };
   }
+  componentWillReceiveProps(newProps) {}
   // ------------------------------------------------
   // selected range
   // ------------------------------------------------
-  selectedRange = () => this.state.selectedRange;
-  selectedCell = () => ({ ...this.state.selectedRange.end });
+  selectedRange = () => this.props.selectedRange;
+  selectedCell = () => ({ ...this.props.selectedRange.end });
   selectCell = (cell, extension) => {
     const range = extension
       ? { ...this.selectedRange(), end: cell }
@@ -33,9 +34,9 @@ export class ScrollableGrid extends ScrollableArea {
     this.selectRange(range);
   };
   selectRange = range => {
-    this.setState({ selectedRange: range });
+    // this.setState({ selectedRange: range });
     if (this.props.selectRange) {
-      this.props.selectRange(this.state.selectedRange);
+      this.props.selectRange(range);
     }
   };
 
@@ -126,7 +127,10 @@ export class ScrollableGrid extends ScrollableArea {
       // arrow keys
       let direction, cell, axis;
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        if (document.activeElement.tagName === "SELECT") {
+        if (
+          document.activeElement.tagName === "SELECT" ||
+          document.activeElement.tagName === "TEXTAREA"
+        ) {
           return;
         }
         direction = e.key === "ArrowDown" ? 1 : -1;
@@ -137,7 +141,11 @@ export class ScrollableGrid extends ScrollableArea {
         e.key === "ArrowLeft" ||
         e.key === "Tab"
       ) {
-        if (document.activeElement.tagName === "INPUT" && e.key !== "Tab") {
+        if (
+          (document.activeElement.tagName === "INPUT" ||
+            document.activeElement.tagName === "TEXTAREA") &&
+          e.key !== "Tab"
+        ) {
           return;
         }
         direction =

@@ -121,19 +121,19 @@ export const computeData = (data, meta) => {
     metaFormula.forEach(column => (row[column.id] = column.f(row)))
   );
 };
+
 export const metaSelector = createSelector(
   [state => state.data.data, state => state.data.meta],
-  (data, meta) => {
+  (data, meta, configurationFunctions) => {
     let position = 0;
     if (!meta && data.length) {
       const row = data[0];
       return Object.keys(row).map((key, index) => {
         let dataType = typeof row[key],
-          format,
-          filterType;
+          filterType = "";
         if (dataType === "object" && isDate(row[key])) {
           dataType = "date";
-          format = dateToString;
+          // format = dateToString;
         }
         let alignement = "unset";
         if (dataType === "string") {
@@ -148,13 +148,14 @@ export const metaSelector = createSelector(
         const width = 100;
         const meta = {
           id: key,
+          caption: key,
           tp: "Initial",
           width,
           dataType,
           alignement,
           position,
           index_: index,
-          format,
+          formatFunction: x => x,
           filterType,
           v: null,
           vTo: null

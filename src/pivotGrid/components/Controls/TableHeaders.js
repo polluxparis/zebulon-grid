@@ -24,7 +24,7 @@ export const editCell = (
       key={index}
       className={className}
       style={style}
-      onClick={e => onClick(e, row)}
+      onClick={() => onClick(index)}
       onDoubleClick={e => onDoubleClick(e, row)}
     >
       {glyph}
@@ -40,57 +40,57 @@ const filter = (column, shift, width, filterTo, onChange, openFilter) => {
         (column.dataType === "number"
           ? "right"
           : column.dataType === "number" ? "center" : "left");
-  if (column.filterType === "interval") {
-    return (
-      <InputInterval
-        key={column.id}
-        className={className}
-        style={{
-          position: "absolute",
-          left: shift,
-          width
-        }}
-        dataType={column.dataType}
-        format={column.format || (value => value)}
-        onChange={() => {}} //onChange}
-      />
-    );
-  } else {
-    return (
-      <Input
-        key={column.id}
-        id={column.index_}
-        className={className}
-        style={{
-          position: "absolute",
-          left: shift,
-          width,
-          textAlign
-        }}
-        // hasFocus={hasFocus}
-        editable={true}
-        dataType={column.dataType || "string"}
-        format={column.format}
-        inputType="filter"
-        value={
-          column.filterType === "values" ? column.v ? (
-            "Ỵ"
-          ) : (
-            ""
-          ) : filterTo ? (
-            column.vTo
-          ) : (
-            column.v
-          )
-        }
-        onChange={e => {
-          onChange(e, column, filterTo);
-        }}
-        openFilter={e => openFilter(e, column)}
-        isEditable={true}
-      />
-    );
-  }
+  // if (column.filterType === "interval") {
+  //   return (
+  //     <InputInterval
+  //       key={column.id}
+  //       className={className}
+  //       style={{
+  //         position: "absolute",
+  //         left: shift,
+  //         width
+  //       }}
+  //       dataType={column.dataType}
+  //       format={column.format || (value => value)}
+  //       onChange={() => {}} //onChange}
+  //     />
+  //   );
+  // } else {
+  return (
+    <Input
+      key={column.id}
+      id={column.index_}
+      className={className}
+      style={{
+        position: "absolute",
+        left: shift,
+        width,
+        textAlign
+      }}
+      // hasFocus={hasFocus}
+      editable={true}
+      dataType={column.dataType || "string"}
+      format={column.format}
+      inputType="filter"
+      value={
+        column.filterType === "values" ? column.v ? (
+          "Ỵ"
+        ) : (
+          ""
+        ) : filterTo ? (
+          column.vTo
+        ) : (
+          column.v
+        )
+      }
+      onChange={e => {
+        onChange(e, column, filterTo);
+      }}
+      onFocus={e => openFilter(e, column)}
+      isEditable={true}
+    />
+  );
+  // }
 };
 const header = (column, shift, width, handleClick) => {
   let sort = "";
@@ -118,6 +118,21 @@ const header = (column, shift, width, handleClick) => {
     </div>
   );
 };
+
+const filterEmpty = (id, shift, width) => {
+  return (
+    <div
+      key={id}
+      className="zebulon-table-header zebulon-table-filter-empty"
+      style={{
+        position: "absolute",
+        left: shift,
+        width
+      }}
+    />
+  );
+};
+
 // ↑↓
 export class Headers extends Component {
   constructor(props) {
@@ -166,27 +181,33 @@ export class Headers extends Component {
     shift += height;
     while (index < meta.length && shift < width) {
       const column = meta[index];
-      const columnWidth =
-        index === 0
-          ? column.width - shift + height
-          : Math.min(column.width, width - shift);
-      let div;
-      if (type === "header") {
-        div = header(column, shift, columnWidth, this.handleClick);
-      } else if (type === "filter") {
-        div = filter(
-          column,
-          shift,
-          columnWidth,
-          filterTo,
-          onChange,
-          column.filterType === "values" ? openFilter : () => {}
+      if (!column.hidden) {
+        const columnWidth = Math.min(
+          index === 0 ? column.width - shift + height : column.width,
+          width - shift
         );
-      }
-      if (!filterTo || column.filterType === "between") {
+        let div;
+        if (type === "header") {
+          div = header(column, shift, columnWidth, this.handleClick);
+        } else if (type === "filter") {
+          if (filterTo && column.filterType !== "between") {
+            div = filterEmpty(column.id, shift, columnWidth);
+          } else {
+            div = filter(
+              column,
+              shift,
+              columnWidth,
+              filterTo,
+              onChange,
+              column.filterType === "values" ? openFilter : () => {}
+            );
+          }
+        }
+        // if (!filterTo || column.filterType === "between") {
         cells.push(div);
+        // }
+        shift += column.width;
       }
-      shift += column.width;
       index += 1;
     }
     if (cells.length) {
@@ -213,6 +234,11 @@ export class Status extends Component {
   constructor(props) {
     super(props);
   }
+  onClick = index =>
+    this.props.selectRange({
+      end: { rows: index, columns: 0 },
+      start: { rows: index, columns: this.props.meta.length - 1 }
+    });
   render() {
     const { height, rowHeight, data, scroll, updatedRows } = this.props;
     let index = 0;
@@ -232,7 +258,7 @@ export class Status extends Component {
           "zebulon-table-status",
           index + scroll.startIndex,
           updatedRows[data[index + scroll.startIndex].index_] || {},
-          () => {},
+          this.onClick,
           () => {}
         )
       );
@@ -254,84 +280,3 @@ export class Status extends Component {
     );
   }
 }
-
-// export class Filters extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-//   render() {
-//     let { shift, startIndex: index } = this.props.scroll;
-//     const { meta, width, height } = this.props;
-//     const cells = [
-//       <div
-//         key="status"
-//         className="zebulon-table-corner"
-//         style={{
-//           position: "absolute",
-//           width: height,
-//           left: 0
-//         }}
-//       />
-//     ];
-//     shift += height;
-//     while (index < meta.length && shift < width) {
-//       const column = meta[index];
-//       cells.push(filter(column, shift, false, { value: column.caption }));
-//       shift += column.width;
-//       index += 1;
-//     }
-//     return (
-//       <div
-//         key={-2}
-//         style={{
-//           width,
-//           height,
-//           overflow: "hidden",
-//           position: "relative"
-//         }}
-//       >
-//         {cells}
-//       </div>
-//     );
-//   }
-// render() {
-//   let { shift, startIndex: index } = this.props.scroll;
-//   const { meta, width, height } = this.props;
-//   const cells = [
-//     <div
-//       key="status"
-//       className="zebulon-table-corner"
-//       style={{
-//         position: "absolute",
-//         width: height,
-//         left: 0
-//       }}
-//     />
-//   ];
-//   shift += height;
-//   while (index < meta.length && shift < width) {
-//     const column = meta[index];
-//     cells.push(filter(column, shift, false, { value: column.caption }));
-//     shift += column.width;
-//     index += 1;
-//   }
-//   return (
-//     <div
-//       key={-2}
-//       style={{
-//         width,
-//         height,
-//         overflow: "hidden",
-//         position: "relative"
-//       }}
-//     >
-//       {cells}
-//     </div>
-//   );
-// }
-// }
-// export class Filters extends Component {
-//   render() {
-//     return <div style={{ display: "flex" }}>titt</div>;
-//   }
-// }

@@ -48,10 +48,10 @@ export class DataCells extends ScrollableGrid {
           newProps.selectedRange.end.columns)
     ) {
       if (this.oldValue !== this.newValue || this.comment) {
-        const { rowIndex, columnIndex } = this.props.selectedRange.end;
+        const { rows, columns } = this.props.selectedRange.end;
         this.editData(
-          this.props.rows.leaves[rowIndex],
-          this.props.columns.leaves[columnIndex]
+          this.props.rows.leaves[rows],
+          this.props.columns.leaves[columns]
         );
       }
       this.focusChanged = true;
@@ -233,13 +233,13 @@ export class DataCells extends ScrollableGrid {
       const focusedCell = this.props.selectedRange.end;
       if (
         this.editable &&
-        (focusedCell.columnIndex !== columnIndex ||
-          focusedCell.rowIndex !== rowIndex) &&
+        (focusedCell.columns !== columnIndex ||
+          focusedCell.rows !== rowIndex) &&
         this.oldValue !== this.newValue
       ) {
         this.editData(
-          this.props.rows.leaves[focusedCell.rowIndex],
-          this.props.columns.leaves[focusedCell.columnIndex]
+          this.props.rows.leaves[focusedCell.rows],
+          this.props.columns.leaves[focusedCell.columns]
         );
       }
       this.isMouseDown = true;

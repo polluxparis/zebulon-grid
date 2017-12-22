@@ -1,97 +1,38 @@
 import React, { Component } from "react";
 import cx from "classnames";
 import { Table } from "../controls/Table";
+import { metaDescriptions, metaFunctions } from "./MetaDescriptions";
+import { isNavigationKey } from "../../utils/generic";
 
 export default class Configuration extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { selectedTab: 0, data: props.data, meta: props.meta };
-		this.metaProperties = [
-			{
-				id: "id",
-				caption: "Column",
-				width: 100,
-				dataType: "string",
-				editable: (row, status) => status.new_ && "Initial" !== row.tp
-			},
-			{
-				id: "tp",
-				caption: "Type",
-				width: 100,
-				dataType: "string",
-				// accessor: (row, status) => (status.new_ ? row.tp : row.tp),
-				editable: (row, status) => status.new_,
-				select: ["", "Computed", "Analytics"]
-			},
-			{
-				id: "dataType",
-				caption: "Data type",
-				width: 100,
-				dataType: "string",
-				// accessor: (row, status) => (status.new_ ? row.tp : row.tp),
-				editable: (row, status) => status.new_,
-				select: ["", "number", "string", "date", "boolean"]
-			},
-			{
-				id: "caption",
-				caption: "Caption",
-				width: 150,
-				dataType: "string",
-				editable: true
-			},
-			{
-				id: "width",
-				caption: "Width",
-				width: 60,
-				dataType: "number",
-				editable: true
-			},
-			{
-				id: "format",
-				caption: "Format",
-				width: 200,
-				dataType: "string",
-				editable: true
-			},
-			{
-				id: "filterType",
-				caption: "Filter",
-				width: 100,
-				dataType: "string",
-				editable: true,
-				select: [
-					"",
-					"starts",
-					"=",
-					">=",
-					"<=",
-					"between",
-					"list",
-					"values"
-				]
-			},
-			{
-				id: "formula",
-				caption: "Formula",
-				width: 500,
-				dataType: "string",
-				editable: row => "Initial" !== row.tp
-			}
-		];
-		this.actionsProperties = [
-			{ caption: "Save", type: "save" },
-			{
-				caption: "Compute",
-				action: e => this.computeData(this.props.data, e.data)
-			},
-			{ caption: "New", type: "new" },
-			{
-				caption: "Delete",
-				type: "delete",
-				disable: row => row.index_ === undefined || "Initial" === row.tp
-			}
-		];
-		// this.init(props);
+		const functions = metaFunctions(props.configurationFunctions);
+		this.state = {
+			selectedTab: 0,
+			data: props.data,
+			meta: props.meta,
+			functions,
+			dimensions: props.configuration.dimensions.map(
+				(dimension, index) => {
+					dimension.index_ = index;
+					return dimension;
+				}
+			),
+			measures: props.configuration.measures.map((measure, index) => {
+				measure.index_ = index;
+				return measure;
+			})
+		};
+		let meta = metaDescriptions(
+			this.state.functions,
+			this.state.meta,
+			props
+		);
+		this.state.metaProperties = this.computeMeta(meta.properties);
+		this.state.metaMeasures = this.computeMeta(meta.measures);
+		this.state.metaDimensions = this.computeMeta(meta.dimensions);
+		this.state.metaFunctions = this.computeMeta(meta.functions);
 	}
 	componentWillReceiveProps(nextProps) {
 		if (
@@ -108,83 +49,152 @@ export default class Configuration extends Component {
 	// 	this.init(newProps);
 	// }
 	handleKeyDown = e => {
-		const tab = this.tabs[this.state.selectedTab].caption;
-		if (this[tab] && this[tab].handleNavigationKeys) {
-			return this[tab].handleNavigationKeys(e);
+		if (isNavigationKey(e)) {
+			const tab = this.tabs[this.state.selectedTab].caption;
+			if (this[tab] && this[tab].handleNavigationKeys) {
+				return this[tab].handleNavigationKeys(e);
+			}
 		}
 	};
-	computeData = (data, meta) => {
+	computeData = () => {
+		let { data, meta, functions } = this.state;
+		const params = this.props.params || {};
+		functions = this.state.functions
+			.filter(f => f.tp === "accessor")
+			.reduce((acc, f) => {
+				acc[f.id] = f.codeJS;
+				return acc;
+			}, {});
 		const metaFormula = meta.filter(column => column.tp === "Computed");
 		metaFormula.forEach(column => {
-			column.f = eval("(row)=>" + column.formula);
-			column.dataType = typeof column.f(data[0]);
+			column.f = eval("(row,params)=>" + functions[column.valueAccessor]);
+			column.dataType = typeof column.f(data[0], params);
 		});
 		data.forEach(row =>
-			metaFormula.forEach(column => (row[column.id] = column.f(row)))
+			metaFormula.forEach(
+				column => (row[column.id] = column.f(row, params))
+			)
 		);
-		this.metaPositions(meta);
-		this.setState({ data, meta });
-	};
-	metaPositions = meta => {
-		let position = 0;
-		meta.forEach((column, index) => {
-			column.position = position;
-			column.index_ = index;
-			position += column.width;
+		this.setState({
+			data,
+			meta: this.computeMeta(meta)
 		});
 	};
-	init = props => {
-		// let position = 0;
-		this.metaPositions(this.metaProperties);
-		// this.metaProperties.forEach(column => {
-		// 	column.position = position;
-		// 	position += column.width;
-		// });
-		this.tabs = [
-			{
-				caption: "Dataset",
-				content: (
-					<Table
-						key="dataset"
-						visible={this.state.selectedTab === 0}
-						data={this.state.data}
-						meta={this.state.meta}
-						width={props.width}
-						height={props.height - 30}
-						ref={ref => (this.Dataset = ref)}
-					/>
-				)
-			},
-			{
-				caption: "Properties",
-				content: (
-					<Table
-						key="properties"
-						visible={this.state.selectedTab === 1}
-						data={this.state.meta}
-						meta={this.metaProperties}
-						width={props.width}
-						height={props.height - 30}
-						onChange={this.onChangeProperties}
-						actions={this.actionsProperties}
-						ref={ref => (this.Properties = ref)}
-					/>
-				)
-			},
-			{ caption: "Measures", content: <div key="measures">tata</div> },
-			{
-				caption: "Dimensions",
-				content: <div key="dimensions">titi</div>
-			},
-			{ caption: "Graph", content: <div key="graph">tyty</div> }
-		];
+	computeMeta = meta => {
+		let position = 0;
+		meta.forEach((column, index) => {
+			const width = column.hidden ? 0 : column.width;
+			column.position = position;
+			column.index_ = index;
+			position += width || 0;
+			column.formatFunction =
+				this.props.configurationFunctions.formats[column.format] ||
+				(x => x);
+		});
+		return meta;
 	};
+
+	initTabs = props => [
+		{
+			caption: "Dataset",
+			content: (
+				<Table
+					key="dataset"
+					id="dataset"
+					visible={this.state.selectedTab === 0}
+					data={this.state.data}
+					meta={this.state.meta.filter(
+						column => column.width || 0 !== 0
+					)}
+					width={props.width}
+					height={props.height - 30}
+					rowHeight={25}
+					ref={ref => (this.Dataset = ref)}
+				/>
+			)
+		},
+		{
+			caption: "Properties",
+			content: (
+				<Table
+					key="properties"
+					id="properties"
+					visible={this.state.selectedTab === 1}
+					data={this.state.meta}
+					meta={this.state.metaProperties}
+					width={props.width}
+					height={props.height - 30}
+					rowHeight={25}
+					onChange={this.onChangeProperties}
+					// actions={this.state.actionsProperties}
+					callbacks={{ computeData: this.computeData }}
+					ref={ref => (this.Properties = ref)}
+				/>
+			)
+		},
+		{
+			caption: "Measures",
+			content: (
+				<Table
+					key="measures"
+					id="measures"
+					visible={this.state.selectedTab === 2}
+					data={this.state.measures}
+					meta={this.state.metaMeasures}
+					width={props.width}
+					height={props.height - 30}
+					rowHeight={25}
+					// onChange={this.onChangeProperties}
+					// actions={this.state.actionsMeasures}
+					ref={ref => (this.Measures = ref)}
+				/>
+			)
+		},
+		{
+			caption: "Dimensions",
+			content: (
+				<Table
+					key="dimensions"
+					id="dimensions"
+					visible={this.state.selectedTab === 3}
+					data={this.state.dimensions}
+					meta={this.state.metaDimensions}
+					width={props.width}
+					height={props.height - 30}
+					rowHeight={25}
+					// onChange={this.onChangeDimensions}
+					// actions={this.state.actionsDimensions}
+					ref={ref => (this.Dimensions = ref)}
+				/>
+			)
+		},
+		{
+			caption: "Functions",
+			content: (
+				<Table
+					key="functions"
+					id="functions"
+					visible={this.state.selectedTab === 4}
+					data={this.state.functions}
+					meta={this.state.metaFunctions}
+					width={props.width}
+					height={props.height - 30}
+					rowHeight={25}
+					// onChange={this.onChangeDimensions}
+					// actions={this.state.actionsFunctions}
+					ref={ref => (this.Functions = ref)}
+				/>
+			)
+		},
+		{ caption: "Graph", content: null }
+	];
+
 	componentDidMount() {
 		this.props.getRef(this);
 	}
 	onChangeProperties = (e, row, column) => {
-		if (column.id === "width") {
-			this.metaPositions(this.props.meta);
+		if (column.id === "width" || column.id === "format") {
+			this.setState({ meta: this.computeMeta(this.state.meta) });
 		}
 	};
 	render() {
@@ -206,7 +216,7 @@ export default class Configuration extends Component {
 				);
 			}
 		}
-		this.init(this.props);
+		this.tabs = this.initTabs(this.props);
 		return (
 			<div>
 				<div

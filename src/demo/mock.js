@@ -235,7 +235,6 @@ export const basicConfig = callbacks => ({
       id: "amt",
       caption: "Amount",
       aggregation: "sum",
-      aggregationCaption: "whatever",
       format: "amount"
     }
     // ,

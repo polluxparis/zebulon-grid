@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { ScrollableGrid } from "./ScrollableGrid";
 import classnames from "classnames";
 import { Input } from "./Input";
-import { isInRange } from "../../utils/generic";
-
+import { isInRange, dateToString, isDate } from "../../utils/generic";
+// import { dateToString, stringToDate } from "../../utils/generic";
 export const cell = (
   row,
   column,
@@ -15,7 +15,8 @@ export const cell = (
   onMouseOver,
   onChange,
   onDoubleClick,
-  onFocus
+  onFocus,
+  rowIndex
 ) => {
   const editable =
     focused &&
@@ -28,24 +29,30 @@ export const cell = (
     "zebulon-table-cell-focused": focused,
     "zebulon-table-cell-editable": editable
   });
+  let value = (column.formatFunction || (x => x))(
+    column.accessor
+      ? column.accessor(row, updatedRows[row.index_] || {})
+      : row[column.id]
+  );
+  if (!editable && column.dataType === "date" && isDate(value)) {
+    value = dateToString(value);
+  }
   return editable ? (
     <Input
       style={style}
       className={className}
-      code={column.id}
-      value={
-        column.accessor ? (
-          column.accessor(row, updatedRows[row.index_] || {})
-        ) : (
-          row[column.id]
-        )
-      }
+      id={column.id}
+      value={value}
       dataType={column.dataType || "string"}
       format={column.format}
       editable={true}
+      focused={focused}
       select={column.select}
       key={`cell-${row.index_}-${column.id}`}
       onChange={e => onChange(e, row, column)}
+      row={row}
+      // onFocus={this.props.onFocus}
+      onFocus={e => onFocus(e, row, column, rowIndex)}
     />
   ) : (
     <div
@@ -56,11 +63,7 @@ export const cell = (
       onDoubleClick={e => onDoubleClick(e, row, column)}
       onMouseOver={onMouseOver}
     >
-      {(column.format || (x => x))(
-        column.accessor
-          ? column.accessor(row, updatedRows[row.index_] || {})
-          : row[column.id]
-      )}
+      {value}
     </div>
   );
 };
@@ -69,7 +72,8 @@ export class Rows extends ScrollableGrid {
   getRatios = () => {
     const { height, width, meta, rowHeight, scroll, data } = this.props;
     const lastColumn = meta[meta.length - 1];
-    const columnsWidth = lastColumn.position + lastColumn.width;
+    const columnsWidth =
+      lastColumn.position + (lastColumn.hidden ? 0 : lastColumn.width || 0);
     return {
       vertical: {
         display: height / (data.length * rowHeight),
@@ -82,7 +86,32 @@ export class Rows extends ScrollableGrid {
       }
     };
   };
+  onFocus = (e, row, column) => {
+    let label;
+    if (row.tp === "accessor") {
+      label = "Parameters: (row)";
+    } else if (row.tp === "format") {
+      label = "Parameters: (value)";
+    } else if (row.tp === "aggregation") {
+      label = "Parameters: ([values])";
+    } else if (row.tp === "sort") {
+      label = "Parameters: (rowA, rowB)";
+    }
 
+    const text = {
+      top:
+        (0 + this.range.end.rows) * this.rowHeight +
+        this.state.scroll.rows.shift,
+      left:
+        column.position + this.rowHeight - this.state.scroll.columns.position,
+      v: (column.accessorFunction || (row => row[column.id]))(row),
+      label,
+      editable: column.editable,
+      row,
+      column
+    };
+    this.setState({ text });
+  };
   rowRenderer = (
     row,
     updatedRows,
@@ -100,57 +129,62 @@ export class Rows extends ScrollableGrid {
       index = startIndex;
     while (index < meta.length && left < visibleWidth) {
       const column = meta[index];
-      const columnIndex = index;
-      const selectedRange = this.selectedRange();
-      const selected = isInRange(
-          {
-            columns: index,
-            rows: rowIndex
+      if (!column.hidden) {
+        const columnIndex = index;
+        const selectedRange = this.selectedRange();
+        const selected = isInRange(
+            {
+              columns: index,
+              rows: rowIndex
+            },
+            selectedRange.start,
+            selectedRange.end
+          ),
+          focused =
+            selectedRange.end.rows === rowIndex &&
+            selectedRange.end.columns === index,
+          onClick = e => {
+            e.preventDefault();
+            this.selectCell(
+              { rows: rowIndex, columns: columnIndex },
+              e.shiftKey
+            );
           },
-          selectedRange.start,
-          selectedRange.end
-        ),
-        focused =
-          selectedRange.end.rows === rowIndex &&
-          selectedRange.end.columns === index,
-        onClick = e => {
-          e.preventDefault();
-          this.selectCell({ rows: rowIndex, columns: columnIndex }, e.shiftKey);
-        },
-        onMouseOver = e => {
-          e.preventDefault();
-          if (e.buttons === 1) {
-            // console.log(e.button, e.buttons, rowIndex, columnIndex);
-            this.selectCell({ rows: rowIndex, columns: columnIndex }, true);
-          }
-        };
-
-      cells.push(
-        cell(
-          row,
-          column,
-          updatedRows,
-          {
-            position: "absolute",
-            left,
-            width: column.width,
-            height: rowHeight,
-            textAlign:
-              column.alignement ||
-              (column.dataType === "number"
-                ? "right"
-                : column.dataType === "number" ? "center" : "left")
+          onMouseOver = e => {
+            e.preventDefault();
+            if (e.buttons === 1) {
+              this.selectCell({ rows: rowIndex, columns: columnIndex }, true);
+            }
           },
-          focused,
-          selected,
-          onClick,
-          onMouseOver,
-          this.props.onChange,
-          () => {}, //onDoubleClick,
-          () => {} //onFocus,
-        )
-      );
-      left += column.width;
+          onFocus = column.dataType === "text" ? this.props.onFocus : () => {};
+        cells.push(
+          cell(
+            row,
+            column,
+            updatedRows,
+            {
+              position: "absolute",
+              left,
+              width: column.width || 0,
+              height: rowHeight,
+              textAlign:
+                column.alignement ||
+                (column.dataType === "number"
+                  ? "right"
+                  : column.dataType === "number" ? "center" : "left")
+            },
+            focused,
+            selected,
+            onClick,
+            onMouseOver,
+            this.props.onChange,
+            () => {}, //onDoubleClick,
+            onFocus,
+            rowIndex
+          )
+        );
+        left += column.width || 0;
+      }
       index += 1;
     }
     return (
@@ -159,7 +193,7 @@ export class Rows extends ScrollableGrid {
       </div>
     );
   };
-  // onKeyDown = e => console.log("keydown", e);
+
   getContent = () => {
     const items = [];
     let i = 0,
@@ -205,54 +239,4 @@ export class Rows extends ScrollableGrid {
       </div>
     );
   };
-  // onWheel = e => {
-  //   e.preventDefault();
-  //   const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
-  //   const { height, rowHeight, width, data, meta, scroll } = this.props;
-  //   let { shift, index, startIndex, position } = scroll[sense];
-  //   let direction =
-  //     sense === "columns" ? -Math.sign(e.deltaX) : -Math.sign(e.deltaY);
-  //   const visibleHeight = height - this.scrollbars.horizontal.width;
-  //   const nRows = Math.ceil(visibleHeight / rowHeight);
-
-  //   if (sense === "rows") {
-  //     if (nRows > data.length) {
-  //       direction = 1;
-  //     }
-  //     shift = direction === 1 ? 0 : visibleHeight - nRows * rowHeight;
-  //     if (direction === -1) {
-  //       startIndex = Math.max(
-  //         Math.min(
-  //           scroll.rows.startIndex + (scroll[sense].direction === direction),
-  //           data.length - nRows
-  //         ),
-  //         0
-  //       );
-  //       index = startIndex + nRows - 1;
-  //     } else {
-  //       index = Math.max(
-  //         scroll.rows.startIndex - (scroll[sense].direction === direction),
-  //         0
-  //       );
-  //       startIndex = index;
-  //     }
-  //   } else {
-  //     direction = 1;
-  //     const lastColumn = meta[meta.length - 1];
-  //     position = Math.min(
-  //       Math.max(position + e.deltaX, 0),
-  //       lastColumn.position + lastColumn.width - width
-  //     );
-  //     const column = meta.find(
-  //       column =>
-  //         position >= column.position &&
-  //         position <= column.position + column.width
-  //     );
-  //     shift = column.position - position;
-  //     index = column.index;
-  //     startIndex = index;
-  //   }
-  //   scroll[sense] = { index, direction, startIndex, shift, position };
-  //   this.props.onScroll(scroll);
-  // };
 }

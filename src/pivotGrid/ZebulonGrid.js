@@ -121,6 +121,8 @@ class ZebulonGrid extends Component {
             <Configuration
               id={this.displayId}
               menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
+              configurationFunctions={this.props.configurationFunctions}
+              configuration={this.props.configuration}
               key={this.displayId}
               configurationId={this.displayId}
               isActive={this.props.isActive}

@@ -14,8 +14,12 @@ const formatValue = (value, dataType, format) => {
 export class Input extends Component {
   constructor(props) {
     super(props);
+    let value = props.value;
+    if (props.object && props.objectKey) {
+      value = props.object[props.objectKey];
+    }
     this.state = {
-      value: formatValue(props.value, props.dataType, props.format)
+      value: formatValue(value, props.dataType, props.format)
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -67,9 +71,14 @@ export class Input extends Component {
           });
         }
       }
-      if (this.props.onChange && validatedValue !== undefined) {
+      // if (    validatedValue !== undefined) {
+      if (this.props.row && this.props.id) {
+        this.props.row[this.props.id] = validatedValue;
+      }
+      if (this.props.onChange) {
         this.props.onChange(validatedValue);
       }
+      //   }
     }
   };
   handleBlur = e => {
@@ -95,7 +104,8 @@ export class Input extends Component {
     }
     let type = "text",
       input,
-      checkboxLabel;
+      checkboxLabel,
+      label;
     if (this.props.dataType === "boolean") {
       type = "checkbox";
       checkboxLabel = (
@@ -111,8 +121,12 @@ export class Input extends Component {
           {this.props.label}
         </div>
       );
-    }
-    if (this.props.select) {
+    } else if (this.props.select) {
+      let options = this.props.select;
+      if (typeof options === "function") {
+        options = options(this.props.row);
+      }
+
       input = (
         <select
           className="zebulon-input zebulon-grid-select"
@@ -123,13 +137,28 @@ export class Input extends Component {
 
           // onEnter={() => console.log("enter")}
         >
-          {this.props.select.map((item, index) => (
+          {options.map((item, index) => (
             <option key={index} value={typeof item === "object" ? 1 : item}>
               {typeof item === "object" ? 1 : item}
             </option>
           ))}
         </select>
       );
+      // } else if (this.props.dataType === "text" && this.focused) {
+      //   input = (
+      //     <textarea
+      //       rows="10"
+      //       cols="50"
+      //       id={this.props.id || "textarea"}
+      //       tabIndex={0}
+      //       style={style}
+      //       disabled={!this.props.editable}
+      //       // autoFocus={true}
+      //       value={this.state.value || ""}
+      //       onChange={this.handleChange}
+      //       ref={ref => (this.focused = ref)}
+      //     />
+      //   );
     } else {
       input = (
         <input
@@ -145,7 +174,7 @@ export class Input extends Component {
           onChange={this.handleChange}
           ref={ref => (this.focused = ref)}
           tabIndex={0}
-          onFocus={e => (this.props.openFilter || (() => {}))(e)}
+          onFocus={e => (this.props.onFocus || (() => {}))(e)}
         />
       );
     }
@@ -157,7 +186,7 @@ export class Input extends Component {
     // }
     // const { onChange } = this.props;
     // console.log("style", this.props.style);
-    return (
+    input = (
       <div
         id="div-input"
         key={this.props.id}
@@ -171,6 +200,23 @@ export class Input extends Component {
         {checkboxLabel}
       </div>
     );
+    if (this.props.label && this.props.dataType !== "boolean") {
+      return (
+        <label
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "0.2em"
+          }}
+          // className={this.props.className}
+        >
+          {this.props.label}
+          {input}
+        </label>
+      );
+    } else {
+      return input;
+    }
   }
 }
 

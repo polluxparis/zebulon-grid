@@ -3,10 +3,10 @@ import { AxisType, toAxis, TOTAL_ID, MEASURE_ID } from "../../constants";
 import classnames from "classnames";
 import { isNullOrUndefined } from "../../utils/generic";
 import Filter from "../../containers/Filter";
-import Dataset from "../../containers/Dataset";
-import Properties from "../../containers/Properties";
-import Dimensions from "../../containers/Dimensions";
-import Measures from "../../containers/Measures";
+// import Dataset from "../../containers/Dataset";
+// import Properties from "../../containers/Properties";
+// import Dimensions from "../../containers/Dimensions";
+// import Measures from "../../containers/Measures";
 
 const menuFunctions = (type, fct, data, menus) => {
   const keys = Object.keys(fct);
@@ -163,99 +163,99 @@ const getGridMenu = data => {
           })
       });
     }
-    children.push({
-      id: 100 * menus.length + children.length,
-      type: "sub-menu",
-      separation: true,
-      caption: "Dataset",
-      children: [
-        {
-          id: 10 * (100 * menus.length + children.length),
-          type: "jsx",
-          content: (
-            <div
-              key="dataset"
-              style={{
-                maxHeight: 1000,
-                backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
-              }}
-            >
-              <Dataset />
-            </div>
-          )
-        }
-      ]
-    });
-    children.push({
-      id: 100 * menus.length + children.length,
-      type: "sub-menu",
-      caption: "Properties",
-      children: [
-        {
-          id: 10 * (100 * menus.length + children.length),
-          type: "jsx",
-          content: (
-            <div
-              key="properties"
-              style={{
-                maxHeight: 1000,
-                backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
-              }}
-            >
-              <Properties />
-            </div>
-          )
-        }
-      ]
-    });
-    children.push({
-      id: 100 * menus.length + children.length,
-      type: "sub-menu",
-      caption: "Measures",
-      children: [
-        {
-          id: 10 * (100 * menus.length + children.length),
-          type: "jsx",
-          content: (
-            <div
-              key="measures"
-              style={{
-                maxHeight: 1000,
-                backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
-              }}
-            >
-              <Measures />
-            </div>
-          )
-        }
-      ]
-    });
-    children.push({
-      id: 100 * menus.length + children.length,
-      type: "sub-menu",
-      caption: "Dimensions",
-      children: [
-        {
-          id: 10 * (100 * menus.length + children.length),
-          type: "jsx",
-          content: (
-            <div
-              key="dimensions"
-              style={{
-                maxHeight: 1000,
-                backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
-              }}
-            >
-              <Dimensions />
-            </div>
-          )
-        }
-      ]
-    });
+    // children.push({
+    //   id: 100 * menus.length + children.length,
+    //   type: "sub-menu",
+    //   separation: true,
+    //   caption: "Dataset",
+    //   children: [
+    //     {
+    //       id: 10 * (100 * menus.length + children.length),
+    //       type: "jsx",
+    //       content: (
+    //         <div
+    //           key="dataset"
+    //           style={{
+    //             maxHeight: 1000,
+    //             backgroundColor: "white",
+    //             border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+    //           }}
+    //         >
+    //           <Dataset />
+    //         </div>
+    //       )
+    //     }
+    //   ]
+    // });
+    // children.push({
+    //   id: 100 * menus.length + children.length,
+    //   type: "sub-menu",
+    //   caption: "Properties",
+    //   children: [
+    //     {
+    //       id: 10 * (100 * menus.length + children.length),
+    //       type: "jsx",
+    //       content: (
+    //         <div
+    //           key="properties"
+    //           style={{
+    //             maxHeight: 1000,
+    //             backgroundColor: "white",
+    //             border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+    //           }}
+    //         >
+    //           <Properties />
+    //         </div>
+    //       )
+    //     }
+    //   ]
+    // });
+    // children.push({
+    //   id: 100 * menus.length + children.length,
+    //   type: "sub-menu",
+    //   caption: "Measures",
+    //   children: [
+    //     {
+    //       id: 10 * (100 * menus.length + children.length),
+    //       type: "jsx",
+    //       content: (
+    //         <div
+    //           key="measures"
+    //           style={{
+    //             maxHeight: 1000,
+    //             backgroundColor: "white",
+    //             border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+    //           }}
+    //         >
+    //           <Measures />
+    //         </div>
+    //       )
+    //     }
+    //   ]
+    // });
+    // children.push({
+    //   id: 100 * menus.length + children.length,
+    //   type: "sub-menu",
+    //   caption: "Dimensions",
+    //   children: [
+    //     {
+    //       id: 10 * (100 * menus.length + children.length),
+    //       type: "jsx",
+    //       content: (
+    //         <div
+    //           key="dimensions"
+    //           style={{
+    //             maxHeight: 1000,
+    //             backgroundColor: "white",
+    //             border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+    //           }}
+    //         >
+    //           <Dimensions />
+    //         </div>
+    //       )
+    //     }
+    //   ]
+    // });
     menus.push({
       id: menus.length,
       type: "sub-menu",

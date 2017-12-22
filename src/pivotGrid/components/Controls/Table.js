@@ -3,6 +3,7 @@ import classnames from "classnames";
 import { Headers, Status, Filters } from "./TableHeaders";
 import { Rows } from "./Rows";
 import { Filter } from "../Filter/Filter";
+import { actionDescriptions } from "../PivotGrid/MetaDescriptions";
 export class Table extends Component {
   constructor(props) {
     super(props);
@@ -24,9 +25,17 @@ export class Table extends Component {
       },
       sorts: {},
       filters: {},
-      selectedRange: { start: {}, end: {} }
+      selectedRange: { start: {}, end: {} },
+      detail: {},
+      text: {}
     };
-    this.rowHeight = 25;
+    this.actions = actionDescriptions(props.id, {
+      ...(props.callbacks || {}),
+      onChange: this.onChange,
+      close: this.closeOpenedWindows
+    });
+    this.rowHeight = this.props.rowHeight || 25;
+    this.range = { start: {}, end: {} };
     // this.meta = this.getMeta(props.meta, props.data);
   }
   componentWillReceiveProps(nextProps) {
@@ -41,10 +50,19 @@ export class Table extends Component {
       });
     }
   }
-  onScroll = scroll => {
+  closeOpenedWindows = () => {
     if (this.state.openedFilter) {
-      this.setState({ openedFilter: false });
+      this.setState({ openedFilter: undefined });
     }
+    if (this.state.text.top !== undefined) {
+      this.setState({ text: {} });
+    }
+    if (this.state.detail.content !== undefined) {
+      this.setState({ detail: {} });
+    }
+  };
+  onScroll = scroll => {
+    this.closeOpenedWindows();
     this.setState({ scroll });
   };
   hasParent(element, id) {
@@ -59,17 +77,18 @@ export class Table extends Component {
   handleNavigationKeys = e => {
     // a voir
     const isFilter = this.hasParent(document.activeElement, "filter");
-    if (this.state.openedFilter) {
-      if (e.key === "Escape") {
-        this.setState({ openedFilter: false });
-        return false;
-      } else if (e.key === "Tab") {
-        return false;
-      }
+    if (e.key === "Escape") {
+      this.closeOpenedWindows();
+    }
+    if (this.state.openedFilter && e.key === "Tab") {
+      return false;
+    }
+    if (this.state.detail.content && e.key === "Tab") {
+      return false;
     }
     if (!isFilter && this.rows && this.rows.handleNavigationKeys) {
       if (this.state.openedFilter) {
-        this.setState({ openedFilter: false });
+        this.setState({ openedFilter: undefined });
       }
       return this.rows.handleNavigationKeys(e);
     }
@@ -96,6 +115,12 @@ export class Table extends Component {
       });
     }
     row[column.id] = e;
+    if (column.onChange) {
+      column.onChange(row);
+    }
+    if (this.props.onChange) {
+      this.props.onChange(e, row, column);
+    }
   };
 
   handleDelete = row => {
@@ -125,6 +150,10 @@ export class Table extends Component {
       .concat(row)
       .concat(filteredData.slice(index));
     this.setState({ filteredData, updatedRows });
+    this.selectRange({
+      end: { rows: index, columns: 0 },
+      start: { rows: index, columns: this.state.meta.length - 1 }
+    });
   };
   // ----------------------------------------
   // filtering
@@ -160,9 +189,7 @@ export class Table extends Component {
 
   onChangeFilter = (e, column, filterTo) => {
     // console.log("filter", e, column);
-    if (this.state.openedFilter) {
-      this.setState({ openedFilter: false });
-    }
+    this.closeOpenedWindows();
     if (e !== column.v) {
       if (column.filterType === "=") {
         column.f = row => row[column.id] === e;
@@ -209,7 +236,7 @@ export class Table extends Component {
     this.setState({
       filters,
       filteredData,
-      openedFilter: null
+      openedFilter: undefined
     });
   };
 
@@ -217,16 +244,20 @@ export class Table extends Component {
   //sorting
   // ----------------------------------------
   sorts = (data, sorting) => {
-    const sorts = Object.keys(sorting).filter(
-      key => sorting[key] !== undefined
-    );
+    const sorts = Object.values(sorting)
+      .filter(sort => sort !== undefined)
+      .map(sort => {
+        sort.accessorFunction = sort.accessor || (row => row[sort.id]);
+        return sort;
+      });
     if (sorts.length) {
       const sort = (rowA, rowB) =>
         sorts.reduce(
           (acc, sort) =>
             acc === 0
-              ? ((rowA[sort] > rowB[sort]) - (rowB[sort] > rowA[sort])) *
-                (sorting[sort].direction === "asc" ? 1 : -1)
+              ? ((sort.accessorFunction(rowA) > sort.accessorFunction(rowB)) -
+                  (sort.accessorFunction(rowB) > sort.accessorFunction(rowA))) *
+                (sort.direction === "asc" ? 1 : -1)
               : acc,
           0
         );
@@ -234,9 +265,7 @@ export class Table extends Component {
     }
   };
   onSort = (column, doubleClick) => {
-    if (this.state.openedFilter) {
-      this.setState({ openedFilter: false });
-    }
+    this.closeOpenedWindows();
     // if (this.state.filteredData===this.state.data)
     let sorts = { ...this.state.sorts };
     if (doubleClick) {
@@ -253,7 +282,12 @@ export class Table extends Component {
     } else if (column.sort === "desc") {
       column.sort = undefined;
     }
-    sorts[column.id] = { index: column.index_, direction: column.sort };
+    sorts[column.id] = {
+      index: column.index_,
+      direction: column.sort,
+      id: column.id,
+      accessor: column.accessor
+    };
     if (column.sort === undefined) {
       delete sorts[column.id];
     }
@@ -298,14 +332,12 @@ export class Table extends Component {
   //   return ok;
   // };
   handleClickButton = index => {
-    if (this.state.openedFilter) {
-      this.setState({ openedFilter: false });
-    }
-    const button = this.props.actions[index];
-    const rowIndex = this.state.selectedRange.rowIndex;
+    this.closeOpenedWindows();
+    const button = this.actions[index];
+    const rowIndex = this.state.selectedRange.end.rows;
     let row = {};
     if (rowIndex !== undefined) {
-      row = this.state.data[rowIndex];
+      row = this.state.filteredData[rowIndex];
     }
     if (
       this.state.selectedRange ||
@@ -318,6 +350,8 @@ export class Table extends Component {
       } else if (button.type === "save") {
         const ok = this.handleSave();
         return ok;
+      } else if (button.type === "detail" && button.content) {
+        this.setState({ detail: button });
       } else {
         return this.handleAction(button);
       }
@@ -325,9 +359,52 @@ export class Table extends Component {
   };
   selectRange = range => {
     if (this.state.openedFilter) {
-      this.setState({ openedFilter: false });
+      this.setState({ openedFilter: undefined });
+    }
+    if (
+      this.state.text.top !== undefined &&
+      this.state.meta[range.end.columns].dataType !== "text"
+    ) {
+      this.setState({ text: {} });
+    }
+    if (
+      this.state.detail.content !== undefined &&
+      range.end.rows !== this.state.selectedRange.end.rows
+    ) {
+      this.setState({ detail: {} });
     }
     this.setState({ selectedRange: range });
+    this.range = range;
+  };
+  onFocus = (e, row, column, rowIndex) => {
+    let label;
+    if (row.tp === "accessor") {
+      label = "Parameters: (row,params)";
+    } else if (row.tp === "format") {
+      label = "Parameters: (value)";
+    } else if (row.tp === "aggregation") {
+      label = "Parameters: ([values])";
+    } else if (row.tp === "sort") {
+      label = "Parameters: (rowA, rowB)";
+    } else if (row.tp === "window") {
+      label = "Parameters: (value)";
+    }
+    const text = {
+      top: (3 + rowIndex) * this.rowHeight + this.state.scroll.rows.shift,
+      left:
+        column.position + this.rowHeight - this.state.scroll.columns.position,
+      v: (column.accessorFunction || (row => row[column.id]))(row),
+      label,
+      editable: column.editable,
+      row,
+      column
+    };
+    this.setState({ text });
+  };
+  handleTextChange = e => {
+    const { row, column } = this.state.text;
+    this.setState({ text: { ...this.state.text, v: e.target.value } });
+    this.onChange(e.target.value, row, column);
   };
   render() {
     const height = this.props.height,
@@ -341,15 +418,15 @@ export class Table extends Component {
     // -----------------------------
     //   action buttons
     // -----------------------------
-    const actions = (this.props.actions || []).map((action, index) => {
+    const actions = (this.actions || []).map((action, index) => {
       if (!this.doubleclickAction && action.type === "select") {
         this.doubleclickAction = action;
       }
       let disable = false;
       if (typeof action.disable === "function") {
         const row =
-          this.state.selectedRange.end.rows !== undefined
-            ? this.state.data[this.state.selectedRange.end.rows]
+          this.range.end.rows !== undefined
+            ? this.state.filteredData[this.range.end.rows]
             : {};
         const status = this.state.updatedRows[row.index_];
         disable = action.disable(row, status);
@@ -359,7 +436,7 @@ export class Table extends Component {
           key={index}
           disabled={disable}
           style={{
-            width: `${98 / this.props.actions.length}%`,
+            width: `${98 / this.actions.length}%`,
             margin: 2,
             backgroundColor: "lightgrey"
           }}
@@ -373,6 +450,7 @@ export class Table extends Component {
     // filters
     // -----------------------------------
     // between
+    // ----------------------------------
     let betweens = null;
     if (
       this.props.meta.findIndex(column => column.filterType === "between") !==
@@ -392,10 +470,11 @@ export class Table extends Component {
         />
       );
     }
-
-    // check list
+    // -----------------------------------
+    // Filter check list
+    // -----------------------------------
     const { openedFilter, filters } = this.state;
-    if (openedFilter) {
+    if (openedFilter !== undefined) {
       const { top, left, items, v } = filters[openedFilter];
       this.filter = (
         <Filter
@@ -406,6 +485,7 @@ export class Table extends Component {
             position: "absolute",
             border: "solid 0.1em rgba(0, 0, 0, 0.5)",
             backgroundColor: "white",
+            fontFamily: "inherit",
             top,
             left,
             zIndex: 3,
@@ -417,6 +497,66 @@ export class Table extends Component {
     } else {
       this.filter = undefined;
     }
+    // ------------------------
+    // text area
+    // ------------------------
+
+    const { top, left, v, editable, label } = this.state.text;
+    if (top !== undefined) {
+      this.text = (
+        <div
+          style={{
+            position: "absolute",
+            border: "solid 0.1em rgba(0, 0, 0, 0.5)",
+            backgroundColor: "white",
+            top: top + (betweens !== null) * this.rowHeight,
+            left,
+            zIndex: 3,
+            opacity: 1
+          }}
+        >
+          <div>{label} </div>
+          <textarea
+            rows="10"
+            cols="80"
+            id={"textarea"}
+            tabIndex={0}
+            style={{ top, left }}
+            disabled={!editable}
+            autoFocus={true}
+            value={v || ""}
+            onChange={this.handleTextChange}
+            // ref={ref => (this.focused = ref)}
+          />
+        </div>
+      );
+    } else {
+      this.text = undefined;
+    }
+    let detail = this.state.detail.content;
+    if (detail) {
+      const row =
+        this.range.end.rows !== undefined
+          ? this.state.filteredData[this.range.end.rows]
+          : {};
+      const status = this.state.updatedRows[row.index_];
+      //       top: (3 + rowIndex) * this.rowHeight + this.state.scroll.rows.shift,
+      // left:
+      //   column.position + this.rowHeight - this.state.scroll.columns.position
+      detail = detail(
+        row,
+        this.state.data,
+        this.state.meta,
+        status,
+        this.props.params,
+        (4 +
+          (betweens !== null) +
+          this.state.selectedRange.end.rows -
+          this.state.scroll.rows.startIndex) *
+          this.rowHeight +
+          this.state.scroll.rows.shift
+      );
+    }
     // ----------------------------------
     return (
       <div
@@ -427,7 +567,9 @@ export class Table extends Component {
         // onMouseUp={e => console.log("mouseup", e.target)}
         // onMouseleave={e => console.log("mouseleave", e.target)}
       >
+        {detail}
         {this.filter}
+        {this.text}
         <Headers
           type="header"
           onSort={this.onSort}
@@ -459,6 +601,8 @@ export class Table extends Component {
             rowHeight={this.rowHeight}
             scroll={this.state.scroll.rows}
             updatedRows={this.state.updatedRows}
+            selectRange={this.selectRange}
+            meta={this.state.meta}
           />
           <Rows
             meta={this.state.meta}
@@ -472,9 +616,10 @@ export class Table extends Component {
             rowHeight={this.rowHeight}
             scroll={this.state.scroll}
             onScroll={this.onScroll}
-            // selectedRange={this.state.selectedRange}
+            selectedRange={this.state.selectedRange}
             selectRange={this.selectRange}
             onChange={this.onChange}
+            onFocus={this.onFocus}
             updatedRows={this.state.updatedRows}
             ref={ref => (this.rows = ref)}
           />

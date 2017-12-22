@@ -172,7 +172,7 @@ class ZebulonGridDemo extends Component {
             onChange={() => this.setState({ display: !this.state.display })}
             checked={this.state.display}
           />
-          <label for="configuration">Configuration</label>
+          <label htmlFor="configuration">Configuration</label>
         </div>
         <ResizableBox
           height={this.state.sizes.height}

@@ -5,14 +5,17 @@ import { indexedRowsSelector, metaSelector } from "../selectors";
 //   updateMeta
 // } from "../actions";
 
-const mapStateToProps = state => {
-    return {
-        status: state.status,
-        width: state.configuration.width,
-        height: state.configuration.height,
-        data: indexedRowsSelector(state),
-        meta: metaSelector(state)
-    };
+const mapStateToProps = (state, ownProps) => {
+	return {
+		status: state.status,
+		width: state.configuration.width,
+		height: state.configuration.height,
+		data: indexedRowsSelector(state),
+		meta: metaSelector(state),
+		// measures: Object.values(state.measures),
+		// dimensions: dimensionsWithAxisSelector(state),
+		...ownProps
+	};
 };
 
 export default connect(mapStateToProps)(Configuration);

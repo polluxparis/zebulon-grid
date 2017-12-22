@@ -184,3 +184,8 @@ export const stringToDate = (s, fmt) => {
     ? new Date(`${ds[2]}-${ds[1].padStart(2, 0)}-${ds[0].padStart(2, 0)}`)
     : undefined;
 };
+export const isNavigationKey = e =>
+  (e.which > 32 && e.which < 41) || // arrows...
+  e.which === 9 || // tab
+  e.which === 27 || // escape
+  (e.which === 65 && (e.metaKey || e.ctrlKey));

@@ -10,6 +10,7 @@ import DimensionHeaders from "../../containers/DimensionHeaders";
 import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
 import DragLayer from "./DragLayer";
+import { isNavigationKey } from "../../utils/generic";
 // import { isEmpty } from "../../utils/generic";
 import {
   ZOOM_IN,
@@ -171,11 +172,7 @@ class PivotGrid extends Component {
       this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
       const { headers } = this.props;
       // const { rows, columns } = headers;
-      if (
-        (e.which > 32 && e.which < 41) ||
-        e.which === 9 ||
-        (e.which === 65 && (e.metaKey || e.ctrlKey))
-      ) {
+      if (isNavigationKey(e)) {
         this.dataCells.handleNavigationKeys(e);
       } else if (e.metaKey || e.ctrlKey) {
         // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +

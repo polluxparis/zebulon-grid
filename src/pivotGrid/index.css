@@ -51,6 +51,12 @@
   padding: 0;
   background-color: inherit;
 }
+.zebulon-input-label: {
+  border: solid lightgrey thin;
+  box-sizing: border-box;
+  padding: 0;
+  background-color: inherit;
+}
 .zebulon-table-cell {
   overflow: hidden;
   white-space: nowrap;
@@ -84,6 +90,9 @@
 }
 .zebulon-table-filter {
   padding: 0;
+}
+.zebulon-table-filter-empty {
+  background-color: white;
 }
 .zebulon-table-status {
   outline: none;
