@@ -1,8 +1,9 @@
 import React from "react";
-import { AxisType, toAxis, TOTAL_ID, MEASURE_ID } from "../../constants";
-import classnames from "classnames";
-import { isNullOrUndefined } from "../../utils/generic";
+// import classnames from "classnames";
+import { constants } from "zebulon-controls";
 import Filter from "../../containers/Filter";
+const { AxisType, toAxis, TOTAL_ID, MEASURE_ID } = constants;
+// const { isNullOrUndefined } = utils;
 // import Dataset from "../../containers/Dataset";
 // import Properties from "../../containers/Properties";
 // import Dimensions from "../../containers/Dimensions";
@@ -32,11 +33,11 @@ const menuFunctions = (type, fct, data, menus) => {
 const getGridMenu = data => {
   const menus = [];
   const features = data.configuration.features;
-  let fct = data.menuFunctions.dataCellFunctions || {},
-    keys,
-    cellFunctions,
-    rangeFunctions,
-    gridFunctions;
+  // let // fct = data.menuFunctions.dataCellFunctions || {},
+  //   // keys,
+  //   cellFunctions,
+  //   rangeFunctions,
+  //   gridFunctions;
   menuFunctions(
     "Cell",
     data.menuFunctions.dataCellFunctions || {},
@@ -66,13 +67,17 @@ const getGridMenu = data => {
               content: (
                 <div
                   key={dimension.id}
+                  id="filter"
                   style={{
                     maxHeight: 600,
                     backgroundColor: "white",
                     border: " solid 0.05em rgba(0, 0, 0, 0.5)"
                   }}
                 >
-                  <Filter dimensionId={dimension.id} />
+                  <Filter
+                    dimensionId={dimension.id}
+                    title={dimension.caption}
+                  />
                 </div>
               )
             }
@@ -327,7 +332,7 @@ const getDimensionMenu = data => {
     collapseAll,
     moveDimension
   } = data;
-  const { hasAttribute, hasSubTotal, hasGrandTotal } = dimension;
+  const { hasSubTotal, hasGrandTotal } = dimension;
   const availableDimensions = data.availableDimensions.filter(
     dimension => dimension.id !== MEASURE_ID
   );
@@ -398,13 +403,15 @@ const getDimensionMenu = data => {
           content: (
             <div
               key="filters"
+              id="filter"
               style={{
                 maxHeight: 600,
                 backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+                border: " solid 0.05em rgba(0, 0, 0, 0.5)",
+                fontFamily: "inherit"
               }}
             >
-              <Filter dimensionId={dimension.id} />
+              <Filter dimensionId={dimension.id} title={dimension.caption} />
             </div>
           )
         }

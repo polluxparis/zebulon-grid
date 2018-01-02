@@ -3,7 +3,7 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
 import Chart from "./containers/Chart";
-import Configuration from "./containers/Configuration";
+import { ZebulonTableAndConfiguration } from "zebulon-table";
 import reducer from "./reducers";
 import "./index.css";
 import {
@@ -15,7 +15,7 @@ import {
   pushData
 } from "./utils/configuration";
 import * as actions from "./actions";
-
+console.log("ZebulonTableAndConfiguration", ZebulonTableAndConfiguration);
 class ZebulonGrid extends Component {
   componentWillMount() {
     const { data, configuration, configurationFunctions, sizes } = this.props;
@@ -33,15 +33,37 @@ class ZebulonGrid extends Component {
     );
   }
   componentDidMount() {
-    document.addEventListener("copy", this.handleCopy);
-    document.addEventListener("paste", this.handlePaste);
-    document.addEventListener("keydown", this.handleKeyDown);
+    if (!this.props.keyEvent === undefined) {
+      document.addEventListener("copy", this.handleCopy);
+      document.addEventListener("paste", this.handlePaste);
+      document.addEventListener("keydown", this.handleKeyDown);
+    }
   }
   componentDidUnMount() {
-    document.removeEventListener("copy", this.handleCopy);
-    document.removeEventListener("paste", this.handlePaste);
-    document.removeEventListener("keydown", this.handleKeyDown);
+    if (!this.props.keyEvent === undefined) {
+      document.removeEventListener("copy", this.handleCopy);
+      document.removeEventListener("paste", this.handlePaste);
+      document.removeEventListener("keydown", this.handleKeyDown);
+    }
   }
+  shouldComponentUpdate() {
+    if (this.updateKey) {
+      this.updateKey = false;
+      return false;
+    }
+    return true;
+  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.keyEvent !== nextProps.keyEvent)
+  //     this.handleKeyEvent(nextProps.keyEvent);
+  // }
+  handleKeyEvent = e => {
+    if (!this.display) return;
+    else if (e.type === "copy") this.handleCopy(e);
+    else if (e.type === "paste") this.handlepaste(e);
+    else if (e.type === "keydown") this.handleKeyDown(e);
+    this.updateKey = true;
+  };
   handleKeyDown = e => {
     if (
       !e.defaultPrevented &&
@@ -75,7 +97,8 @@ class ZebulonGrid extends Component {
       configuration,
       configurationFunctions,
       pushedData,
-      sizes
+      sizes,
+      keyEvent
     } = nextProps;
     // this.sizes = { ...defaultSizes, ...sizes };
 
@@ -94,6 +117,7 @@ class ZebulonGrid extends Component {
     } else if (this.props.pushedData !== pushedData && pushedData.length) {
       pushData(this.store, pushedData);
     }
+    if (this.props.keyEvent !== keyEvent) this.handleKeyEvent(keyEvent);
   }
 
   render() {
@@ -115,18 +139,39 @@ class ZebulonGrid extends Component {
 
     if (this.props.display === "configuration") {
       this.displayId = `configuration-${this.props.id || 0}`;
+      const data = this.store.getState().data.data;
+      const tabs = [
+        {
+          id: "measures",
+          caption: "Measures",
+          data: this.props.configuration.measures.map((measure, index) => {
+            measure.index_ = index;
+            return measure;
+          })
+        },
+        {
+          id: "dimensions",
+          caption: "Dimensions",
+          data: this.props.configuration.dimensions.map((dimension, index) => {
+            dimension.index_ = index;
+            return dimension;
+          })
+        }
+      ];
       div = (
         <div>
           <Provider store={this.store}>
-            <Configuration
-              id={this.displayId}
-              menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-              configurationFunctions={this.props.configurationFunctions}
-              configuration={this.props.configuration}
+            <ZebulonTableAndConfiguration
               key={this.displayId}
               configurationId={this.displayId}
-              isActive={this.props.isActive}
-              getRef={ref => (this.display = ref)}
+              sizes={this.props.sizes}
+              data={data}
+              meta={this.props.meta}
+              functions={this.props.functions}
+              params={this.props.params}
+              status={{}}
+              tabs={tabs}
+              ref={ref => (this.display = ref)}
             />
           </Provider>
         </div>
@@ -141,7 +186,7 @@ class ZebulonGrid extends Component {
               menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
               key={this.displayId}
               configurationId={this.displayId}
-              isActive={this.props.isActive}
+              // isActive={this.props.isActive}
               getRef={ref => (this.display = ref)}
             />
           </Provider>

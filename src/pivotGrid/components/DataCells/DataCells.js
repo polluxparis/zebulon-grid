@@ -1,17 +1,10 @@
 import React from "react";
-
-import { isInRange, isUndefined } from "../../utils/generic";
+import { utils, constants } from "zebulon-controls";
 import DataCell from "../DataCell/DataCell";
-import {
-  MEASURE_ID,
-  AXIS_SEPARATOR,
-  HeaderType,
-  AxisType,
-  toAxis
-} from "../../constants";
-import { ScrollableGrid } from "../controls/ScrollableGrid";
+import { ScrollableGrid } from "zebulon-controls";
 import { getSelectedText } from "../../services/copyService";
-// import { ReactHint } from "../controls/ContextualMenu";
+const { isInRange, isUndefined } = utils;
+const { AXIS_SEPARATOR, HeaderType, AxisType, toAxis } = constants;
 export class DataCells extends ScrollableGrid {
   // -------------------------------------
   // life cycle
@@ -166,7 +159,7 @@ export class DataCells extends ScrollableGrid {
     this.cellCache[key].value = value;
   };
   editData = (rowLeaf, columnLeaf) => {
-    const { rows, columns } = this.props;
+    // const { rows, columns } = this.props;
     const { newValue, oldValue, comment } = this;
     if (newValue !== oldValue || this.comment) {
       const data = this.props.buildData(
@@ -194,7 +187,7 @@ export class DataCells extends ScrollableGrid {
   // ------------------------------------------------
   handleMouseOver = e => {
     if (!this.state.toolTip.modal) {
-      const { columnIndex, rowIndex, button, buttons } = e;
+      const { columnIndex, rowIndex, button } = e;
       if (this.isMouseDown && button === 0 && !e.openComment) {
         if (
           !(
@@ -280,8 +273,8 @@ export class DataCells extends ScrollableGrid {
     if (type === "Cell") {
       this.props.menuFunctions.dataCellFunctions[fct].function(
         this.props.getCellInfos({
-          columnIndex: data.columnIndex,
-          rowIndex: data.rowIndex
+          columns: data.columnIndex,
+          rows: data.rowIndex
         })
       );
     } else if (type === "Range") {

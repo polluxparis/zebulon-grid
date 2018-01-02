@@ -332,22 +332,14 @@
   border-radius: 5px;
 }
 .zebulon-tabs-list {
-  /*border-bottom: 1px solid #aaa;*/
-  /* margin: 0 0 10px;
-  padding: 0px;*/
   width: inherit;
   justify-content: space-around;
 }
 .zebulon-tabs-tab {
   border: 1px solid #aaa;
-  /*border-bottom: unset;*/
-  /*border-bottom: 1px solid #aaa;*/
-  /* margin: 0 0 10px;
-  padding: 0px;*/
-  /*border-color: black;*/
   text-align: center;
   border-radius: 5px 5px 0 0;
-  width: -webkit-fill-available;
+  width: stretch;
   cursor: pointer;
 }
 .zebulon-tabs-tab-selected {
@@ -358,58 +350,19 @@
   color: black;
 }
 /*------------------------------------*/
-/*.react-hint__content {
-  padding: 10px;
-  border-radius: 5px;
-  background: #000;
-  color: #fff;
+.react-resizable {
+  position: relative;
 }
-
-.react-hint:after {
-  content: "";
-  width: 0;
-  height: 0;
-  margin: auto;
-  display: block;
+.react-resizable-handle {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  width: 12px;
+  height: 12px;
   bottom: 0;
-  border: 5px solid transparent;
+  right: 0;
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+");
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  cursor: se-resize;
 }
-
-.react-hint--top:after {
-  top: auto;
-  border-bottom: none;
-  border-top-color: #000;
-}
-
-.react-hint--left:after {
-  left: auto;
-  border-right: none;
-  border-left-color: #000;
-}
-
-.react-hint--right:after {
-  right: auto;
-  border-left: none;
-  border-right-color: #000;
-}
-
-.react-hint--bottom:after {
-  bottom: auto;
-  border-top: none;
-  border-bottom-color: #000;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-*/

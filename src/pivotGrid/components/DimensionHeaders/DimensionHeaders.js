@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 
-import { AxisType, MEASURE_ID, TOTAL_ID } from "../../constants";
+import { utils, constants } from "zebulon-controls";
 import DimensionHeader from "../DimensionHeader/DimensionHeader";
-import { isNullOrUndefined } from "../../utils/generic";
+const { AxisType, MEASURE_ID, TOTAL_ID } = constants;
+const { isNullOrUndefined } = utils;
+
 class DimensionHeaders extends Component {
   componentDidMount() {
     this.setCollapsibles();

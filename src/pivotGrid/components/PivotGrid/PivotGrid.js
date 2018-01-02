@@ -10,16 +10,10 @@ import DimensionHeaders from "../../containers/DimensionHeaders";
 import ColumnHeaders from "../../containers/ColumnHeaders";
 import RowHeaders from "../../containers/RowHeaders";
 import DragLayer from "./DragLayer";
-import { isNavigationKey } from "../../utils/generic";
+// import { utils } from "zebulon-controls";
 // import { isEmpty } from "../../utils/generic";
-import {
-  ZOOM_IN,
-  ZOOM_OUT,
-  // AxisType,
-  // toAxis,
-  ScrollbarSize
-} from "../../constants";
-import { ContextualMenu } from "../controls/ContextualMenu";
+import { constants, utils } from "zebulon-controls";
+import { ContextualMenu } from "zebulon-controls";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -93,21 +87,6 @@ class PivotGrid extends Component {
     super(props);
     this.state = { toolTip: { style: { opacity: 0 }, modal: false } };
   }
-  // componentDidMount() {
-  //   // this.element = document.getElementById(this.props.id);
-  //   // if (this.element) {
-  //   document.addEventListener("copy", this.handleCopy);
-  //   document.addEventListener("paste", this.handlePaste);
-  //   document.addEventListener("keydown", this.handleKeyDown);
-  //   // }
-  // }
-  // componentDidUnMount() {
-  //   // if (this.element) {
-  //   document.removeEventListener("copy", this.handleCopy);
-  //   document.removeEventListener("paste", this.handlePaste);
-  //   document.removeEventListener("keydown", this.handleKeyDown);
-  //   // }
-  // }
   componentDidUpdate(prevProps) {
     const { height, width, setSizes } = this.props;
     if (height !== prevProps.height || width !== prevProps.width) {
@@ -124,116 +103,66 @@ class PivotGrid extends Component {
       this.contextualMenu &&
       this.contextualMenu.state.menu &&
       this.contextualMenu.state.menu.visible
-      // &&
-      // !nextProps.isActive
     ) {
-      this.contextualMenu.close();
+      this.closeOpenedWindows();
     }
   }
-  // nextVisible = (leaves, index, direction, offset) => {
-  //   let ix = 0,
-  //     n = 0;
-  //   if (offset === 0) {
-  //     ix = -direction;
-  //     n = -1;
-  //   }
-  //   while (
-  //     n < offset &&
-  //     (direction === 1 ? index + ix < leaves.length - 1 : index + ix > 0)
-  //   ) {
-  //     ix += direction;
-  //     n += leaves[index + ix].isVisible || 0;
-  //   }
-  //   return index + ix;
-  // };
-
-  //-----------------------------
-  handleKeyDown = e => {
-    if (
-      this.contextualMenu &&
-      this.contextualMenu.state.menu &&
-      this.contextualMenu.state.menu.visible
-    ) {
-      if (this.contextualMenu.handleKeyDown(e)) {
-        return;
-      }
-    }
-    if (
-      this.state.toolTip.modal &&
-      (e.key === "Tab" || e.key === "Enter" || e.key === "Escape")
-    ) {
-      return;
-    }
-    if (
-      !e.defaultPrevented && this.props.isActive === undefined
-        ? true
-        : this.props.isActive
-    ) {
-      this.modifierKeyIsPressed = e.ctrlKey || e.metaKey;
-      const { headers } = this.props;
-      // const { rows, columns } = headers;
-      if (isNavigationKey(e)) {
-        this.dataCells.handleNavigationKeys(e);
-      } else if (e.metaKey || e.ctrlKey) {
-        // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-        if (e.key === "+" || e.key === "=") {
-          this.props.zoom(ZOOM_IN);
-          e.preventDefault();
-        }
-        // ctrl - -> zoom out
-        // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-        if (e.key === "-" || e.key === "_") {
-          this.props.zoom(ZOOM_OUT);
-          e.preventDefault();
-        }
-      }
+  // ------------------------------------
+  // Navigation
+  // ------------------------------------
+  closeOpenedWindows = () => {
+    this.contextualMenu.close();
+    if (this.state.toolTip.comment !== undefined) {
+      this.setState({
+        toolTip: { toolTip: { style: { opacity: 0 }, modal: false } }
+      });
     }
   };
-  // handleWheel = e => {
-  //   if (!e.defaultPrevented) {
-  //     e.preventDefault();
-  //     const { rows, columns } = this.props.headers;
-  //     const sense = e.altKey || e.deltaX !== 0 ? "columns" : "rows";
-  //     const leaves = sense === "columns" ? columns : rows;
-  //     const direction = Math.sign(sense === "columns" ? e.deltaX : e.deltaY);
 
-  //     const prevIndex = direction === 1 ? leaves.stopIndex : leaves.startIndex;
-  //     const offset = leaves.direction === direction && leaves.offset > 2;
-  //     const index = this.nextVisible(
-  //       leaves.leaves,
-  //       prevIndex - offset,
-  //       direction,
-  //       1
-  //     );
-  //     const scroll = { rows: rows.scroll, columns: columns.scroll };
-  //     if (sense === "columns") {
-  //       scroll.columns = { index, direction: -direction };
-  //       this.onScroll(scroll.rows, scroll.columns);
-  //     } else {
-  //       scroll.rows = { index, direction: -direction };
-  //       this.onScroll(scroll.rows, scroll.columns);
-  //     }
-  //   }
-  // };
-  handleCopy = e => {
-    if (
-      // Works only if the grid is focused
-      this.modifierKeyIsPressed && this.props.isActive === undefined
-        ? true
-        : this.props.isActive
-    ) {
-      this.props.copy(this.props.selectedRange);
+  hasParent(element, id) {
+    if (!element.parentElement) {
+      return false;
+    } else if (element.parentElement.id === id) {
+      return true;
+    } else {
+      return this.hasParent(element.parentElement, id);
     }
+  }
+  handleKeyDown = e => {
+    // a voir
+    const isFilter = this.hasParent(document.activeElement, "filter");
+    if (e.key === "Escape") {
+      this.closeOpenedWindows();
+    }
+    if (this.state.openedFilter && e.key === "Tab") {
+      return false;
+    }
+    // if (this.state.detail.content && e.key === "Tab") {
+    //   return false;
+    // }
+    if (
+      !isFilter &&
+      this.dataCells &&
+      this.dataCells.handleNavigationKeys &&
+      utils.isNavigationKey(e)
+    ) {
+      if (this.state.openedFilter) {
+        this.setState({ openedFilter: undefined });
+      }
+      // if (e.type === "copy") return this.handleCopy(e);
+      // else if (e.type === "paste") return this.handlePaste(e);
+      // else if (e.type === "keydown")
+      return this.dataCells.handleNavigationKeys(e);
+    }
+  };
+  //-----------------------------
+  handleCopy = e => {
+    this.closeOpenedWindows();
+    this.props.copy(this.props.selectedRange);
   };
   handlePaste = e => {
-    if (
-      // Works only if the grid is focused
-      this.props.editable &&
-      this.modifierKeyIsPressed &&
-      this.props.isActive === undefined
-        ? true
-        : this.props.isActive
-    ) {
+    this.closeOpenedWindows();
+    if (this.props.editable) {
       const data = this.props.paste(
         e.clipboardData.getData("text"),
         this.props.selectedRange.end
@@ -256,6 +185,7 @@ class PivotGrid extends Component {
       (scrollToRow.index !== rows.index ||
         scrollToRow.direction !== rows.direction)
     ) {
+      this.closeOpenedWindows();
       this.props.scrollToRow(scrollToRow);
     }
     if (
@@ -263,6 +193,7 @@ class PivotGrid extends Component {
       (scrollToColumn.index !== columns.index ||
         scrollToColumn.direction !== columns.direction)
     ) {
+      this.closeOpenedWindows();
       this.props.scrollToColumn(scrollToColumn);
     }
   };
@@ -295,8 +226,8 @@ class PivotGrid extends Component {
     } else if (rows !== undefined && columns !== undefined) {
       // this.computeGrid(rows, columns);
       const scrollbarsWidth = {
-        horizontal: ScrollbarSize * (columns.hasScrollbar || 0),
-        vertical: ScrollbarSize * (rows.hasScrollbar || 0)
+        horizontal: constants.ScrollbarSize * (columns.hasScrollbar || 0),
+        vertical: constants.ScrollbarSize * (rows.hasScrollbar || 0)
       };
       const dataCellsSizes = {
         height: Math.min(

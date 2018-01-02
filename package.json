@@ -45,7 +45,9 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "zebulon-controls": "file:../controls/zebulon-controls-1.0.0.tgz",
+    "zebulon-table": "file:../table/zebulon-table-1.0.0.tgz"
   },
   "scripts": {
     "start": "react-scripts start",

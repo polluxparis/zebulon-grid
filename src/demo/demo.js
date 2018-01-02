@@ -119,17 +119,21 @@ const cellDisplay = cell => {
     <li key={"value"}>{Math.round(cell.value.value * 10000) / 10000}</li>
   );
   return (
-    <div style={{ display: "flex" }}>
-      <div style={{ width: 150 }}>
+    <div style={{ display: "flex", height: "fitContent" }}>
+      <div style={{ width: 150, height: "auto" }}>
         <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Rows</div>
         <ul style={{ paddingLeft: "20px" }}> {rows}</ul>
       </div>
       <div style={{ width: 150 }}>
-        <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Columns</div>
+        <div style={{ paddingLeft: "5px", fontWeight: "bold", height: "auto" }}>
+          Columns
+        </div>
         <ul style={{ paddingLeft: "20px" }}> {columns}</ul>
       </div>
       <div style={{ width: 90 }}>
-        <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>Value</div>
+        <div style={{ paddingLeft: "5px", fontWeight: "bold", height: "auto" }}>
+          Value
+        </div>
         <ul style={{ paddingLeft: "20px" }}> {value}</ul>
       </div>
     </div>
@@ -185,7 +189,7 @@ const rangeDisplay = range => {
       style={{
         width: 160,
         borderLeft: "solid 0.02em",
-        height: 100
+        height: "auto"
       }}
     >
       <div style={{ paddingLeft: "5px", fontWeight: "bold" }}>
@@ -195,8 +199,8 @@ const rangeDisplay = range => {
     </div>
   );
   const div = (
-    <div style={{ display: "flex" }}>
-      <div style={{ borderLeft: "solid 0.02em", height: 100 }}>
+    <div style={{ display: "flex", height: "fitContent" }}>
+      <div style={{ borderLeft: "solid 0.02em", height: "auto" }}>
         <div
           style={{
             paddingLeft: "5px",
@@ -208,7 +212,7 @@ const rangeDisplay = range => {
         </div>
         {divFrom}
       </div>
-      <div style={{ borderLeft: "solid 0.02em", height: 100 }}>
+      <div style={{ borderLeft: "solid 0.02em", height: "auto" }}>
         <div
           style={{
             paddingLeft: "5px",

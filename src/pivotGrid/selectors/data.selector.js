@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { intersec } from "../utils/headers";
-import { isUndefined, isDate, dateToString } from "../utils/generic";
+import { isUndefined, isDate } from "../utils/generic";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
 import { availableDimensionsSelector } from "./dimensions.selector";
 

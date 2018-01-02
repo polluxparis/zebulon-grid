@@ -1,16 +1,10 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import { ContextualMenuClient } from "../controls/ContextualMenu";
+import { ContextualMenuClient, constants } from "zebulon-controls";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 
-import {
-  MEASURE_ID,
-  ROOT_ID,
-  TOTAL_ID,
-  AxisType,
-  toAxis
-} from "../../constants";
+const { MEASURE_ID, ROOT_ID, AxisType } = constants;
 // import { ContextMenuTrigger } from "react-contextmenu";
 
 class DimensionHeader extends PureComponent {
@@ -127,10 +121,10 @@ class DimensionHeader extends PureComponent {
         />
       ];
     }
-    let menuTrigger = null;
-    if (true) {
-      menuTrigger = `context-menu-${gridId}`;
-    }
+    // let menuTrigger = null;
+    // if (true) {
+    //   menuTrigger = `context-menu-${gridId}`;
+    // }
     let header = (
       <div
         key={`fixed-dim-${dimension.id}`}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as aggregations from "../../utils/aggregation";
-import { Input } from "../controls/Input";
+import { Input } from "zebulon-controls";
 class Property extends Component {
 	constructor(props) {
 		super(props);

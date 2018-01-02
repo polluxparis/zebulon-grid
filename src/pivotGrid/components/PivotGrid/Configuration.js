@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import cx from "classnames";
-import { Table } from "../controls/Table";
-import { metaDescriptions, metaFunctions } from "./MetaDescriptions";
+import ZebulonTable from "zebulon-table";
+import {
+	metaDescriptions,
+	metaFunctions,
+	actionDescriptions
+} from "./MetaDescriptions";
 import { isNavigationKey } from "../../utils/generic";
 
 export default class Configuration extends Component {
@@ -24,7 +28,7 @@ export default class Configuration extends Component {
 				return measure;
 			})
 		};
-		let meta = metaDescriptions(
+		const meta = metaDescriptions(
 			this.state.functions,
 			this.state.meta,
 			props
@@ -45,9 +49,6 @@ export default class Configuration extends Component {
 			});
 		}
 	}
-	// componentWillReceiveProps(newProps) {
-	// 	this.init(newProps);
-	// }
 	handleKeyDown = e => {
 		if (isNavigationKey(e)) {
 			const tab = this.tabs[this.state.selectedTab].caption;
@@ -94,100 +95,110 @@ export default class Configuration extends Component {
 		return meta;
 	};
 
-	initTabs = props => [
-		{
-			caption: "Dataset",
-			content: (
-				<Table
-					key="dataset"
-					id="dataset"
-					visible={this.state.selectedTab === 0}
-					data={this.state.data}
-					meta={this.state.meta.filter(
-						column => column.width || 0 !== 0
-					)}
-					width={props.width}
-					height={props.height - 30}
-					rowHeight={25}
-					ref={ref => (this.Dataset = ref)}
-				/>
-			)
-		},
-		{
-			caption: "Properties",
-			content: (
-				<Table
-					key="properties"
-					id="properties"
-					visible={this.state.selectedTab === 1}
-					data={this.state.meta}
-					meta={this.state.metaProperties}
-					width={props.width}
-					height={props.height - 30}
-					rowHeight={25}
-					onChange={this.onChangeProperties}
-					// actions={this.state.actionsProperties}
-					callbacks={{ computeData: this.computeData }}
-					ref={ref => (this.Properties = ref)}
-				/>
-			)
-		},
-		{
-			caption: "Measures",
-			content: (
-				<Table
-					key="measures"
-					id="measures"
-					visible={this.state.selectedTab === 2}
-					data={this.state.measures}
-					meta={this.state.metaMeasures}
-					width={props.width}
-					height={props.height - 30}
-					rowHeight={25}
-					// onChange={this.onChangeProperties}
-					// actions={this.state.actionsMeasures}
-					ref={ref => (this.Measures = ref)}
-				/>
-			)
-		},
-		{
-			caption: "Dimensions",
-			content: (
-				<Table
-					key="dimensions"
-					id="dimensions"
-					visible={this.state.selectedTab === 3}
-					data={this.state.dimensions}
-					meta={this.state.metaDimensions}
-					width={props.width}
-					height={props.height - 30}
-					rowHeight={25}
-					// onChange={this.onChangeDimensions}
-					// actions={this.state.actionsDimensions}
-					ref={ref => (this.Dimensions = ref)}
-				/>
-			)
-		},
-		{
-			caption: "Functions",
-			content: (
-				<Table
-					key="functions"
-					id="functions"
-					visible={this.state.selectedTab === 4}
-					data={this.state.functions}
-					meta={this.state.metaFunctions}
-					width={props.width}
-					height={props.height - 30}
-					rowHeight={25}
-					// onChange={this.onChangeDimensions}
-					// actions={this.state.actionsFunctions}
-					ref={ref => (this.Functions = ref)}
-				/>
-			)
-		},
-		{ caption: "Graph", content: null }
-	];
+	initTabs = props => {
+		return [
+			{
+				caption: "Dataset",
+				content: (
+					<ZebulonTable
+						key="dataset"
+						id="dataset"
+						visible={this.state.selectedTab === 0}
+						data={this.state.data}
+						meta={this.state.meta.filter(
+							column => column.width || 0 !== 0
+						)}
+						sizes={{
+							width: props.width,
+							height: props.height - 30
+						}}
+						getActions={actionDescriptions}
+						rowHeight={25}
+						ref={ref => (this.Dataset = ref)}
+					/>
+				)
+			},
+			{
+				caption: "Properties",
+				content: (
+					<ZebulonTable
+						key="properties"
+						id="properties"
+						visible={this.state.selectedTab === 1}
+						data={this.state.meta}
+						meta={this.state.metaProperties}
+						sizes={{
+							width: props.width,
+							height: props.height - 30
+						}}
+						rowHeight={25}
+						onChange={this.onChangeProperties}
+						getActions={actionDescriptions}
+						callbacks={{ computeData: this.computeData }}
+						ref={ref => (this.Properties = ref)}
+					/>
+				)
+			},
+			{
+				caption: "Measures",
+				content: (
+					<ZebulonTable
+						key="measures"
+						id="measures"
+						visible={this.state.selectedTab === 2}
+						data={this.state.measures}
+						meta={this.state.metaMeasures}
+						sizes={{
+							width: props.width,
+							height: props.height - 30
+						}}
+						rowHeight={25}
+						getActions={actionDescriptions}
+						ref={ref => (this.Measures = ref)}
+					/>
+				)
+			},
+			{
+				caption: "Dimensions",
+				content: (
+					<ZebulonTable
+						key="dimensions"
+						id="dimensions"
+						visible={this.state.selectedTab === 3}
+						data={this.state.dimensions}
+						meta={this.state.metaDimensions}
+						sizes={{
+							width: props.width,
+							height: props.height - 30
+						}}
+						rowHeight={25}
+						getActions={actionDescriptions}
+						ref={ref => (this.Dimensions = ref)}
+					/>
+				)
+			},
+			{
+				caption: "Functions",
+				content: (
+					<ZebulonTable
+						key="functions"
+						id="functions"
+						visible={this.state.selectedTab === 4}
+						data={this.state.functions}
+						meta={this.state.metaFunctions}
+						sizes={{
+							width: props.width,
+							height: props.height - 30
+						}}
+						rowHeight={25}
+						getActions={actionDescriptions}
+						ref={ref => (this.Functions = ref)}
+					/>
+				)
+			},
+			{ caption: "Graph", content: null }
+		];
+	};
 
 	componentDidMount() {
 		this.props.getRef(this);

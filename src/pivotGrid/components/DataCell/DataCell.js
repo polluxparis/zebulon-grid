@@ -2,8 +2,9 @@ import React, { PureComponent } from "react";
 import classnames from "classnames";
 // import { ContextMenuTrigger } from "react-contextmenu";
 import { rightArrow } from "../../icons";
-import { isNullOrUndefined } from "../../utils/generic";
-import { ContextualMenuClient } from "../controls/ContextualMenu";
+// import { isNullOrUndefined } from "../../utils/generic";
+import { ContextualMenuClient } from "zebulon-controls";
+// const { isNullOrUndefined } = utils;
 export default class DataCell extends PureComponent {
   // export default class DataCell extends ContextualMenuClient {
 
@@ -94,10 +95,10 @@ export default class DataCell extends PureComponent {
   render() {
     const {
       caption,
-      value,
+      // value,
       rowIndex,
       columnIndex,
-      headersKey,
+      // headersKey,
       selected,
       focused,
       valueHasChanged,
@@ -107,9 +108,9 @@ export default class DataCell extends PureComponent {
       isEven,
       editable,
       edited,
-      highlighted,
-      handleOnChange,
-      handleComments
+      highlighted
+      // handleOnChange,
+      // handleComments
     } = this.props;
     const style = {
       boxSizing: "border-box",

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import { ContextualMenuClient } from "../controls/ContextualMenu";
-import { AxisType, MEASURE_ID } from "../../constants";
+import { ContextualMenuClient, constants } from "zebulon-controls";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
 import InnerHeader from "../InnerHeader/InnerHeader";
-// import { ContextMenuTrigger } from "react-contextmenu";
 import { expandCollapseNode } from "../../selectors";
+const { AxisType, MEASURE_ID } = constants;
 class Header extends Component {
   handleClickCollapse = () => {
     if (this.props.features.expandCollapse === "enabled") {
@@ -19,20 +18,6 @@ class Header extends Component {
   handleClick = () => {
     this.props.selectAxis(this.props.header);
   };
-
-  // handleClickMenu = (e, data, target) => {
-  //   if (e.button === 0) {
-  //     if (data.action === "move") {
-  //       this.props.toggleMeasuresAxis(
-  //         this.props.axis === AxisType.ROWS ? "columns" : "rows"
-  //       );
-  //     } else if (data.action === "remove") {
-  //       this.props.toggleMeasure(data.measureId);
-  //     } else if (data.action === "add") {
-  //       this.props.toggleMeasure(data.newMeasureId);
-  //     }
-  //   }
-  // };
   render() {
     const {
       axis,
@@ -92,10 +77,10 @@ class Header extends Component {
         />
       ];
     }
-    let menuTrigger = null;
-    if (true) {
-      menuTrigger = `context-menu-${gridId}`;
-    }
+    // let menuTrigger = null;
+    // if (true) {
+    //   menuTrigger = `context-menu-${gridId}`;
+    // }
     const head = (
       <div
         className={className}
@@ -135,22 +120,6 @@ class Header extends Component {
       </div>
     );
     if (dimensionId === MEASURE_ID) {
-      // return (
-      //   <ContextMenuTrigger
-      //     id={menuTrigger}
-      //     holdToDisplay={-1}
-      //     collect={collectMenu}
-      //     onItemClick={this.handleClickMenu}
-      //     type={`header-${axis}`}
-      //     axis={axis}
-      //     dimensionId={dimensionId}
-      //     measureId={header.id}
-      //     caption={caption}
-      //     style={{ width: "inherit" }}
-      //   >
-      //     {head}
-      //   </ContextMenuTrigger>
-      // );
       return (
         <ContextualMenuClient
           menuId="measure-menu"

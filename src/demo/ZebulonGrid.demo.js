@@ -13,7 +13,9 @@ import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
-
+import { metaDescriptions, functions, functionsTable } from "zebulon-table";
+console.log("zebulon-table", metaDescriptions, functions, functionsTable);
+// import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
@@ -27,23 +29,30 @@ class ZebulonGridDemo extends Component {
       menuFunctions,
       sizes: {
         height: 600,
-        width: 1000
+        width: 1000,
+        rowHeight: 25
       },
-      actionContent: null
+      actionContent: null,
+      keyEvent: null
     };
     this.bigDataSet = false;
     this.data = [];
+    this.functions = functionsTable(functions);
+    this.meta = metaDescriptions("dataset", this.state.functions);
+    this.params = {};
   }
-  // componentDidUpdate(prevProps) {
-  //   const element = document.getElementById(
-  //     `input ${this.props.selectedRange.end.rows} - ${this.props
-  //       .selectedRange.end.columns}`
-  //   );
-  //   if (element) {
-  //     element.select();
-  //   }
-  //   console.log("demo");
-  // }
+  componentDidMount() {
+    document.addEventListener("copy", this.handleKeyEvent);
+    document.addEventListener("paste", this.handleKeyEvent);
+    document.addEventListener("keydown", this.handleKeyEvent);
+    window.addEventListener("beforeunload", this.handleKeyEvent);
+  }
+  componentDidUnMount() {
+    document.removeEventListener("copy", this.handleKeyEvent);
+    document.removeEventListener("paste", this.handleKeyEvent);
+    document.removeEventListener("keydown", this.handleKeyEvent);
+    window.removeEventListener("beforeunload", this.handleKeyEvent);
+  }
   handleDataSetOption = () => {
     this.bigDataSet = !this.bigDataSet;
     this.options = this.bigDataSet ? [500, 400, 5] : [200, 40, 3];
@@ -122,6 +131,10 @@ class ZebulonGridDemo extends Component {
       }
     });
   };
+  handleKeyEvent = e => {
+    this.setState({ keyEvent: e });
+    return true;
+  };
 
   onEdit = data => {
     this.setState({
@@ -188,6 +201,10 @@ class ZebulonGridDemo extends Component {
             sizes={this.state.sizes}
             ref={ref => (this.zebulon = ref)}
             display={this.state.display ? "configuration" : "pivotgrid"}
+            meta={this.meta}
+            functions={this.functions}
+            params={this.params}
+            keyEvent={this.state.keyEvent}
           />
         </ResizableBox>
         <div
@@ -234,7 +251,8 @@ class ZebulonGridDemo extends Component {
         </div>
         <div
           style={{
-            height: 100,
+            minHeight: 100,
+            height: "fitContent",
             width: this.state.sizes.width,
             fontSize: "smaller",
             marginTop: ".5em",
