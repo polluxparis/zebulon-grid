@@ -17,7 +17,7 @@ export const customConfigurationFunctions = (
         }
         return value;
       },
-      titi: value => (
+      titiFormat: value => (
         <div style={{ color: "red", textAlign: "center" }}>{value}</div>
       )
     },
@@ -42,7 +42,7 @@ export const customConfigurationFunctions = (
       }
     },
     sorts: {
-      titi: (a, b) => {
+      titiSort: (a, b) => {
         const x =
           a % 2 < b % 2 || (a % 2 === b % 2 && a < b)
             ? -1
@@ -70,8 +70,8 @@ export const customConfigurationFunctions = (
         caption: "Titi",
         keyAccessor: "titi",
         labelAccessor: "titi_lb",
-        sort: { keyAccessor: "titi", custom: "titi" },
-        format: "titi"
+        sort: { keyAccessor: "titi", custom: "titiSort" },
+        format: "titiFormat"
       },
       ...prevConfiguration.dimensions.slice(2, 5)
     ],

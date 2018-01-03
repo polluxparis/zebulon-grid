@@ -3,8 +3,10 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
 import Chart from "./containers/Chart";
-import { ZebulonTableAndConfiguration } from "zebulon-table";
+import { ZebulonTableAndConfiguration, getFunction } from "zebulon-table";
+import { utils } from "zebulon-controls";
 import reducer from "./reducers";
+import * as aggregations from "./utils/aggregation";
 import "./index.css";
 import {
   defaultMenuFunctions,
@@ -15,8 +17,113 @@ import {
   pushData
 } from "./utils/configuration";
 import * as actions from "./actions";
-console.log("ZebulonTableAndConfiguration", ZebulonTableAndConfiguration);
 class ZebulonGrid extends Component {
+  constructor(props) {
+    super(props);
+    this.buildFunctionsTable(props);
+    if (props.display === "configuration")
+      this.buildDimensionsAndMesures(props.configuration);
+  }
+  buildDimensionsAndMesures = configuration => {
+    this.measures = configuration.measures.map((measure, index) => {
+      measure.index_ = index;
+      return measure;
+    });
+    this.dimensions = configuration.dimensions.map((dimension, index) => {
+      dimension.index_ = index;
+      return dimension;
+    });
+    this.tabs = [
+      {
+        id: "measures",
+        caption: "Measures",
+        data: this.measures
+      },
+      {
+        id: "dimensions",
+        caption: "Dimensions",
+        data: this.dimensions
+      }
+    ];
+  };
+  buildFunctionsTable = props => {
+    this.functions = props.functions;
+    const functions = [];
+    Object.keys(aggregations).forEach(f => {
+      functions.push({
+        id: f,
+        caption: f,
+        visibility: "global",
+        tp: "aggregation",
+        functionJS: aggregations[f]
+      });
+    });
+    Object.keys(props.configurationFunctions).forEach(type => {
+      const tp = type.slice(0, type.length - 1);
+      Object.keys(props.configurationFunctions[type]).forEach(f => {
+        functions.push({
+          id: f,
+          caption: f,
+          visibility: "dataset",
+          tp,
+          functionJS: props.configurationFunctions[type][f]
+        });
+      });
+    });
+    functions.forEach(f => {
+      const index = this.functions.findIndex(
+        fct =>
+          fct.id === f.id && fct.visibility === f.visibility && fct.tp === f.tp
+      );
+      if (index > -1) {
+        this.functions[index].functionJS = f.functionJS;
+      } else {
+        this.functions.push(f);
+      }
+    });
+  };
+  componentWillReceiveProps(nextProps) {
+    const {
+      data,
+      configuration,
+      configurationFunctions,
+      pushedData,
+      sizes,
+      keyEvent,
+      display
+    } = nextProps;
+    // this.sizes = { ...defaultSizes, ...sizes };
+
+    if (sizes !== this.props.sizes) {
+      applySizesToStore(this.store, sizes);
+    }
+    if (
+      display === "configuration" &&
+      (this.props.display !== display ||
+        this.props.configuration !== configuration)
+    )
+      this.buildDimensionsAndMesures(configuration);
+    if (this.props.configuration !== configuration) {
+      applyConfigurationToStore(
+        this.store,
+        configuration,
+        configurationFunctions,
+        data === this.props.data ? null : data
+      );
+    } else if (this.props.data !== data) {
+      setData(this.store, data);
+    } else if (this.props.pushedData !== pushedData && pushedData.length) {
+      pushData(this.store, pushedData);
+    }
+    if (this.props.keyEvent !== keyEvent) this.handleKeyEvent(keyEvent);
+    if (
+      nextProps.configurationFunctions !== this.props.configurationFunctions ||
+      nextProps.functions !== this.props.functions ||
+      !this.functions
+    ) {
+      this.buildFunctionsTable(nextProps);
+    }
+  }
   componentWillMount() {
     const { data, configuration, configurationFunctions, sizes } = this.props;
     this.store = createStore(
@@ -91,35 +198,60 @@ class ZebulonGrid extends Component {
       this.display.handlePaste(e);
     }
   };
-  componentWillReceiveProps(nextProps) {
-    const {
-      data,
+  buildObject = (item, excludes) => {
+    if (Array.isArray(item)) {
+      return item.map(item => this.buildObject(item, excludes));
+    } else if (typeof item === "object") {
+      return Object.keys(item).reduce((acc, key) => {
+        if (!utils.isNullOrUndefined(item[key]) && !excludes[key]) {
+          acc[key] = this.buildObject(item[key], excludes);
+        }
+        return acc;
+      }, {});
+    } else {
+      return item;
+    }
+  };
+
+  applyDimensions = () => {
+    const { configuration, configurationFunctions } = this.props;
+    const dimensions = this.buildObject(this.tabs[1].data, { index_: true });
+    configuration.dimensions = dimensions;
+    applyConfigurationToStore(
+      this.store,
       configuration,
       configurationFunctions,
-      pushedData,
-      sizes,
-      keyEvent
-    } = nextProps;
-    // this.sizes = { ...defaultSizes, ...sizes };
-
-    if (sizes !== this.props.sizes) {
-      applySizesToStore(this.store, sizes);
-    }
-    if (this.props.configuration !== configuration) {
-      applyConfigurationToStore(
-        this.store,
-        configuration,
-        configurationFunctions,
-        data
+      null
+    );
+  };
+  applyMeasures = () => {
+    const { configuration, configurationFunctions } = this.props;
+    const measures = this.buildObject(this.tabs[0].data, { index_: true });
+    configuration.measures = measures;
+    measures.forEach(measure => {
+      const f = getFunction(
+        this.functions,
+        "dataset",
+        "accessor",
+        measure.valueAccessor
       );
-    } else if (this.props.data !== data) {
-      setData(this.store, data);
-    } else if (this.props.pushedData !== pushedData && pushedData.length) {
-      pushData(this.store, pushedData);
-    }
-    if (this.props.keyEvent !== keyEvent) this.handleKeyEvent(keyEvent);
-  }
-
+      configurationFunctions.accessors[measure.valueAccessor] = f;
+      if (!aggregations[measure.aggregation]) {
+        configurationFunctions.accessors[measure.aggregation] = getFunction(
+          this.functions,
+          "dataset",
+          "accessor",
+          measure.aggregation
+        );
+      }
+    });
+    applyConfigurationToStore(
+      this.store,
+      configuration,
+      configurationFunctions,
+      null
+    );
+  };
   render() {
     this.displayId = `pivotgrid-${this.props.id || 0}`;
     let div = (
@@ -139,25 +271,26 @@ class ZebulonGrid extends Component {
 
     if (this.props.display === "configuration") {
       this.displayId = `configuration-${this.props.id || 0}`;
-      const data = this.store.getState().data.data;
-      const tabs = [
-        {
-          id: "measures",
-          caption: "Measures",
-          data: this.props.configuration.measures.map((measure, index) => {
-            measure.index_ = index;
-            return measure;
-          })
-        },
-        {
-          id: "dimensions",
-          caption: "Dimensions",
-          data: this.props.configuration.dimensions.map((dimension, index) => {
-            dimension.index_ = index;
-            return dimension;
-          })
-        }
-      ];
+      const { data, status } = this.store.getState();
+      // const data = this.store.getState().data.data;
+      // const tabs = [
+      //   {
+      //     id: "measures",
+      //     caption: "Measures",
+      //     data: this.props.configuration.measures.map((measure, index) => {
+      //       measure.index_ = index;
+      //       return measure;
+      //     })
+      //   },
+      //   {
+      //     id: "dimensions",
+      //     caption: "Dimensions",
+      //     data: this.props.configuration.dimensions.map((dimension, index) => {
+      //       dimension.index_ = index;
+      //       return dimension;
+      //     })
+      //   }
+      // ];
       div = (
         <div>
           <Provider store={this.store}>
@@ -165,13 +298,19 @@ class ZebulonGrid extends Component {
               key={this.displayId}
               configurationId={this.displayId}
               sizes={this.props.sizes}
-              data={data}
+              data={data.data}
               meta={this.props.meta}
-              functions={this.props.functions}
+              functions={this.functions}
               params={this.props.params}
-              status={{}}
-              tabs={tabs}
+              status={status}
+              tabs={this.tabs}
               ref={ref => (this.display = ref)}
+              // applyConfiguration={this.applyConfiguration}
+              callbacks={{
+                ...this.props.callbacks,
+                applyDimensions: this.applyDimensions,
+                applyMeasures: this.applyMeasures
+              }}
             />
           </Provider>
         </div>
@@ -188,6 +327,7 @@ class ZebulonGrid extends Component {
               configurationId={this.displayId}
               // isActive={this.props.isActive}
               getRef={ref => (this.display = ref)}
+              callbacks={this.props.callbacks}
             />
           </Provider>
         </div>

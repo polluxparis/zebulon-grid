@@ -14,7 +14,7 @@ import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
 import { metaDescriptions, functions, functionsTable } from "zebulon-table";
-console.log("zebulon-table", metaDescriptions, functions, functionsTable);
+// console.log("zebulon-table", metaDescriptions, functions, functionsTable);
 // import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
   constructor(props) {
@@ -105,7 +105,7 @@ class ZebulonGridDemo extends Component {
     } else {
       this.setState({
         configurationFunctions,
-        configuration: basicConfig,
+        configuration: basicConfig({ onEdit: this.onEdit }),
         actionContent: null
       });
     }
