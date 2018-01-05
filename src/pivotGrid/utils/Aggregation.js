@@ -22,7 +22,8 @@ export const max = values =>
     (max, value) => (max = max === null || value > max ? value : max),
     null
   );
-export const avg = values => sum(values) / values.length;
+export const avg = values =>
+  values.length === 0 ? null : sum(values) / values.length;
 export const weighted_avg = values => {
   const wavg = values.reduce(
     (wavg, value) => {

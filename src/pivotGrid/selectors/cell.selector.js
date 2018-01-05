@@ -187,7 +187,9 @@ export const getCellInfosSelector = createSelector(
     const columns = columnDimensions.filter(column => column.isVisible);
     const rows = rowDimensions.filter(row => row.isVisible);
     const rowLeaf = rowLeaves.leaves[cell.rows];
+    rowLeaf.dataIndexes = getFilteredIndex(rowLeaf);
     const columnLeaf = columnLeaves.leaves[cell.columns];
+    columnLeaf.dataIndexes = getFilteredIndex(columnLeaf);
     let measure;
     if (rowLeaf.type === HeaderType.MEASURE) {
       measure = measures[rowLeaf.id];

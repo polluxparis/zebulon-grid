@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 // import { Grid as ReactVirtualizedGrid } from "react-virtualized/dist/commonjs/Grid";
 import classnames from "classnames";
-import { ROOT_ID, MEASURE_ID } from "../../constants";
-import { AxisType } from "../../constants";
+import { constants, utils } from "zebulon-controls";
 import Header from "../Header/Header";
+const { AxisType, ROOT_ID, MEASURE_ID } = constants;
 // import { isNull } from "../../utils/generic";
 // import { getLeaves } from "../../utils/headers";
 
@@ -84,7 +84,7 @@ class Headers extends PureComponent {
         key={`header-${header.key}`}
         header={header}
         axis={axisType}
-        caption={(header.format || (x => x))(header.caption)}
+        caption={(header.format || utils.formatValue)(header.caption)}
         positionStyle={positionStyle}
         dimensionId={header.dimensionId}
         isNotCollapsible={header.options.isNotCollapsible || header.isTotal}

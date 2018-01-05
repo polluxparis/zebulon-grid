@@ -18,7 +18,8 @@ const menuFunctions = (type, fct, data, menus) => {
       caption: type,
       children: keys.map((f, index) => ({
         id: 100 * (menus.length - 1) + index,
-        type: "menu-item",
+        type: fct[f].type || "menu-item",
+        children: [],
         caption: fct[f].caption,
         onClick: () =>
           data.onItemClick(type, fct[f].code, {

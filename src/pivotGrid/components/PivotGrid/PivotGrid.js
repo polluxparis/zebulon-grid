@@ -104,6 +104,7 @@ class PivotGrid extends Component {
       this.contextualMenu.state.menu &&
       this.contextualMenu.state.menu.visible
     ) {
+      // Object.keys(nextProps).map(key=>({key,equal:nextProps[key]===this.props[key]}));
       this.closeOpenedWindows();
     }
   }
@@ -134,7 +135,8 @@ class PivotGrid extends Component {
     if (e.key === "Escape") {
       this.closeOpenedWindows();
     }
-    if (this.state.openedFilter && e.key === "Tab") {
+    if (isFilter && e.key === "Tab") {
+      // e.preventDefault();
       return false;
     }
     // if (this.state.detail.content && e.key === "Tab") {
@@ -146,9 +148,9 @@ class PivotGrid extends Component {
       this.dataCells.handleNavigationKeys &&
       utils.isNavigationKey(e)
     ) {
-      if (this.state.openedFilter) {
-        this.setState({ openedFilter: undefined });
-      }
+      // if (this.state.openedFilter) {
+      //   this.setState({ openedFilter: undefined });
+      // }
       // if (e.type === "copy") return this.handleCopy(e);
       // else if (e.type === "paste") return this.handlePaste(e);
       // else if (e.type === "keydown")

@@ -201,9 +201,9 @@ class ZebulonGridDemo extends Component {
             sizes={this.state.sizes}
             ref={ref => (this.zebulon = ref)}
             display={this.state.display ? "configuration" : "pivotgrid"}
-            meta={this.meta}
-            functions={this.functions}
-            params={this.params}
+            // meta={this.meta}
+            // functions={this.functions}
+            // params={this.params}
             keyEvent={this.state.keyEvent}
           />
         </ResizableBox>

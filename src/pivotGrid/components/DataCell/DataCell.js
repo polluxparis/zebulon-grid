@@ -75,7 +75,10 @@ export default class DataCell extends PureComponent {
 
   handleMouseOver = e => this.props.handleMouseOver(this.collect(e));
   handleMouseUp = e => this.props.handleMouseUp(this.collect(e));
-  handleDoubleClick = e => this.props.handleDoubleClick(this.collect(e));
+  handleDoubleClick = e => {
+    const { columnIndex, rowIndex } = this.props;
+    this.props.handleDoubleClick({ columns: columnIndex, rows: rowIndex });
+  };
   handleOnChange = e => {
     const newValue =
       e.target.value === ""

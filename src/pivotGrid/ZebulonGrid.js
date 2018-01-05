@@ -3,7 +3,12 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
 import Chart from "./containers/Chart";
-import { ZebulonTableAndConfiguration, getFunction } from "zebulon-table";
+import {
+  ZebulonTableAndConfiguration,
+  getFunction,
+  functions,
+  functionsTable
+} from "zebulon-table";
 import { utils } from "zebulon-controls";
 import reducer from "./reducers";
 import * as aggregations from "./utils/aggregation";
@@ -47,10 +52,15 @@ class ZebulonGrid extends Component {
     ];
   };
   buildFunctionsTable = props => {
-    this.functions = props.functions;
-    const functions = [];
+    // if[props.functions
+    this.functions = props.functions || functions;
+    if (!Array.isArray(this.functions)) {
+      this.functions = functionsTable(this.functions);
+    }
+    this.functions = [...this.functions];
+    const ff = [];
     Object.keys(aggregations).forEach(f => {
-      functions.push({
+      ff.push({
         id: f,
         caption: f,
         visibility: "global",
@@ -59,18 +69,21 @@ class ZebulonGrid extends Component {
       });
     });
     Object.keys(props.configurationFunctions).forEach(type => {
-      const tp = type.slice(0, type.length - 1);
-      Object.keys(props.configurationFunctions[type]).forEach(f => {
-        functions.push({
-          id: f,
-          caption: f,
-          visibility: "dataset",
-          tp,
-          functionJS: props.configurationFunctions[type][f]
+      if (type !== "analytics") {
+        // a voir
+        const tp = type.slice(0, type.length - 1);
+        Object.keys(props.configurationFunctions[type]).forEach(f => {
+          ff.push({
+            id: f,
+            caption: f,
+            visibility: "dataset",
+            tp,
+            functionJS: props.configurationFunctions[type][f]
+          });
         });
-      });
+      }
     });
-    functions.forEach(f => {
+    ff.forEach(f => {
       const index = this.functions.findIndex(
         fct =>
           fct.id === f.id && fct.visibility === f.visibility && fct.tp === f.tp
@@ -160,10 +173,6 @@ class ZebulonGrid extends Component {
     }
     return true;
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.keyEvent !== nextProps.keyEvent)
-  //     this.handleKeyEvent(nextProps.keyEvent);
-  // }
   handleKeyEvent = e => {
     if (!this.display) return;
     else if (e.type === "copy") this.handleCopy(e);
@@ -262,7 +271,7 @@ class ZebulonGrid extends Component {
             menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
             key={this.displayId}
             gridId={this.displayId}
-            isActive={this.props.isActive}
+            // isActive={this.props.isActive}
             getRef={ref => (this.display = ref)}
           />
         </Provider>
@@ -272,25 +281,6 @@ class ZebulonGrid extends Component {
     if (this.props.display === "configuration") {
       this.displayId = `configuration-${this.props.id || 0}`;
       const { data, status } = this.store.getState();
-      // const data = this.store.getState().data.data;
-      // const tabs = [
-      //   {
-      //     id: "measures",
-      //     caption: "Measures",
-      //     data: this.props.configuration.measures.map((measure, index) => {
-      //       measure.index_ = index;
-      //       return measure;
-      //     })
-      //   },
-      //   {
-      //     id: "dimensions",
-      //     caption: "Dimensions",
-      //     data: this.props.configuration.dimensions.map((dimension, index) => {
-      //       dimension.index_ = index;
-      //       return dimension;
-      //     })
-      //   }
-      // ];
       div = (
         <div>
           <Provider store={this.store}>
@@ -301,7 +291,7 @@ class ZebulonGrid extends Component {
               data={data.data}
               meta={this.props.meta}
               functions={this.functions}
-              params={this.props.params}
+              params={this.props.params || {}}
               status={status}
               tabs={this.tabs}
               ref={ref => (this.display = ref)}

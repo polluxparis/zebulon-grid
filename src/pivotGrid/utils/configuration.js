@@ -25,8 +25,10 @@ import {
 import { resetLeaves, resetDimensions } from "../utils/headers";
 import { getAxisTreesSelector } from "../selectors";
 // import { mergeData } from "../selectors";
-import { MEASURE_ID } from "../constants";
+import { constants, utils } from "zebulon-controls";
 import * as aggregations from "./aggregation";
+const { MEASURE_ID } = constants;
+
 export const defaultConfigurationFunctions = {
   formats: {},
   accessors: {},
@@ -252,7 +254,7 @@ export function dimensionFactory(
     caption: id === MEASURE_ID ? "Measures" : caption || id,
     keyAccessor: toAccessorFunction(kAccessor),
     labelAccessor: toAccessorFunction(lAccessor),
-    format: formats[format] || (value => value),
+    format: formats[format] || utils.formatValue,
     sort: dimSort,
     subTotal,
     attributeParents: attributeParents || [],
@@ -286,7 +288,7 @@ export function measureFactory(measureConfiguration, configurationFunctions) {
     valueAccessor: toAccessorFunction(
       accessors[valueAccessor] || valueAccessor
     ),
-    format: formats[format] || (value => value),
+    format: formats[format] || utils.formatValue,
     aggregation: isStringOrNumber(aggregation)
       ? aggs[aggregation]
       : aggregation,

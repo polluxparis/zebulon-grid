@@ -270,19 +270,20 @@ export class DataCells extends ScrollableGrid {
     };
   };
   handleClickMenu = (type, fct, data) => {
+    let menu;
     if (type === "Cell") {
-      this.props.menuFunctions.dataCellFunctions[fct].function(
+      menu = this.props.menuFunctions.dataCellFunctions[fct].function(
         this.props.getCellInfos({
           columns: data.columnIndex,
           rows: data.rowIndex
         })
       );
     } else if (type === "Range") {
-      this.props.menuFunctions.rangeFunctions[fct].function(
+      menu = this.props.menuFunctions.rangeFunctions[fct].function(
         this.props.getRangeInfos(this.props.selectedRange)
       );
     } else if (type === "Grid") {
-      this.props.menuFunctions.gridFunctions[fct].function({
+      menu = this.props.menuFunctions.gridFunctions[fct].function({
         grid: this.props.getGridInfos(),
         toText: getSelectedText
       });
@@ -299,6 +300,7 @@ export class DataCells extends ScrollableGrid {
         comments: data.value
       });
     }
+    return menu;
   };
   // -----------------------------------------
   // scrolling and selection
@@ -573,8 +575,8 @@ export class DataCells extends ScrollableGrid {
     );
     return cells;
   };
-  getRatios = () => {
-    const { rows, columns } = this.props;
+  getRatios = props => {
+    const { rows, columns } = props;
     return {
       vertical: { display: rows.displayedRatio, position: rows.positionRatio },
       horizontal: {

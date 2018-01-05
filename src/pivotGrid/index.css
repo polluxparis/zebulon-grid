@@ -43,73 +43,7 @@
   font: inherit;
   height: inherit;
 }
-/*.zebulon-input {
-  height: inherit;
-  width: inherit;
-  border: unset;
-  box-sizing: border-box;
-  padding: 0;
-  background-color: inherit;
-}
-.zebulon-input-label: {
-  border: solid lightgrey thin;
-  box-sizing: border-box;
-  padding: 0;
-  background-color: inherit;
-}
-.zebulon-table-cell {
-  overflow: hidden;
-  white-space: nowrap;
-  height: inherit;
-  box-sizing: border-box;
-  border: solid lightgrey thin;
-  padding: 0.2em;
-  outline: none;
-  user-select: none;
-}
-.zebulon-table-cell-selected {
-  background-color: lightcyan;
-}
-.zebulon-table-cell-focused {
-  border: solid 0.06em rgba(0, 0, 0, 0.5);
-}
-.zebulon-table-cell-editable {
-  padding: 0;
-}
-.zebulon-table-header {
-  user-select: none;
-  outline: none;
-  background-color: #eef8fb;
-  overflow: hidden;
-  white-space: nowrap;
-  height: inherit;
-  box-sizing: border-box;
-  text-align: center;
-  border: solid grey thin;
-  padding: 0.2em;
-}
-.zebulon-table-filter {
-  padding: 0;
-}
-.zebulon-table-filter-empty {
-  background-color: white;
-}
-.zebulon-table-status {
-  outline: none;
-  background-color: lightgrey;
-  box-sizing: border-box;
-  text-align: center;
-  border: solid grey thin;
-  padding: 0.2em;
-}
-.zebulon-table-corner {
-  outline: none;
-  background-color: #eef8fb;
-  height: inherit;
-  border: solid grey thin;
-  box-sizing: border-box;
-  z-index: 1;
-}*/
+
 @keyframes anim-info-updated {
   0% {
     background-color: red;
@@ -132,8 +66,6 @@
 }
 
 .zebulon-grid-header-inner {
-  /*margin: 0.2em;*/
-  /*margin-left: 0.5em;*/
 }
 
 .zebulon-grid-dimension-header {
@@ -180,134 +112,6 @@
   text-decoration: underline blue;
 }
 /*-----------------------------------------------*/
-.zebulon-contextmenu-item {
-  padding: 2px;
-  background-color: white;
-  height: 20px;
-  /*width: -webkit-fill-available;*/
-  width: stretch;
-  min-width: 50px;
-  z-index: 100;
-  opacity: 1;
-  display: flex;
-  justify-content: space-between;
-  /*border-radius: 0.25rem;*/
-}
-.zebulon-contextmenu-item-separation {
-  border-top: solid 0.05em rgba(0, 0, 0, 0.5);
-}
-.zebulon-contextmenu-item-disable {
-  color: lightgrey;
-}
-.zebulon-contextmenu-item-checked {
-}
-.zebulon-contextmenu-item-selected {
-  background-color: lightgrey;
-}
-/*.zebulon-contextmenu-sub-menu {
-  content: "▶";
-}*/
-/*.zebulon-contextmenu-separator {
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0em;
-}*/
-.zebulon-contextmenu-group {
-  width: max-content;
-  min-width: 80px;
-  height: fit-content;
-  border: solid 0.05em rgba(0, 0, 0, 0.5);
-  /*border-radius: 0.25rem;*/
-  cursor: pointer;
-  z-index: 100;
-}
-/*-----------------------------------------------*/
-/*.react-contextmenu {
-  min-width: 10em;
-  color: #373a3c;
-  text-align: left;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 0.05em solid rgba(0, 0, 0, 0.5);
-  border-radius: 0.25rem;
-  outline: none;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 250ms ease !important;
-}
-
-.react-contextmenu.react-contextmenu--visible {
-  opacity: 1;
-  pointer-events: auto;
-  z-index: 3;
-}
-
-.react-contextmenu-item {
-  padding: 0.2em 0.2em;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #373a3c;
-  text-align: inherit;
-  white-space: nowrap;
-  background: 0 0;
-  border: 0;
-  cursor: pointer;
-}
-
-.react-contextmenu-item.react-contextmenu-item--active,
-.react-contextmenu-item.react-contextmenu-item--selected {
-  color: #fff;
-  background-color: #20a0ff;
-  border-color: #20a0ff;
-  text-decoration: none;
-}
-
-.react-contextmenu-item.react-contextmenu-item--disabled,
-.react-contextmenu-item.react-contextmenu-item--disabled:hover {
-  color: #878a8c;
-  background-color: transparent;
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.react-contextmenu-item--divider {
-  margin-bottom: 3px;
-  padding: 2px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  cursor: inherit;
-}
-.react-contextmenu-item--divider:hover {
-  background-color: transparent;
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-.react-contextmenu-item.react-contextmenu-submenu {
-  padding: 0;
-  outline: none;
-}
-
-.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item {
-}
-
-.react-contextmenu-item.react-contextmenu-submenu
-  > .react-contextmenu-item:after {
-  content: "▶";
-  display: inline-block;
-  position: absolute;
-  right: 7px;
-}
-
-.example-multiple-targets::after {
-  content: attr(data-count);
-  display: block;
-}
-.react-contextmenu-wrapper {
-  width: inherit;
-}
-
-.react-contextmenu-item-filtered {
-  font-weight: bold;
-}
-*/
 /*------------------------------------*/
 .zebulon-scrollbar-bar {
   background-color: lightgrey;
