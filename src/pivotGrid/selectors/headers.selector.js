@@ -548,6 +548,7 @@ export const rowAndColumnHeadersSelector = createSelector(
     loadingConfig
   ) => {
     let rows, columns;
+    console.log("rowAndColumnHeadersSelector");
     if (
       !(
         loadingConfig ||
@@ -561,7 +562,7 @@ export const rowAndColumnHeadersSelector = createSelector(
         return { rows, columns };
       }
       combineRowsAndColumns(rows, columns);
-      // corrections of diplay aberations
+      // corrections of display aberations
       let change = false;
       if (
         columns.direction === -1 &&

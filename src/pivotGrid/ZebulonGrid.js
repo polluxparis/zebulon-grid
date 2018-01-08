@@ -28,6 +28,8 @@ class ZebulonGrid extends Component {
     this.buildFunctionsTable(props);
     if (props.display === "configuration")
       this.buildDimensionsAndMesures(props.configuration);
+    this.state = { sizes: props.sizes };
+    this.zoomValue = props.sizes.zoom || 1;
   }
   buildDimensionsAndMesures = configuration => {
     this.measures = configuration.measures.map((measure, index) => {
@@ -109,6 +111,7 @@ class ZebulonGrid extends Component {
 
     if (sizes !== this.props.sizes) {
       applySizesToStore(this.store, sizes);
+      this.setState({ ...sizes, zoom: this.zoomValue });
     }
     if (
       display === "configuration" &&
@@ -174,6 +177,14 @@ class ZebulonGrid extends Component {
     return true;
   }
   handleKeyEvent = e => {
+    const zoom = utils.isZoom(e);
+    if (zoom) {
+      e.preventDefault();
+      this.zoomValue *= zoom === 1 ? 1.1 : 1 / 1.1;
+      this.store.dispatch(actions.zoom(this.zoomValue));
+      this.setState({ sizes: { ...this.state.sizes, zoom: this.zoomValue } });
+      return;
+    }
     if (!this.display) return;
     else if (e.type === "copy") this.handleCopy(e);
     else if (e.type === "paste") this.handlepaste(e);
@@ -287,7 +298,7 @@ class ZebulonGrid extends Component {
             <ZebulonTableAndConfiguration
               key={this.displayId}
               configurationId={this.displayId}
-              sizes={this.props.sizes}
+              sizes={this.state.sizes}
               data={data.data}
               meta={this.props.meta}
               functions={this.functions}

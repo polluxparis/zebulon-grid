@@ -17,7 +17,7 @@ import {
   toggleMeasure
 } from "../actions";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => (state, ownProps) => {
   return {
     axisType: AxisType.ROWS,
     height: state.configuration.height,

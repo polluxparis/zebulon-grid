@@ -18,7 +18,7 @@ import {
   applyPushedData
 } from "../actions";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => (state, ownProps) => {
   const measures = activatedMeasuresSelector(state);
   const dimensions = dimensionsSelector(state);
   const getCellValue = getCellValueSelector(state);

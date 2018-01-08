@@ -17,7 +17,7 @@ import {
 } from "../actions";
 import Headers from "../components/Headers/Headers";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => (state, ownProps) => {
   return {
     axisType: AxisType.COLUMNS,
     gridId: ownProps.gridId,

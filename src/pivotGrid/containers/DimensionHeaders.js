@@ -20,7 +20,7 @@ import {
   toggleSubTotal
 } from "../actions";
 import { resetLeaves } from "../utils/headers";
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => (state, ownProps) => {
   const columnDimensions = columnVisibleDimensionsSelector(state);
   const rowDimensions = rowVisibleDimensionsSelector(state);
   return {

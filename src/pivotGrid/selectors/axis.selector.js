@@ -80,7 +80,7 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
   }
   // Create sorting accessors
   const x = Date.now();
-  // console.log("buildAxisTrees0", x, data.length);
+  console.log("buildAxisTrees0", x, data.length);
   let newValue = false,
     newRows = false,
     newColumns = false;

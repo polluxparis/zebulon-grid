@@ -20,12 +20,15 @@ import {
   zoom,
   applyPushedData
 } from "../actions";
-
-const mapStateToProps = state => {
+// const rowAndColumnHeadersSel = () => rowAndColumnHeadersSelector;
+const mapStateToProps = () => state => {
+  // const rowAndColumnHeaders = rowAndColumnHeadersSel();
   return {
     status: state.status,
     width: state.configuration.width,
     height: state.configuration.height,
+    // headers: (() => rowAndColumnHeadersSelector)()(state),
+    // headers: rowAndColumnHeadersSel()(state),
     headers: rowAndColumnHeadersSelector(state),
     sizes: state.sizes,
     selectedRange: selectedRangeSelector(state),
@@ -66,7 +69,7 @@ const mapDispatchToProps = dispatch => ({
   },
   selectRange: selectedRange => dispatch(selectRange(selectedRange)),
   selectCell: cell => dispatch(selectCell(cell)),
-  zoom: type => dispatch(zoom(type)),
+  zoom: value => dispatch(zoom(value)),
   scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
   scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll)),
   editData: data => dispatch(applyPushedData(data)),

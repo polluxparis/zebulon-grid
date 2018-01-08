@@ -7,8 +7,7 @@ import {
   TOGGLE_MEASURE,
   MOVE_MEASURE,
   MOVE_DIMENSION,
-  ZOOM_IN,
-  ZOOM_OUT,
+  ZOOM,
   LOADING_CONFIG
 } from "../constants";
 export const loadingConfig = loading => ({
@@ -65,10 +64,10 @@ export const setAxis = axis => ({
   axis
 });
 
-export const zoomIn = () => {
-  return { type: ZOOM_IN };
+export const zoom = zoomValue => {
+  return { type: ZOOM, zoomValue };
 };
-export const zoomOut = () => ({ type: ZOOM_OUT });
-export const zoom = type => {
-  return { type };
-};
+// export const zoomOut = () => ({ type: ZOOM_OUT });
+// export const zoom = type => {
+//   return { type };
+// };
