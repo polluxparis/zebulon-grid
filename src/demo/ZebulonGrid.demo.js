@@ -2,6 +2,8 @@ import React, { Component } from "react";
 // import ReactDOM from "react-dom";
 import ZebulonGrid from "../pivotGrid";
 import "react-resizable/css/styles.css";
+import "zebulon-controls/lib/index.css";
+import "zebulon-table/lib/index.css";
 import { ResizableBox } from "react-resizable";
 import {
   getPromiseMockDatasource,

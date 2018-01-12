@@ -28,7 +28,8 @@ export const applyPushedData = pushedData => ({
   pushedData: validateData(pushedData)
 });
 
-export const fetchSuccess = data => ({
+export const fetchSuccess = (data, meta) => ({
   type: FETCH_SUCCESS,
-  data: validateData(data)
+  data: validateData(data),
+  meta
 });

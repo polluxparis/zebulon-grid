@@ -47,7 +47,7 @@ export const defaultSizes = {
   cellWidth: 100,
   zoom: 1
 };
-export const setData = (store, data) => {
+export const setData = (store, data, meta) => {
   const axisTrees = getAxisTreesSelector(store.getState());
   if (axisTrees.rows) {
     resetLeaves(axisTrees.rows);
@@ -61,7 +61,7 @@ export const setData = (store, data) => {
     if (data.length === 0) {
       store.dispatch(fetchFailure({ message: "No rows retrieved" }));
     } else {
-      store.dispatch(fetchSuccess(data));
+      store.dispatch(fetchSuccess(data, meta));
     }
   } else if (isPromise(data)) {
     data

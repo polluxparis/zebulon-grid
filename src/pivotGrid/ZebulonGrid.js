@@ -111,7 +111,10 @@ class ZebulonGrid extends Component {
 
     if (sizes !== this.props.sizes) {
       applySizesToStore(this.store, sizes);
-      this.setState({ ...sizes, zoom: this.zoomValue });
+      if (sizes.zoom) {
+        this.zoomValue = sizes.zoom;
+      }
+      this.setState({ sizes: { ...sizes, zoom: this.zoomValue } });
     }
     if (
       display === "configuration" &&
@@ -237,6 +240,38 @@ class ZebulonGrid extends Component {
     const { configuration, configurationFunctions } = this.props;
     const dimensions = this.buildObject(this.tabs[1].data, { index_: true });
     configuration.dimensions = dimensions;
+    dimensions.forEach(dimension => {
+      configurationFunctions.accessors[dimension.keyAccessor] = getFunction(
+        this.functions,
+        "dataset",
+        "accessor",
+        dimension.keyAccessor
+      );
+      configurationFunctions.accessors[dimension.labelAccessor] = getFunction(
+        this.functions,
+        "dataset",
+        "accessor",
+        dimension.labelAccessor
+      );
+      configurationFunctions.accessors[dimension.sortAccessor] = getFunction(
+        this.functions,
+        "dataset",
+        "accessor",
+        dimension.sortAccessor
+      );
+      configurationFunctions.sorts[dimension.sortFunction] = getFunction(
+        this.functions,
+        "dataset",
+        "sort",
+        dimension.sortFunction
+      );
+      configurationFunctions.formats[dimension.format] = getFunction(
+        this.functions,
+        "dataset",
+        "format",
+        dimension.format
+      );
+    });
     applyConfigurationToStore(
       this.store,
       configuration,
@@ -272,6 +307,9 @@ class ZebulonGrid extends Component {
       null
     );
   };
+  applyMeta = () => {
+    setData(this.store, [...this.data], this.meta);
+  };
   render() {
     this.displayId = `pivotgrid-${this.props.id || 0}`;
     let div = (
@@ -292,6 +330,8 @@ class ZebulonGrid extends Component {
     if (this.props.display === "configuration") {
       this.displayId = `configuration-${this.props.id || 0}`;
       const { data, status } = this.store.getState();
+      this.meta = data.meta || {};
+      this.data = data.data;
       div = (
         <div>
           <Provider store={this.store}>
@@ -299,8 +339,8 @@ class ZebulonGrid extends Component {
               key={this.displayId}
               configurationId={this.displayId}
               sizes={this.state.sizes}
-              data={data.data}
-              meta={this.props.meta}
+              data={this.data}
+              meta={this.meta}
               functions={this.functions}
               params={this.props.params || {}}
               status={status}
@@ -310,7 +350,8 @@ class ZebulonGrid extends Component {
               callbacks={{
                 ...this.props.callbacks,
                 applyDimensions: this.applyDimensions,
-                applyMeasures: this.applyMeasures
+                applyMeasures: this.applyMeasures,
+                applyMeta: this.applyMeta
               }}
             />
           </Provider>

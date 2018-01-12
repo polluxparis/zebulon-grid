@@ -99,13 +99,15 @@ export const getCellValueSelector = createSelector(
 
 const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   let l = leaf;
-  const depth = axisDimensions.length;
-  let dimension;
+  // const depth = axisDimensions.length;
+  const axisDepth = axisDimensions.map(axis => axis.depth);
+  let dimension, depth;
   const dimensions = [];
   // const row = isNullOrUndefined(leaf.dataIndexes)
   // ? null
   // : data[leaf.dataIndexes[0]];
-  for (let index = depth - 1; index >= 0; index -= 1) {
+  for (let index = axisDepth.length - 1; index >= 0; index -= 1) {
+    depth = axisDepth[index];
     dimension = axisDimensions[index];
 
     // when a leaf is collapsed its parent  has a depth < leaf.depth -1
@@ -141,13 +143,15 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
           isCollapsed: l.isParentCollapsed
         },
         cell: {
-          id: l.isParentCollapsed || l.depth !== index ? null : l.id,
-          caption: l.isParentCollapsed || l.depth !== index ? null : l.caption
+          id: l.isParentCollapsed || l.depth !== depth ? null : l.id,
+          caption: l.isParentCollapsed || l.depth !== depth ? null : l.caption
         }
       });
 
-      if (l.depth === index) {
-        l = l.parent;
+      if (index > 0 && l.depth === depth) {
+        while (l.depth > axisDepth[index - 1]) {
+          l = l.parent;
+        }
       }
     }
   }
