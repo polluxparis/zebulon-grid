@@ -291,7 +291,7 @@ class PivotGrid extends Component {
             <ContextualMenu
               key="contextual-menu"
               getMenu={getMenu}
-              gridId={gridId}
+              componentId={gridId}
               ref={ref => (this.contextualMenu = ref)}
             />
             <div

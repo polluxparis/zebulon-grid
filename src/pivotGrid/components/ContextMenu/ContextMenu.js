@@ -355,14 +355,14 @@ const getDimensionMenu = data => {
         type: "menu-item",
         caption: "Expand all",
         separation: menus.length > 0,
-        disabled: isNotCollapsible,
+        disable: isNotCollapsible,
         onClick: () => collapseAll(false)
       },
       {
         id: menus.length + 1,
         type: "menu-item",
         caption: "Collapse all",
-        disabled: isNotCollapsible,
+        disable: isNotCollapsible,
         onClick: () => collapseAll(true)
       }
     );
