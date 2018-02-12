@@ -3,12 +3,12 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
 import Chart from "./containers/Chart";
-import {
-  ZebulonTableAndConfiguration,
-  getFunction,
-  functions,
-  functionsTable
-} from "zebulon-table";
+// import {
+//   ZebulonTableAndConfiguration,
+//   getFunction,
+//   functions,
+//   functionsTable
+// } from "zebulon-table";
 import { utils } from "zebulon-controls";
 import reducer from "./reducers";
 import * as aggregations from "./utils/aggregation";
@@ -25,9 +25,9 @@ import * as actions from "./actions";
 class ZebulonGrid extends Component {
   constructor(props) {
     super(props);
-    this.buildFunctionsTable(props);
-    if (props.display === "configuration")
-      this.buildDimensionsAndMesures(props.configuration);
+    // this.buildFunctionsTable(props);
+    // if (props.display === "configuration")
+    //   this.buildDimensionsAndMesures(props.configuration);
     this.state = { sizes: props.sizes };
     this.zoomValue = props.sizes.zoom || 1;
   }
@@ -53,50 +53,50 @@ class ZebulonGrid extends Component {
       }
     ];
   };
-  buildFunctionsTable = props => {
-    // if[props.functions
-    this.functions = props.functions || functions;
-    if (!Array.isArray(this.functions)) {
-      this.functions = functionsTable(this.functions);
-    }
-    this.functions = [...this.functions];
-    const ff = [];
-    Object.keys(aggregations).forEach(f => {
-      ff.push({
-        id: f,
-        caption: f,
-        visibility: "global",
-        tp: "aggregation",
-        functionJS: aggregations[f]
-      });
-    });
-    Object.keys(props.configurationFunctions).forEach(type => {
-      if (type !== "analytics") {
-        // a voir
-        const tp = type.slice(0, type.length - 1);
-        Object.keys(props.configurationFunctions[type]).forEach(f => {
-          ff.push({
-            id: f,
-            caption: f,
-            visibility: "dataset",
-            tp,
-            functionJS: props.configurationFunctions[type][f]
-          });
-        });
-      }
-    });
-    ff.forEach(f => {
-      const index = this.functions.findIndex(
-        fct =>
-          fct.id === f.id && fct.visibility === f.visibility && fct.tp === f.tp
-      );
-      if (index > -1) {
-        this.functions[index].functionJS = f.functionJS;
-      } else {
-        this.functions.push(f);
-      }
-    });
-  };
+  // buildFunctionsTable = props => {
+  //   // if[props.functions
+  //   this.functions = props.functions || functions;
+  //   if (!Array.isArray(this.functions)) {
+  //     this.functions = functionsTable(this.functions);
+  //   }
+  //   this.functions = [...this.functions];
+  //   const ff = [];
+  //   Object.keys(aggregations).forEach(f => {
+  //     ff.push({
+  //       id: f,
+  //       caption: f,
+  //       visibility: "global",
+  //       tp: "aggregation",
+  //       functionJS: aggregations[f]
+  //     });
+  //   });
+  //   Object.keys(props.configurationFunctions).forEach(type => {
+  //     if (type !== "analytics") {
+  //       // a voir
+  //       const tp = type.slice(0, type.length - 1);
+  //       Object.keys(props.configurationFunctions[type]).forEach(f => {
+  //         ff.push({
+  //           id: f,
+  //           caption: f,
+  //           visibility: "dataset",
+  //           tp,
+  //           functionJS: props.configurationFunctions[type][f]
+  //         });
+  //       });
+  //     }
+  //   });
+  //   ff.forEach(f => {
+  //     const index = this.functions.findIndex(
+  //       fct =>
+  //         fct.id === f.id && fct.visibility === f.visibility && fct.tp === f.tp
+  //     );
+  //     if (index > -1) {
+  //       this.functions[index].functionJS = f.functionJS;
+  //     } else {
+  //       this.functions.push(f);
+  //     }
+  //   });
+  // };
   componentWillReceiveProps(nextProps) {
     const {
       data,
@@ -116,12 +116,12 @@ class ZebulonGrid extends Component {
       }
       this.setState({ sizes: { ...sizes, zoom: this.zoomValue } });
     }
-    if (
-      display === "configuration" &&
-      (this.props.display !== display ||
-        this.props.configuration !== configuration)
-    )
-      this.buildDimensionsAndMesures(configuration);
+    // if (
+    //   display === "configuration" &&
+    //   (this.props.display !== display ||
+    //     this.props.configuration !== configuration)
+    // )
+    //   this.buildDimensionsAndMesures(configuration);
     if (this.props.configuration !== configuration) {
       applyConfigurationToStore(
         this.store,
@@ -135,13 +135,13 @@ class ZebulonGrid extends Component {
       pushData(this.store, pushedData);
     }
     if (this.props.keyEvent !== keyEvent) this.handleKeyEvent(keyEvent);
-    if (
-      nextProps.configurationFunctions !== this.props.configurationFunctions ||
-      nextProps.functions !== this.props.functions ||
-      !this.functions
-    ) {
-      this.buildFunctionsTable(nextProps);
-    }
+    // if (
+    //   nextProps.configurationFunctions !== this.props.configurationFunctions ||
+    //   nextProps.functions !== this.props.functions ||
+    //   !this.functions
+    // ) {
+    //   this.buildFunctionsTable(nextProps);
+    // }
   }
   componentWillMount() {
     const { data, configuration, configurationFunctions, sizes } = this.props;
@@ -236,80 +236,80 @@ class ZebulonGrid extends Component {
     }
   };
 
-  applyDimensions = () => {
-    const { configuration, configurationFunctions } = this.props;
-    const dimensions = this.buildObject(this.tabs[1].data, { index_: true });
-    configuration.dimensions = dimensions;
-    dimensions.forEach(dimension => {
-      configurationFunctions.accessors[dimension.keyAccessor] = getFunction(
-        this.functions,
-        "dataset",
-        "accessor",
-        dimension.keyAccessor
-      );
-      configurationFunctions.accessors[dimension.labelAccessor] = getFunction(
-        this.functions,
-        "dataset",
-        "accessor",
-        dimension.labelAccessor
-      );
-      configurationFunctions.accessors[dimension.sortAccessor] = getFunction(
-        this.functions,
-        "dataset",
-        "accessor",
-        dimension.sortAccessor
-      );
-      configurationFunctions.sorts[dimension.sortFunction] = getFunction(
-        this.functions,
-        "dataset",
-        "sort",
-        dimension.sortFunction
-      );
-      configurationFunctions.formats[dimension.format] = getFunction(
-        this.functions,
-        "dataset",
-        "format",
-        dimension.format
-      );
-    });
-    applyConfigurationToStore(
-      this.store,
-      configuration,
-      configurationFunctions,
-      null
-    );
-  };
-  applyMeasures = () => {
-    const { configuration, configurationFunctions } = this.props;
-    const measures = this.buildObject(this.tabs[0].data, { index_: true });
-    configuration.measures = measures;
-    measures.forEach(measure => {
-      const f = getFunction(
-        this.functions,
-        "dataset",
-        "accessor",
-        measure.valueAccessor
-      );
-      configurationFunctions.accessors[measure.valueAccessor] = f;
-      if (!aggregations[measure.aggregation]) {
-        configurationFunctions.accessors[measure.aggregation] = getFunction(
-          this.functions,
-          "dataset",
-          "accessor",
-          measure.aggregation
-        );
-      }
-    });
-    applyConfigurationToStore(
-      this.store,
-      configuration,
-      configurationFunctions,
-      null
-    );
-  };
-  applyMeta = () => {
-    setData(this.store, [...this.data], this.meta);
-  };
+  // applyDimensions = () => {
+  //   const { configuration, configurationFunctions } = this.props;
+  //   const dimensions = this.buildObject(this.tabs[1].data, { index_: true });
+  //   configuration.dimensions = dimensions;
+  //   dimensions.forEach(dimension => {
+  //     configurationFunctions.accessors[dimension.keyAccessor] = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "accessor",
+  //       dimension.keyAccessor
+  //     );
+  //     configurationFunctions.accessors[dimension.labelAccessor] = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "accessor",
+  //       dimension.labelAccessor
+  //     );
+  //     configurationFunctions.accessors[dimension.sortAccessor] = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "accessor",
+  //       dimension.sortAccessor
+  //     );
+  //     configurationFunctions.sorts[dimension.sortFunction] = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "sort",
+  //       dimension.sortFunction
+  //     );
+  //     configurationFunctions.formats[dimension.format] = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "format",
+  //       dimension.format
+  //     );
+  //   });
+  //   applyConfigurationToStore(
+  //     this.store,
+  //     configuration,
+  //     configurationFunctions,
+  //     null
+  //   );
+  // };
+  // applyMeasures = () => {
+  //   const { configuration, configurationFunctions } = this.props;
+  //   const measures = this.buildObject(this.tabs[0].data, { index_: true });
+  //   configuration.measures = measures;
+  //   measures.forEach(measure => {
+  //     const f = getFunction(
+  //       this.functions,
+  //       "dataset",
+  //       "accessor",
+  //       measure.valueAccessor
+  //     );
+  //     configurationFunctions.accessors[measure.valueAccessor] = f;
+  //     if (!aggregations[measure.aggregation]) {
+  //       configurationFunctions.accessors[measure.aggregation] = getFunction(
+  //         this.functions,
+  //         "dataset",
+  //         "accessor",
+  //         measure.aggregation
+  //       );
+  //     }
+  //   });
+  //   applyConfigurationToStore(
+  //     this.store,
+  //     configuration,
+  //     configurationFunctions,
+  //     null
+  //   );
+  // };
+  // applyMeta = () => {
+  //   setData(this.store, [...this.data], this.meta);
+  // };
   render() {
     this.displayId = `pivotgrid-${this.props.id || 0}`;
     let div = (
@@ -327,54 +327,56 @@ class ZebulonGrid extends Component {
       </div>
     );
 
-    if (this.props.display === "configuration") {
-      this.displayId = `configuration-${this.props.id || 0}`;
-      const { data, status } = this.store.getState();
-      this.meta = data.meta || {};
-      this.data = data.data;
-      div = (
-        <div>
-          <Provider store={this.store}>
-            <ZebulonTableAndConfiguration
-              key={this.displayId}
-              configurationId={this.displayId}
-              sizes={this.state.sizes}
-              data={this.data}
-              meta={this.meta}
-              functions={this.functions}
-              params={this.props.params || {}}
-              status={status}
-              tabs={this.tabs}
-              ref={ref => (this.display = ref)}
-              // applyConfiguration={this.applyConfiguration}
-              callbacks={{
-                ...this.props.callbacks,
-                applyDimensions: this.applyDimensions,
-                applyMeasures: this.applyMeasures,
-                applyMeta: this.applyMeta
-              }}
-            />
-          </Provider>
-        </div>
-      );
-    } else if (this.props.display === "chart") {
-      this.displayId = `chart-${this.props.id || 0}`;
-      div = (
-        <div>
-          <Provider store={this.store}>
-            <Chart
-              id={this.displayId}
-              menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-              key={this.displayId}
-              configurationId={this.displayId}
-              // isActive={this.props.isActive}
-              getRef={ref => (this.display = ref)}
-              callbacks={this.props.callbacks}
-            />
-          </Provider>
-        </div>
-      );
-    }
+    // if (this.props.display === "configuration") {
+    //   this.displayId = `configuration-${this.props.id || 0}`;
+    //   const { data, status } = this.store.getState();
+    //   this.meta = data.meta || {};
+    //   this.data = data.data;
+    //   div = (
+    //     <div>
+    //       <Provider store={this.store}>
+    //         <ZebulonTableAndConfiguration
+    //           key={this.displayId}
+    //           configurationId={this.displayId}
+    //           sizes={this.state.sizes}
+    //           data={this.data}
+    //           meta={this.meta}
+    //           functions={this.functions}
+    //           params={this.props.params || {}}
+    //           status={status}
+    //           tabs={this.tabs}
+    //           ref={ref => (this.display = ref)}
+    //           // applyConfiguration={this.applyConfiguration}
+    //           callbacks={{
+    //             ...this.props.callbacks,
+    //             applyDimensions: this.applyDimensions,
+    //             applyMeasures: this.applyMeasures,
+    //             applyMeta: this.applyMeta
+    //           }}
+    //         />
+    //       </Provider>
+    //     </div>
+    //   );
+    // } else
+    //
+    // if (this.props.display === "chart") {
+    //   this.displayId = `chart-${this.props.id || 0}`;
+    //   div = (
+    //     <div>
+    //       <Provider store={this.store}>
+    //         <Chart
+    //           id={this.displayId}
+    //           menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
+    //           key={this.displayId}
+    //           configurationId={this.displayId}
+    //           // isActive={this.props.isActive}
+    //           getRef={ref => (this.display = ref)}
+    //           callbacks={this.props.callbacks}
+    //         />
+    //       </Provider>
+    //     </div>
+    //   );
+    // }
     return div;
   }
 }

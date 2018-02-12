@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import ZebulonGrid from "../pivotGrid";
 import "react-resizable/css/styles.css";
 import "zebulon-controls/lib/index.css";
-import "zebulon-table/lib/index.css";
+// import "zebulon-table/lib/index.css";
 import { ResizableBox } from "react-resizable";
 import {
   getPromiseMockDatasource,
@@ -15,7 +15,7 @@ import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
-import { metaDescriptions, functions, functionsTable } from "zebulon-table";
+// import { metaDescriptions, functions, functionsTable } from "zebulon-table";
 // console.log("zebulon-table", metaDescriptions, functions, functionsTable);
 // import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
@@ -39,8 +39,8 @@ class ZebulonGridDemo extends Component {
     };
     this.bigDataSet = false;
     this.data = [];
-    this.functions = functionsTable(functions);
-    this.meta = metaDescriptions("dataset", this.state.functions);
+    // this.functions = functionsTable(functions);
+    // this.meta = metaDescriptions("dataset", this.state.functions);
     this.params = {};
   }
   componentDidMount() {
@@ -173,22 +173,19 @@ class ZebulonGridDemo extends Component {
     }
     return false;
   };
-  // <ContextualMenu key="contextual-menu" getMenu={getMenu} />
-  //  // <ContextualMenuClient menuId={1}>
-  //   <div id="-2" style={{ height: 30, width: 30, border: "solid" }} />
-  // </ContextualMenuClient>
+
+  // <div style={{ height: 50 }}>
+  //   <input
+  //     type="checkbox"
+  //     id="configuration"
+  //     onChange={() => this.setState({ display: !this.state.display })}
+  //     checked={this.state.display}
+  //   />
+  //   <label htmlFor="configuration">Configuration</label>
+  // </div>
   render() {
     return (
       <div id="zebulon" style={{ fontFamily: "sans-serif" }}>
-        <div style={{ height: 50 }}>
-          <input
-            type="checkbox"
-            id="configuration"
-            onChange={() => this.setState({ display: !this.state.display })}
-            checked={this.state.display}
-          />
-          <label htmlFor="configuration">Configuration</label>
-        </div>
         <ResizableBox
           height={this.state.sizes.height}
           width={this.state.sizes.width}

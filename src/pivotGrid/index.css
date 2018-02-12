@@ -7,8 +7,8 @@
   cursor: default;
   border: solid lightgrey thin;
   padding: 0.2em;
+  font-size: inherit;
 }
-
 .zebulon-grid-data-cell-changed {
   animation-name: anim-info-updated;
   animation-duration: 2s;
@@ -124,7 +124,7 @@
   border-radius: 0.25rem;
 }
 
-.zebulon-tool-tip {
+/*.zebulon-tool-tip {
   padding: 5px;
   position: absolute;
   z-index: 9999;
@@ -134,7 +134,7 @@
   min-height: 30px;
   background-color: white;
   border-radius: 5px;
-}
+}*/
 .zebulon-tabs-list {
   width: inherit;
   justify-content: space-around;
@@ -149,8 +149,6 @@
 .zebulon-tabs-tab-selected {
   background-color: lightgrey;
   border-bottom: unset;
-  /*background: #fff;*/
-  /*border-color: #aaa;*/
   color: black;
 }
 /*------------------------------------*/

@@ -125,6 +125,7 @@ class Header extends Component {
           menuId="measure-menu"
           gridId={gridId}
           id={`measure-menu-${header.id}`}
+          componentId={gridId}
           collect={() =>
             collectMenu({
               axis,

@@ -40,6 +40,7 @@ class CustomDragLayer extends Component {
     }
 
     // Translate the hint bar in the correct position starting from the top left corner of the grid
+    console.log("transform", x, y);
     const transform = `translate(${x}px, ${y}px)`;
     return {
       transform
@@ -49,6 +50,7 @@ class CustomDragLayer extends Component {
     let height;
     let width;
     let resizeBar;
+
     if (
       !this.props.item ||
       this.props.itemType.substring(0, 18) !== "cell-resize-handle" ||

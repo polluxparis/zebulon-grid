@@ -173,6 +173,7 @@ class DimensionHeader extends PureComponent {
         menuId="dimension-menu"
         gridId={gridId}
         id={`dimensions-menu-${dimension.id}`}
+        componentId={gridId}
         collect={() =>
           collectMenu({
             dimension,

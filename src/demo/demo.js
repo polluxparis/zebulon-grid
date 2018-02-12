@@ -1,4 +1,6 @@
 import React from "react";
+// "zebulon-controls": "file:../controls/zebulon-controls-1.0.1.tgz",
+// "zebulon-table": "file:../table/zebulon-table-1.0.0.tgz"
 export const MEASURE_ID = "__measures__";
 export const customConfigurationFunctions = (
   prevConfigurationFunctions,

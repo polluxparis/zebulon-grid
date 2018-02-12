@@ -12,8 +12,8 @@ import RowHeaders from "../../containers/RowHeaders";
 import DragLayer from "./DragLayer";
 // import { utils } from "zebulon-controls";
 // import { isEmpty } from "../../utils/generic";
-import { constants, utils } from "zebulon-controls";
-import { ContextualMenu } from "zebulon-controls";
+import { constants, utils, ContextualMenu } from "zebulon-controls";
+// import {  } from "zebulon-controls";
 // import * as actions from '../../actions';
 // ------------------------------------------
 // CONCEPTS
@@ -85,7 +85,9 @@ import { ContextualMenu } from "zebulon-controls";
 class PivotGrid extends Component {
   constructor(props) {
     super(props);
-    this.state = { toolTip: { style: { opacity: 0 }, modal: false } };
+    this.state = {
+      toolTip: { style: { opacity: 0, height: 0 }, modal: false }
+    };
   }
   componentDidUpdate(prevProps) {
     const { height, width, setSizes } = this.props;
@@ -115,7 +117,7 @@ class PivotGrid extends Component {
     this.contextualMenu.close();
     if (this.state.toolTip.comment !== undefined) {
       this.setState({
-        toolTip: { toolTip: { style: { opacity: 0 }, modal: false } }
+        toolTip: { toolTip: { style: { opacity: 0, height: 0 }, modal: false } }
       });
     }
   };
@@ -288,19 +290,6 @@ class PivotGrid extends Component {
             className="zebulon-grid-zebulon-grid"
             style={{ fontSize: `${zoomValue * 100}%` }}
           >
-            <ContextualMenu
-              key="contextual-menu"
-              getMenu={getMenu}
-              componentId={gridId}
-              ref={ref => (this.contextualMenu = ref)}
-            />
-            <div
-              key={"tool-tip"}
-              className="zebulon-tool-tip"
-              style={this.state.toolTip.style}
-            >
-              {this.state.toolTip.comment}
-            </div>
             <div style={{ display: "flex" }}>
               <DimensionHeaders gridId={gridId} />
               <ColumnHeaders
@@ -338,6 +327,19 @@ class PivotGrid extends Component {
                 }}
                 getRef={ref => (this.dataCells = ref)}
               />
+            </div>
+            <ContextualMenu
+              key="contextual-menu"
+              getMenu={getMenu}
+              componentId={gridId}
+              ref={ref => (this.contextualMenu = ref)}
+            />
+            <div
+              key={"tool-tip"}
+              className="zebulon-tool-tip"
+              style={this.state.toolTip.style}
+            >
+              {this.state.toolTip.comment}
             </div>
           </div>
         </div>

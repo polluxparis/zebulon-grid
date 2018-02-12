@@ -19,7 +19,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     } else {
       dispatch(addFilter(ownProps.dimensionId, "in", null, false, filter));
     }
-  }
+  },
+  ...ownProps
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

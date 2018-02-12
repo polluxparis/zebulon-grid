@@ -78,6 +78,7 @@ const getGridMenu = data => {
                   <Filter
                     dimensionId={dimension.id}
                     title={dimension.caption}
+                    style={{ width: "inherit" }}
                   />
                 </div>
               )
@@ -412,7 +413,11 @@ const getDimensionMenu = data => {
                 fontFamily: "inherit"
               }}
             >
-              <Filter dimensionId={dimension.id} title={dimension.caption} />
+              <Filter
+                dimensionId={dimension.id}
+                style={{ width: "inherit" }}
+                title={dimension.caption}
+              />
             </div>
           )
         }

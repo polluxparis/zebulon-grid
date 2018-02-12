@@ -19,7 +19,9 @@ export class DataCells extends ScrollableGrid {
     this.commentsVisible = props.configuration.edition.comments;
 
     this.comment = undefined;
-    this.state = { toolTip: { style: { opacity: 0 }, modal: false } };
+    this.state = {
+      toolTip: { style: { opacity: 0, height: 0 }, modal: false }
+    };
   }
   componentWillReceiveProps(newProps) {
     this.isPushing =
@@ -85,6 +87,7 @@ export class DataCells extends ScrollableGrid {
         height: "fit-content",
         width: "fit-content",
         position: "fixed",
+        minHeight: 30,
         top: e.y + e.style.height,
         left: e.x
       };
@@ -348,7 +351,7 @@ export class DataCells extends ScrollableGrid {
       axisLeaves.cells.length - 1
     );
   };
-  scrollOnKey = (cell, axis, direction) => {
+  scrollOnKey = (cell, axis, direction, extension) => {
     const { rows, columns } = this.props;
     const axisLeaves = axis === AxisType.COLUMNS ? columns : rows;
     const scroll = { rows: rows.scroll, columns: columns.scroll };
@@ -363,6 +366,7 @@ export class DataCells extends ScrollableGrid {
       };
       this.props.onScroll(scroll.rows, scroll.columns);
     }
+    this.selectCell(cell, extension);
   };
   onWheel = e => {
     if (!e.defaultPrevented) {
@@ -389,7 +393,8 @@ export class DataCells extends ScrollableGrid {
       onScroll(scroll.rows, scroll.columns);
     }
   };
-  onScroll = (axis, dir, ix, positionRatio) => {
+  onScroll = (axis, dir, cell, extension, positionRatio) => {
+    const ix = cell ? cell[toAxis(axis)] : null;
     const { rows, columns, onScroll } = this.props;
     // if (e.type === "scrollbar") {
     const scroll = {

@@ -198,6 +198,7 @@ export default class DataCell extends PureComponent {
         menuId="grid-menu"
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
         gridId={gridId}
+        componentId={gridId}
         draggable={false}
         collect={() =>
           collectMenu({
