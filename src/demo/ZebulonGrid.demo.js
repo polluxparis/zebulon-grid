@@ -49,7 +49,7 @@ class ZebulonGridDemo extends Component {
     document.addEventListener("keydown", this.handleKeyEvent);
     window.addEventListener("beforeunload", this.handleKeyEvent);
   }
-  componentDidUnMount() {
+  componentWillUnmount() {
     document.removeEventListener("copy", this.handleKeyEvent);
     document.removeEventListener("paste", this.handleKeyEvent);
     document.removeEventListener("keydown", this.handleKeyEvent);
@@ -147,18 +147,19 @@ class ZebulonGridDemo extends Component {
   onSave = () => {
     exportFile(JSON.stringify(this.data), "toto.json");
   };
-  onLoad = () => {
-    // getFileObject("file:///c:/Users/thomas/Downloads/toto.json", fileObject => {
-    //   console.log(fileObject);
-    // });
-    const file = document.getElementById("file-selector").files[0];
-    const reader = new FileReader();
-    reader.onload = e => {
-      this.object = eval(reader.result);
-      console.log(reader.result);
-    };
-    reader.readAsText(file);
-  };
+  // onLoad = e => {
+  //   // getFileObject("file:///c:/Users/thomas/Downloads/toto.json", fileObject => {
+  //   //   console.log(fileObject);
+  //   // });
+  //   const file = document.getElementById("file-selector").files[0];
+  //   const reader = new FileReader();
+  //   reader.onload = e => {
+  //     console.log("toto", reader.result);
+  //     reader.result;
+  //   };
+  //   reader.readAsText(file);
+  //   // console.log(reader.result);
+  // };
   onClickMenu = (e, id) => {
     if (e.button === 2) {
       e.preventDefault();
@@ -241,12 +242,6 @@ class ZebulonGridDemo extends Component {
             />
             <label htmlFor="option">Try a 1M rows dataset</label>
           </div>
-          <input
-            type="file"
-            id="file-selector"
-            onChange={this.onLoad}
-            style={{ marginRight: ".5em", display: "none" }}
-          />
         </div>
         <div
           style={{
@@ -350,10 +345,3 @@ export default ZebulonGridDemo;
 // >
 //   Save
 // </button>
-// <button
-//   style={{ marginRight: ".5em" }}
-//   type="button"
-//   onClick={() => document.getElementById("file-selector").click()}
-// >
-//   Load
-// </button>)

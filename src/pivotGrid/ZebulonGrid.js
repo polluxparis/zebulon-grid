@@ -165,7 +165,7 @@ class ZebulonGrid extends Component {
       document.addEventListener("keydown", this.handleKeyDown);
     }
   }
-  componentDidUnMount() {
+  componentWillUnmount() {
     if (!this.props.keyEvent === undefined) {
       document.removeEventListener("copy", this.handleCopy);
       document.removeEventListener("paste", this.handlePaste);

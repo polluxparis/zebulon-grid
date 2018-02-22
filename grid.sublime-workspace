@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"font",
+				"font-size"
+			],
+			[
+				"in",
+				"inherit"
+			],
+			[
 				"pro",
 				"properties"
 			],
@@ -404,10 +412,6 @@
 				"scrollbarPositions"
 			],
 			[
-				"in",
-				"innerSize"
-			],
-			[
 				"l",
 				"length"
 			],
@@ -476,10 +480,6 @@
 				"hasSubTotal"
 			],
 			[
-				"font",
-				"fontSize"
-			],
-			[
 				"configuration",
 				"configurationFunctions"
 			],
@@ -520,45 +520,20 @@
 	"buffers":
 	[
 		{
-			"file": "README.md",
+			"file": "src/demo/ZebulonGrid.demo.js",
 			"settings":
 			{
-				"buffer_size": 8842,
+				"buffer_size": 11696,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "src/pivotGrid/components/PivotGrid/MetaDescriptions.js",
+			"file": "src/pivotGrid/ZebulonGrid.js",
 			"settings":
 			{
-				"buffer_size": 10405,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "src/demo/menuFunctions.js",
-			"settings":
-			{
-				"buffer_size": 99,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "src/demo/configurationFunctions.js",
-			"settings":
-			{
-				"buffer_size": 948,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "import React from \"react\";\nexport const MEASURE_ID = \"__measures__\";\nexport const customConfigurationFunctions = (\n  prevConfigurationFunctions,\n  prevConfiguration\n) => {\n  const configurationFunctions = {\n    formats: {\n      ...prevConfigurationFunctions.formats,\n      price: value => {\n        if (Number.isFinite(value)) {\n          return (\n            <div style={{ color: \"blue\", textAlign: \"right\" }}>\n              {`${Number(value).toFixed(2)} $`}\n            </div>\n          );\n        }\n        return value;\n      },\n      titiFormat: value => (\n        <div style={{ color: \"red\", textAlign: \"center\" }}>{value}</div>\n      )\n    },\n    accessors: {\n      ...prevConfigurationFunctions.accessors,\n      price: row => ({ amt: row.amt, qty: row.qty })\n    },\n    aggregations: {\n      ...prevConfigurationFunctions.aggregations,\n      price: values => {\n        const price = values.reduce(\n          (price, value) => {\n            price.amt += value.amt;\n            price.qty += value.qty;\n            return price;\n          },\n          { amt: null, qty: null }\n        );\n        return price.amt === null || price.qty === null\n          ? null\n          : price.amt / price.qty;\n      }\n    },\n    sorts: {\n      titiSort: (a, b) => {\n        const x =\n          a % 2 < b % 2 || (a % 2 === b % 2 && a < b)\n            ? -1\n            : !(a % 2 === b % 2 && a === b) + 0;\n        return x;\n      }\n    }\n  };\n  const configuration = {\n    ...prevConfiguration,\n    measures: [\n      ...prevConfiguration.measures,\n      {\n        id: \"price\",\n        caption: \"Price\",\n        aggregation: \"price\",\n        valueAccessor: \"price\",\n        format: \"price\"\n      }\n    ],\n    dimensions: [\n      prevConfiguration.dimensions[0],\n      {\n        id: \"titi\",\n        caption: \"Titi\",\n        keyAccessor: \"titi\",\n        labelAccessor: \"titi_lb\",\n        sort: { keyAccessor: \"titi\", custom: \"titiSort\" },\n        format: \"titiFormat\"\n      },\n      ...prevConfiguration.dimensions.slice(2, 5)\n    ],\n    activeMeasures: [...prevConfiguration.activeMeasures, \"price\"]\n  };\n  const actionContent = (\n    <div>\n      <div>Add a new measure (Price) with new : </div>\n      <div> - custom accessor function ( amounts and quantities)</div>\n      <div>\n        - custom agregation function ( average of amounts weighted by\n        quantities)\n      </div>\n      <div> - custom format ( blue + $ symbol)</div>\n      <div>\n        Add a (dummy) sort function for dimension Titi : ordered by even ids,\n        then odd ids.\n      </div>\n      <div> Add a custom format ( red centered) on dimension Titi.</div>\n    </div>\n  );\n  return { configurationFunctions, configuration, actionContent };\n};\nconst cellDisplay = cell => {\n  // console.log(cell);\n  const rows = cell.dimensions\n    .filter(dimension => dimension.axis === \"rows\")\n    .map(dimension => (\n      <li key={dimension.dimension.id}>\n        {`${dimension.dimension.id === MEASURE_ID\n          ? \"Measure\"\n          : dimension.dimension.caption} : ${dimension.cell.caption}`}\n      </li>\n    ));\n  const columns = cell.dimensions\n    .filter(dimension => dimension.axis === \"columns\")\n    .map(dimension => (\n      <li key={dimension.dimension.id}>\n        {`${dimension.dimension.id === MEASURE_ID\n          ? \"Measure\"\n          : dimension.dimension.caption} : ${dimension.cell.caption}`}\n      </li>\n    ));\n  const value = (\n    <li key={\"value\"}>{Math.round(cell.value.value * 10000) / 10000}</li>\n  );\n  return (\n    <div style={{ display: \"flex\", height: \"fitContent\" }}>\n      <div style={{ width: 150, height: \"auto\" }}>\n        <div style={{ paddingLeft: \"5px\", fontWeight: \"bold\" }}>Rows</div>\n        <ul style={{ paddingLeft: \"20px\" }}> {rows}</ul>\n      </div>\n      <div style={{ width: 150 }}>\n        <div style={{ paddingLeft: \"5px\", fontWeight: \"bold\", height: \"auto\" }}>\n          Columns\n        </div>\n        <ul style={{ paddingLeft: \"20px\" }}> {columns}</ul>\n      </div>\n      <div style={{ width: 90 }}>\n        <div style={{ paddingLeft: \"5px\", fontWeight: \"bold\", height: \"auto\" }}>\n          Value\n        </div>\n        <ul style={{ paddingLeft: \"20px\" }}> {value}</ul>\n      </div>\n    </div>\n  );\n};\nconst rangeDisplay = range => {\n  const cellFrom = {\n    dimensions: range.rows[0].concat(range.columns[0]),\n    value: range.values[0][0]\n  };\n  const cellTo = {\n    dimensions: range.rows[range.rows.length - 1].concat(\n      range.columns[range.columns.length - 1]\n    ),\n    value: range.values[range.rows.length - 1][range.columns.length - 1]\n  };\n  const divFrom = cellDisplay(cellFrom);\n  const divTo = cellDisplay(cellTo);\n  let values = {};\n  if (range.measureHeadersAxis === \"columns\") {\n    values = range.columns.reduce((values, measure, indexColumn) => {\n      if (values[measure.leaf.caption] === undefined) {\n        values[measure.leaf.caption] = 0;\n      }\n      values[\n        measure.leaf.caption\n      ] += range.rows.reduce((value, dimension, indexRow) => {\n        value += range.values[indexRow][indexColumn].value;\n        return value;\n      }, 0);\n      return values;\n    }, {});\n  } else {\n    values = range.rows.reduce((values, measure, indexRow) => {\n      if (values[measure.leaf.caption] === undefined) {\n        values[measure.leaf.caption] = 0;\n      }\n      values[\n        measure.leaf.caption\n      ] += range.columns.reduce((value, dimension, indexColumn) => {\n        value += range.values[indexRow][indexColumn].value;\n        return value;\n      }, 0);\n      return values;\n    }, {});\n  }\n  const sums = Object.keys(values).map(measure => (\n    <li key={measure}>{`${measure} : ${Math.round(values[measure] * 10000) /\n      10000}`}</li>\n  ));\n  const divValues = (\n    <div\n      style={{\n        width: 160,\n        borderLeft: \"solid 0.02em\",\n        height: \"auto\"\n      }}\n    >\n      <div style={{ paddingLeft: \"5px\", fontWeight: \"bold\" }}>\n        Sum of values\n      </div>\n      <ul style={{ paddingLeft: \"20px\" }}> {sums}</ul>\n    </div>\n  );\n  const div = (\n    <div style={{ display: \"flex\", height: \"fitContent\" }}>\n      <div style={{ borderLeft: \"solid 0.02em\", height: \"auto\" }}>\n        <div\n          style={{\n            paddingLeft: \"5px\",\n            fontWeight: \"bold\",\n            textAlign: \"left\"\n          }}\n        >\n          From\n        </div>\n        {divFrom}\n      </div>\n      <div style={{ borderLeft: \"solid 0.02em\", height: \"auto\" }}>\n        <div\n          style={{\n            paddingLeft: \"5px\",\n            fontWeight: \"bold\",\n            textAlign: \"Left\"\n          }}\n        >\n          To\n        </div>\n        {divTo}\n      </div>\n      {divValues}\n    </div>\n  );\n  return div;\n};\nexport const exportFile = (content, fileName, mime) => {\n  if (mime == null) {\n    mime = \"text/csv\";\n  }\n  var blob = new Blob([content], { type: mime });\n  var a = document.createElement(\"a\");\n  a.download = fileName;\n  a.href = window.URL.createObjectURL(blob);\n  a.dataset.downloadurl = [mime, a.download, a.href].join(\":\");\n  var e = document.createEvent(\"MouseEvents\");\n  e.initMouseEvent(\n    \"click\",\n    true,\n    false,\n    window,\n    0,\n    0,\n    0,\n    0,\n    0,\n    false,\n    false,\n    false,\n    false,\n    0,\n    null\n  );\n  return a.dispatchEvent(e);\n};\n\n  export const customMenuFunctions = (prevMenuFunctions, callback) => {\n    const menuFunctions = {\n      dataCellFunctions: {\n        ...prevMenuFunctions.dataCellFunctions,\n        cell: {\n          code: \"cell\",\n          caption: \"Custom cell function\",\n          type: \"MenuItem\",\n          function: cell => callback(\"cell\", cellDisplay(cell))\n        }\n      },\n      rangeFunctions: {\n        ...prevMenuFunctions.rangeFunctions,\n        range: {\n          code: \"range\",\n          caption: \"Custom range function\",\n          type: \"MenuItem\",\n          function: range => callback(\"range\", rangeDisplay(range))\n        }\n      },\n      gridFunctions: {\n        ...prevMenuFunctions.gridFunctions,\n        grid: {\n          code: \"grid\",\n          type: \"MenuItem\",\n          caption: \"Custom export as csv\",\n          // function: () => <div>toto</div>\n          function: ({ grid, toText }) =>\n            exportFile(toText(grid, \"csv\"), \"zebulon.csv\")\n        }\n        // ,\n        // test: {\n        //   code: \"test\",\n        //   type: \"SubMenu\",\n        //   caption: \"test\",\n        //   // function: () => <div>toto</div>\n        //   function: () => <div>Test</div>\n        // }\n      }\n    };\n    const actionContent = (\n      <div>\n        <div>\n          Add custom menu functions for cell (cells under the right ckick),\n          selected range or grid, accesible by the contextual menu on the data\n          cells area.\n        </div>\n        <div>The first cell function is called on doubleclick too.</div>\n      </div>\n    );\n    return { menuFunctions, actionContent };\n  };\n\n  //   return { menuFunctions, actionContent };\n  // };\n",
-			"file": "src/demo/demo.js",
-			"file_size": 9123,
-			"file_write_time": 131597139828987113,
-			"settings":
-			{
-				"buffer_size": 8915,
+				"buffer_size": 12552,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		}
@@ -732,51 +707,52 @@
 	],
 	"file_history":
 	[
+		"/C/Users/thomas/dev_js/grid/README.md",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/MetaDescriptions.js",
 		"/C/Users/thomas/dev_js/grid/src/demo/menuFunctions.js",
-		"/C/Users/thomas/dev_js/grid/package.json",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/PivotGrid.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/generic.js",
+		"/C/Users/thomas/dev_js/grid/src/demo/demo.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/PivotGrid.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/PivotGrid.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Header/Header.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/ZebulonGrid.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/index.css",
+		"/C/Users/thomas/dev_js/grid/package.json",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCell/DataCell.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DataCells.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Filter.js",
+		"/C/Users/thomas/dev_js/grid/src/demo/mock.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ContextMenu/ContextMenu.js",
+		"/C/Users/thomas/dev_js/grid/src/demo/configurationFunctions.js",
+		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/generic.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/selection.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/services/copyService.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/ZebulonGrid.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/DragLayer.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/MetaDescriptions.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/configuration.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ContextMenu/ContextMenu.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/data.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/data.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeader/DimensionHeader.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/index.css",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DimensionHeaders/DimensionHeaders.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/ResizeHandle/ResizeHandle.js",
-		"/C/Users/thomas/dev_js/grid/src/demo/mock.js",
 		"/C/Users/thomas/dev_js/grid/src/utils/mock-o.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/ZebulonGrid.test.js",
-		"/C/Users/thomas/dev_js/grid/src/demo/configurationFunctions.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/InnerHeader/InnerHeader.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/data.selector.test.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/data.reducer.js",
 		"/C/Users/thomas/dev_js/grid/src/demo/ZebulonGrid.demo.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/cell.selector.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Header/Header.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/reducers/configuration.reducer.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/configuration.action.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/constants/index.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/utils/aggregation.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Measures-o.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DataCells.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/DimensionHeaders.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Filter.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/ColumnHeaders.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/RowHeaders.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/axis.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/selectors/headers.selector.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/Headers/Headers.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCells/DataCells.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/filter.action.js",
-		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/DataCell/DataCell.js",
-		"/C/Users/thomas/dev_js/grid/src/demo/demo.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/components/PivotGrid/Configuration-o.js",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/containers/Configuration-o.js",
 		"/C/Users/thomas/dev_js/grid/src/demo/PivotGrid.demo-o.js",
@@ -844,7 +820,6 @@
 		"/C/Users/thomas/dev_js/grid/.gitignore",
 		"/C/Users/thomas/dev_js/grid/package.o.json",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/subtotals.action.js",
-		"/C/Users/thomas/dev_js/grid/README.md",
 		"/C/Users/thomas/dev_js/grid/src/utils/mock.js",
 		"/C/Users/thomas/dev_js/grid/package-lock.json",
 		"/C/Users/thomas/dev_js/grid/src/pivotGrid/actions/sizes.action.js",
@@ -863,7 +838,7 @@
 	],
 	"find":
 	{
-		"height": 29.0
+		"height": 52.0
 	},
 	"find_in_files":
 	{
@@ -882,6 +857,17 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"unmount",
+			"opacity",
+			"toolTip",
+			"tool",
+			"setCustomConfigurationFunctions",
+			"Filter",
+			"getMenu",
+			"ContextualMenuClient",
+			"zebulon-Table",
+			"toolTip",
+			"ContextualMenu",
 			"window",
 			"mth",
 			"month",
@@ -998,18 +984,7 @@
 			"nextProps",
 			"this.functions",
 			"functionsTable",
-			"basicConfig",
-			"props",
-			"formats",
-			"functionsTable",
-			"this.props",
-			"measures",
-			"menutrigger",
-			"fct",
-			"buttons",
-			"dateTo",
-			"ZebulonTableAndConfiguration",
-			"isActive"
+			"basicConfig"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1155,24 +1130,24 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "README.md",
+					"file": "src/demo/ZebulonGrid.demo.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8842,
+						"buffer_size": 11696,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2554,
-								2554
+								1859,
+								1859
 							]
 						],
 						"settings":
@@ -1192,25 +1167,40 @@
 								},
 								"unmatched":
 								{
+									"1":
+									[
+										911,
+										912
+									]
 								}
 							},
 							"bracket_highlighter.clone_regions":
 							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -1226,31 +1216,21 @@
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content"
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"bracket_highlighter.locations":
 							{
@@ -1258,24 +1238,24 @@
 								{
 									"1":
 									[
-										2609,
-										2610
+										1860,
+										1861
 									]
 								},
 								"icon":
 								{
 									"1":
 									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"region.yellowish"
 									]
 								},
 								"open":
 								{
 									"1":
 									[
-										2482,
-										2483
+										1859,
+										1860
 									]
 								},
 								"unmatched":
@@ -1284,588 +1264,56 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
 								"bh_c_define",
 								"bh_c_define_center",
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"color_scheme": "Packages/MarkdownEditing/MarkdownEditor.tmTheme",
-							"syntax": "Packages/MarkdownEditing/Markdown.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2160.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "src/pivotGrid/components/PivotGrid/MetaDescriptions.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10405,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": 159,
-							"bracket_highlighter.clone_locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.clone_regions":
-							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6960.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "src/demo/menuFunctions.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 99,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": 160,
-							"bracket_highlighter.clone_locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.clone_regions":
-							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
 								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"syntax": "Packages/Babel/JavaScript (Babel).sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "src/demo/configurationFunctions.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 948,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": 161,
-							"bracket_highlighter.clone_locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.clone_regions":
-							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content"
-							],
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
@@ -1877,27 +1325,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 96.0,
+						"translation.y": 725.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "src/demo/demo.js",
+					"buffer": 1,
+					"file": "src/pivotGrid/ZebulonGrid.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8915,
+						"buffer_size": 12552,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6836,
-								6836
+								5077,
+								5077
 							]
 						],
 						"settings":
@@ -1908,27 +1356,12 @@
 							{
 								"close":
 								{
-									"1":
-									[
-										7252,
-										7253
-									]
 								},
 								"icon":
 								{
-									"1":
-									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
-									]
 								},
 								"open":
 								{
-									"1":
-									[
-										6736,
-										6737
-									]
 								},
 								"unmatched":
 								{
@@ -1936,51 +1369,41 @@
 							},
 							"bracket_highlighter.clone_regions":
 							[
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_c_define",
 								"bh_c_define_center",
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
 								"bh_square_close",
 								"bh_square_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
@@ -1990,7 +1413,17 @@
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
-								"bh_round_content"
+								"bh_round_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"bracket_highlighter.locations":
 							{
@@ -1998,24 +1431,24 @@
 								{
 									"1":
 									[
-										7252,
-										7253
+										5078,
+										5079
 									]
 								},
 								"icon":
 								{
 									"1":
 									[
-										"Packages/BracketHighlighter/icons/curly_bracket.png",
-										"region.purplish"
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"region.yellowish"
 									]
 								},
 								"open":
 								{
 									"1":
 									[
-										6736,
-										6737
+										5077,
+										5078
 									]
 								},
 								"unmatched":
@@ -2024,51 +1457,51 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
 								"bh_c_define",
 								"bh_c_define_center",
 								"bh_c_define_open",
 								"bh_c_define_close",
 								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
@@ -2085,7 +1518,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3584.0,
+						"translation.y": 2929.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -2096,7 +1529,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 29.0
 	},
 	"input":
 	{
@@ -2131,7 +1564,7 @@
 	},
 	"output.find_results":
 	{
-		"height": 582.0
+		"height": 256.0
 	},
 	"output.mdpopups":
 	{
@@ -2155,16 +1588,52 @@
 		"selected_items":
 		[
 			[
+				"json",
+				"package.json"
+			],
+			[
+				"demo",
+				"src\\demo\\demo.js"
+			],
+			[
+				"datacells",
+				"src\\pivotGrid\\components\\DataCells\\DataCells.js"
+			],
+			[
+				"datacell",
+				"src\\pivotGrid\\components\\DataCell\\DataCell.js"
+			],
+			[
+				"filter",
+				"src\\pivotGrid\\containers\\Filter.js"
+			],
+			[
+				"hea",
+				"src\\pivotGrid\\components\\Header\\Header.js"
+			],
+			[
+				"css",
+				"src\\pivotGrid\\index.css"
+			],
+			[
+				"zeb",
+				"src\\pivotGrid\\ZebulonGrid.js"
+			],
+			[
+				"zebulon",
+				"src\\demo\\ZebulonGrid.demo.js"
+			],
+			[
+				"pivot",
+				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
+			],
+			[
 				"men",
 				"src\\pivotGrid\\components\\PivotGrid\\MetaDescriptions.js"
 			],
 			[
 				"menu",
 				"src\\demo\\menuFunctions.js"
-			],
-			[
-				"json",
-				"package.json"
 			],
 			[
 				"read",
@@ -2179,20 +1648,12 @@
 				"src\\pivotGrid\\services\\copyService.js"
 			],
 			[
-				"pivot",
-				"src\\pivotGrid\\containers\\PivotGrid.js"
-			],
-			[
 				"zebul",
 				"src\\pivotGrid\\ZebulonGrid.js"
 			],
 			[
 				"drag",
 				"src\\pivotGrid\\components\\PivotGrid\\DragLayer.js"
-			],
-			[
-				"css",
-				"src\\pivotGrid\\index.css"
 			],
 			[
 				"resi",
@@ -2227,10 +1688,6 @@
 				"src\\pivotGrid\\utils\\configuration.js"
 			],
 			[
-				"zeb",
-				"src\\pivotGrid\\ZebulonGrid.js"
-			],
-			[
 				"heade",
 				"src\\pivotGrid\\components\\Header\\Header.js"
 			],
@@ -2263,10 +1720,6 @@
 				"src\\pivotGrid\\components\\PivotGrid\\PivotGrid.js"
 			],
 			[
-				"datacells",
-				"src\\pivotGrid\\containers\\DataCells.js"
-			],
-			[
 				"pi",
 				"src\\pivotGrid\\containers\\PivotGrid.js"
 			],
@@ -2281,10 +1734,6 @@
 			[
 				"fetratios",
 				"src\\pivotGrid\\actions\\filter.action.js"
-			],
-			[
-				"datacell",
-				"src\\pivotGrid\\components\\DataCell\\DataCell.js"
 			],
 			[
 				"headers",
@@ -2303,16 +1752,8 @@
 				"src\\pivotGrid\\utils\\configuration.js"
 			],
 			[
-				"demo",
-				"src\\demo\\demo.js"
-			],
-			[
 				"agg",
 				"src\\pivotGrid\\utils\\aggregation.js"
-			],
-			[
-				"zebulon",
-				"src\\pivotGrid\\ZebulonGrid.js"
 			],
 			[
 				"c",
@@ -2337,10 +1778,6 @@
 			[
 				"dimensionhe",
 				"src\\pivotGrid\\components\\DimensionHeader\\DimensionHeader.js"
-			],
-			[
-				"filter",
-				"src\\pivotGrid\\components\\Filter\\Filter.js"
 			],
 			[
 				"meta",
@@ -2661,10 +2098,6 @@
 			[
 				"red",
 				"src\\pivotGrid\\reducers\\configuration.reducer.js"
-			],
-			[
-				"axissele",
-				"src\\pivotGrid\\selectors\\axis.selector.js"
 			]
 		],
 		"width": 0.0
