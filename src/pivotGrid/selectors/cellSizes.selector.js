@@ -19,7 +19,7 @@ export const defaultCellSizesSelector = createSelector(
     state => state.configuration.zoom
   ],
   (cellHeight, cellWidth, zoom) => ({
-    height: zoom * (cellHeight || 30),
+    height: zoom * (cellHeight || 25),
     width: zoom * (cellWidth || 100),
     zoom
   })

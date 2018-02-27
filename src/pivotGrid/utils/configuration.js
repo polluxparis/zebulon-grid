@@ -43,7 +43,7 @@ export const defaultMenuFunctions = {
 export const defaultSizes = {
   height: 800,
   width: 1000,
-  cellHeight: 30,
+  cellHeight: 25,
   cellWidth: 100,
   zoom: 1
 };
@@ -98,7 +98,7 @@ export const applySizesToStore = (store, sizes) => {
   store.dispatch(setConfigurationProperty(newSizes, "height", 800));
   store.dispatch(setConfigurationProperty(newSizes, "width", 1000));
   store.dispatch(setConfigurationProperty(newSizes, "zoom", 1));
-  store.dispatch(setConfigurationProperty(newSizes, "cellHeight", 30));
+  store.dispatch(setConfigurationProperty(newSizes, "cellHeight", 25));
   store.dispatch(setConfigurationProperty(newSizes, "cellWidth", 100));
 };
 export const applyConfigurationToStore = (
