@@ -131,7 +131,7 @@ export function isNullOrUndefined(obj) {
 
 export function toAccessorFunction(accessor) {
   if (typeof accessor === "string") {
-    return row => row[accessor];
+    return ({ row }) => row[accessor];
   }
   return accessor;
 }

@@ -60,7 +60,7 @@ const cellValue = (
           comments.push(comment);
         }
       }
-      return valueAccessor(data[index]);
+      return valueAccessor({ row: data[index] });
     })
     .filter(value => !isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict

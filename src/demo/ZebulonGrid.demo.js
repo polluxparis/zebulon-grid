@@ -15,7 +15,7 @@ import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
-// import { metaDescriptions, functions, functionsTable } from "zebulon-table";
+import { metaDescriptions, functions, functionsTable } from "zebulon-table";
 // console.log("zebulon-table", metaDescriptions, functions, functionsTable);
 // import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
@@ -39,8 +39,10 @@ class ZebulonGridDemo extends Component {
     };
     this.bigDataSet = false;
     this.data = [];
-    // this.functions = functionsTable(functions);
-    // this.meta = metaDescriptions("dataset", this.state.functions);
+    // configuration
+    this.functions = functionsTable(functions);
+    this.meta = metaDescriptions("dataset", this.state.functions);
+    // configuration
     this.params = {};
   }
   componentDidMount() {
@@ -175,43 +177,56 @@ class ZebulonGridDemo extends Component {
     return false;
   };
 
-  // <div style={{ height: 50 }}>
-  //   <input
-  //     type="checkbox"
-  //     id="configuration"
-  //     onChange={() => this.setState({ display: !this.state.display })}
-  //     checked={this.state.display}
-  //   />
-  //   <label htmlFor="configuration">Configuration</label>
-  // </div>
   render() {
+    const {
+      sizes,
+      display,
+      keyEvent,
+      menuFunctions,
+      configuration,
+      configurationFunctions,
+      data,
+      pushedData,
+      actionContent
+    } = this.state;
+    const sizes2 = { ...sizes };
+    sizes2.height = sizes2.height - 30 - (display ? 20 : 0);
     return (
       <div id="zebulon" style={{ fontFamily: "sans-serif" }}>
         <ResizableBox
-          height={this.state.sizes.height}
-          width={this.state.sizes.width}
+          height={sizes.height}
+          width={sizes.width}
           onResize={this.onResize}
         >
+          <div style={{ height: 20 }}>
+            <input
+              type="checkbox"
+              id="configuration"
+              onChange={() => this.setState({ display: !display })}
+              checked={display}
+            />
+            <label htmlFor="configuration">Configuration</label>
+          </div>
           <ZebulonGrid
-            configuration={this.state.configuration}
-            data={this.state.data}
-            pushedData={this.state.pushedData}
-            menuFunctions={this.state.menuFunctions}
-            configurationFunctions={this.state.configurationFunctions}
-            sizes={this.state.sizes}
+            configuration={configuration}
+            data={data}
+            pushedData={pushedData}
+            menuFunctions={menuFunctions}
+            configurationFunctions={configurationFunctions}
+            sizes={sizes2}
             ref={ref => (this.zebulon = ref)}
-            display={this.state.display ? "configuration" : "pivotgrid"}
-            // meta={this.meta}
-            // functions={this.functions}
-            // params={this.params}
-            keyEvent={this.state.keyEvent}
+            display={display ? "configuration" : "pivotgrid"}
+            meta={this.meta}
+            functions={this.functions}
+            params={this.params}
+            keyEvent={keyEvent}
           />
         </ResizableBox>
         <div
           style={{
             display: "flex",
             marginTop: ".5em",
-            width: this.state.sizes.width
+            width: sizes.width
           }}
         >
           <button style={{ marginRight: ".5em" }} onClick={this.pushData}>
@@ -221,7 +236,7 @@ class ZebulonGridDemo extends Component {
             style={{ marginRight: ".5em" }}
             onClick={this.setCustomConfigurationFunctions}
           >
-            {`${this.state.configurationFunctions === configurationFunctions
+            {`${configurationFunctions === configurationFunctions
               ? "Add"
               : "Remove"} custom configuration functions`}
           </button>
@@ -229,7 +244,7 @@ class ZebulonGridDemo extends Component {
             style={{ marginRight: ".5em" }}
             onClick={this.setCustomFunctions}
           >
-            {`${this.state.menuFunctions === menuFunctions
+            {`${menuFunctions === menuFunctions
               ? "Add"
               : "Remove"} custom menu functions`}
           </button>
@@ -247,13 +262,13 @@ class ZebulonGridDemo extends Component {
           style={{
             minHeight: 100,
             height: "fitContent",
-            width: this.state.sizes.width,
+            width: sizes.width,
             fontSize: "smaller",
             marginTop: ".5em",
             border: "solid .05em"
           }}
         >
-          {this.state.actionContent}
+          {actionContent}
         </div>
         <div
           style={{

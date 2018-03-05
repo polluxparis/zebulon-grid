@@ -104,7 +104,7 @@ export const applySizesToStore = (store, sizes) => {
 export const applyConfigurationToStore = (
   store,
   configuration,
-  configurationFunctions = defaultConfigurationFunctions,
+  functions, //configurationFunctions = defaultConfigurationFunctions,
   data
 ) => {
   store.dispatch(loadingConfig(true));
@@ -143,8 +143,8 @@ export const applyConfigurationToStore = (
     columns = configuration.axis.columns || columns;
     rows = configuration.axis.rows || rows;
   }
-  store.dispatch(setDimensions(configuration, configurationFunctions));
-  store.dispatch(setMeasures(configuration, configurationFunctions));
+  store.dispatch(setDimensions(configuration, functions));
+  store.dispatch(setMeasures(configuration, functions));
   const dimensionIdsPositioned = [];
   rows.forEach((dimensionId, index) => {
     store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
@@ -202,10 +202,50 @@ export const applyConfigurationToStore = (
 };
 
 // initialisation of dimensions from configuration
-export function dimensionFactory(
-  dimensionConfiguration,
-  configurationFunctions
-) {
+const getFunction = (functions, object, type, value) => {
+  if (typeof value === "function") {
+    return value;
+  } else if (typeof value === "string") {
+    const indexDot = value.indexOf(".");
+    if (indexDot !== -1) {
+      let v = value;
+      if (value.slice(0, indexDot) === "row") {
+        v = value.slice(indexDot + 1);
+      }
+      const keys = v.split(".");
+      return ({ row }) => {
+        return keys.reduce(
+          (acc, key, index) =>
+            acc[key] === undefined && index < keys.length - 1 ? {} : acc[key],
+          row
+        );
+      };
+    } else {
+      const v =
+        typeof value === "string"
+          ? functions
+              .filter(
+                f =>
+                  f.id === value &&
+                  f.tp === type &&
+                  (f.visibility === "global" || f.visibility === object)
+              )
+              .sort(
+                (f0, f1) =>
+                  (f0.visibility !== object) - (f1.visibility !== object)
+              )
+          : [];
+      if (v.length) {
+        return v[0].functionJS;
+      } else if (type === "format") {
+        return ({ value }) => value;
+      } else {
+        return ({ row }) => row[value];
+      }
+    }
+  }
+};
+export function dimensionFactory(dimensionConfiguration, functions) {
   const {
     id,
     caption,
@@ -216,58 +256,57 @@ export function dimensionFactory(
     subTotal,
     attributeParents
   } = dimensionConfiguration;
-  const { formats, accessors, sorts } = configurationFunctions;
+  // const { formats, accessors, sorts } = configurationFunctions;
   const _sort = sort || {};
   // a voir accessor functions
-  const datasetProperties = {};
-  const kAccessor = accessors[keyAccessor] || keyAccessor,
-    lAccessor =
-      accessors[labelAccessor] ||
-      labelAccessor ||
-      accessors[keyAccessor] ||
-      keyAccessor,
-    sAccessor =
-      accessors[_sort.keyAccessor] ||
-      _sort.keyAccessor ||
-      accessors[labelAccessor] ||
-      labelAccessor ||
-      accessors[keyAccessor] ||
-      keyAccessor;
-
-  if (typeof kAccessor === "string") {
-    datasetProperties.id = kAccessor;
-  }
-  if (typeof lAccessor === "string") {
-    datasetProperties.label = lAccessor;
-  }
-  if (typeof sAccessor === "string") {
-    datasetProperties.sort = sAccessor;
-  }
+  // const datasetProperties = {};
+  const kAccessor = getFunction(functions, "dataset", "accessor", keyAccessor),
+    lAccessor = getFunction(
+      functions,
+      "dataset",
+      "accessor",
+      labelAccessor || keyAccessor
+    ),
+    sAccessor = getFunction(
+      functions,
+      "dataset",
+      "accessor",
+      _sort.keyAccessor || labelAccessor || keyAccessor
+    );
+  // if (typeof kAccessor === "string") {
+  //   datasetProperties.id = kAccessor;
+  // }
+  // if (typeof lAccessor === "string") {
+  //   datasetProperties.label = lAccessor;
+  // }
+  // if (typeof sAccessor === "string") {
+  //   datasetProperties.sort = sAccessor;
+  // }
   const dimSort = {
     direction: _sort.direction || "asc",
-    custom: sorts[_sort.custom] || _sort.custom,
-    keyAccessor: toAccessorFunction(sAccessor)
+    custom: getFunction(functions, "dataset", "sort", _sort.custom),
+    keyAccessor: sAccessor
   };
-
+  console.log("format", utils.format);
   return {
     id,
     caption: id === MEASURE_ID ? "Measures" : caption || id,
-    keyAccessor: toAccessorFunction(kAccessor),
-    labelAccessor: toAccessorFunction(lAccessor),
-    format: formats[format] || utils.formatValue,
+    keyAccessor: kAccessor,
+    labelAccessor: lAccessor,
+    format: getFunction(functions, "dataset", "format", format || id),
     sort: dimSort,
     subTotal,
-    attributeParents: attributeParents || [],
-    datasetProperties
+    attributeParents: attributeParents || [] //,
+    // datasetProperties
   };
 }
 // initialisation of measures from configuration
-export function measureFactory(measureConfiguration, configurationFunctions) {
-  const {
-    formats,
-    accessors,
-    aggregations: customAggregations
-  } = configurationFunctions;
+export function measureFactory(measureConfiguration, functions) {
+  // const {
+  //   formats,
+  //   accessors,
+  //   aggregations: customAggregations
+  // } = configurationFunctions;
   const {
     id,
     caption,
@@ -276,23 +315,115 @@ export function measureFactory(measureConfiguration, configurationFunctions) {
     aggregation,
     aggregationCaption
   } = measureConfiguration;
-  const aggs = { ...aggregations, ...customAggregations };
-  const datasetProperties = {};
-  const accessor = accessors[valueAccessor] || valueAccessor;
-  if (typeof accessor === "string") {
-    datasetProperties.value = accessor;
-  }
+  // const aggs = { ...aggregations, ...customAggregations };
+  // const datasetProperties = {};
+  // const accessor = accessors[valueAccessor] || valueAccessor;
+  // if (typeof accessor === "string") {
+  //   datasetProperties.value = accessor;
+  // }
   return {
     id,
     caption: caption || id,
-    valueAccessor: toAccessorFunction(
-      accessors[valueAccessor] || valueAccessor
-    ),
-    format: formats[format] || utils.formatValue,
-    aggregation: isStringOrNumber(aggregation)
-      ? aggs[aggregation]
-      : aggregation,
-    aggregationCaption,
-    datasetProperties
+    valueAccessor: getFunction(functions, "dataset", "accessor", valueAccessor),
+    format: getFunction(functions, "dataset", "format", format || id), //formats[format] || utils.formatValue,
+    aggregation: getFunction(functions, "dataset", "aggregation", aggregation),
+    aggregationCaption //,
+    // datasetProperties
   };
 }
+// export function dimensionFactory(
+//   dimensionConfiguration,
+//   configurationFunctions
+// ) {
+//   const {
+//     id,
+//     caption,
+//     keyAccessor,
+//     labelAccessor,
+//     sort,
+//     format,
+//     subTotal,
+//     attributeParents
+//   } = dimensionConfiguration;
+//   const { formats, accessors, sorts } = configurationFunctions;
+//   const _sort = sort || {};
+//   // a voir accessor functions
+//   const datasetProperties = {};
+//   const kAccessor = accessors[keyAccessor] || keyAccessor,
+//     lAccessor =
+//       accessors[labelAccessor] ||
+//       labelAccessor ||
+//       accessors[keyAccessor] ||
+//       keyAccessor,
+//     sAccessor =
+//       accessors[_sort.keyAccessor] ||
+//       _sort.keyAccessor ||
+//       accessors[labelAccessor] ||
+//       labelAccessor ||
+//       accessors[keyAccessor] ||
+//       keyAccessor;
+
+//   if (typeof kAccessor === "string") {
+//     datasetProperties.id = kAccessor;
+//   }
+//   if (typeof lAccessor === "string") {
+//     datasetProperties.label = lAccessor;
+//   }
+//   if (typeof sAccessor === "string") {
+//     datasetProperties.sort = sAccessor;
+//   }
+//   const dimSort = {
+//     direction: _sort.direction || "asc",
+//     custom: sorts[_sort.custom] || _sort.custom,
+//     keyAccessor: toAccessorFunction(sAccessor)
+//   };
+
+//   return {
+//     id,
+//     caption: id === MEASURE_ID ? "Measures" : caption || id,
+//     keyAccessor: toAccessorFunction(kAccessor),
+//     labelAccessor: toAccessorFunction(lAccessor),
+//     format: formats[format]
+//       ? value => formats[format]({ value })
+//       : utils.formatValue,
+//     sort: dimSort,
+//     subTotal,
+//     attributeParents: attributeParents || [],
+//     datasetProperties
+//   };
+// }
+// // initialisation of measures from configuration
+// export function measureFactory(measureConfiguration, configurationFunctions) {
+//   const {
+//     formats,
+//     accessors,
+//     aggregations: customAggregations
+//   } = configurationFunctions;
+//   const {
+//     id,
+//     caption,
+//     valueAccessor,
+//     format,
+//     aggregation,
+//     aggregationCaption
+//   } = measureConfiguration;
+//   const aggs = { ...aggregations, ...customAggregations };
+//   const datasetProperties = {};
+//   const accessor = accessors[valueAccessor] || valueAccessor;
+//   if (typeof accessor === "string") {
+//     datasetProperties.value = accessor;
+//   }
+//   return {
+//     id,
+//     caption: caption || id,
+//     valueAccessor: toAccessorFunction(
+//       accessors[valueAccessor] || valueAccessor
+//     ),
+//     format: formats[format] || utils.formatValue,
+//     aggregation: isStringOrNumber(aggregation)
+//       ? aggs[aggregation]
+//       : aggregation,
+//     aggregationCaption,
+//     datasetProperties
+//   };
+// }

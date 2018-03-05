@@ -89,14 +89,14 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
     let rowNode = rowRoot;
     dimensions.forEach(dimension => {
       if (dimension.id !== MEASURE_ID) {
-        const id = dimension.keyAccessor(row);
+        const id = dimension.keyAccessor({ row });
         let dimensionValue = dimension.values[id];
         if (!dimensionValue) {
           dimensionValue = {
             id,
             dimensionId: dimension.id,
-            caption: dimension.labelAccessor(row),
-            sortKey: dimension.sort.keyAccessor(row),
+            caption: dimension.labelAccessor({ row }),
+            sortKey: dimension.sort.keyAccessor({ row }),
             rowIndexes: [index],
             filtered: false
           };
@@ -430,6 +430,7 @@ export const rowLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
+      console.log("rowleaves", dimensions);
       // no measures on measure axis
       if (measures !== null && measures.length === 0) {
         return {
@@ -464,7 +465,7 @@ export const rowLeavesSelector = createSelector(
           leaves
         );
       }
-
+      console.log("rowleavesend");
       return {
         nVisibles,
         node,
@@ -500,6 +501,7 @@ export const columnLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
+      console.log("columnleaves", dimensions);
       // no measures on measure axis
       if (measures !== null && measures.length === 0) {
         return {
@@ -534,6 +536,7 @@ export const columnLeavesSelector = createSelector(
           leaves
         );
       }
+      console.log("columnleavesEnd");
       return {
         nVisibles,
         node,

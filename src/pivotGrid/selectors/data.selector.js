@@ -42,7 +42,7 @@ export const dataFilteredIndexes = (
     if (
       filters.every(
         filter =>
-          filter.values[dimensions[filter.dimensionId].keyAccessor(row)] !==
+          filter.values[dimensions[filter.dimensionId].keyAccessor({ row })] !==
           undefined
       )
     ) {
@@ -76,10 +76,10 @@ export const getDimensionValuesSelector = createSelector(
     // Otherwise you lose the filtered values the next time you open a Filter Panel
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
-      const key = dimension.keyAccessor(row);
+      const key = dimension.keyAccessor({ row });
       if (isUndefined(values[key])) {
-        const label = dimension.format(dimension.labelAccessor(row));
-        const sortKey = dimension.sort.keyAccessor(row);
+        const label = dimension.format(dimension.labelAccessor({ row }));
+        const sortKey = dimension.sort.keyAccessor({ row });
         values[key] = {
           id: key,
           label: label,
@@ -155,7 +155,7 @@ export const metaSelector = createSelector(
           alignement,
           position,
           index_: index,
-          formatFunction: x => x,
+          formatFunction: ({ value }) => value,
           filterType,
           v: null,
           vTo: null

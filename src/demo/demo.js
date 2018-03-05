@@ -9,7 +9,7 @@ export const customConfigurationFunctions = (
   const configurationFunctions = {
     formats: {
       ...prevConfigurationFunctions.formats,
-      price: value => {
+      price: ({ value }) => {
         if (Number.isFinite(value)) {
           return (
             <div style={{ color: "blue", textAlign: "right" }}>
@@ -19,29 +19,29 @@ export const customConfigurationFunctions = (
         }
         return value;
       },
-      titiFormat: value => (
+      titiFormat: ({ value }) => (
         <div style={{ color: "red", textAlign: "center" }}>{value}</div>
       )
     },
     accessors: {
-      ...prevConfigurationFunctions.accessors,
-      price: row => ({ amt: row.amt, qty: row.qty })
+      ...prevConfigurationFunctions.accessors
     },
     aggregations: {
-      ...prevConfigurationFunctions.aggregations,
-      price: values => {
-        const price = values.reduce(
-          (price, value) => {
-            price.amt += value.amt;
-            price.qty += value.qty;
-            return price;
-          },
-          { amt: null, qty: null }
-        );
-        return price.amt === null || price.qty === null
-          ? null
-          : price.amt / price.qty;
-      }
+      ...prevConfigurationFunctions.aggregations
+      // ,
+      // price: values => {
+      //   const price = values.reduce(
+      //     (price, value) => {
+      //       price.amt += value.amt;
+      //       price.qty += value.qty;
+      //       return price;
+      //     },
+      //     { amt: null, qty: null }
+      //   );
+      //   return price.amt === null || price.qty === null
+      //     ? null
+      //     : price.amt / price.qty;
+      // }
     },
     sorts: {
       titiSort: (a, b) => {
@@ -60,7 +60,7 @@ export const customConfigurationFunctions = (
       {
         id: "price",
         caption: "Price",
-        aggregation: "price",
+        aggregation: "weighted_avg",
         valueAccessor: "price",
         format: "price"
       }

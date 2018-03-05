@@ -205,7 +205,7 @@ const buildPositionedHeaders = (
   while (size <= maxSize && index < leaves.length && index >= 0) {
     const header = leaves[index];
     const dimension = dimensions[header.depth];
-    header.format = dimension.format;
+    header.format = dimension.format || (({ value }) => value);
     header.index = index;
     if (header.isVisible) {
       const rowCells = [];

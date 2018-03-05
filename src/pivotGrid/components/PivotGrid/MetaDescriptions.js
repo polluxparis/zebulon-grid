@@ -157,7 +157,7 @@ export const metaDescriptions = (functions, properties, props) => {
 				caption: "Column",
 				width: 100,
 				dataType: "string",
-				editable: row => "Initial" !== row.tp
+				editable: ({ row }) => "Initial" !== row.tp
 			},
 			{
 				id: "tp",
@@ -165,7 +165,7 @@ export const metaDescriptions = (functions, properties, props) => {
 				width: 100,
 				dataType: "string",
 				// accessor: (row, status) => (status.new_ ? row.tp : row.tp),
-				editable: row => "Initial" !== row.tp,
+				editable: ({ row }) => "Initial" !== row.tp,
 				select: ["", "Computed", "Analytic"]
 			},
 			{
@@ -214,7 +214,7 @@ export const metaDescriptions = (functions, properties, props) => {
 				caption: "Value accessor",
 				width: 150,
 				dataType: "string",
-				editable: row => "Initial" !== row.tp,
+				editable: ({ row }) => "Initial" !== row.tp,
 				select: getAccessors
 			},
 			{
@@ -278,7 +278,8 @@ export const metaDescriptions = (functions, properties, props) => {
 				caption: "Id",
 				width: 100,
 				dataType: "string",
-				editable: (row, status) => status.new_ && "Initial" !== row.tp
+				editable: ({ row, status }) =>
+					status.new_ && "Initial" !== row.tp
 			},
 			{
 				id: "caption",
@@ -318,7 +319,8 @@ export const metaDescriptions = (functions, properties, props) => {
 				caption: "Code",
 				width: 100,
 				dataType: "string",
-				editable: (row, status) => status.new_ && "Initial" !== row.tp
+				editable: ({ row, status }) =>
+					status.new_ && "Initial" !== row.tp
 			},
 			{
 				id: "caption",
@@ -331,7 +333,8 @@ export const metaDescriptions = (functions, properties, props) => {
 				id: "keyAccessor",
 				caption: "Key accessor",
 				width: 150,
-				accessor: row => accessors[row.keyAccessor] || row.keyAccessor,
+				accessor: ({ row }) =>
+					accessors[row.keyAccessor] || row.keyAccessor,
 				dataType: "string",
 				editable: true,
 				select: getAccessorsAndProperties
@@ -340,7 +343,7 @@ export const metaDescriptions = (functions, properties, props) => {
 				id: "Label Accessor",
 				caption: "Label accessor",
 				width: 150,
-				accessor: row =>
+				accessor: ({ row }) =>
 					accessors[row.labelAccessor] ||
 					row.labelAccessor ||
 					accessors[row.keyAccessor] ||
@@ -352,7 +355,7 @@ export const metaDescriptions = (functions, properties, props) => {
 			{
 				id: "sortAccessor",
 				caption: "Sorting accessor",
-				accessor: row =>
+				accessor: ({ row }) =>
 					(row.sort
 						? accessors[row.sort.keyAccessor] ||
 							row.sort.keyAccessor
@@ -374,7 +377,7 @@ export const metaDescriptions = (functions, properties, props) => {
 				width: 150,
 				dataType: "string",
 				editable: true,
-				accessor: row => (row.sort ? row.sort.custom : undefined),
+				accessor: ({ row }) => (row.sort ? row.sort.custom : undefined),
 				select: getSorts
 			},
 			{
@@ -392,7 +395,8 @@ export const metaDescriptions = (functions, properties, props) => {
 				caption: "Code",
 				width: 100,
 				dataType: "string",
-				editable: (row, status) => status.new_ && "Initial" !== row.tp
+				editable: ({ row, status }) =>
+					status.new_ && "Initial" !== row.tp
 			},
 			{
 				id: "caption",
@@ -445,7 +449,7 @@ export const actionDescriptions = (object, callbacks) => {
 			{
 				caption: "Analytic",
 				type: "detail",
-				disable: row => "Analytic" !== row.tp,
+				disable: ({ row }) => "Analytic" !== row.tp,
 				content: (row, data, meta, status, params, top, left) => {
 					return (
 						<Property
@@ -468,7 +472,8 @@ export const actionDescriptions = (object, callbacks) => {
 			{
 				caption: "Delete",
 				type: "delete",
-				disable: row => row.index_ === undefined || "Initial" === row.tp
+				disable: ({ row }) =>
+					row.index_ === undefined || "Initial" === row.tp
 			}
 		];
 	}

@@ -1,10 +1,12 @@
 import React from "react";
+import { utils } from "zebulon-controls";
+
 export const configurationFunctions = {
   formats: {
-    id: value => (
+    id: ({ value }) => (
       <div style={{ color: "blue", textAlign: "right" }}>{value}</div>
     ),
-    date: value => {
+    date: ({ value }) => {
       if (value instanceof Date) {
         return (
           <div style={{ color: "black", textAlign: "center" }}>
@@ -14,7 +16,7 @@ export const configurationFunctions = {
       }
       return value;
     },
-    quantity: value => {
+    quantity: ({ value }) => {
       if (Number.isFinite(value)) {
         return (
           <div style={{ color: "black", textAlign: "right" }}>
@@ -24,7 +26,7 @@ export const configurationFunctions = {
       }
       return value;
     },
-    amount: value => {
+    amount: ({ value }) => {
       if (Number.isFinite(value)) {
         return (
           <div style={{ color: "black", textAlign: "right" }}>
@@ -33,9 +35,21 @@ export const configurationFunctions = {
         );
       }
       return value;
+    },
+    price: ({ value }) => {
+      return (
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>€</div>
+          <div style={{ textAlign: "right" }}>
+            {utils.formatValue(value, null, 2)}
+          </div>
+        </div>
+      );
     }
   },
-  accessors: {},
+  accessors: {
+    price: ({ row }) => ({ v0: row.amt, v1: row.qty })
+  },
   sorts: {},
   aggregations: {}
 };

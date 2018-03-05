@@ -508,7 +508,7 @@ export class DataCells extends ScrollableGrid {
       cell.value = value.value;
       cell.edited = value.edited;
       cell.comments = value.comments;
-      cell.caption = measure.format(cell.value);
+      cell.caption = measure.format({ value: cell.value });
       this.cellCache[key] = cell;
     }
     if (focused && this.focusChanged) {

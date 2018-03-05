@@ -33,7 +33,7 @@ export const weighted_avg = values => {
     },
     { v0: null, v1: null }
   );
-  return wavg.v0 === 0 && wavg.v1 === 0 ? null : wavg.v0 / wavg.v1;
+  return wavg.v0 === null && wavg.v1 === null ? null : wavg.v0 / wavg.v1;
 };
 export const delta = values => {
   const delta = values.reduce(
