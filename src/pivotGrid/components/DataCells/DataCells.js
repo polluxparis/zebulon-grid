@@ -444,14 +444,7 @@ export class DataCells extends ScrollableGrid {
   // -----------------------------------------
   // rendering
   // -----------------------------------------
-  cellRenderer = (
-    rowHeader,
-    columnHeader,
-    // key,
-    isEven,
-    offsetRow,
-    offsetColumn
-  ) => {
+  cellRenderer = (rowHeader, columnHeader, isEven, offsetRow, offsetColumn) => {
     const {
       getCellValue,
       measures,
@@ -547,7 +540,7 @@ export class DataCells extends ScrollableGrid {
     );
   };
   _getContent = () => {
-    const { rows, columns } = this.props;
+    const { rows, columns, status } = this.props;
     if (rows === undefined || columns === undefined) {
       return [];
     }

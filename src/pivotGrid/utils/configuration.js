@@ -110,6 +110,8 @@ export const applyConfigurationToStore = (
   store.dispatch(loadingConfig(true));
   if (!isNullOrUndefined(data)) {
     setData(store, data);
+  } else {
+    store.dispatch(fetchData());
   }
   //  global configuration
   const measureHeadersAxis =
@@ -260,40 +262,30 @@ export function dimensionFactory(dimensionConfiguration, functions) {
   const _sort = sort || {};
   // a voir accessor functions
   // const datasetProperties = {};
+  const keyAccessor_ = keyAccessor,
+    labelAccessor_ = labelAccessor || keyAccessor,
+    keyAccessors_ = _sort.keyAccessor || labelAccessor || keyAccessor;
   const kAccessor = getFunction(functions, "dataset", "accessor", keyAccessor),
-    lAccessor = getFunction(
-      functions,
-      "dataset",
-      "accessor",
-      labelAccessor || keyAccessor
-    ),
-    sAccessor = getFunction(
-      functions,
-      "dataset",
-      "accessor",
-      _sort.keyAccessor || labelAccessor || keyAccessor
-    );
-  // if (typeof kAccessor === "string") {
-  //   datasetProperties.id = kAccessor;
-  // }
-  // if (typeof lAccessor === "string") {
-  //   datasetProperties.label = lAccessor;
-  // }
-  // if (typeof sAccessor === "string") {
-  //   datasetProperties.sort = sAccessor;
-  // }
+    lAccessor = getFunction(functions, "dataset", "accessor", labelAccessor_),
+    sAccessor = getFunction(functions, "dataset", "accessor", keyAccessors_);
+
   const dimSort = {
     direction: _sort.direction || "asc",
     custom: getFunction(functions, "dataset", "sort", _sort.custom),
-    keyAccessor: sAccessor
+    custom_: _sort.custom,
+    keyAccessor: sAccessor,
+    keyAccessor_: keyAccessors_
   };
   console.log("format", utils.format);
   return {
     id,
     caption: id === MEASURE_ID ? "Measures" : caption || id,
     keyAccessor: kAccessor,
+    keyAccessor_,
     labelAccessor: lAccessor,
+    labelAccessor_,
     format: getFunction(functions, "dataset", "format", format || id),
+    format_: format || id,
     sort: dimSort,
     subTotal,
     attributeParents: attributeParents || [] //,
@@ -325,8 +317,11 @@ export function measureFactory(measureConfiguration, functions) {
     id,
     caption: caption || id,
     valueAccessor: getFunction(functions, "dataset", "accessor", valueAccessor),
-    format: getFunction(functions, "dataset", "format", format || id), //formats[format] || utils.formatValue,
+    valueAccessor_: valueAccessor,
+    format: getFunction(functions, "dataset", "format", format || id),
+    format_: format || id,
     aggregation: getFunction(functions, "dataset", "aggregation", aggregation),
+    aggregation_: aggregation,
     aggregationCaption //,
     // datasetProperties
   };

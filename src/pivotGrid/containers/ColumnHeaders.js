@@ -25,7 +25,8 @@ const mapStateToProps = () => (state, ownProps) => {
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),
     availableMeasures: availableMeasuresSelector(state),
     previewSizes: previewSizesSelector(state),
-    features: state.configuration.features
+    features: state.configuration.features,
+    status: state.status
   };
 };
 

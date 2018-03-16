@@ -46,7 +46,8 @@ class Headers extends PureComponent {
       axisType,
       previewSizes,
       measures,
-      features
+      features,
+      status
     } = this.props;
     const positionStyle = {
       position: "absolute",

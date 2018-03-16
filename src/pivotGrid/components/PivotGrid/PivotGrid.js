@@ -106,7 +106,6 @@ class PivotGrid extends Component {
       this.contextualMenu.state.menu &&
       this.contextualMenu.state.menu.visible
     ) {
-      // Object.keys(nextProps).map(key=>({key,equal:nextProps[key]===this.props[key]}));
       this.closeOpenedWindows();
     }
   }
@@ -146,47 +145,9 @@ class PivotGrid extends Component {
       this.dataCells.handleNavigationKeys &&
       utils.isNavigationKey(e)
     ) {
-      // if (this.state.openedFilter) {
-      //   this.setState({ openedFilter: undefined });
-      // }
-      // if (e.type === "copy") return this.handleCopy(e);
-      // else if (e.type === "paste") return this.handlePaste(e);
-      // else if (e.type === "keydown")
       return this.dataCells.handleNavigationKeys(e);
     }
   };
-  // if (e.metaKey || e.ctrlKey) {
-  //       // To be consistent with browser behaviour, we also accept = which is on the same keyboard touch as +
-  //       if (e.key === "+" || e.key === "=") {
-  //         this.props.zoom(ZOOM_IN);
-  //         e.preventDefault();
-  //       }
-  //       // ctrl - -> zoom out
-  //       // To be consistent with browser behaviour, we also accept _ which is on the same keyboard touch as -
-  //       if (e.key === "-" || e.key === "_") {
-  //         this.props.zoom(ZOOM_OUT);
-  //         e.preventDefault();
-  //       } else if (e.which === 65) {
-  //         // ctrl A -> select all
-  //         this.props.selectRange({
-  //           selectedCellStart: {
-  //             columnIndex: this.nextVisible(columns.leaves, 0, -1, 0),
-  //             rowIndex: this.nextVisible(rows.leaves, 0, -1, 0)
-  //           },
-  //           selectedCellEnd: {
-  //             columnIndex: this.nextVisible(
-  //               columns.leaves,
-  //               columns.length - 1,
-  //               1,
-  //               0
-  //             ),
-  //             rowIndex: this.nextVisible(rows.leaves, rows.length - 1, 1, 0)
-  //           }
-  //         });
-  //         e.preventDefault();
-  //       }
-  //       // arrow keys
-  //     }
   //-----------------------------
   handleCopy = e => {
     this.closeOpenedWindows();
@@ -238,7 +199,8 @@ class PivotGrid extends Component {
       drilldown,
       zoomValue,
       headers,
-      gridId
+      gridId,
+      status
     } = this.props;
     const { rows, columns } = headers;
     let grid;
@@ -281,6 +243,7 @@ class PivotGrid extends Component {
             width,
             height,
             position: "relative"
+            // cursor: serverloading ? "progress" : "default"
           }}
           id={gridId}
           onWheel={e => this.dataCells.onWheel(e)}

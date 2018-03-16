@@ -37,7 +37,8 @@ const mapStateToProps = () => (state, ownProps) => {
     sizes: state.sizes,
     features: state.configuration.features,
     toggleSort: toggleSortOrderSelector(state),
-    getAxisTrees: getAxisTreesSelector(state)
+    getAxisTrees: getAxisTreesSelector(state),
+    status: state.status
   };
 };
 const mapDispatchToProps = dispatch => ({

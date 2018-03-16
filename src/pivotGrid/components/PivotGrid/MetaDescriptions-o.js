@@ -36,16 +36,6 @@ class Property extends Component {
 		});
 	}
 	render() {
-		// onst select = ["", "a", "b", "c"];
-		// const style = {
-		// 	border: "solid lightgrey thin",
-		// 	boxSizing: "border-box",
-		// 	padding: 0,
-		// 	backgroundColor: "inherit",
-		// 	width: 200,
-		// 	textAlign: "left"
-
-		// };
 		return (
 			<div
 				style={{

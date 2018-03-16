@@ -118,6 +118,7 @@ export default class DataCell extends PureComponent {
     const style = {
       boxSizing: "border-box",
       overflow: "hidden"
+      // cursor: loading ? "progress" : "default"
     };
 
     const className = classnames(
@@ -141,7 +142,11 @@ export default class DataCell extends PureComponent {
       cell = (
         <div
           id={`${rowIndex} - ${columnIndex}`}
-          style={{ ...style, ...this.props.style, display: "flex" }}
+          style={{
+            ...style,
+            ...this.props.style,
+            display: "flex"
+          }}
         >
           <div
             style={{

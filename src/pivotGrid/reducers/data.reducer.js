@@ -13,10 +13,11 @@ export default (
 		case FETCH_DATA:
 			return { data: [], pushedData: [] };
 		case FETCH_SUCCESS:
+			console.log(FETCH_SUCCESS, action.data);
 			return {
 				data: action.data,
 				pushedData: [],
-				meta: action.meta
+				meta: action.meta || state.meta
 			};
 		default:
 			return state;

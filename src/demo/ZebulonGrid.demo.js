@@ -180,17 +180,17 @@ class ZebulonGridDemo extends Component {
   render() {
     const {
       sizes,
-      display,
       keyEvent,
       menuFunctions,
       configuration,
       configurationFunctions,
       data,
       pushedData,
-      actionContent
+      actionContent,
+      display
     } = this.state;
-    const sizes2 = { ...sizes };
-    sizes2.height = sizes2.height - 30 - (display ? 20 : 0);
+    const sizes2 = { ...this.state.sizes };
+    sizes2.height = sizes2.height - 30; // - (display ? 20 : 0);
     return (
       <div id="zebulon" style={{ fontFamily: "sans-serif" }}>
         <ResizableBox

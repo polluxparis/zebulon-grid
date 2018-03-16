@@ -23,7 +23,7 @@ import {
 // const rowAndColumnHeadersSel = () => rowAndColumnHeadersSelector;
 const mapStateToProps = () => state => {
   // const rowAndColumnHeaders = rowAndColumnHeadersSel();
-  return {
+  const props = {
     status: state.status,
     width: state.configuration.width,
     height: state.configuration.height,
@@ -43,6 +43,8 @@ const mapStateToProps = () => state => {
       state.configuration.edition.activated &&
       state.configuration.edition.editable
   };
+  console.log("map", props);
+  return props;
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -81,6 +83,8 @@ const mergeProps = (
   { updateCellSize, editData, ...restDispatchProps },
   ownProps
 ) => {
+  console.log("merge", restStateProps);
+
   return {
     updateCellSize: ({ handle, offset, initialOffset }) =>
       updateCellSize({

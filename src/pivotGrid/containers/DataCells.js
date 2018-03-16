@@ -23,6 +23,7 @@ const mapStateToProps = () => (state, ownProps) => {
   const dimensions = dimensionsSelector(state);
   const getCellValue = getCellValueSelector(state);
   const selectedRange = selectedRangeSelector(state);
+
   const props = {
     measures,
     filters: state.filters,
@@ -43,6 +44,7 @@ const mapStateToProps = () => (state, ownProps) => {
     // height: state.configuration.height,
     // width: state.configuration.width,
     configuration: state.configuration,
+    status: state.status,
     ...ownProps
   };
   return props;

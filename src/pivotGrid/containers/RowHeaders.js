@@ -27,7 +27,8 @@ const mapStateToProps = () => (state, ownProps) => {
     gridId: ownProps.gridId,
     getSelectedRowRange: getSelectedRowRangeSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.ROWS)(state),
-    availableMeasures: availableMeasuresSelector(state)
+    availableMeasures: availableMeasuresSelector(state),
+    status: state.status
   };
 };
 
