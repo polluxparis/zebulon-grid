@@ -97,13 +97,13 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
             dimensionId: dimension.id,
             caption: dimension.labelAccessor({ row }),
             sortKey: dimension.sort.keyAccessor({ row }),
-            rowIndexes: [index],
+            rowIndexes: [index + offset],
             filtered: false
           };
           newValue = true;
           dimension.values[id] = dimensionValue;
         } else {
-          dimension.values[id].rowIndexes.push(index);
+          dimension.values[id].rowIndexes.push(index + offset);
         }
 
         if (dimension.axis === AxisType.ROWS) {
@@ -361,6 +361,9 @@ export const getAxisLeaves = (
       node.filteredIndexes = node.filteredIndexes.concat(child.filteredIndexes);
       return child.id;
     });
+    if (!filteredIndexes && node.dataRowIndexes) {
+      node.filteredIndexes = node.dataRowIndexes;
+    }
     node.filteredIndexes.sort((a, b) => a - b);
     if (!node.orders) {
       node.orders = {};

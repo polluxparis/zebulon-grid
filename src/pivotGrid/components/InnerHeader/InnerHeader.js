@@ -86,7 +86,7 @@ const innerHeader = ({
   const computedStyle = {
     whiteSpace: "nowrap",
     overflow: "hidden",
-    display: "flex",
+    display: "-webkit-box",
     width: "inherit"
   };
   let collapsedIcon;

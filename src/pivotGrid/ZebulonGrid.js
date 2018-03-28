@@ -197,6 +197,9 @@ class ZebulonGrid extends Component {
     return true;
   }
   handleKeyEvent = e => {
+    if (this.display && this.display.handleKeyEvent) {
+      return this.display.handleKeyEvent(e);
+    }
     const zoom = utils.isZoom(e);
     if (zoom) {
       e.preventDefault();
@@ -349,15 +352,15 @@ class ZebulonGrid extends Component {
   // };
   // configuration
   render() {
-    this.displayId = `pivotgrid-${this.props.id || 0}`;
+    // this.displayId = `pivotgrid-${this.props.id || 0}`;
     let div = (
       <div>
         <Provider store={this.store}>
           <PivotGrid
-            id={this.displayId}
+            id={this.props.id}
             menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-            key={this.displayId}
-            gridId={this.displayId}
+            // key={this.displayId}
+            // gridId={this.displayId}
             // isActive={this.props.isActive}
             getRef={ref => (this.display = ref)}
             // serverLoading={this.props.serverLoading}
@@ -367,7 +370,7 @@ class ZebulonGrid extends Component {
     );
 
     if (this.state.display === "configuration") {
-      this.displayId = `configuration-${this.props.id || 0}`;
+      // this.displayId = `configuration-${this.props.id || 0}`;
       const { data, status } = this.store.getState();
       this.meta = data.meta || this.props.meta || {};
       this.data = data.data;
@@ -378,8 +381,9 @@ class ZebulonGrid extends Component {
         <div>
           <Provider store={this.store}>
             <ZebulonTableAndConfiguration
-              key={this.displayId}
-              configurationId={this.displayId}
+              // key={this.displayId}
+              id={this.props.id}
+              // configurationId={this.displayId}
               sizes={sizes}
               data={this.data}
               meta={this.meta}

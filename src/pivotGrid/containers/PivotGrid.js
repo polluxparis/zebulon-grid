@@ -21,14 +21,13 @@ import {
   applyPushedData
 } from "../actions";
 // const rowAndColumnHeadersSel = () => rowAndColumnHeadersSelector;
-const mapStateToProps = () => state => {
+const mapStateToProps = () => (state, ownProps) => {
   // const rowAndColumnHeaders = rowAndColumnHeadersSel();
   const props = {
+    gridId: ownProps.id || "pivotgrid",
     status: state.status,
     width: state.configuration.width,
     height: state.configuration.height,
-    // headers: (() => rowAndColumnHeadersSelector)()(state),
-    // headers: rowAndColumnHeadersSel()(state),
     headers: rowAndColumnHeadersSelector(state),
     sizes: state.sizes,
     selectedRange: selectedRangeSelector(state),
