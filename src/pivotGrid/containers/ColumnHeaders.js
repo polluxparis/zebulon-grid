@@ -20,6 +20,7 @@ import Headers from "../components/Headers/Headers";
 const mapStateToProps = () => (state, ownProps) => {
   return {
     axisType: AxisType.COLUMNS,
+    zoom: state.configuration.zoom,
     gridId: ownProps.gridId,
     getSelectedColumnRange: getSelectedColumnRangeSelector(state),
     measures: getAxisActivatedMeasuresSelector(AxisType.COLUMNS)(state),

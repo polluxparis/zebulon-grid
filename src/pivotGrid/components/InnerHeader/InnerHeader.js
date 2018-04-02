@@ -81,7 +81,8 @@ const innerHeader = ({
   connectDropTarget,
   isDropTarget,
   isDragSource,
-  gridId
+  gridId,
+  zoom
 }) => {
   const computedStyle = {
     whiteSpace: "nowrap",
@@ -119,23 +120,26 @@ const innerHeader = ({
       />
     );
   } else {
-    collapsedIcon = (
-      <div
-        style={{
-          height: "1em",
-          width: "1em",
-          marginTop: "0.1em",
-          marginRight: "0.1em"
-        }}
-      />
-    );
+    collapsedIcon = null;
+    // collapsedIcon = (
+    //   <div
+    //     style={{
+    //       height: "1em",
+    //       width: "1em",
+    //       marginTop: "0.1em",
+    //       marginRight: "0.1em"
+    //     }}
+    //   />
+    // );
   }
   const style = { width: "-webkit-fill-available" };
-  if (collapseOffset) {
+  if (collapseOffset || collapsedIcon) {
     if (axis === AxisType.ROWS) {
-      style.paddingRight = collapseOffset;
+      style.paddingRight =
+        (collapseOffset || 0) + (collapsedIcon ? 18 * zoom : 0);
     } else {
       style.paddingBottom = collapseOffset;
+      style.paddingRight = collapsedIcon ? 18 * zoom : 0;
     }
   }
 

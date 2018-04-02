@@ -181,9 +181,9 @@ class ZebulonGridDemo extends Component {
     const {
       sizes,
       keyEvent,
-      menuFunctions,
+      // menuFunctions,
       configuration,
-      configurationFunctions,
+      // configurationFunctions,
       data,
       pushedData,
       actionContent,
@@ -211,8 +211,8 @@ class ZebulonGridDemo extends Component {
             configuration={configuration}
             data={data}
             pushedData={pushedData}
-            menuFunctions={menuFunctions}
-            configurationFunctions={configurationFunctions}
+            menuFunctions={this.state.menuFunctions}
+            configurationFunctions={this.state.configurationFunctions}
             sizes={sizes2}
             ref={ref => (this.zebulon = ref)}
             display={display ? "configuration" : "pivotgrid"}
@@ -236,7 +236,7 @@ class ZebulonGridDemo extends Component {
             style={{ marginRight: ".5em" }}
             onClick={this.setCustomConfigurationFunctions}
           >
-            {`${configurationFunctions === configurationFunctions
+            {`${this.state.configurationFunctions === configurationFunctions
               ? "Add"
               : "Remove"} custom configuration functions`}
           </button>
@@ -244,7 +244,7 @@ class ZebulonGridDemo extends Component {
             style={{ marginRight: ".5em" }}
             onClick={this.setCustomFunctions}
           >
-            {`${menuFunctions === menuFunctions
+            {`${this.state.menuFunctions === menuFunctions
               ? "Add"
               : "Remove"} custom menu functions`}
           </button>

@@ -37,7 +37,8 @@ class Header extends Component {
       collectMenu,
       isDropTarget,
       isDragSource,
-      features
+      features,
+      zoom
     } = this.props;
     let style = positionStyle;
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
@@ -114,6 +115,7 @@ class Header extends Component {
           isDragSource={
             isDragSource && this.props.features.measures === "enabled"
           }
+          zoom={zoom}
           gridId={gridId}
         />
         {resizeHandle}

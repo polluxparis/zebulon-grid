@@ -47,7 +47,8 @@ class Headers extends PureComponent {
       previewSizes,
       measures,
       features,
-      status
+      status,
+      zoom
     } = this.props;
     const positionStyle = {
       position: "absolute",
@@ -88,7 +89,11 @@ class Headers extends PureComponent {
         caption={header.format({ value: header.caption })}
         positionStyle={positionStyle}
         dimensionId={header.dimensionId}
-        isNotCollapsible={header.options.isNotCollapsible || header.isTotal}
+        isNotCollapsible={
+          header.options.isNotCollapsible ||
+          header.isAttribute ||
+          header.isTotal
+        }
         isCollapsed={header.isCollapsed}
         collapseOffset={
           header.sizes.cross.collapsed ? header.sizes.cross.collapsed : 0
@@ -109,6 +114,7 @@ class Headers extends PureComponent {
         previewSizes={previewSizes}
         measuresCount={measures === null || Object.keys(measures).length}
         features={features}
+        zoom={zoom}
       />
     );
   };

@@ -20,8 +20,9 @@ import {
 const mapStateToProps = () => (state, ownProps) => {
   return {
     axisType: AxisType.ROWS,
-    height: state.configuration.height,
-    width: state.configuration.width,
+    // height: state.configuration.height,
+    // width: state.configuration.width,
+    zoom: state.configuration.zoom,
     previewSizes: previewSizesSelector(state),
     features: state.configuration.features,
     gridId: ownProps.gridId,

@@ -110,9 +110,10 @@ export const applyConfigurationToStore = (
   store.dispatch(loadingConfig(true));
   if (!isNullOrUndefined(data)) {
     setData(store, data);
-  } else {
-    store.dispatch(fetchData());
   }
+  // else {
+  //   store.dispatch(fetchData());
+  // }
   //  global configuration
   const measureHeadersAxis =
     (configuration.configuration || {}).measureHeadersAxis ||

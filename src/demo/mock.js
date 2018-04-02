@@ -35,30 +35,9 @@ export function getMockDatasource(
       }
     }
   }
-  //obj.d = new Date(new Date().setDate(20)).toISOString();
-  // const res2 = getRandomMockDatasource();
-  // const res_2 = join(
-  //   res,
-  //   ["toto", "titi"],
-  //   res2,
-  //   ["toto", "titi"],
-  //   row => ({ x: row.qty, y: row.amt }),
-  //   false
-  // );
   return res;
 }
-// const getObj = (o, i, u) => {
-//   let obj = {};
-//   obj.toto = o;
-//   obj.toto_lb = `toto ${String(o)}`;
-//   obj.toto_0 = `att0 ${String(o)}`;
-//   obj.toto_1 = `att1 ${String(100 - o)}`;
-//   obj.titi = `titi ${String(i)}`;
-//   obj.tutu = String(u);
-//   obj.qty = 10; // +9999999999.1234567890123456
-//   obj.amt = 100; // +9999999999.1234567890123456
-//   return obj;
-// };
+
 export function getRandomMockDatasource(
   dataPercentage = 10,
   nToto = 10,
@@ -205,8 +184,7 @@ export const basicConfig = callbacks => ({
     {
       id: "tutu",
       caption: "Tutu",
-      keyAccessor: "tutu",
-      format: "id"
+      keyAccessor: "tutu"
     },
     {
       id: "toto att 0",
@@ -419,73 +397,3 @@ export const getMenu = (id, data) => ({
     }
   ]
 });
-// const getKeys1 = (table, keys) =>
-//   table.map(row => JSON.stringify(keys.map(key => row[key])));
-
-// const getKeys2 = (table, keys) =>
-//   table.reduce((acc, row, index) => {
-//     const key = JSON.stringify(keys.map(key => row[key]));
-//     const indexes = acc[key];
-//     if (!indexes) {
-//       acc[key] = [index];
-//     } else {
-//       indexes.push(index);
-//     }
-//     return acc;
-//   }, {});
-// const join = (table1, keys1, table2, keys2, columns2, external) => {
-//   const k1 = getKeys1(table1, keys1);
-//   const k2 = getKeys2(table2, keys2);
-//   const resultTable = [];
-//   k1.forEach((key, index1) => {
-//     const row1 = table1[index1];
-//     const indexes = k2[key];
-//     if (!indexes) {
-//       if (external) {
-//         resultTable.push({ ...row1 });
-//       }
-//     } else {
-//       indexes.forEach(index2 => {
-//         const row2 = table2[index2];
-//         columns2.forEach(column => (row1[column] = row2[column]));
-//         //  resultTable.push({ ...row1, ...columns2(row2) });
-//         resultTable.push(row1);
-//       });
-//     }
-//   });
-//   return resultTable;
-// };
-/*
-
-// const keys2 = getKeys2(table2, keys2);
-config:"{\"dimensions\": [{\"id\": \"ptf\",\"name\": \"Portfolio\",\"primary_key\": \"ptf\",\"label_key\": \"ptf_lb\",\"order_key\":\"ptf_lb\"},"
-config,:"{\"id\": \"thp\",\"name\": \"Thirdparty\",\"primary_key\": \"thp\",\"label_key\": \"thp_lb\",\"order_key\": \"thp_lb\"}],";
-config,:"\"measures\": [{\"id\": \"x\",\"code\": \"x\",\"name\": \"X\",\"format\": \"amount\",\"operation\":\"sum\"}],";
-config,:"  \"columns\": [\"thp\"],\"rows\": [\"ptf\"], \"activeMeasures\": [\"x\"]}";
- */
-/*
-const a = {
-  dimensions: [
-    {
-      id: "ptf",
-      name: "Portfolio",
-      primary_key: "ptf",
-      label_key: "ptf_lb",
-      order_key: "ptf_lb"
-    },
-    {
-      id: "thp",
-      name: "Thirdparty",
-      primary_key: "thp",
-      label_key: "thp_lb",
-      order_key: "thp_lb"
-    }
-  ],
-  measures: [
-    { id: "x", code: "x", name: "X", format: "amount", operation: "sum" }
-  ],
-  columns: ["thp"],
-  rows: ["ptf"],
-  activeMeasures: ["x"]
-};
-*/
