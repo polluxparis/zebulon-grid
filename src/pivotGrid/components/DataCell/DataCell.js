@@ -1,13 +1,8 @@
 import React, { PureComponent } from "react";
 import classnames from "classnames";
-// import { ContextMenuTrigger } from "react-contextmenu";
-import { rightArrow } from "../../icons";
-// import { isNullOrUndefined } from "../../utils/generic";
-import { ContextualMenuClient } from "zebulon-controls";
-// const { isNullOrUndefined } = utils;
+import { ContextualMenuClient, icons } from "zebulon-controls";
+// console.log("ContextualMenuClient", ContextualMenuClient);
 export default class DataCell extends PureComponent {
-  // export default class DataCell extends ContextualMenuClient {
-
   collect = e => {
     const { button, shiftKey } = e;
     const {
@@ -22,7 +17,7 @@ export default class DataCell extends PureComponent {
     const element = document.getElementById(`${rowIndex} - ${columnIndex}`);
     const rect = element ? element.getBoundingClientRect() : {};
     // console.log(rect, rowIndex, columnIndex);
-    const { x, y } = rect;
+    const { left, top } = rect;
     return {
       type: "cell",
       button,
@@ -34,8 +29,8 @@ export default class DataCell extends PureComponent {
       edited,
       comments,
       style,
-      x,
-      y
+      left,
+      top
     };
   };
   constructor(props) {
@@ -54,23 +49,15 @@ export default class DataCell extends PureComponent {
         element.focus();
         element.select();
       }
-      // console.log("cell", element);
     }
   }
   handleComments = e => {
     const event = this.collect(e);
     event.editComment = true;
-    // console.log("comment", event);
     this.props.handleComments(event);
   };
   handleMouseDown = e => {
-    // if (e.button === 2) {
-    //   e.preventDefault();
-    //   e.persist();
-    //   e.stopPropagation();
-    // } else {
     this.props.handleMouseDown(this.collect(e));
-    // }
   };
 
   handleMouseOver = e => this.props.handleMouseOver(this.collect(e));
@@ -150,7 +137,7 @@ export default class DataCell extends PureComponent {
         >
           <div
             style={{
-              background: rightArrow,
+              background: icons.rightArrow,
               backgroundSize: "cover",
               height: ".8em",
               width: ".8em",
@@ -200,10 +187,10 @@ export default class DataCell extends PureComponent {
 
     return (
       <ContextualMenuClient
-        menuId="grid-menu"
+        menu="grid-menu"
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
-        gridId={gridId}
-        componentId={gridId}
+        // gridId={gridId}
+        component={gridId}
         draggable={false}
         collect={() =>
           collectMenu({

@@ -2,7 +2,8 @@ import React from "react";
 import { DragSource, DropTarget } from "react-dnd";
 // import { isNullOrUndefined } from "../../utils/generic";
 import { MEASURE_ID, TOTAL_ID, toAxis, AxisType } from "../../constants";
-import { rightArrow, downArrow } from "../../icons";
+import { icons } from "zebulon-table";
+// console.log("icons", icons);
 
 // -------------------------------
 const headerSpec = {
@@ -95,7 +96,7 @@ const innerHeader = ({
     collapsedIcon = (
       <div
         style={{
-          background: downArrow,
+          background: icons.downArrow,
           backgroundSize: "cover",
           height: "1em",
           width: "1em",
@@ -109,7 +110,7 @@ const innerHeader = ({
     collapsedIcon = (
       <div
         style={{
-          background: rightArrow,
+          background: icons.rightArrow,
           backgroundSize: "cover",
           height: "1em",
           width: "1em",
@@ -136,10 +137,10 @@ const innerHeader = ({
   if (collapseOffset || collapsedIcon) {
     if (axis === AxisType.ROWS) {
       style.paddingRight =
-        (collapseOffset || 0) + (collapsedIcon ? 18 * zoom : 0);
+        (collapseOffset || 0) + (collapsedIcon ? 18 * (zoom || 1) : 0);
     } else {
       style.paddingBottom = collapseOffset;
-      style.paddingRight = collapsedIcon ? 18 * zoom : 0;
+      style.paddingRight = collapsedIcon ? 18 * (zoom || 1) : 0;
     }
   }
 

@@ -80,7 +80,7 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
   }
   // Create sorting accessors
   const x = Date.now();
-  console.log("buildAxisTrees0", x, data.length);
+  // console.log("buildAxisTrees0", x, data.length);
   let newValue = false,
     newRows = false,
     newColumns = false;
@@ -433,7 +433,7 @@ export const rowLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
-      console.log("rowleaves", dimensions);
+      // console.log("rowleaves", dimensions);
       // no measures on measure axis
       if (measures !== null && measures.length === 0) {
         return {
@@ -467,8 +467,9 @@ export const rowLeavesSelector = createSelector(
           true,
           leaves
         );
+        node.nVisibles = nVisibles;
       }
-      console.log("rowleavesend");
+      // console.log("rowleavesend");
       return {
         nVisibles,
         node,
@@ -504,7 +505,7 @@ export const columnLeavesSelector = createSelector(
     filteredIndexes
   ) => {
     if (!loadingConfig) {
-      console.log("columnleaves", dimensions);
+      // console.log("columnleaves", dimensions);
       // no measures on measure axis
       if (measures !== null && measures.length === 0) {
         return {
@@ -538,8 +539,9 @@ export const columnLeavesSelector = createSelector(
           true,
           leaves
         );
+        node.nVisibles = nVisibles;
       }
-      console.log("columnleavesEnd");
+      // console.log("columnleavesEnd");
       return {
         nVisibles,
         node,

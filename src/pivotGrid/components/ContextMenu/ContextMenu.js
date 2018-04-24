@@ -66,21 +66,20 @@ const getGridMenu = data => {
               type: "jsx",
               navigation: true,
               content: (
-                <div
+                <Filter
                   key={dimension.id}
                   id="filter"
                   style={{
                     maxHeight: 600,
                     backgroundColor: "white",
-                    border: " solid 0.05em rgba(0, 0, 0, 0.5)"
+                    fontFamily: "inherit"
                   }}
-                >
-                  <Filter
-                    dimensionId={dimension.id}
-                    title={dimension.caption}
-                    style={{ width: "inherit" }}
-                  />
-                </div>
+                  dimensionId={dimension.id}
+                  title={dimension.caption}
+                  ref={ref => {
+                    this.filter = ref;
+                  }}
+                />
               )
             }
           ]
@@ -270,7 +269,7 @@ const getGridMenu = data => {
       caption: "Configuration",
       children
     });
-    console.log(menus);
+    // console.log(menus);
   }
   if (menus.length) {
     return {
@@ -389,6 +388,30 @@ const getDimensionMenu = data => {
       });
     }
   }
+  /*
+ content: (
+            <div
+              key="filters"
+              id="filter"
+              style={{
+                maxHeight: 600,
+                backgroundColor: "white",
+                // border: " solid 0.05em rgba(0, 0, 0, 0.5)",
+                fontFamily: "inherit"
+              }}
+            >
+              <Filter
+                dimensionId={dimension.id}
+                style={{ width: "inherit" }}
+                title={dimension.caption}
+                ref={ref => {
+                  this.filter = ref;
+                  console.log("filter", this.filter);
+                }}
+              />
+            </div>
+          )
+ */
   if (features.filters === "enabled" && dimension.id !== TOTAL_ID) {
     menus.push({
       id: menus.length,
@@ -401,24 +424,21 @@ const getDimensionMenu = data => {
           id: 100,
           type: "jsx",
           navigation: true,
-          // caption: "Filter",
           content: (
-            <div
+            <Filter
               key="filters"
               id="filter"
               style={{
                 maxHeight: 600,
                 backgroundColor: "white",
-                border: " solid 0.05em rgba(0, 0, 0, 0.5)",
                 fontFamily: "inherit"
               }}
-            >
-              <Filter
-                dimensionId={dimension.id}
-                style={{ width: "inherit" }}
-                title={dimension.caption}
-              />
-            </div>
+              dimensionId={dimension.id}
+              title={dimension.caption}
+              ref={ref => {
+                this.filter = ref;
+              }}
+            />
           )
         }
       ]

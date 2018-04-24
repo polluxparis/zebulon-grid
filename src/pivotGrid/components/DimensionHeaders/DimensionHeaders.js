@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import { utils, constants } from "zebulon-controls";
 import DimensionHeader from "../DimensionHeader/DimensionHeader";
 const { AxisType, MEASURE_ID, TOTAL_ID } = constants;

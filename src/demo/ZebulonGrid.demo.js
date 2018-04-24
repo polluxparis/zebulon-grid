@@ -22,6 +22,7 @@ class ZebulonGridDemo extends Component {
   constructor(props) {
     super(props);
     this.options = [200, 40, 3];
+    // this.options = [2, 5, 2];
     this.state = {
       // focusCell: [],
       data: getPromiseMockDatasource(1, ...this.options),
@@ -172,7 +173,7 @@ class ZebulonGridDemo extends Component {
         menuVisible: !this.state.menuVisible,
         menuParent: { top: e.target.offsetTop, left: e.target.offsetLeft }
       });
-      console.log("click menu", e.target, id);
+      // console.log("click menu", e.target, id);
     }
     return false;
   };

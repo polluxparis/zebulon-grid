@@ -3,10 +3,7 @@ import classNames from "classnames";
 import { ContextualMenuClient, constants } from "zebulon-controls";
 import InnerHeader from "../InnerHeader/InnerHeader";
 import ResizeHandle from "../ResizeHandle/ResizeHandle";
-
 const { MEASURE_ID, ROOT_ID, AxisType } = constants;
-// import { ContextMenuTrigger } from "react-contextmenu";
-
 class DimensionHeader extends PureComponent {
   handleClickCollapse = e => {
     if (e.button === 0 && this.props.features.expandCollapse === "enabled") {
@@ -23,46 +20,6 @@ class DimensionHeader extends PureComponent {
       }
     }
   };
-
-  // handleClickMenu = (e, data, target) => {
-  //   if (e.button === 0 && data) {
-  //     if (data.action === "remove") {
-  //       this.props.moveDimension(
-  //         data.dimensionId,
-  //         toAxis(data.axis),
-  //         toAxis(AxisType.DIMENSION)
-  //       );
-  //     } else if (data.action === "add") {
-  //       this.props.moveDimension(
-  //         data.newDimensionId,
-  //         toAxis(AxisType.DIMENSION),
-  //         toAxis(data.axis),
-  //         // Add dimension after dimension which opened the context menu
-  //         // except if it's the measures dimension. In this case, add before
-  //         data.dimensionId === MEASURE_ID ? data.index : data.index + 1
-  //       );
-  //     } else if (data.action === "expand all") {
-  //       const keys = this.props.getExpandCollapseKeys(
-  //         data.axis,
-  //         data.index,
-  //         false
-  //       );
-  //       this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
-  //     } else if (data.action === "collapse all") {
-  //       const keys = this.props.getExpandCollapseKeys(
-  //         data.axis,
-  //         data.index,
-  //         true
-  //       );
-  //       this.props.expandCollapseAll(data.axis, keys.keys, keys.n);
-  //     } else if (data.action === "toggle subtotal") {
-  //       this.props.toggleSubTotal(data.dimensionId);
-  //     } else if (data.action === "toggle grandtotal") {
-  //       this.props.toggleSubTotal(`${toAxis(data.axis)}${TOTAL_ID}`);
-  //     }
-  //   }
-  // };
-
   render() {
     const {
       positions,
@@ -170,10 +127,9 @@ class DimensionHeader extends PureComponent {
     };
     return (
       <ContextualMenuClient
-        menuId="dimension-menu"
-        gridId={gridId}
+        menu="dimension-menu"
         id={`dimensions-menu-${dimension.id}`}
-        componentId={gridId}
+        component={gridId}
         collect={() =>
           collectMenu({
             dimension,

@@ -277,7 +277,7 @@ export function dimensionFactory(dimensionConfiguration, functions) {
     keyAccessor: sAccessor,
     keyAccessor_: keyAccessors_
   };
-  console.log("format", utils.format);
+  // console.log("format", utils.format);
   return {
     id,
     caption: id === MEASURE_ID ? "Measures" : caption || id,

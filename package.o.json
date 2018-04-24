@@ -1,6 +1,6 @@
 {
   "name": "zebulon-grid",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "homepage": "http://polluxparis.github.io/zebulon-grid",
   "license": "MIT",
   "description": "Pivot grid written in React",
@@ -16,12 +16,11 @@
     "cross-env": "3.1.4",
     "enzyme": "^2.8.2",
     "eslint": "^4.5.0",
-    "eslint-plugin-prettier": "^2.1.1",
     "eslint-config-prettier": "^2.1.1",
+    "eslint-plugin-prettier": "^2.1.1",
     "fps-measurer": "^0.0.2",
     "gh-pages": "^1.0.0",
     "postcss-cli": "^2.6.0",
-    "react": "^16.0.0",
     "react-addons-perf": "^15.4.2",
     "react-dom": "^16.0.0",
     "react-resizable": "^1.6.0",
@@ -34,12 +33,14 @@
     "classnames": "^2.2.5",
     "object.values": "^1.0.4",
     "react": "^16.0.0",
-    "react-contextmenu": "^2.6.3",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
+    "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "zebulon-controls": "file:../controls/zebulon-controls-1.0.8.tgz",
+    "zebulon-table": "file:../table/zebulon-table-1.1.2.tgz"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -40,7 +40,7 @@ class CustomDragLayer extends Component {
     }
 
     // Translate the hint bar in the correct position starting from the top left corner of the grid
-    console.log("transform", x, y);
+    // console.log("transform", x, y);
     const transform = `translate(${x}px, ${y}px)`;
     return {
       transform

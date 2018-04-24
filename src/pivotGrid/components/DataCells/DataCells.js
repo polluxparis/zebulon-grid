@@ -351,7 +351,7 @@ export class DataCells extends ScrollableGrid {
       axisLeaves.cells.length - 1
     );
   };
-  scrollOnKey = (cell, axis, direction, extension) => {
+  scrollOnKey = (cell, axis, direction, directionC, extension) => {
     const { rows, columns } = this.props;
     const axisLeaves = axis === AxisType.COLUMNS ? columns : rows;
     const scroll = { rows: rows.scroll, columns: columns.scroll };
@@ -393,7 +393,7 @@ export class DataCells extends ScrollableGrid {
       onScroll(scroll.rows, scroll.columns);
     }
   };
-  onScroll = (axis, dir, cell, extension, positionRatio) => {
+  onScroll = (axis, dir, dirC, cell, extension, positionRatio) => {
     const ix = cell ? cell[toAxis(axis)] : null;
     const { rows, columns, onScroll } = this.props;
     // if (e.type === "scrollbar") {

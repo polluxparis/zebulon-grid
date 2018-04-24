@@ -8,7 +8,6 @@ import { applyConfigToStore } from "./utils/configuration";
 
 // Import polyfills for IE11 compatibility
 import "./utils/polyfill";
-
 export default ZebulonGrid;
 export {
 	GridWithoutStoreAndDndContext,

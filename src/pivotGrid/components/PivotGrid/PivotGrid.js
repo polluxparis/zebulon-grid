@@ -139,13 +139,16 @@ class PivotGrid extends Component {
     if (isFilter && e.key === "Tab") {
       return false;
     }
-    if (
-      !isFilter &&
-      this.dataCells &&
-      this.dataCells.handleNavigationKeys &&
-      utils.isNavigationKey(e)
-    ) {
-      return this.dataCells.handleNavigationKeys(e);
+    if (utils.isNavigationKey(e)) {
+      if (isFilter) {
+        this.contextualMenu.handleKeyDown(e);
+      } else if (
+        !isFilter &&
+        this.dataCells &&
+        this.dataCells.handleNavigationKeys
+      ) {
+        return this.dataCells.handleNavigationKeys(e);
+      }
     }
   };
   //-----------------------------
@@ -294,7 +297,7 @@ class PivotGrid extends Component {
             <ContextualMenu
               key="contextual-menu"
               getMenu={getMenu}
-              componentId={gridId}
+              component={gridId}
               ref={ref => (this.contextualMenu = ref)}
             />
             <div

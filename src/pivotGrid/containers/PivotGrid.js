@@ -42,7 +42,7 @@ const mapStateToProps = () => (state, ownProps) => {
       state.configuration.edition.activated &&
       state.configuration.edition.editable
   };
-  console.log("map", props);
+  // console.log("map", props);
   return props;
 };
 
@@ -82,7 +82,7 @@ const mergeProps = (
   { updateCellSize, editData, ...restDispatchProps },
   ownProps
 ) => {
-  console.log("merge", restStateProps);
+  // console.log("merge", restStateProps);
 
   return {
     updateCellSize: ({ handle, offset, initialOffset }) =>

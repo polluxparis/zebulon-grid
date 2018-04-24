@@ -1,4 +1,4 @@
-import { KEY_SEPARATOR, ROOT_ID } from "../constants";
+import { KEY_SEPARATOR, ROOT_ID, TOTAL_ID } from "../constants";
 import { isUndefined } from "./generic";
 
 export function getHeaderSize(sizeAndPositionManager, index, span) {
@@ -39,7 +39,8 @@ export const getLeaves = (node, acc = [], depth, notSorted, totalsFirst) => {
   if (
     // isNullOrUndefined(node.orderedChildren) ||
     node.depth === (depth === undefined ? 10000 : depth) ||
-    (node.id !== ROOT_ID &&
+    ((node.id !== ROOT_ID ||
+      (node.dimensionId === TOTAL_ID && node.isVisible)) &&
       depth === undefined &&
       node.orderedChildren.length === 0)
   ) {

@@ -124,10 +124,9 @@ class Header extends Component {
     if (dimensionId === MEASURE_ID) {
       return (
         <ContextualMenuClient
-          menuId="measure-menu"
-          gridId={gridId}
+          menu="measure-menu"
           id={`measure-menu-${header.id}`}
-          componentId={gridId}
+          component={gridId}
           collect={() =>
             collectMenu({
               axis,

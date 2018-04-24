@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-// import App from './App';
 import ZebulonGridDemo from "./demo/ZebulonGrid.demo";
 
 ReactDOM.render(<ZebulonGridDemo />, document.getElementById("root"));
