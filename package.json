@@ -1,10 +1,17 @@
 {
   "name": "zebulon-grid",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "homepage": "http://polluxparis.github.io/zebulon-grid",
   "license": "MIT",
   "description": "Pivot grid written in React",
-  "tags": ["pivot table", "pivot grid", "grid", "pivot", "react", "javascript"],
+  "tags": [
+    "pivot table",
+    "pivot grid",
+    "grid",
+    "pivot",
+    "react",
+    "javascript"
+  ],
   "author": "Emile et Thomas Bres <thomas.bres@pollux.paris>",
   "main": "lib/index.js",
   "devDependencies": {
@@ -32,12 +39,12 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "compile": "npm run compile:js &&npm run compile:css",
-    "compile:js":
-      "rimraf lib && cross-env NODE_ENV=production babel src/pivotGrid -d lib --presets react-app --ignore test.js",
-    "compile:css":
-      "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
+    "compile:js": "rimraf lib && cross-env NODE_ENV=production babel src/pivotGrid -d lib --presets react-app --ignore test.js",
+    "compile:css": "rimraf lib/index.css && postcss --use autoprefixer --use cssnano -o lib/index.css src/pivotGrid/index.css"
   },
   "babel": {
-    "presets": ["react-app"]
+    "presets": [
+      "react-app"
+    ]
   }
 }
