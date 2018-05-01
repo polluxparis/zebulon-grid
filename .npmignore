@@ -10,3 +10,4 @@ config
 webpack.configuration.umd.js
 yarn.lock
 *.sublime-*
+zebulon-grid*

@@ -2,8 +2,8 @@ import React from "react";
 import { DragSource, DropTarget } from "react-dnd";
 // import { isNullOrUndefined } from "../../utils/generic";
 import { MEASURE_ID, TOTAL_ID, toAxis, AxisType } from "../../constants";
-import { icons } from "zebulon-table";
-// console.log("icons", icons);
+import { icons } from "zebulon-controls";
+console.log("icons", icons);
 
 // -------------------------------
 const headerSpec = {

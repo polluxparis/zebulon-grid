@@ -17,4 +17,5 @@ npm-debug.log
 .vscode
 .chrome
 grid.sublime-workspace
-zebulon-grid-2.0.2.tgz
+zebulon-grid*
+package-o*
