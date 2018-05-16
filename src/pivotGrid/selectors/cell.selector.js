@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
-import { isNullOrUndefined, isUndefined, range } from "../utils/generic";
-import { inter } from "../utils/headers";
+import { utils } from "zebulon-controls";
+// import { utils.intersection } from "../utils/headers";
 // import { dataSelector } from "./data.selector";
 import {
   activatedMeasuresSelector,
@@ -24,10 +24,10 @@ const cellValue = (
   aggregation = () => null,
   measureId
 ) => {
-  const intersection = inter(rowDataIndexes, columnDataIndexes);
+  const intersection = utils.intersection([rowDataIndexes, columnDataIndexes]);
   // Root headers have undefined data indexes
-  const intersectionArray = isUndefined(intersection)
-    ? range(0, data.length - 1)
+  const intersectionArray = utils.isUndefined(intersection)
+    ? utils.range(0, data.length - 1)
     : intersection;
   // Remove rows for which the accessor gives a null or undefined value
   // This allows better behaviour for cells which have a null value
@@ -62,7 +62,7 @@ const cellValue = (
       }
       return valueAccessor({ row: data[index] });
     })
-    .filter(value => !isNullOrUndefined(value));
+    .filter(value => !utils.isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict
   // and keep only rows where the accessor gives a finite number
   // This removes Javascript operators weird behaviour with non finite number values.
@@ -103,7 +103,7 @@ const cellDimensionInfos = (data, axisDimensions, axis, leaf, measures) => {
   const axisDepth = axisDimensions.map(axis => axis.depth);
   let dimension, depth;
   const dimensions = [];
-  // const row = isNullOrUndefined(leaf.dataIndexes)
+  // const row = utils.isNullOrUndefined(leaf.dataIndexes)
   // ? null
   // : data[leaf.dataIndexes[0]];
   for (let index = axisDepth.length - 1; index >= 0; index -= 1) {
@@ -212,9 +212,9 @@ export const getCellInfosSelector = createSelector(
     dimensions = dimensions.concat(
       cellDimensionInfos(data, columns, "columns", columnLeaf, measures)
     );
-    const usedData = inter(rowLeaf.dataIndexes, columnLeaf.dataIndexes).map(
-      x => data[x]
-    );
+    const usedData = utils
+      .intersection([rowLeaf.dataIndexes, columnLeaf.dataIndexes])
+      .map(x => data[x]);
     return { value, dimensions, data: usedData };
   }
 );
@@ -238,9 +238,9 @@ export const getRangeInfosSelector = createSelector(
     measureHeadersAxis
   ) => rg => {
     if (
-      isNullOrUndefined(rg) ||
-      isNullOrUndefined(rg.start) ||
-      isNullOrUndefined(rg.end)
+      utils.isNullOrUndefined(rg) ||
+      utils.isNullOrUndefined(rg.start) ||
+      utils.isNullOrUndefined(rg.end)
     ) {
       return {};
     }
@@ -352,7 +352,7 @@ export const buildDataSelector = createSelector(
       data._oldValue = oldValue;
       data._newValue = newValue;
     }
-    if (!(isNullOrUndefined(comment) || comment === "")) {
+    if (!(utils.isNullOrUndefined(comment) || comment === "")) {
       data._comment = comment;
     }
     return data;

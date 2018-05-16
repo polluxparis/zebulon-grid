@@ -1,13 +1,5 @@
 import { KEY_SEPARATOR, ROOT_ID, TOTAL_ID } from "../constants";
-import { isUndefined } from "./generic";
-
-export function getHeaderSize(sizeAndPositionManager, index, span) {
-  let res = 0;
-  for (let i = 0; i < span; i += 1) {
-    res += sizeAndPositionManager.getSizeAndPositionOfCell(index + i).size;
-  }
-  return res;
-}
+import { utils } from "zebulon-controls";
 
 const findHeader = (headers, keys) => {
   if (keys.length === 1) {
@@ -94,149 +86,86 @@ export const resetDimensions = dimensions =>
     });
     dimension = null;
   });
-//   headerType,
-//   parent,
-//   measureId,
-//   crossAxisDimensionsCode,
-//   value,
-//   dimension
-// }) {
-//   switch (headerType) {
-//     case HeaderType.DATA_HEADER:
-//       if (parent.type === HeaderType.GRAND_TOTAL) {
-//         // If the parent is a Total header, split to include the measure id
-//         // on the right side of the axis separator
-//         const [totalID, crossAxisDimensionsCode] = parent.key.split(
-//           AXIS_SEPARATOR
-//         );
-//         return `${totalID}${KEY_SEPARATOR}${measureId}${AXIS_SEPARATOR}${crossAxisDimensionsCode}`;
-//       }
-//       return `${parent.key}${KEY_SEPARATOR}${measureId}`;
-//     case HeaderType.GRAND_TOTAL:
-//       return `${TOTAL_ID}${AXIS_SEPARATOR}${crossAxisDimensionsCode.join(
-//         KEY_SEPARATOR
-//       )}`;
-//     case HeaderType.SUB_TOTAL:
-//       return parent ? `${parent.key}${KEY_SEPARATOR}${value}` : value;
-//     case HeaderType.INNER:
-//     case HeaderType.WRAPPER:
-//       return parent
-//         ? `${parent.key}${KEY_SEPARATOR}${dimension.id}`
-//         : String(dimension.id);
-//     default:
-//       throw new Error(`Header type ${headerType} is unknown`);
-//   }
-// }
 
-// export function getNextKey(current, next) {
-//   const firstLeafHeader =
-//     current.firstHeaderRow[current.firstHeaderRow.length - 1];
-//   const keys = firstLeafHeader.key.split(KEY_SEPARATOR);
-//   let nextKey = "";
-//   if (current.dimensions.length > next.dimensions.length) {
-//     const nextDimensionIds = next.dimensions.map(dimension => dimension.id);
-//     const missingDimensionPosition = current.dimensions.findIndex(
-//       dimension => !nextDimensionIds.includes(dimension.id)
-//     );
-//     nextKey = keys.slice(0, missingDimensionPosition).join(KEY_SEPARATOR);
-//   } else if (current.dimensions.length < next.dimensions.length) {
-//     const previousDimensionIds = current.dimensions.map(
-//       dimension => dimension.id
-//     );
-//     const newDimensionPosition = next.dimensions.findIndex(
-//       dimension => !previousDimensionIds.includes(dimension.id)
-//     );
-//     nextKey = keys.slice(0, newDimensionPosition).join(KEY_SEPARATOR);
-//   } else if (current.dataDimensionsCount !== next.dataDimensionsCount) {
-//     // A data dimension has been toggled
-//     nextKey = keys.slice(0, -1).join(KEY_SEPARATOR);
+// calculate the union of two arrays (arg1 is the second array) or an array of arrays (arg0)
+// export const union = (arg0, arg1) => {
+//   if (arg1) {
+//     return [...new Set(arg[0].concat)];
+//   }
+//   let res;
+//   if (arg1) {
+//     res = [...arg[0].concat(arg[1])];
 //   } else {
-//     // A filter has been modified
-//     // For the moment, do nothing
-//     nextKey = "";
+//     res = arg0.reduce((acc, array) => {
+//       if (!acc.length) {
+//         acc = array || [];
+//       } else {
+//         acc = acc.concat(array);
+//       }
+//       return acc;
+//     }, []);
 //   }
-//   return nextKey;
-// }
-export const union = arrays => {
-  let res = arrays.reduce((acc, array) => {
-    if (!acc.length) {
-      acc = array || [];
-    } else {
-      acc = acc.concat(array);
-    }
-    return acc;
-  }, []);
-  res = [...new Set(res)];
-  // res.sort((a,b)=>);
-  return res;
-};
-
-// export const except = arrays => {
-//   let res = arrays.reduce((acc, array) => {
-//     if (!acc.length) {
-//       acc = array || [];
-//     } else {
-//       acc = acc.concat(array);
-//     }
-//     return acc;
-//   }, []);
 //   res = [...new Set(res)];
 //   // res.sort((a,b)=>);
 //   return res;
 // };
-
-export const inter = (arg0, arg1) => {
-  if (isUndefined(arg0)) {
-    return arg1;
-  } else if (isUndefined(arg1)) {
-    return arg0;
-  } else {
-    const n = arg0.length;
-    const m = arg1.length;
-    let i = 0;
-    let j = 0;
-    const res = [];
-    while (i < n && j < m) {
-      if (arg0[i] > arg1[j]) {
-        j += 1;
-      } else if (arg0[i] < arg1[j]) {
-        i += 1;
-      } else {
-        res.push(arg0[i]);
-        i += 1;
-        j += 1;
-      }
-    }
-    return res;
-  }
-};
-export const intersec = arrays => {
-  if (!arrays.length) {
-    return [];
-  } else if (arrays.length === 1) {
-    return arrays[0];
-  } else {
-    return arrays.slice(1).reduce((acc, array) => inter(acc, array), arrays[0]);
-  }
-};
-export const hasInter = (arg0, arg1) => {
-  if (isUndefined(arg0) || isUndefined(arg1)) {
-    return true;
-  } else {
-    const n = arg0.length;
-    const m = arg1.length;
-    let i = 0;
-    let j = 0;
-    // const res = [];
-    while (i < n && j < m) {
-      if (arg0[i] > arg1[j]) {
-        j += 1;
-      } else if (arg0[i] < arg1[j]) {
-        i += 1;
-      } else {
-        return true;
-      }
-    }
-    return false;
-  }
-};
+// // calculate the intersection of two arrays (arg1 is the second array) or an array of arrays (arg0)
+// export const intersection = (arg0, arg1) => {
+//   const intersection_ = (arg0, arg1) => {
+//     if (utils.isUndefined(arg0)) {
+//       return arg1;
+//     } else if (utils.isUndefined(arg1)) {
+//       return arg0;
+//     } else {
+//       const n = arg0.length;
+//       const m = arg1.length;
+//       let i = 0;
+//       let j = 0;
+//       const res = [];
+//       while (i < n && j < m) {
+//         if (arg0[i] > arg1[j]) {
+//           j += 1;
+//         } else if (arg0[i] < arg1[j]) {
+//           i += 1;
+//         } else {
+//           res.push(arg0[i]);
+//           i += 1;
+//           j += 1;
+//         }
+//       }
+//       return res;
+//     }
+//   };
+//   if (arg1) {
+//     return intersection_(arg0, arg1);
+//   } else if (!arg0.length) {
+//     return [];
+//   } else if (arg0.length === 1) {
+//     return arg0[0];
+//   } else {
+//     return arg0
+//       .slice(1)
+//       .reduce((acc, array) => intersection_(acc, array), arg0[0]);
+//   }
+// };
+// export const hasIntersection = (arg0, arg1) => {
+//   if (utils.isUndefined(arg0) || utils.isUndefined(arg1)) {
+//     return true;
+//   } else {
+//     const n = arg0.length;
+//     const m = arg1.length;
+//     let i = 0;
+//     let j = 0;
+//     // const res = [];
+//     while (i < n && j < m) {
+//       if (arg0[i] > arg1[j]) {
+//         j += 1;
+//       } else if (arg0[i] < arg1[j]) {
+//         i += 1;
+//       } else {
+//         return true;
+//       }
+//     }
+//     return false;
+//   }
+// };

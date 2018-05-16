@@ -15,13 +15,6 @@ import {
   addFilter,
   toggleSubTotal
 } from "../actions";
-import {
-  isPromise,
-  isObservable,
-  isStringOrNumber,
-  isNullOrUndefined,
-  toAccessorFunction
-} from "./generic";
 import { resetLeaves, resetDimensions } from "../utils/headers";
 import { getAxisTreesSelector } from "../selectors";
 // import { mergeData } from "../selectors";
@@ -63,7 +56,7 @@ export const setData = (store, data, meta) => {
     } else {
       store.dispatch(fetchSuccess(data, meta));
     }
-  } else if (isPromise(data)) {
+  } else if (utils.isPromise(data)) {
     data
       .then(data => {
         if (Array.isArray(data) && data.length !== 0) {
@@ -73,7 +66,7 @@ export const setData = (store, data, meta) => {
         }
       })
       .catch(error => store.dispatch(fetchFailure(error)));
-  } else if (isObservable(data)) {
+  } else if (utils.isObservable(data)) {
     data.subscribe(
       data => {
         pushData(store, data);
@@ -105,10 +98,11 @@ export const applyConfigurationToStore = (
   store,
   configuration,
   functions, //configurationFunctions = defaultConfigurationFunctions,
-  data
+  data,
+  utils_
 ) => {
   store.dispatch(loadingConfig(true));
-  if (!isNullOrUndefined(data)) {
+  if (!utils.isNullOrUndefined(data)) {
     setData(store, data);
   }
   // else {
@@ -146,8 +140,8 @@ export const applyConfigurationToStore = (
     columns = configuration.axis.columns || columns;
     rows = configuration.axis.rows || rows;
   }
-  store.dispatch(setDimensions(configuration, functions));
-  store.dispatch(setMeasures(configuration, functions));
+  store.dispatch(setDimensions(configuration, functions, utils_));
+  store.dispatch(setMeasures(configuration, functions, utils_));
   const dimensionIdsPositioned = [];
   rows.forEach((dimensionId, index) => {
     store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
@@ -182,9 +176,10 @@ export const applyConfigurationToStore = (
     store.dispatch(setSizes(configuration.sizes));
   }
   if (configuration.filters) {
-    configuration.filters.map(
-      ({ dimensionId, operator, term, exclude, values }) =>
-        store.dispatch(addFilter(dimensionId, operator, term, exclude, values))
+    Object.values(
+      configuration.filters
+    ).forEach(({ dimensionId, operator, term, exclude, values }) =>
+      store.dispatch(addFilter(dimensionId, operator, term, exclude, values))
     );
   }
   if (configuration.subtotals) {
@@ -205,50 +200,58 @@ export const applyConfigurationToStore = (
 };
 
 // initialisation of dimensions from configuration
-const getFunction = (functions, object, type, value) => {
-  if (typeof value === "function") {
-    return value;
-  } else if (typeof value === "string") {
-    const indexDot = value.indexOf(".");
-    if (indexDot !== -1) {
-      let v = value;
-      if (value.slice(0, indexDot) === "row") {
-        v = value.slice(indexDot + 1);
-      }
-      const keys = v.split(".");
-      return ({ row }) => {
-        return keys.reduce(
-          (acc, key, index) =>
-            acc[key] === undefined && index < keys.length - 1 ? {} : acc[key],
-          row
-        );
-      };
-    } else {
-      const v =
-        typeof value === "string"
-          ? functions
-              .filter(
-                f =>
-                  f.id === value &&
-                  f.tp === type &&
-                  (f.visibility === "global" || f.visibility === object)
-              )
-              .sort(
-                (f0, f1) =>
-                  (f0.visibility !== object) - (f1.visibility !== object)
-              )
-          : [];
-      if (v.length) {
-        return v[0].functionJS;
-      } else if (type === "format") {
-        return ({ value }) => value;
-      } else {
-        return ({ row }) => row[value];
-      }
-    }
-  }
-};
-export function dimensionFactory(dimensionConfiguration, functions) {
+// const utils.getFunction = (functions, object, type, value, utils_) => {
+//   if (typeof value === "function") {
+//     return value;
+//   } else if (typeof value === "string") {
+//     const indexDot = value.indexOf(".");
+//     if (indexDot !== -1) {
+//       let v = value;
+//       if (value.slice(0, indexDot) === "row") {
+//         v = value.slice(indexDot + 1);
+//       }
+//       const keys = v.split(".");
+//       return ({ row }) => {
+//         return keys.reduce(
+//           (acc, key, index) =>
+//             acc[key] === undefined && index < keys.length - 1 ? {} : acc[key],
+//           row
+//         );
+//       };
+//     } else {
+//       const v =
+//         typeof value === "string"
+//           ? functions
+//               .filter(
+//                 f =>
+//                   f.id === value &&
+//                   f.tp === type &&
+//                   (f.visibility === "global" || f.visibility === object)
+//               )
+//               .sort(
+//                 (f0, f1) =>
+//                   (f0.visibility !== object) - (f1.visibility !== object)
+//               )
+//           : [];
+//       if (v.length) {
+//         if (type === "accessor") {
+//           return message =>
+//             v[0].functionJS({ ...message, utils: utils_ || utils });
+//         } else {
+//           return v[0].functionJS;
+//         }
+//       } else if (type === "format") {
+//         return ({ value: value_ }) => utils.formatValue(value_, value);
+//       } else {
+//         return ({ row }) => row[value];
+//       }
+//     }
+//   }
+//   if (type === "format") {
+//     return ({ value }) => utils.formatValue(value);
+//   }
+// };
+export function dimensionFactory(dimensionConfiguration, functions, utils_) {
   const {
     id,
     caption,
@@ -257,7 +260,8 @@ export function dimensionFactory(dimensionConfiguration, functions) {
     sort,
     format,
     subTotal,
-    attributeParents
+    attributeParents,
+    isLocal
   } = dimensionConfiguration;
   // const { formats, accessors, sorts } = configurationFunctions;
   const _sort = sort || {};
@@ -266,13 +270,23 @@ export function dimensionFactory(dimensionConfiguration, functions) {
   const keyAccessor_ = keyAccessor,
     labelAccessor_ = labelAccessor || keyAccessor,
     keyAccessors_ = _sort.keyAccessor || labelAccessor || keyAccessor;
-  const kAccessor = getFunction(functions, "dataset", "accessor", keyAccessor),
-    lAccessor = getFunction(functions, "dataset", "accessor", labelAccessor_),
-    sAccessor = getFunction(functions, "dataset", "accessor", keyAccessors_);
+  const kAccessor = utils.getFunction(
+      functions,
+      "accessor",
+      keyAccessor,
+      utils_
+    ),
+    lAccessor = utils.getFunction(
+      functions,
+      "accessor",
+      labelAccessor_,
+      utils_
+    ),
+    sAccessor = utils.getFunction(functions, "accessor", keyAccessors_, utils_);
 
   const dimSort = {
     direction: _sort.direction || "asc",
-    custom: getFunction(functions, "dataset", "sort", _sort.custom),
+    custom: utils.getFunction(functions, "sort", _sort.custom, utils_),
     custom_: _sort.custom,
     keyAccessor: sAccessor,
     keyAccessor_: keyAccessors_
@@ -285,16 +299,18 @@ export function dimensionFactory(dimensionConfiguration, functions) {
     keyAccessor_,
     labelAccessor: lAccessor,
     labelAccessor_,
-    format: getFunction(functions, "dataset", "format", format || id),
-    format_: format || id,
+    // format: utils.getFunction(functions,  "format", format || id, utils_),
+    // format_: format || id,
+    format: utils.getFunction(functions, "format", format, utils_),
+    format_: format,
     sort: dimSort,
     subTotal,
-    attributeParents: attributeParents || [] //,
-    // datasetProperties
+    attributeParents: attributeParents || [],
+    isLocal
   };
 }
 // initialisation of measures from configuration
-export function measureFactory(measureConfiguration, functions) {
+export function measureFactory(measureConfiguration, functions, utils_) {
   // const {
   //   formats,
   //   accessors,
@@ -306,7 +322,8 @@ export function measureFactory(measureConfiguration, functions) {
     valueAccessor,
     format,
     aggregation,
-    aggregationCaption
+    aggregationCaption,
+    isLocal
   } = measureConfiguration;
   // const aggs = { ...aggregations, ...customAggregations };
   // const datasetProperties = {};
@@ -317,14 +334,24 @@ export function measureFactory(measureConfiguration, functions) {
   return {
     id,
     caption: caption || id,
-    valueAccessor: getFunction(functions, "dataset", "accessor", valueAccessor),
+    valueAccessor: utils.getFunction(
+      functions,
+      "accessor",
+      valueAccessor,
+      utils_
+    ),
     valueAccessor_: valueAccessor,
-    format: getFunction(functions, "dataset", "format", format || id),
+    format: utils.getFunction(functions, "format", format || id),
     format_: format || id,
-    aggregation: getFunction(functions, "dataset", "aggregation", aggregation),
+    aggregation: utils.getFunction(
+      functions,
+      "aggregation",
+      aggregation,
+      utils_
+    ),
     aggregation_: aggregation,
-    aggregationCaption //,
-    // datasetProperties
+    aggregationCaption,
+    isLocal
   };
 }
 // export function dimensionFactory(

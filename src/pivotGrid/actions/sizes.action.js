@@ -1,5 +1,5 @@
 import { UPDATE_CELL_SIZE, SET_SIZES } from "../constants";
-import { isNullOrUndefined } from "../utils/generic";
+import { utils } from "zebulon-controls";
 import { getLeaves } from "../utils/headers";
 
 function calculateSize(size, ratio) {
@@ -15,14 +15,14 @@ export const updateCellSize = ({
   sizes
 }) => {
   let direction, ratio, initialSize, defaultSize, leaves, axisSizes;
-  if (!isNullOrUndefined(handle.header)) {
+  if (!utils.isNullOrUndefined(handle.header)) {
     leaves = getLeaves(handle.header);
   }
   if (handle.position === "right") {
     direction = "widths";
     axisSizes = sizes.widths;
     defaultSize = defaultCellSizes.width;
-    initialSize = isNullOrUndefined(leaves)
+    initialSize = utils.isNullOrUndefined(leaves)
       ? axisSizes[handle.id] || defaultSize
       : getInitialSize(sizes.widths, defaultSize, leaves);
     ratio = (initialSize + offset.x - initialOffset.x) / initialSize;
@@ -30,13 +30,13 @@ export const updateCellSize = ({
     direction = "heights";
     axisSizes = sizes.heights;
     defaultSize = defaultCellSizes.height;
-    initialSize = isNullOrUndefined(leaves)
+    initialSize = utils.isNullOrUndefined(leaves)
       ? axisSizes[handle.id] || defaultSize
       : getInitialSize(sizes.heights, defaultSize, leaves);
     ratio = (initialSize + offset.y - initialOffset.y) / initialSize;
   }
   let newSizes = {};
-  if (isNullOrUndefined(handle.header)) {
+  if (utils.isNullOrUndefined(handle.header)) {
     // Dimension size
     newSizes = { [handle.id]: calculateSize(initialSize, ratio) };
   } else {

@@ -7,7 +7,7 @@ import {
   columnVisibleDimensionsSelector,
   dimensionsWithAxisSelector
 } from "./dimensions.selector";
-import { isNullOrUndefined } from "../utils/generic";
+import { utils } from "zebulon-controls";
 import { getLeaves } from "../utils/headers";
 import {
   ROOT_ID,
@@ -61,7 +61,7 @@ function buildNode(id, node, index, dimension) {
       depth: dimension.depth,
       isAttribute: dimension.isAttribute,
       attributeParentId: dimension.isAttribute
-        ? isNullOrUndefined(node.attributeParentId)
+        ? utils.isNullOrUndefined(node.attributeParentId)
           ? node.id
           : node.attributeParentId
         : null,
@@ -361,7 +361,7 @@ export const getAxisLeaves = (
       node.filteredIndexes = node.filteredIndexes.concat(child.filteredIndexes);
       return child.id;
     });
-    if (!filteredIndexes && node.dataRowIndexes) {
+    if (!filteredIndexes && node.dataRowIndexes && nVisibles) {
       node.filteredIndexes = node.dataRowIndexes;
     }
     node.filteredIndexes.sort((a, b) => a - b);

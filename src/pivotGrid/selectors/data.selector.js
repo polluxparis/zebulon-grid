@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
-import { intersec } from "../utils/headers";
-import { isUndefined, isDate } from "../utils/generic";
+// import { utils.intersection } from "../utils/headers";
+import { utils } from "zebulon-controls";
 import { TOTAL_ID, MEASURE_ID } from "../constants";
 import { availableDimensionsSelector } from "./dimensions.selector";
 
@@ -25,7 +25,9 @@ export const filteredIndexes = (dimensions, filters, loading) => {
       }
       return dimensionIndexes.sort((a, b) => a - b);
     });
-    const x = new Map(intersec(filteredIndexes).map(index => [index, true]));
+    const x = new Map(
+      utils.intersection(filteredIndexes).map(index => [index, true])
+    );
     return x;
   } else {
     return undefined;
@@ -77,7 +79,7 @@ export const getDimensionValuesSelector = createSelector(
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
       const key = dimension.keyAccessor({ row });
-      if (isUndefined(values[key])) {
+      if (utils.isUndefined(values[key])) {
         const label = dimension.format({
           value: dimension.labelAccessor({ row })
         });
@@ -133,7 +135,7 @@ export const metaSelector = createSelector(
       return Object.keys(row).map((key, index) => {
         let dataType = typeof row[key],
           filterType = "";
-        if (dataType === "object" && isDate(row[key])) {
+        if (dataType === "object" && utils.isDate(row[key])) {
           dataType = "date";
           // format = dateToString;
         }

@@ -7,49 +7,39 @@ export const customConfigurationFunctions = (
   prevConfiguration
 ) => {
   const configurationFunctions = {
-    formats: {
-      ...prevConfigurationFunctions.formats,
-      price: ({ value }) => {
-        if (Number.isFinite(value)) {
-          return (
-            <div style={{ color: "blue", textAlign: "right" }}>
-              {`${Number(value).toFixed(2)} $`}
-            </div>
-          );
-        }
-        return value;
+    ...prevConfigurationFunctions,
+    dataset: {
+      formats: {
+        ...prevConfigurationFunctions.dataset.formats,
+        price: ({ value }) => {
+          if (Number.isFinite(value)) {
+            return (
+              <div style={{ color: "blue", textAlign: "right" }}>
+                {`${Number(value).toFixed(2)} $`}
+              </div>
+            );
+          }
+          return value;
+        },
+        titiFormat: ({ value }) => (
+          <div style={{ color: "red", textAlign: "center" }}>{value}</div>
+        )
       },
-      titiFormat: ({ value }) => (
-        <div style={{ color: "red", textAlign: "center" }}>{value}</div>
-      )
-    },
-    accessors: {
-      ...prevConfigurationFunctions.accessors
-    },
-    aggregations: {
-      ...prevConfigurationFunctions.aggregations
-      // ,
-      // price: values => {
-      //   const price = values.reduce(
-      //     (price, value) => {
-      //       price.amt += value.amt;
-      //       price.qty += value.qty;
-      //       return price;
-      //     },
-      //     { amt: null, qty: null }
-      //   );
-      //   return price.amt === null || price.qty === null
-      //     ? null
-      //     : price.amt / price.qty;
-      // }
-    },
-    sorts: {
-      titiSort: (a, b) => {
-        const x =
-          a % 2 < b % 2 || (a % 2 === b % 2 && a < b)
-            ? -1
-            : !(a % 2 === b % 2 && a === b) + 0;
-        return x;
+      accessors: {
+        ...prevConfigurationFunctions.dataset.accessors
+      },
+      aggregations: {
+        ...prevConfigurationFunctions.dataset.aggregations
+      },
+      sorts: {
+        ...prevConfigurationFunctions.dataset.aggregations,
+        titiSort: (a, b) => {
+          const x =
+            a % 2 < b % 2 || (a % 2 === b % 2 && a < b)
+              ? -1
+              : !(a % 2 === b % 2 && a === b) + 0;
+          return x;
+        }
       }
     }
   };

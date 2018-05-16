@@ -20,7 +20,10 @@ export class DataCells extends ScrollableGrid {
 
     this.comment = undefined;
     this.state = {
-      toolTip: { style: { opacity: 0, height: 0 }, modal: false }
+      toolTip: {
+        style: { opacity: 0, height: 0, zIndex: 0, padding: 0 },
+        modal: false
+      }
     };
   }
   componentWillReceiveProps(newProps) {
@@ -70,7 +73,7 @@ export class DataCells extends ScrollableGrid {
   };
   handleOnCommentOk = e => {
     const toolTip = {
-      style: { opacity: 0, zIndex: 0 }
+      style: { opacity: 0, height: 0, zIndex: 0, padding: 0 }
     };
     this.setState({ toolTip });
     this.props.setToolTip(toolTip);
@@ -83,7 +86,7 @@ export class DataCells extends ScrollableGrid {
       const style = {
         ...e.style,
         opacity: 1,
-        zIndex: 1000,
+        zIndex: 3,
         height: "fit-content",
         width: "fit-content",
         position: "fixed",

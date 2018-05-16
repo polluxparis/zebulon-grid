@@ -5,7 +5,7 @@ import {
   SET_AXIS,
   LOADING_CONFIG
 } from "../constants";
-import { isNullOrUndefined } from "../utils/generic";
+import { utils } from "zebulon-controls";
 export default (
   state = { rows: [], columns: [], dimensions: [], measures: [] },
   action
@@ -24,7 +24,7 @@ export default (
         return state;
       }
     case MOVE_DIMENSION:
-      if (isNullOrUndefined(newPosition) && newAxis !== oldAxis) {
+      if (utils.isNullOrUndefined(newPosition) && newAxis !== oldAxis) {
         newPosition = state[newAxis].length;
       }
 
@@ -60,7 +60,7 @@ export default (
       }
       return { ...state, [newAxis]: newAxisValue };
     case MOVE_MEASURE:
-      if (isNullOrUndefined(newPosition)) {
+      if (utils.isNullOrUndefined(newPosition)) {
         newPosition = state.measures.length;
       }
       oldPosition = state.measures.indexOf(id);

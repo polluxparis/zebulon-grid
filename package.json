@@ -14,14 +14,6 @@
   ],
   "author": "Emile et Thomas Bres <thomas.bres@pollux.paris>",
   "main": "lib/index.js",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "cross-env": "^5.1.4",
-    "gh-pages": "^1.1.0",
-    "postcss-cli": "^5.0.0",
-    "react-resizable": "^1.7.5",
-    "react-scripts": "^1.1.4"
-  },
   "dependencies": {
     "classnames": "^2.2.5",
     "react": "^16.3.2",
@@ -29,7 +21,8 @@
     "react-dnd-html5-backend": "^2.6.0",
     "react-redux": "^5.0.7",
     "reselect": "^3.0.1",
-    "zebulon-table": "^1.1.5"
+    "zebulon-controls": "file:../controls/zebulon-controls-1.2.5.tgz",
+    "zebulon-table": "file:../table/zebulon-table-1.1.7.tgz"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -46,5 +39,12 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.5",
+    "gh-pages": "^1.1.0",
+    "postcss-cli": "^5.0.0",
+    "react-resizable": "^1.7.5",
+    "react-scripts": "^1.1.4"
   }
 }

@@ -86,7 +86,10 @@ class PivotGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toolTip: { style: { opacity: 0, height: 0 }, modal: false }
+      toolTip: {
+        style: { opacity: 0, height: 0, zIndex: 0, padding: 0 },
+        modal: false
+      }
     };
   }
   componentDidUpdate(prevProps) {

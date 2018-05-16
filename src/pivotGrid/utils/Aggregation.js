@@ -1,14 +1,3 @@
-// function forEachIntersection(accessor, intersection, data, callback) {
-//   if (intersection && intersection.length > 0) {
-//     // for (let i = 0; i < intersection.length; i += 1) {
-//     //   const row=data[intersection[i]];
-//     //   callback(accessor(row));
-//     // }
-//     intersection.map(index=>{const row =data[index];
-//       if(!row.isFiltered){callback(accessor(row))};
-//   }
-// }
-
 export const count = values => values.length;
 export const sum = values =>
   values.reduce((sum, value) => (sum += value), null);
@@ -48,6 +37,17 @@ export const delta = values => {
 };
 export const prod = values =>
   values.reduce((prod, value) => (prod *= value), null);
+
+// function forEachIntersection(accessor, intersection, data, callback) {
+//   if (intersection && intersection.length > 0) {
+//     // for (let i = 0; i < intersection.length; i += 1) {
+//     //   const row=data[intersection[i]];
+//     //   callback(accessor(row));
+//     // }
+//     intersection.map(index=>{const row =data[index];
+//       if(!row.isFiltered){callback(accessor(row))};
+//   }
+// }
 
 // export function calcVariance(accessor, intersection, data, population) {
 //   let variance = 0;

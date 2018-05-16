@@ -2,7 +2,7 @@
 //  compute the header trees (rows and columns) with positions ans sizes...
 ///////////////////////////////////////////////////////////////////
 import { createSelector } from "reselect";
-import { isNull, isNullOrUndefined } from "../utils/generic";
+import { utils } from "zebulon-controls";
 
 import {
   buildAxisTrees,
@@ -186,7 +186,7 @@ const buildPositionedHeaders = (
   const maxSize = containerSize - crossSize;
   let size = 0,
     depth = 0;
-  const measuresCount = isNull(measures)
+  const measuresCount = utils.isNull(measures)
     ? 1
     : Object.keys(measures).length || 1;
   // no dimension is on the axis ==> Total header
@@ -552,13 +552,13 @@ export const rowAndColumnHeadersSelector = createSelector(
     if (
       !(
         loadingConfig ||
-        isNullOrUndefined(rowAndColumnLeaves.rows.node) ||
-        isNullOrUndefined(rowAndColumnLeaves.columns.node)
+        utils.isNullOrUndefined(rowAndColumnLeaves.rows.node) ||
+        utils.isNullOrUndefined(rowAndColumnLeaves.columns.node)
       )
     ) {
       rows = getRowHeaders(rowAndColumnLeaves.rows, scrollToRow);
       columns = getColumnHeaders(rowAndColumnLeaves.columns, scrollToColumn);
-      if (isNullOrUndefined(rows) || isNullOrUndefined(rows)) {
+      if (utils.isNullOrUndefined(rows) || utils.isNullOrUndefined(rows)) {
         return { rows, columns };
       }
       combineRowsAndColumns(rows, columns);

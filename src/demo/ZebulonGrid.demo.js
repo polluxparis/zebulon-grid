@@ -15,7 +15,8 @@ import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
-import { metaDescriptions, functions, functionsTable } from "zebulon-table";
+import { metaDescriptions, functions } from "zebulon-table";
+import { utils, accessors } from "zebulon-controls";
 // console.log("zebulon-table", metaDescriptions, functions, functionsTable);
 // import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
@@ -41,8 +42,8 @@ class ZebulonGridDemo extends Component {
     this.bigDataSet = false;
     this.data = [];
     // configuration
-    this.functions = functionsTable(functions);
-    this.meta = metaDescriptions("dataset", this.state.functions);
+    // this.functions = utils.mergeFunctions([accessors, functions], "dataset");
+    this.meta = metaDescriptions("dataset");
     // configuration
     this.params = {};
   }
@@ -218,7 +219,7 @@ class ZebulonGridDemo extends Component {
             ref={ref => (this.zebulon = ref)}
             display={display ? "configuration" : "pivotgrid"}
             meta={this.meta}
-            functions={this.functions}
+            // functions={this.functions}
             params={this.params}
             keyEvent={keyEvent}
           />

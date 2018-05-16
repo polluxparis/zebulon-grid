@@ -14,17 +14,17 @@ export const loadingConfig = loading => ({
   type: LOADING_CONFIG,
   loading
 });
-export const setDimensions = (configObject, functions) => ({
+export const setDimensions = (configObject, functions, utils_) => ({
   type: SET_DIMENSIONS,
   dimensions: configObject.dimensions.map(dimension =>
-    dimensionFactory(dimension, functions)
+    dimensionFactory(dimension, functions, utils_)
   )
 });
 
-export const setMeasures = (configObject, functions) => ({
+export const setMeasures = (configObject, functions, utils_) => ({
   type: SET_MEASURES,
   measures: configObject.measures.map(measure =>
-    measureFactory(measure, functions)
+    measureFactory(measure, functions, utils_)
   )
 });
 export const setProperty = (property, value) => ({

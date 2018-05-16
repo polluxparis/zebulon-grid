@@ -4,8 +4,6 @@ import classnames from "classnames";
 import { constants, utils } from "zebulon-controls";
 import Header from "../Header/Header";
 const { AxisType, ROOT_ID, MEASURE_ID } = constants;
-// import { isNull } from "../../utils/generic";
-// import { getLeaves } from "../../utils/headers";
 
 class Headers extends PureComponent {
   componentWillReceiveProps = nextProps => {
