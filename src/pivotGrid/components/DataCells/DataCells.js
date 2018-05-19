@@ -578,11 +578,17 @@ export class DataCells extends ScrollableGrid {
   };
   getRatios = props => {
     const { rows, columns } = props;
+
     return {
-      vertical: { display: rows.displayedRatio, position: rows.positionRatio },
+      vertical: {
+        display: rows.displayedRatio,
+        position: rows.positionRatio,
+        size: rows.size
+      },
       horizontal: {
         display: columns.displayedRatio,
-        position: columns.positionRatio
+        position: columns.positionRatio,
+        size: columns.size
       }
     };
   };

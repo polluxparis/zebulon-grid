@@ -197,6 +197,9 @@ const buildPositionedHeaders = (
   if (scroll.index >= leaves.length) {
     scroll.index = leaves.length - 1;
     scroll.direction = -1;
+  } else if (scroll.index === -1 && leaves.length) {
+    scroll.index = 0;
+    scroll.direction = 1;
   }
   let index = scroll.index;
   let ix = 0;
