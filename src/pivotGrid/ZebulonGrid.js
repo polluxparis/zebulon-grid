@@ -408,10 +408,10 @@ class ZebulonGrid extends Component {
     const functions =
       // this.buildObject(
       this.display.state.functions.filter(f => f.isLocal).reduce((acc, f) => {
-        if (!acc.dataset[f.tp]) {
-          acc.dataset[f.tp] = {};
+        if (!acc.dataset[f.tp + "s"]) {
+          acc.dataset[f.tp + "s"] = {};
         }
-        acc.dataset[f.tp][f.id] = f.functionText;
+        acc.dataset[f.tp + "s"][f.id] = f.functionText;
         return acc;
       }, { dataset: {} });
     // {
