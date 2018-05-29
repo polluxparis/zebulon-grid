@@ -26,7 +26,7 @@ const newAxis = (e, type, axis, caller) => {
 	caller.setState({ selectedTab: tabIndex });
 	table.newRow_(row, index);
 };
-export const configurationMenu = {
+export const configurationMenus = {
 	dataset: caller => () => {
 		return {
 			"column-header-menu": [

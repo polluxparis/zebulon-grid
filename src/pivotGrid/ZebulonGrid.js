@@ -9,7 +9,7 @@ import { ZebulonTableAndConfiguration, functions } from "zebulon-table";
 import { utils, accessors } from "zebulon-controls";
 import reducer from "./reducers";
 import * as aggregations from "./utils/aggregation";
-import { configurationMenu } from "./utils/configurationMenu";
+import { configurationMenus } from "./utils/configurationMenus";
 import "./index.css";
 import {
   defaultMenuFunctions,
@@ -472,7 +472,10 @@ class ZebulonGrid extends Component {
                 ...this.props.callbacks
               }}
               utils={this.props.utils}
-              contextualMenu={configurationMenu}
+              configurationMenus={{
+                ...configurationMenus,
+                ...(this.props.configurationMenus || {})
+              }}
             />
           </Provider>
         </div>
