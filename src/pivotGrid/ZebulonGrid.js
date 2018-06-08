@@ -25,13 +25,16 @@ class ZebulonGrid extends Component {
     super(props);
     // configuration
     this.buildFunctionsTable(props);
-    if (props.display === "configuration")
-      this.buildDimensionsAndMesures(props.configuration);
+    if (props.display === "configuration" || props.display === "error")
+      this.buildDimensionsAndMesures(props.configuration, props.tabs);
     // configuration
-    this.state = { sizes: props.sizes, display: props.display };
+    this.state = {
+      sizes: { ...props.sizes, height: props.sizes.height - 30 },
+      display: props.display
+    };
     this.zoomValue = props.sizes.zoom || 1;
   }
-  buildDimensionsAndMesures = configuration => {
+  buildDimensionsAndMesures = (configuration, tabs) => {
     this.measures = configuration.measures.map((measure, index) => {
       measure.index_ = index;
       return measure;
@@ -54,8 +57,8 @@ class ZebulonGrid extends Component {
         updatedRows: {}
       }
     ];
-    if (this.props.tabs) {
-      this.tabs = this.tabs.concat(this.props.tabs);
+    if (tabs) {
+      this.tabs = this.tabs.concat(tabs);
     }
   };
   // configuration
@@ -84,7 +87,8 @@ class ZebulonGrid extends Component {
       pushedData,
       sizes,
       keyEvent,
-      display
+      display,
+      tabs
     } = nextProps;
     // this.sizes = { ...defaultSizes, ...sizes };
 
@@ -93,14 +97,18 @@ class ZebulonGrid extends Component {
       if (sizes.zoom) {
         this.zoomValue = sizes.zoom;
       }
-      this.setState({ sizes: { ...sizes, zoom: this.zoomValue } });
+      this.setState({
+        sizes: { ...sizes, height: sizes.height - 30, zoom: this.zoomValue }
+      });
     }
     if (
       display === "configuration" &&
       (this.props.display !== display ||
-        this.props.configuration !== configuration)
-    )
-      this.buildDimensionsAndMesures(configuration);
+        this.props.configuration !== configuration ||
+        this.props.tabs !== tabs)
+    ) {
+      this.buildDimensionsAndMesures(configuration, tabs);
+    }
     // configuration
     if (
       nextProps.configurationFunctions !== this.props.configurationFunctions ||
@@ -443,26 +451,28 @@ class ZebulonGrid extends Component {
       </div>
     );
 
-    if (this.state.display === "configuration") {
+    if (
+      this.state.display === "configuration" ||
+      this.state.display === "error"
+    ) {
       // this.displayId = `configuration-${this.props.id || 0}`;
       const { data, status } = this.store.getState();
       this.meta = data.meta || this.props.meta || {};
       this.data = data.data;
-      const sizes = { ...this.state.sizes };
-      sizes.height = sizes.height - 30;
+      // const sizes = { ...this.state.sizes };
+      // sizes.height = sizes.height - 30;
       // configuration
       div = (
         <div>
           <Provider store={this.store}>
             <ZebulonTableAndConfiguration
               id={this.props.id}
-              sizes={sizes}
+              sizes={this.state.sizes}
               data={this.data}
               meta={this.meta}
               functions={this.functions}
               params={this.props.params || {}}
               status={status}
-              // serverLoading={this.props.serverLoading}
               tabs={this.tabs}
               ref={ref => (this.display = ref)}
               callbacks={{
