@@ -17,7 +17,6 @@ import {
 } from "../actions";
 import { resetLeaves, resetDimensions } from "../utils/headers";
 import { getAxisTreesSelector } from "../selectors";
-// import { mergeData } from "../selectors";
 import { constants, utils } from "zebulon-controls";
 import * as aggregations from "./aggregation";
 const { MEASURE_ID } = constants;
@@ -97,7 +96,7 @@ export const applySizesToStore = (store, sizes) => {
 export const applyConfigurationToStore = (
   store,
   configuration,
-  functions, //configurationFunctions = defaultConfigurationFunctions,
+  functions,
   data,
   utils_
 ) => {
@@ -105,9 +104,6 @@ export const applyConfigurationToStore = (
   if (!utils.isNullOrUndefined(data)) {
     setData(store, data);
   }
-  // else {
-  //   store.dispatch(fetchData());
-  // }
   //  global configuration
   const measureHeadersAxis =
     (configuration.configuration || {}).measureHeadersAxis ||
@@ -194,6 +190,9 @@ export const applyConfigurationToStore = (
       );
     }
   }
+  // if (configuration.cell) {
+  //   store.dispatch(scrollToIndex(cell.rows, cell.columns));
+  // }
   // callbacks
   store.dispatch(setProperty("callbacks", configuration.callbacks || {}));
   store.dispatch(loadingConfig(false));

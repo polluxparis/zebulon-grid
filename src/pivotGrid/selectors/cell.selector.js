@@ -215,7 +215,7 @@ export const getCellInfosSelector = createSelector(
     const usedData = utils
       .intersection([rowLeaf.dataIndexes, columnLeaf.dataIndexes])
       .map(x => data[x]);
-    return { value, dimensions, data: usedData };
+    return { value, dimensions, data: usedData, cell };
   }
 );
 export const getRangeInfosSelector = createSelector(

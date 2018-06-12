@@ -422,30 +422,20 @@ class ZebulonGrid extends Component {
         acc.dataset[f.tp + "s"][f.id] = f.functionText;
         return acc;
       }, { dataset: {} });
-    // {
-    //   index_: true,
-    //   functionJS: true,
-    //   isLocal: true
-    // }
-    // );
     configuration.functions = functions;
     return true;
   };
 
-  // configuration
   render() {
-    // this.displayId = `pivotgrid-${this.props.id || 0}`;
+    // pivot grid
     let div = (
       <div>
         <Provider store={this.store}>
           <PivotGrid
             id={this.props.id}
             menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
-            // key={this.displayId}
-            // gridId={this.displayId}
-            // isActive={this.props.isActive}
+            selectedCell={this.props.selectedCell}
             getRef={ref => (this.display = ref)}
-            // serverLoading={this.props.serverLoading}
           />
         </Provider>
       </div>
@@ -455,12 +445,9 @@ class ZebulonGrid extends Component {
       this.state.display === "configuration" ||
       this.state.display === "error"
     ) {
-      // this.displayId = `configuration-${this.props.id || 0}`;
       const { data, status } = this.store.getState();
       this.meta = data.meta || this.props.meta || {};
       this.data = data.data;
-      // const sizes = { ...this.state.sizes };
-      // sizes.height = sizes.height - 30;
       // configuration
       div = (
         <div>

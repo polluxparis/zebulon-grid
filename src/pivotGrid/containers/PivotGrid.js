@@ -71,10 +71,10 @@ const mapDispatchToProps = dispatch => ({
   selectRange: selectedRange => dispatch(selectRange(selectedRange)),
   selectCell: cell => dispatch(selectCell(cell)),
   zoom: value => dispatch(zoom(value)),
+  // scrollToCell: cell => dispatch(scrollToIndex(cell.rows, cell.columns)),
   scrollToRow: scroll => dispatch(scrollToIndex(scroll, null)),
   scrollToColumn: scroll => dispatch(scrollToIndex(null, scroll)),
-  editData: data => dispatch(applyPushedData(data)),
-  scrollToCell: () => {}
+  editData: data => dispatch(applyPushedData(data))
 });
 
 const mergeProps = (

@@ -1,5 +1,6 @@
 import {
   FETCH_SUCCESS,
+  PUSH_DATA,
   FETCH_DATA,
   FETCH_FAILURE,
   LOADING_CONFIG,
@@ -11,23 +12,35 @@ export default (
     loading: false,
     loaded: false,
     error: undefined,
-    loadingConfig: false
+    loadingConfig: false,
+    pushed: false
   },
   action
 ) => {
   const { type, error } = action;
   switch (type) {
     case FETCH_DATA:
-      return { ...state, loading: true, loaded: false, error: undefined };
+      return {
+        ...state,
+        loading: true,
+        loaded: false,
+        error: undefined,
+        pushed: false
+      };
     case FETCH_FAILURE:
       return { ...state, loading: false, loaded: false, error };
     case FETCH_SUCCESS:
-      // console.log(FETCH_SUCCESS, {
-      //   loading: false,
-      //   loaded: true,
-      //   error: undefined
-      // });
-      return { ...state, loading: false, loaded: true, error: undefined };
+      return {
+        ...state,
+        loading: false,
+        loaded: true,
+        error: undefined
+      };
+    case PUSH_DATA:
+      return {
+        ...state,
+        pushed: true
+      };
     case LOADING_CONFIG:
       return { ...state, loadingConfig: action.loading };
     // just to force the refresh

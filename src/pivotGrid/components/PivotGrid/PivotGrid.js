@@ -103,13 +103,24 @@ class PivotGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.isPushing = this.props.pushedData !== nextProps.pushedData;
+    this.isPushing =
+      this.props.status !== nextProps.status && nextProps.status.pushed;
     if (
       this.contextualMenu &&
       this.contextualMenu.state.menu &&
       this.contextualMenu.state.menu.visible
     ) {
       this.closeOpenedWindows();
+    }
+    if (
+      nextProps.selectedCell &&
+      nextProps.selectedCell !== this.props.selectedCell
+    ) {
+      this.onScroll(
+        { direction: 1, index: nextProps.selectedCell.rows },
+        { direction: 1, index: nextProps.selectedCell.columns }
+      );
+      this.props.selectCell(nextProps.selectedCell);
     }
   }
   // ------------------------------------

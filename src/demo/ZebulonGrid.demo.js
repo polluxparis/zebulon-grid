@@ -37,7 +37,8 @@ class ZebulonGridDemo extends Component {
         rowHeight: 25
       },
       actionContent: null,
-      keyEvent: null
+      keyEvent: null,
+      selectedCell: { rows: 0, columns: 0 }
     };
     this.bigDataSet = false;
     this.data = [];
@@ -87,6 +88,7 @@ class ZebulonGridDemo extends Component {
   pushData = () => {
     this.setState({
       pushedData: getRandomMockDatasource(20, ...this.options),
+      // selectedCell: { rows: 12, columns: 0 },
       actionContent: (
         <div>
           <div>Push randomly new rows in the dataset. </div>
@@ -222,6 +224,7 @@ class ZebulonGridDemo extends Component {
             // functions={this.functions}
             params={this.params}
             keyEvent={keyEvent}
+            selectedCell={this.state.selectedCell}
           />
         </ResizableBox>
         <div

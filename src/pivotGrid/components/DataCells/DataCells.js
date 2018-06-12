@@ -26,24 +26,30 @@ export class DataCells extends ScrollableGrid {
       }
     };
   }
-  componentWillReceiveProps(newProps) {
-    this.isPushing =
-      newProps.isPushing && !this.isEditing ? 1 + this.isPushing % 2 : 0;
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isPushing && !this.isEditing) {
+      this.isPushing = 1 + this.isPushing % 2;
+    }
     this.isEditing = false;
+    if (nextProps.isPushing) {
+      console.log("isPushing", this.isPushing, this.cellCache, nextProps);
+    }
     if (
-      !newProps.isPushing &&
-      (newProps.rows !== this.props.rows ||
-        newProps.columns !== this.props.columns)
+      !nextProps.isPushing &&
+      (nextProps.rows !== this.props.rows ||
+        nextProps.columns !== this.props.columns)
     ) {
+      console.log("clearCache", nextProps);
       this.cellCache = {};
     }
     if (
       this.editable &&
-      (this.props.rows.leaves !== newProps.rows.leaves ||
-        this.props.columns.leaves !== newProps.columns.leaves ||
-        this.props.selectedRange.end.rows !== newProps.selectedRange.end.rows ||
+      (this.props.rows.leaves !== nextProps.rows.leaves ||
+        this.props.columns.leaves !== nextProps.columns.leaves ||
+        this.props.selectedRange.end.rows !==
+          nextProps.selectedRange.end.rows ||
         this.props.selectedRange.end.columns !==
-          newProps.selectedRange.end.columns)
+          nextProps.selectedRange.end.columns)
     ) {
       if (this.oldValue !== this.newValue || this.comment) {
         const { rows, columns } = this.props.selectedRange.end;
@@ -54,11 +60,11 @@ export class DataCells extends ScrollableGrid {
       }
       this.focusChanged = true;
     }
-    this.focusChanged = this.focusChanged || newProps.isPushing;
+    this.focusChanged = this.focusChanged || nextProps.isPushing;
     this.editable =
-      newProps.configuration.edition.editable &&
-      newProps.configuration.edition.activated;
-    this.commentsVisible = newProps.configuration.edition.comments;
+      nextProps.configuration.edition.editable &&
+      nextProps.configuration.edition.activated;
+    this.commentsVisible = nextProps.configuration.edition.comments;
   }
   componentDidMount() {
     this.props.getRef(this);
@@ -500,7 +506,11 @@ export class DataCells extends ScrollableGrid {
         measure.aggregation,
         measure.id
       );
-      valueHasChanged = this.isPushing * (cell.value !== value.value);
+      valueHasChanged =
+        this.props.isPushing * this.isPushing * (cell.value !== value.value);
+      if (valueHasChanged) {
+        console.log("valueHasChanged", valueHasChanged);
+      }
       cell.value = value.value;
       cell.edited = value.edited;
       cell.comments = value.comments;
@@ -552,15 +562,7 @@ export class DataCells extends ScrollableGrid {
       horizontal: columns.positionRatio
     };
     const cells = [];
-    // (  <div
-    //     key={"tool-tip"}
-    //     className="zebulon-tool-tip"
-    //     style={this.state.toolTip.style}
-    //   >
-    //     {this.state.toolTip.comment}
-    //   </div>)
-    // ];
-    // console.log("render", this.state.toolTip);
+    console.log("render", this.props.isPushing);
     rows.cells.forEach((row, rowIndex) =>
       columns.cells.map((column, columnIndex) =>
         cells.push(
