@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import PivotGrid from "./containers/PivotGrid";
 import Chart from "./containers/Chart";
 // configuration
-import { ZebulonTableAndConfiguration, functions } from "zebulon-table";
+import { ZebulonTableAndConfiguration } from "zebulon-table";
 // configuration
 import { utils, accessors } from "zebulon-controls";
 import reducer from "./reducers";
@@ -24,9 +24,7 @@ class ZebulonGrid extends Component {
   constructor(props) {
     super(props);
     // configuration
-    this.buildFunctionsTable(props);
-    if (props.display === "configuration" || props.display === "error")
-      this.buildDimensionsAndMesures(props.configuration, props.tabs);
+    this.buildDimensionsAndMesures(props.configuration, props.tabs);
     // configuration
     this.state = {
       sizes: { ...props.sizes, height: props.sizes.height - 30 },
@@ -34,47 +32,37 @@ class ZebulonGrid extends Component {
     };
     this.zoomValue = props.sizes.zoom || 1;
   }
-  buildDimensionsAndMesures = (configuration, tabs) => {
-    this.measures = configuration.measures.map((measure, index) => {
-      measure.index_ = index;
-      return measure;
-    });
-    this.dimensions = configuration.dimensions.map((dimension, index) => {
+  initTabDimensions = dimensions => {
+    this.dimensions = dimensions.map((dimension, index) => {
       dimension.index_ = index;
       return dimension;
     });
+    return {
+      id: "dimensions",
+      caption: "Dimensions",
+      data: this.dimensions,
+      updatedRows: {}
+    };
+  };
+  initTabMeasures = measures => {
+    this.measures = measures.map((measure, index) => {
+      measure.index_ = index;
+      return measure;
+    });
+    return {
+      id: "measures",
+      caption: "Measures",
+      data: this.measures,
+      updatedRows: {}
+    };
+  };
+  buildDimensionsAndMesures = (configuration, tabs) => {
     this.tabs = [
-      {
-        id: "measures",
-        caption: "Measures",
-        data: this.measures,
-        updatedRows: {}
-      },
-      {
-        id: "dimensions",
-        caption: "Dimensions",
-        data: this.dimensions,
-        updatedRows: {}
-      }
+      this.initTabMeasures(configuration.measures),
+      this.initTabDimensions(configuration.dimensions)
     ];
     if (tabs) {
       this.tabs = this.tabs.concat(tabs);
-    }
-  };
-  // configuration
-  buildFunctionsTable = props => {
-    if (!Array.isArray(props.functions)) {
-      this.functions = utils.mergeFunctions(
-        [
-          accessors,
-          functions,
-          props.configurationFunctions || {},
-          props.configuration.functions || {}
-        ],
-        "dataset"
-      );
-    } else {
-      this.functions = props.functions;
     }
   };
   // configuration
@@ -83,12 +71,13 @@ class ZebulonGrid extends Component {
       data,
       meta,
       configuration,
-      configurationFunctions,
+      // configurationFunctions,
       pushedData,
       sizes,
       keyEvent,
       display,
-      tabs
+      tabs,
+      functions
     } = nextProps;
     // this.sizes = { ...defaultSizes, ...sizes };
 
@@ -101,30 +90,16 @@ class ZebulonGrid extends Component {
         sizes: { ...sizes, height: sizes.height - 30, zoom: this.zoomValue }
       });
     }
-    if (
-      display === "configuration" &&
-      (this.props.display !== display ||
-        this.props.configuration !== configuration ||
-        this.props.tabs !== tabs)
-    ) {
+    // configuration
+    if (this.props.tabs !== tabs) {
       this.buildDimensionsAndMesures(configuration, tabs);
     }
-    // configuration
-    if (
-      nextProps.configurationFunctions !== this.props.configurationFunctions ||
-      nextProps.functions !== this.props.functions ||
-      !this.functions
-    ) {
-      this.buildFunctionsTable(nextProps);
-    }
-    // configuration
     if (this.props.configuration !== configuration) {
       applyConfigurationToStore(
         this.store,
         configuration,
-        this.functions,
-        data === this.props.data ? null : data,
-        this.props.utils || utils
+        functions,
+        data === this.props.data ? null : data
       );
     } else if (this.props.data !== data) {
       setData(this.store, data, meta);
@@ -141,7 +116,7 @@ class ZebulonGrid extends Component {
     const {
       data,
       configuration,
-      configurationFunctions,
+      // configurationFunctions,
       sizes,
       functions
     } = this.props;
@@ -154,9 +129,8 @@ class ZebulonGrid extends Component {
     applyConfigurationToStore(
       this.store,
       configuration,
-      this.functions,
-      data,
-      this.props.utils || utils
+      this.props.functions,
+      data
     );
   }
   componentDidMount() {
@@ -240,192 +214,67 @@ class ZebulonGrid extends Component {
     }
   };
   // configuration
-  applyDimensions = () => {
-    const { configuration, configurationFunctions } = this.props;
-    const dimensions = this.buildObject(
-      this.tabs[1].data.filter(
-        d => !(this.tabs[1].updatedRows[d.index_] || {}).deleted_
-      ),
-      { index_: true }
+  applyDimensions = ({ data, updatedRows }) => {
+    const { configuration, functions } = this.props;
+    const notSet = configuration.dimensions
+      .map(d => d.id)
+      .filter(
+        d =>
+          !(configuration.rows.includes(d) || configuration.columns.includes(d))
+      );
+    configuration.dimensions = data.filter(
+      row => !(updatedRows[row.index_] || {}).deleted_
     );
-    let add = false;
-    const axis = {};
-    (configuration.rows || []).forEach(d => (axis[d] = "rows"));
-    (configuration.columns || []).forEach(d => (axis[d] = "columns"));
-    (configuration.dimensions || []).forEach(d => (axis[d] = "rows"));
-    configuration.rows = [];
-    configuration.columns = [];
-    // configuration.dimensions = [];
-    // if (
-    //   (configuration.rows || []).length +
-    //     (configuration.columns || []).length ===
-    //   0
-    // ) {
-    //   configuration.rows = [];
-    //   add = true;
-    // }
-    if (!configurationFunctions.dataset) {
-      configurationFunctions.dataset = {
-        accessors: {},
-        sorts: {},
-        formats: {}
-      };
-    } else {
-      if (!configurationFunctions.dataset.accessors) {
-        configurationFunctions.dataset.accessors = {};
-      }
-      if (!configurationFunctions.dataset.sorts) {
-        configurationFunctions.dataset.sorts = {};
-      }
-      if (!configurationFunctions.dataset.formats) {
-        configurationFunctions.dataset.formats = {};
-      }
-    }
-    dimensions.forEach(dimension => {
-      configurationFunctions.dataset.accessors[
-        dimension.keyAccessor
-      ] = utils.getFunction(
-        this.functions,
-        "accessor",
-        dimension.keyAccessor,
-        this.props.utils
-      );
-      configurationFunctions.dataset.accessors[
-        dimension.labelAccessor
-      ] = utils.getFunction(
-        this.functions,
-        "accessor",
-        dimension.labelAccessor,
-        this.props.utils
-      );
-      configurationFunctions.dataset.accessors[
-        dimension.sortAccessor
-      ] = utils.getFunction(
-        this.functions,
-        "accessor",
-        dimension.sortAccessor,
-        this.props.utils
-      );
-      configurationFunctions.dataset.sorts[
-        dimension.sortFunction
-      ] = utils.getFunction(
-        this.functions,
-        "sort",
-        dimension.sortFunction,
-        this.props.utils
-      );
-      configurationFunctions.dataset.formats[
-        dimension.format
-      ] = utils.getFunction(
-        this.functions,
-        "format",
-        dimension.format,
-        this.props.utils
-      );
-      if (axis[dimension.id] === "dimensions") {
-        configuration.dimensions.push(dimension.id);
-      } else if (axis[dimension.id] === "columns") {
-        configuration.columns.push(dimension.id);
-      } else {
-        configuration.rows.push(dimension.id);
-      }
-    });
-    configuration.dimensions = dimensions;
-    configuration.axis = { measures: configuration.axis.measures };
+    // let dimensions allready set as they where
+    const dimensions = configuration.dimensions.map(d => d.id);
+    configuration.columns = configuration.columns.filter(d =>
+      dimensions.includes(d)
+    );
+    configuration.rows = dimensions.filter(
+      d => !(configuration.columns.includes(d) || notSet.includes(d))
+    );
+    // apply config
     applyConfigurationToStore(
       this.store,
       configuration,
-      this.functions,
-      this.props.data,
-      this.props.utils || utils
+      functions,
+      this.props.data
     );
+    this.initTabDimensions(configuration.dimensions);
     return true;
   };
-  applyMeasures = () => {
-    const { configuration, configurationFunctions } = this.props;
-    const measures = this.buildObject(
-      this.tabs[0].data.filter(
-        m => !(this.tabs[0].updatedRows[m.index_] || {}).deleted_
-      ),
-      { index_: true }
+  applyMeasures = ({ data, updatedRows }) => {
+    const { configuration, functions } = this.props;
+    const notSet = configuration.measures
+      .map(m => m.id)
+      .filter(m => !configuration.activeMeasures.includes(m));
+    configuration.measures = data.filter(
+      row => !(updatedRows[row.index_] || {}).deleted_
     );
-    const axis = {};
-    (configuration.measures || []).forEach(m => (axis[m.id] = "out"));
-    (configuration.activeMeasures || []).forEach(m => (axis[m] = "in"));
-    configuration.activeMeasures = [];
-    if (!configurationFunctions.dataset) {
-      configurationFunctions.dataset = {
-        accessors: {},
-        aggregations: {},
-        formats: {}
-      };
-    } else {
-      if (!configurationFunctions.dataset.accessors) {
-        configurationFunctions.dataset.accessors = {};
-      }
-      if (!configurationFunctions.dataset.aggregations) {
-        configurationFunctions.dataset.aggregations = {};
-      }
-      if (!configurationFunctions.dataset.formats) {
-        configurationFunctions.dataset.formats = {};
-      }
-    }
-    measures.forEach(measure => {
-      const f = utils.getFunction(
-        this.functions,
-        "accessor",
-        measure.valueAccessor,
-        this.props.utils
-      );
-      configurationFunctions.dataset.accessors[measure.valueAccessor] = f;
-      configurationFunctions.dataset.formats[
-        measure.format
-      ] = utils.getFunction(
-        this.functions,
-        "format",
-        measure.format,
-        this.props.utils
-      );
-      if (!aggregations[measure.aggregation]) {
-        configurationFunctions.dataset.aggregation[
-          measure.aggregation
-        ] = utils.getFunction(
-          this.functions,
-          "aggregation",
-          measure.aggregation,
-          this.props.utils
-        );
-      }
-      if (axis[measure.id] !== "out") {
-        configuration.activeMeasures.push(measure.id);
-      }
-    });
-    configuration.measures = measures;
-    delete configuration.axis.measures;
+    // let measures allready set as they where
+    configuration.activeMeasures = configuration.measures
+      .map(m => m.id)
+      .filter(m => !notSet.includes(m));
+    //apply config
     applyConfigurationToStore(
       this.store,
       configuration,
-      this.functions,
-      this.props.data,
-      this.props.utils || utils
+      functions,
+      this.props.data
     );
+    this.initTabMeasures(configuration.measures);
     return true;
   };
-  applyFunctions = () => {
-    const { configuration, configurationFunctions } = this.props;
-    const functions =
-      // this.buildObject(
-      this.display.state.functions.filter(f => f.isLocal).reduce((acc, f) => {
-        if (!acc.dataset[f.tp + "s"]) {
-          acc.dataset[f.tp + "s"] = {};
-        }
-        acc.dataset[f.tp + "s"][f.id] = f.functionText;
-        return acc;
-      }, { dataset: {} });
-    configuration.functions = functions;
-    return true;
+  applyFunctions = ({ updatedRows }) => {
+    const { configuration, functions } = this.props;
+    this.display.applyFunctions({ updatedRows });
+    applyConfigurationToStore(
+      this.store,
+      configuration,
+      functions,
+      this.props.data
+    );
   };
-
   render() {
     // pivot grid
     let div = (
@@ -457,7 +306,7 @@ class ZebulonGrid extends Component {
               sizes={this.state.sizes}
               data={this.data}
               meta={this.meta}
-              functions={this.functions}
+              functions={this.props.functions}
               params={this.props.params || {}}
               status={status}
               tabs={this.tabs}
@@ -468,7 +317,7 @@ class ZebulonGrid extends Component {
                 applyFunctions: this.applyFunctions,
                 ...this.props.callbacks
               }}
-              utils={this.props.utils}
+              // utils={this.props.utils}
               configurationMenus={{
                 ...configurationMenus,
                 ...(this.props.configurationMenus || {})

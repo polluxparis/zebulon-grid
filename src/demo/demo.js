@@ -8,9 +8,9 @@ export const customConfigurationFunctions = (
 ) => {
   const configurationFunctions = {
     ...prevConfigurationFunctions,
-    dataset: {
+    globals_: {
       formats: {
-        ...prevConfigurationFunctions.dataset.formats,
+        ...prevConfigurationFunctions.globals_.formats,
         price: ({ value }) => {
           if (Number.isFinite(value)) {
             return (
@@ -26,14 +26,14 @@ export const customConfigurationFunctions = (
         )
       },
       accessors: {
-        ...prevConfigurationFunctions.dataset.accessors
+        ...(prevConfigurationFunctions.dataset.accessors || {})
       },
       aggregations: {
-        ...prevConfigurationFunctions.dataset.aggregations
+        ...(prevConfigurationFunctions.dataset.aggregations || {})
       },
       sorts: {
-        ...prevConfigurationFunctions.dataset.aggregations,
-        titiSort: (a, b) => {
+        ...(prevConfigurationFunctions.dataset.aggregations || {}),
+        dummySort: (a, b) => {
           const x =
             a % 2 < b % 2 || (a % 2 === b % 2 && a < b)
               ? -1
@@ -62,7 +62,7 @@ export const customConfigurationFunctions = (
         caption: "Titi",
         keyAccessor: "titi",
         labelAccessor: "titi_lb",
-        sort: { keyAccessor: "titi", custom: "titiSort" },
+        sort: { keyAccessor: "titi", custom: "dummySort" },
         format: "titiFormat"
       },
       ...prevConfiguration.dimensions.slice(2, 5)

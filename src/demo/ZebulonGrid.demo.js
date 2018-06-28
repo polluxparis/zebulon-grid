@@ -11,12 +11,13 @@ import {
   getRandomMockDatasource
   // overwritedData
 } from "./mock";
+// import { functions } from "zebulon-controls";
 import { configurationFunctions } from "./configurationFunctions";
 import { menuFunctions } from "./menuFunctions";
 import { customConfigurationFunctions, customMenuFunctions } from "./demo";
 import { exportFile } from "../pivotGrid/services/copyService";
-import { metaDescriptions, functions } from "zebulon-table";
-import { utils, accessors } from "zebulon-controls";
+import { metaDescriptions } from "zebulon-table";
+import { utils, accessors, functions } from "zebulon-controls";
 // console.log("zebulon-table", metaDescriptions, functions, functionsTable);
 // import { functionsTable } from "../table/utils";
 class ZebulonGridDemo extends Component {
@@ -29,7 +30,8 @@ class ZebulonGridDemo extends Component {
       data: getPromiseMockDatasource(1, ...this.options),
       pushedData: [],
       configuration: basicConfig({ onEdit: this.onEdit }),
-      configurationFunctions,
+      functions: functions.functions([accessors, configurationFunctions]),
+      customConfigurationFunctions: false,
       menuFunctions,
       sizes: {
         height: 600,
@@ -44,7 +46,11 @@ class ZebulonGridDemo extends Component {
     this.data = [];
     // configuration
     // this.functions = utils.mergeFunctions([accessors, functions], "dataset");
-    this.meta = metaDescriptions("dataset");
+    this.meta = metaDescriptions(
+      "dataset",
+      undefined,
+      this.state.functions
+    ).dataset;
     // configuration
     this.params = {};
   }
@@ -103,18 +109,26 @@ class ZebulonGridDemo extends Component {
     });
   };
   setCustomConfigurationFunctions = () => {
-    if (this.state.configurationFunctions === configurationFunctions) {
-      this.setState(
-        customConfigurationFunctions(
-          this.state.configurationFunctions,
-          this.state.configuration
-        )
+    if (!this.state.customConfigurationFunctions) {
+      const custom = customConfigurationFunctions(
+        configurationFunctions,
+        this.state.configuration
       );
+      this.setState({
+        functions: functions.functions([
+          accessors,
+          custom.configurationFunctions
+        ]),
+        actionContent: custom.actionContent,
+        configuration: custom.configuration,
+        customConfigurationFunctions: !this.state.customConfigurationFunctions
+      });
     } else {
       this.setState({
-        configurationFunctions,
+        functions: functions.functions([accessors, configurationFunctions]),
         configuration: basicConfig({ onEdit: this.onEdit }),
-        actionContent: null
+        actionContent: null,
+        customConfigurationFunctions: !this.state.customConfigurationFunctions
       });
     }
   };
@@ -180,14 +194,21 @@ class ZebulonGridDemo extends Component {
     }
     return false;
   };
-
+  onChangeDisplay = () => {
+    if (!this.state.display && this.zebulon) {
+      const configuration = this.state.configuration;
+      const axis = this.zebulon.getStore().axis;
+      configuration.rows = axis.rows;
+      configuration.columns = axis.columns;
+      configuration.activeMeasures = axis.measures;
+    }
+    this.setState({ display: !this.state.display });
+  };
   render() {
     const {
       sizes,
       keyEvent,
-      // menuFunctions,
       configuration,
-      // configurationFunctions,
       data,
       pushedData,
       actionContent,
@@ -206,8 +227,8 @@ class ZebulonGridDemo extends Component {
             <input
               type="checkbox"
               id="configuration"
-              onChange={() => this.setState({ display: !display })}
-              checked={display}
+              onChange={this.onChangeDisplay}
+              checked={display || false}
             />
             <label htmlFor="configuration">Configuration</label>
           </div>
@@ -216,7 +237,7 @@ class ZebulonGridDemo extends Component {
             data={data}
             pushedData={pushedData}
             menuFunctions={this.state.menuFunctions}
-            configurationFunctions={this.state.configurationFunctions}
+            functions={this.state.functions}
             sizes={sizes2}
             ref={ref => (this.zebulon = ref)}
             display={display ? "configuration" : "pivotgrid"}
@@ -241,7 +262,7 @@ class ZebulonGridDemo extends Component {
             style={{ marginRight: ".5em" }}
             onClick={this.setCustomConfigurationFunctions}
           >
-            {`${this.state.configurationFunctions === configurationFunctions
+            {`${!this.state.customConfigurationFunctions
               ? "Add"
               : "Remove"} custom configuration functions`}
           </button>

@@ -477,7 +477,7 @@ export class DataCells extends ScrollableGrid {
     }
     // empty measure
     if (isUndefined(measure)) {
-      measure = { format: v => v, valueAccessor: () => null };
+      measure = { format: ({ value }) => value, valueAccessor: () => null };
     }
     let selected = false;
     if (selectedRange.start && selectedRange.end) {
@@ -507,7 +507,9 @@ export class DataCells extends ScrollableGrid {
         measure.id
       );
       valueHasChanged =
-        this.props.isPushing * this.isPushing * (cell.value !== value.value);
+        (this.props.isPushing || 0) *
+        this.isPushing *
+        (cell.value !== value.value);
       if (valueHasChanged) {
         console.log("valueHasChanged", valueHasChanged);
       }

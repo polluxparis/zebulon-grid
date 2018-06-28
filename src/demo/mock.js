@@ -169,47 +169,47 @@ export const basicConfig = callbacks => ({
     {
       id: "toto",
       caption: "Toto",
-      keyAccessor: "toto",
-      labelAccessor: "toto_lb",
+      keyAccessor: "row.toto",
+      labelAccessor: "row.toto_lb",
       sort: {
-        keyAccessor: "toto"
+        keyAccessor: "row.toto"
       }
     },
     {
       id: "titi",
       caption: "Titi",
-      keyAccessor: "titi",
-      labelAccessor: "titi_lb"
+      keyAccessor: "row.titi",
+      labelAccessor: "row.titi_lb"
     },
     {
       id: "tutu",
       caption: "Tutu",
-      keyAccessor: "tutu"
+      keyAccessor: "row.tutu"
     },
     {
       id: "toto att 0",
       caption: "toto 0",
-      keyAccessor: "toto_0",
+      keyAccessor: "row.toto_0",
       attributeParents: ["toto"]
     },
     {
       id: "toto att 1",
       caption: "toto 1",
-      keyAccessor: "toto_1",
+      keyAccessor: "row.toto_1",
       attributeParents: ["toto"],
       format: "id"
     }
   ],
   measures: [
     {
-      valueAccessor: "qty",
+      valueAccessor: "row.qty",
       id: "qty",
       caption: "Quantity",
       format: "quantity",
       aggregation: "sum"
     },
     {
-      valueAccessor: "amt",
+      valueAccessor: "row.amt",
       id: "amt",
       caption: "Amount",
       aggregation: "sum",
@@ -220,7 +220,7 @@ export const basicConfig = callbacks => ({
     //   id: "price",
     //   caption: "Price",
     //   aggregation: "weighted_avg",
-    //   valueAccessor: "price",
+    //   valueAccessor: "row.price",
     //   format: "price"
     // }
   ],
@@ -243,47 +243,47 @@ export const basicConfig2 = callbacks => ({
     {
       id: "toto2",
       caption: "Toto",
-      keyAccessor: "toto2",
-      labelAccessor: "toto_lb",
+      keyAccessor: "row.toto2",
+      labelAccessor: "row.toto_lb",
       sort: {
-        keyAccessor: "toto_lb"
+        keyAccessor: "row.toto_lb"
       }
     },
     {
       id: "titi",
       caption: "Titi",
-      keyAccessor: "titi"
+      keyAccessor: "row.titi"
     },
     {
       id: "tutu",
       caption: "Tutu",
-      keyAccessor: "tutu",
+      keyAccessor: "row.tutu",
       format: "id"
     },
     {
       id: "toto att 0",
       caption: "toto 0",
-      keyAccessor: "toto_0",
+      keyAccessor: "row.toto_0",
       attributeParents: ["toto2"]
     },
     {
       id: "toto att 1",
       caption: "toto 1",
-      keyAccessor: "toto_1",
+      keyAccessor: "row.toto_1",
       attributeParents: ["toto2"],
       format: "id"
     }
   ],
   measures: [
     {
-      valueAccessor: "qty",
+      valueAccessor: "row.qty",
       id: "qty",
       caption: "Quantity",
       format: "quantity",
       aggregation: "sum"
     },
     {
-      valueAccessor: "amt",
+      valueAccessor: "row.amt",
       id: "amt",
       caption: "Amount",
       aggregation: "sum",

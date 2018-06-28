@@ -2,7 +2,7 @@ import React from "react";
 import { utils } from "zebulon-controls";
 
 export const configurationFunctions = {
-  dataset: {
+  globals_: {
     formats: {
       id: ({ value }) => (
         <div style={{ color: "blue", textAlign: "right" }}>{value}</div>
@@ -36,20 +36,12 @@ export const configurationFunctions = {
           );
         }
         return value;
-      },
-      price: ({ value }) => {
-        return (
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>€</div>
-            <div style={{ textAlign: "right" }}>
-              {utils.formatValue(value, null, 2)}
-            </div>
-          </div>
-        );
       }
-    },
+    }
+  },
+  dataset: {
     accessors: {
-      price: ({ row }) => ({ v0: row.amt, v1: row.qty })
+      price: ({ row }) => ({ v0: row.amt, v1: row.qty, v2: "£" })
     },
     sorts: {},
     aggregations: {}
