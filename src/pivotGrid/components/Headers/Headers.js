@@ -84,7 +84,7 @@ class Headers extends PureComponent {
         key={`header-${header.key}`}
         header={header}
         axis={axisType}
-        caption={header.format({ value: header.caption })}
+        caption={header.formatFunction({ value: header.caption })}
         positionStyle={positionStyle}
         dimensionId={header.dimensionId}
         isNotCollapsible={

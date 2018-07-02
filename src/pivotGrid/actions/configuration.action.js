@@ -5,27 +5,33 @@ import {
   SET_MEASURES,
   SET_CONFIG_PROPERTY,
   TOGGLE_MEASURE,
+  TOGGLE_MEASURES_AXIS,
   MOVE_MEASURE,
   MOVE_DIMENSION,
   ZOOM,
   LOADING_CONFIG
 } from "../constants";
+import { utils } from "zebulon-controls";
 export const loadingConfig = loading => ({
   type: LOADING_CONFIG,
   loading
 });
 export const setDimensions = (configObject, functions) => ({
   type: SET_DIMENSIONS,
-  dimensions: configObject.dimensions.map(dimension =>
-    dimensionFactory(dimension, functions, configObject.object || "dataset")
-  )
+  dimensions: utils
+    .objectToArray(configObject.dimensions)
+    .map(dimension =>
+      dimensionFactory(dimension, functions, configObject.object || "dataset")
+    )
 });
 
 export const setMeasures = (configObject, functions) => ({
   type: SET_MEASURES,
-  measures: configObject.measures.map(measure =>
-    measureFactory(measure, functions, configObject.object || "dataset")
-  )
+  measures: utils
+    .objectToArray(configObject.measures)
+    .map(measure =>
+      measureFactory(measure, functions, configObject.object || "dataset")
+    )
 });
 export const setProperty = (property, value) => ({
   type: SET_CONFIG_PROPERTY,
@@ -45,6 +51,9 @@ export const setConfigurationProperty = (
 export const toggleMeasure = measureId => ({
   type: TOGGLE_MEASURE,
   id: measureId
+});
+export const toggleMeasuresAxis = () => ({
+  type: TOGGLE_MEASURES_AXIS
 });
 export const moveMeasure = (measureId, position) => ({
   type: MOVE_MEASURE,

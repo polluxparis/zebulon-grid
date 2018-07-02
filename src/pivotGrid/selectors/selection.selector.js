@@ -76,7 +76,7 @@ export const getElementsSelector = createSelector(
     activatedMeasuresSelector,
     getCellValueSelector,
     getCellDimensionInfosSelector,
-    state => state.configuration.measureHeadersAxis
+    state => state.axis.measuresAxis
   ],
   (
     rowLeaves,
@@ -86,7 +86,7 @@ export const getElementsSelector = createSelector(
     measures,
     getCellValue,
     getCellDimensionInfos,
-    measureHeadersAxis
+    measuresAxis
   ) => range =>
     getSelectedElements({
       range,
@@ -97,7 +97,7 @@ export const getElementsSelector = createSelector(
       measures,
       getCellValue,
       getCellDimensionInfos,
-      measureHeadersAxis
+      measuresAxis
     })
 );
 

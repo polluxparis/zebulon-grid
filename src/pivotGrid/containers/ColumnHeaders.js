@@ -13,6 +13,7 @@ import {
   moveDimension,
   moveMeasure,
   toggleMeasure,
+  toggleMeasuresAxis,
   setConfigurationProperty
 } from "../actions";
 import Headers from "../components/Headers/Headers";
@@ -44,13 +45,7 @@ const mapDispatchToProps = dispatch => ({
     );
   },
   toggleMeasure: measureId => dispatch(toggleMeasure(measureId)),
-  toggleMeasuresAxis: axis =>
-    dispatch(
-      setConfigurationProperty(
-        { measureHeadersAxis: axis },
-        "measureHeadersAxis"
-      )
-    ),
+  toggleMeasuresAxis: axis => dispatch(toggleMeasuresAxis()),
   selectAxis: getSelectedColumnRange => header => {
     const selectedRange = getSelectedColumnRange(header);
     dispatch(selectRange(selectedRange));

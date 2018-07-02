@@ -43,32 +43,32 @@ export const customConfigurationFunctions = (
       }
     }
   };
-  const configuration = {
-    ...prevConfiguration,
-    measures: [
-      ...prevConfiguration.measures,
-      {
-        id: "price",
-        caption: "Price",
-        aggregation: "weighted_avg",
-        valueAccessor: "price",
-        format: "price"
-      }
-    ],
-    dimensions: [
-      prevConfiguration.dimensions[0],
-      {
-        id: "titi",
-        caption: "Titi",
-        keyAccessor: "titi",
-        labelAccessor: "titi_lb",
-        sort: { keyAccessor: "titi", custom: "dummySort" },
-        format: "titiFormat"
-      },
-      ...prevConfiguration.dimensions.slice(2, 5)
-    ],
-    activeMeasures: [...prevConfiguration.activeMeasures, "price"]
+  const measures = Object.values({
+    ...prevConfiguration.measures,
+    price: {
+      id: "price",
+      caption: "Price",
+      aggregation: "weighted_avg",
+      valueAccessor: "price",
+      format: "price"
+    }
+  });
+  const dimensions = Object.values({
+    ...prevConfiguration.dimensions,
+    titi: {
+      id: "titi",
+      caption: "Titi",
+      keyAccessor: "titi",
+      labelAccessor: "titi_lb",
+      sort: { keyAccessor: "titi", orderFunctionAccessor: "dummySort" },
+      format: "titiFormat"
+    }
+  });
+  const axis = {
+    ...prevConfiguration.axis,
+    measures: [...prevConfiguration.measures, "price"]
   };
+  const configuration = { dimensions, measures, axis };
   const actionContent = (
     <div>
       <div>Add a new measure (Price) with new : </div>
@@ -145,7 +145,7 @@ const rangeDisplay = range => {
   const divFrom = cellDisplay(cellFrom);
   const divTo = cellDisplay(cellTo);
   let values = {};
-  if (range.measureHeadersAxis === "columns") {
+  if (range.measuresAxis === "columns") {
     values = range.columns.reduce((values, measure, indexColumn) => {
       if (values[measure.leaf.caption] === undefined) {
         values[measure.leaf.caption] = 0;

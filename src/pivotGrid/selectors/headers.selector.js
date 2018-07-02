@@ -64,7 +64,7 @@ const parentsSizes = (
   const first = cellsKey[header.key] === undefined;
   if (first) {
     const dimension = dimensions[header.depth];
-    header.format = dimension.format;
+    header.formatFunction = dimension.formatFunction;
     header.sizes = {
       main: { ...main },
       cross: { ...crossPositions[dimension.id] }
@@ -208,7 +208,7 @@ const buildPositionedHeaders = (
   while (size <= maxSize && index < leaves.length && index >= 0) {
     const header = leaves[index];
     const dimension = dimensions[header.depth];
-    header.format = dimension.format || (({ value }) => value);
+    header.formatFunction = dimension.formatFunction || (({ value }) => value);
     header.index = index;
     if (header.isVisible) {
       const rowCells = [];

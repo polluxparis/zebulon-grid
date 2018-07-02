@@ -24,10 +24,10 @@ export const getAxisActivatedMeasuresSelector = axisType =>
     [
       state => state.measures,
       state => state.axis.measures,
-      state => state.configuration.measureHeadersAxis
+      state => state.axis.measuresAxis
     ],
-    (measures, axisMeasures, measureHeadersAxis) => {
-      if (toAxisType(measureHeadersAxis) === axisType) {
+    (measures, axisMeasures, measuresAxis) => {
+      if (toAxisType(measuresAxis) === axisType) {
         return axisMeasures.map(measure => measures[measure]);
       }
       return null;
@@ -38,8 +38,8 @@ export const getAxisActivatedMeasuresSelector = axisType =>
 // Axis trees
 //////////////////////////////////////////////////////////////////
 export const sortFunction = dimension => {
-  if (dimension.sort.custom) {
-    return (a, b) => dimension.sort.custom(a.sortKey, b.sortKey);
+  if (dimension.sort.orderFunction) {
+    return (a, b) => dimension.sort.orderFunction(a.sortKey, b.sortKey);
   } else {
     return (a, b) => (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);
   }
@@ -89,14 +89,14 @@ export function buildAxisTrees(rowRoot, columnRoot, data, dimensions, offset) {
     let rowNode = rowRoot;
     dimensions.forEach(dimension => {
       if (dimension.id !== MEASURE_ID) {
-        const id = dimension.keyAccessor({ row });
+        const id = dimension.keyAccessorFunction({ row });
         let dimensionValue = dimension.values[id];
         if (!dimensionValue) {
           dimensionValue = {
             id,
             dimensionId: dimension.id,
-            caption: dimension.labelAccessor({ row }),
-            sortKey: dimension.sort.keyAccessor({ row }),
+            caption: dimension.labelAccessorFunction({ row }),
+            sortKey: dimension.sort.keyAccessorFunction({ row }),
             rowIndexes: [index + offset],
             filtered: false
           };

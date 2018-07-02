@@ -18,10 +18,10 @@ export const getFilteredIndex = leaf => {
 };
 const cellValue = (
   data,
-  valueAccessor,
+  valueAccessorFunction,
   rowDataIndexes,
   columnDataIndexes,
-  aggregation = () => null,
+  aggregationFunction = () => null,
   measureId
 ) => {
   const intersection = utils.intersection([rowDataIndexes, columnDataIndexes]);
@@ -38,7 +38,7 @@ const cellValue = (
     nullLastNewValue = false;
 
   const values = intersectionArray
-    // .map(index => (data[index].isFiltered ? null : valueAccessor(data[index])))
+    // .map(index => (data[index].isFiltered ? null : valueAccessorFunction(data[index])))
     .map(index => {
       row = data[index];
       let comment = row._comment;
@@ -60,7 +60,7 @@ const cellValue = (
           comments.push(comment);
         }
       }
-      return valueAccessor({ row: data[index] });
+      return valueAccessorFunction({ row: data[index] });
     })
     .filter(value => !utils.isNullOrUndefined(value));
   // If we assume that all our measures are numerical we can be more strict
@@ -70,7 +70,7 @@ const cellValue = (
   //  const intersectionWithNumericalValue = intersectionArray.filter(
   //   i => Number.isFinite(accessor(data[i]))
   // );
-  let value = aggregation(values, data);
+  let value = aggregationFunction(values, data);
   if (value === 0 && nullLastNewValue) {
     value = null;
   }
@@ -80,18 +80,18 @@ const cellValue = (
 export const getCellValueSelector = createSelector(
   [state => state.data.data],
   data => (
-    valueAccessor,
+    valueAccessorFunction,
     rowDataIndexes,
     columnDataIndexes,
-    aggregation = () => null,
+    aggregationFunction = () => null,
     measureId
   ) => {
     return cellValue(
       data,
-      valueAccessor,
+      valueAccessorFunction,
       rowDataIndexes,
       columnDataIndexes,
-      aggregation,
+      aggregationFunction,
       measureId
     );
   }
@@ -202,10 +202,10 @@ export const getCellInfosSelector = createSelector(
     }
     const value = cellValue(
       data,
-      measure.valueAccessor,
+      measure.valueAccessorFunction,
       rowLeaf.dataIndexes,
       columnLeaf.dataIndexes,
-      measure.aggregation
+      measure.aggregationFunction
     );
     let dimensions = [];
     dimensions = cellDimensionInfos(data, rows, "rows", rowLeaf, measures);
@@ -226,7 +226,7 @@ export const getRangeInfosSelector = createSelector(
     activatedMeasuresSelector,
     rowVisibleDimensionsSelector,
     columnVisibleDimensionsSelector,
-    state => state.configuration.measureHeadersAxis
+    state => state.axis.measuresAxis
   ],
   (
     data,
@@ -235,7 +235,7 @@ export const getRangeInfosSelector = createSelector(
     measures,
     rowDimensions,
     columnDimensions,
-    measureHeadersAxis
+    measuresAxis
   ) => rg => {
     if (
       utils.isNullOrUndefined(rg) ||
@@ -303,15 +303,15 @@ export const getRangeInfosSelector = createSelector(
             : measures[column.leaf.id];
         const value = cellValue(
           data,
-          measure.valueAccessor,
+          measure.valueAccessorFunction,
           row.leaf.dataIndexes,
           column.leaf.dataIndexes,
-          measure.aggregation
+          measure.aggregationFunction
         );
         values[index].push(value);
       });
     });
-    return { values, columns, rows, range, measureHeadersAxis };
+    return { values, columns, rows, range, measuresAxis };
   }
 );
 const buildData = (dimensions, measures, leaf, value, data) => {
@@ -332,9 +332,9 @@ export const buildDataSelector = createSelector(
   [
     state => state.dimensions,
     state => state.measures,
-    state => state.configuration.measureHeadersAxis
+    state => state.axis.measuresAxis
   ],
-  (dimensions, measures, measureHeadersAxis) => (
+  (dimensions, measures, measuresAxis) => (
     rowLeaf,
     columnLeaf,
     oldValue,
@@ -346,8 +346,7 @@ export const buildDataSelector = createSelector(
 
     buildData(dimensions, measures, rowLeaf, value, data);
     buildData(dimensions, measures, columnLeaf, value, data);
-    data._editedMeasure =
-      measureHeadersAxis === "rows" ? rowLeaf.id : columnLeaf.id;
+    data._editedMeasure = measuresAxis === "rows" ? rowLeaf.id : columnLeaf.id;
     if (newValue !== oldValue) {
       data._oldValue = oldValue;
       data._newValue = newValue;

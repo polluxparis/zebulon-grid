@@ -50,7 +50,7 @@ const buildData = (n0, n1, n2) => {
   return data;
 };
 const buildConfiguration = () => ({
-  measureHeadersAxis: "columns",
+  measureHeaders: "columns",
   width: 1000,
   height: 800,
   cellHeight: 30,
@@ -90,9 +90,12 @@ const buildConfiguration = () => ({
       aggregation: "sum"
     }
   ],
-  columns: ["tutu"],
-  rows: ["toto", "titi"],
-  activeMeasures: ["qty", "amt"]
+  axis:{
+      columns: ["tutu"],
+      rows: ["toto", "titi"],
+      measures: ["qty", "amt"],
+      measureHeaders: "columns"
+    }
 });
 class MyPivotGrid extends Component {
   constructor(props) {
@@ -259,10 +262,11 @@ Measures have:
 Displayed dimensions and measures are assigned (ordered) either in row or in column. All measures must be on the same axis.
 ```js
 {
+  axis:{
   columns: ["titi"],
   rows: ["toto"],
-  activeMeasures: ["qty", "amt"],
-  measureHeadersAxis: "columns"
+  measures: ["qty", "amt"],
+  measureHeaders: "columns"}
 }
 ```
 ### Features

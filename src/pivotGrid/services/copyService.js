@@ -41,10 +41,10 @@ export const getElementsToPaste = ({
               measure = measures[columnLeaf.id];
             }
             const oldValue = getCellValue(
-                measure.valueAccessor,
+                measure.valueAccessorFunction,
                 rowLeaf.dataIndexes,
                 columnLeaf.dataIndexes,
-                measure.aggregation
+                measure.aggregationFunction
               ).value,
               newValue =
                 cells[iRow][iColumn] === ""
@@ -81,12 +81,12 @@ export const getSelectedElements = ({
   rowDimensions,
   columnDimensions,
   measures,
-  measureHeadersAxis,
+  measuresAxis,
   getCellValue,
   getCellDimensionInfos
 }) => {
-  // const mc = measureHeadersAxis === "columns";
-  // const mr = measureHeadersAxis === "rows";
+  // const mc = measuresAxis === "columns";
+  // const mr = measuresAxis === "rows";
   // Build headers array
   let selectedRowLeaves = rowLeaves.leaves,
     selectedColumnLeaves = columnLeaves.leaves;
@@ -123,18 +123,18 @@ export const getSelectedElements = ({
   // Build data array
   let measure;
   const cells = selectedRowLeaves.map((rowLeaf, index) => {
-    if (measureHeadersAxis === "rows") {
+    if (measuresAxis === "rows") {
       measure = measures[rowLeaf.id];
     }
     return selectedColumnLeaves.map(columnLeaf => {
-      if (measureHeadersAxis === "columns") {
+      if (measuresAxis === "columns") {
         measure = measures[columnLeaf.id];
       }
       return getCellValue(
-        measure.valueAccessor,
+        measure.valueAccessorFunction,
         rowLeaf.dataIndexes,
         columnLeaf.dataIndexes,
-        measure.aggregation
+        measure.aggregationFunction
       );
     });
   });
@@ -144,7 +144,7 @@ export const getSelectedElements = ({
     cells,
     rowDimensions,
     columnDimensions,
-    measureHeadersAxis
+    measuresAxis
   };
 };
 export const getSelectedText = (elements, type) => {
@@ -155,10 +155,10 @@ export const getSelectedText = (elements, type) => {
     cells,
     rowDimensions,
     columnDimensions,
-    measureHeadersAxis
+    measuresAxis
   } = elements;
-  const mc = measureHeadersAxis === "columns";
-  const mr = measureHeadersAxis === "rows";
+  const mc = measuresAxis === "columns";
+  const mr = measuresAxis === "rows";
   const output = [];
   let caption, outputHeaders;
   // // First rows with only the dimensions (top left area) + columns headers

@@ -477,7 +477,10 @@ export class DataCells extends ScrollableGrid {
     }
     // empty measure
     if (isUndefined(measure)) {
-      measure = { format: ({ value }) => value, valueAccessor: () => null };
+      measure = {
+        formatFunction: ({ value }) => value,
+        valueAccessorFunction: () => null
+      };
     }
     let selected = false;
     if (selectedRange.start && selectedRange.end) {
@@ -500,10 +503,10 @@ export class DataCells extends ScrollableGrid {
     const cell = this.cellCache[key] || {};
     if (cell.value === undefined || isPushing) {
       const value = getCellValue(
-        measure.valueAccessor,
+        measure.valueAccessorFunction,
         rowHeader.dataIndexes,
         columnHeader.dataIndexes,
-        measure.aggregation,
+        measure.aggregationFunction,
         measure.id
       );
       valueHasChanged =
@@ -516,7 +519,7 @@ export class DataCells extends ScrollableGrid {
       cell.value = value.value;
       cell.edited = value.edited;
       cell.comments = value.comments;
-      cell.caption = measure.format({ value: cell.value });
+      cell.caption = measure.formatFunction({ value: cell.value });
       this.cellCache[key] = cell;
     }
     if (focused && this.focusChanged) {

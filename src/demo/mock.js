@@ -157,7 +157,6 @@ export const getPromiseMockDatasource = (
   return p;
 };
 export const basicConfig = callbacks => ({
-  measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -215,25 +214,19 @@ export const basicConfig = callbacks => ({
       aggregation: "sum",
       format: "amount"
     }
-    // ,
-    // {
-    //   id: "price",
-    //   caption: "Price",
-    //   aggregation: "weighted_avg",
-    //   valueAccessor: "row.price",
-    //   format: "price"
-    // }
   ],
-  columns: ["titi"],
-  rows: ["toto", "toto att 0", "toto att 1", "tutu"],
-  activeMeasures: ["qty", "amt"],
+  axis: {
+    columns: ["titi"],
+    rows: ["toto", "toto att 0", "toto att 1", "tutu"],
+    measures: ["qty", "amt"],
+    measureHeaders: "column"
+  },
   collapses: { rows: { 99: true, 98: true }, columns: {} },
   subtotals: { toto: true, rows__total__: true },
   callbacks
   // features: {}
 });
 export const basicConfig2 = callbacks => ({
-  measureHeadersAxis: "columns",
   width: 1099,
   height: 601,
   cellHeight: 30,
@@ -297,9 +290,12 @@ export const basicConfig2 = callbacks => ({
       format: "price"
     }
   ],
-  columns: ["titi"],
-  rows: ["toto2", "toto att 0", "toto att 1", "tutu"],
-  activeMeasures: ["qty", "amt", "price"],
+  axis: {
+    columns: ["titi"],
+    rows: ["toto2", "toto att 0", "toto att 1", "tutu"],
+    measures: ["qty", "amt", "price"],
+    measureHeaders: "columns"
+  },
   callbacks
 });
 export const getMenu = (id, data) => ({

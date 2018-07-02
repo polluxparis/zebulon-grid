@@ -220,26 +220,24 @@ class ZebulonGrid extends Component {
       .map(d => d.id)
       .filter(
         d =>
-          !(configuration.rows.includes(d) || configuration.columns.includes(d))
+          !(
+            configuration.axis.rows.includes(d) ||
+            configuration.axis.columns.includes(d)
+          )
       );
     configuration.dimensions = data.filter(
       row => !(updatedRows[row.index_] || {}).deleted_
     );
     // let dimensions allready set as they where
     const dimensions = configuration.dimensions.map(d => d.id);
-    configuration.columns = configuration.columns.filter(d =>
+    configuration.axis.columns = configuration.axis.columns.filter(d =>
       dimensions.includes(d)
     );
-    configuration.rows = dimensions.filter(
-      d => !(configuration.columns.includes(d) || notSet.includes(d))
+    configuration.axis.rows = dimensions.filter(
+      d => !(configuration.axis.columns.includes(d) || notSet.includes(d))
     );
     // apply config
-    applyConfigurationToStore(
-      this.store,
-      configuration,
-      functions,
-      this.props.data
-    );
+    applyConfigurationToStore(this.store, configuration, functions);
     this.initTabDimensions(configuration.dimensions);
     return true;
   };
@@ -247,33 +245,24 @@ class ZebulonGrid extends Component {
     const { configuration, functions } = this.props;
     const notSet = configuration.measures
       .map(m => m.id)
-      .filter(m => !configuration.activeMeasures.includes(m));
+      .filter(m => !configuration.axis.measures.includes(m));
     configuration.measures = data.filter(
       row => !(updatedRows[row.index_] || {}).deleted_
     );
     // let measures allready set as they where
-    configuration.activeMeasures = configuration.measures
+    configuration.axis.measures = configuration.measures
       .map(m => m.id)
       .filter(m => !notSet.includes(m));
     //apply config
-    applyConfigurationToStore(
-      this.store,
-      configuration,
-      functions,
-      this.props.data
-    );
+    applyConfigurationToStore(this.store, configuration, functions);
     this.initTabMeasures(configuration.measures);
     return true;
   };
   applyFunctions = ({ updatedRows }) => {
     const { configuration, functions } = this.props;
     this.display.applyFunctions({ updatedRows });
-    applyConfigurationToStore(
-      this.store,
-      configuration,
-      functions,
-      this.props.data
-    );
+    applyConfigurationToStore(this.store, configuration, functions);
+    return true;
   };
   render() {
     // pivot grid

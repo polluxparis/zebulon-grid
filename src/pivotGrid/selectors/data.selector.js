@@ -44,8 +44,9 @@ export const dataFilteredIndexes = (
     if (
       filters.every(
         filter =>
-          filter.values[dimensions[filter.dimensionId].keyAccessor({ row })] !==
-          undefined
+          filter.values[
+            dimensions[filter.dimensionId].keyAccessorFunction({ row })
+          ] !== undefined
       )
     ) {
       // console.log("new index", index);
@@ -78,12 +79,12 @@ export const getDimensionValuesSelector = createSelector(
     // Otherwise you lose the filtered values the next time you open a Filter Panel
     for (let i = 0; i < data.length; i += 1) {
       const row = data[i];
-      const key = dimension.keyAccessor({ row });
+      const key = dimension.keyAccessorFunction({ row });
       if (utils.isUndefined(values[key])) {
         const label = dimension.format({
-          value: dimension.labelAccessor({ row })
+          value: dimension.labelAccessorFunction({ row })
         });
-        const sortKey = dimension.sort.keyAccessor({ row });
+        const sortKey = dimension.sort.keyAccessorFunction({ row });
         values[key] = {
           id: key,
           label: label,
@@ -93,8 +94,9 @@ export const getDimensionValuesSelector = createSelector(
     }
     values = Object.keys(values).map(key => values[key]);
     let sortFunction;
-    if (dimension.sort.custom) {
-      sortFunction = (a, b) => dimension.sort.custom(a.sortKey, b.sortKey);
+    if (dimension.sort.orderFunction) {
+      sortFunction = (a, b) =>
+        dimension.sort.orderFunction(a.sortKey, b.sortKey);
     } else {
       sortFunction = (a, b) =>
         (a.sortKey > b.sortKey) - (b.sortKey > a.sortKey);

@@ -14,7 +14,8 @@ import {
   setConfigurationProperty,
   moveDimension,
   moveMeasure,
-  toggleMeasure
+  toggleMeasure,
+  toggleMeasuresAxis
 } from "../actions";
 
 const mapStateToProps = () => (state, ownProps) => {
@@ -44,13 +45,8 @@ const mapDispatchToProps = dispatch => ({
   moveDimension: (dimensionId, oldAxis, newAxis, position) => {
     dispatch(moveDimension(dimensionId, oldAxis, newAxis, position));
   },
-  toggleMeasuresAxis: axis =>
-    dispatch(
-      setConfigurationProperty(
-        { measureHeadersAxis: axis },
-        "measureHeadersAxis"
-      )
-    ),
+  toggleMeasuresAxis: axis => dispatch(toggleMeasuresAxis()),
+
   moveMeasure: measures => (measureId, measureToId) => {
     dispatch(
       moveMeasure(measureId, Object.keys(measures).indexOf(measureToId))

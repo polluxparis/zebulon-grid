@@ -112,7 +112,7 @@ class ZebulonGridDemo extends Component {
     if (!this.state.customConfigurationFunctions) {
       const custom = customConfigurationFunctions(
         configurationFunctions,
-        this.state.configuration
+        this.zebulon.getStore()
       );
       this.setState({
         functions: functions.functions([
@@ -198,9 +198,6 @@ class ZebulonGridDemo extends Component {
     if (!this.state.display && this.zebulon) {
       const configuration = this.state.configuration;
       const axis = this.zebulon.getStore().axis;
-      configuration.rows = axis.rows;
-      configuration.columns = axis.columns;
-      configuration.activeMeasures = axis.measures;
     }
     this.setState({ display: !this.state.display });
   };

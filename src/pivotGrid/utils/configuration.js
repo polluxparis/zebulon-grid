@@ -8,8 +8,7 @@ import {
   setMeasures,
   setConfigurationProperty,
   setProperty,
-  moveDimension,
-  moveMeasure,
+  setAxis,
   setCollapses,
   setSizes,
   addFilter,
@@ -39,15 +38,17 @@ export const defaultSizes = {
   cellWidth: 100,
   zoom: 1
 };
-export const setData = (store, data, meta) => {
-  const axisTrees = getAxisTreesSelector(store.getState());
-  if (axisTrees.rows) {
-    resetLeaves(axisTrees.rows);
+export const setData = (store, data, meta, loadingConfig) => {
+  if (!loadingConfig) {
+    const axisTrees = getAxisTreesSelector(store.getState());
+    if (axisTrees.rows) {
+      resetLeaves(axisTrees.rows);
+    }
+    if (axisTrees.columns) {
+      resetLeaves(axisTrees.columns);
+    }
+    resetDimensions(store.getState().dimensions);
   }
-  if (axisTrees.columns) {
-    resetLeaves(axisTrees.columns);
-  }
-  resetDimensions(store.getState().dimensions);
   store.dispatch(fetchData());
   if (Array.isArray(data)) {
     if (data.length === 0) {
@@ -85,81 +86,44 @@ export const setData = (store, data, meta) => {
 };
 export const pushData = (store, data) => store.dispatch(applyPushedData(data));
 export const applySizesToStore = (store, sizes) => {
-  const prevSizes = store.getState().configuration;
-  const newSizes = { ...prevSizes, ...sizes };
-  store.dispatch(setConfigurationProperty(newSizes, "height", 800));
-  store.dispatch(setConfigurationProperty(newSizes, "width", 1000));
-  store.dispatch(setConfigurationProperty(newSizes, "zoom", 1));
-  store.dispatch(setConfigurationProperty(newSizes, "cellHeight", 25));
-  store.dispatch(setConfigurationProperty(newSizes, "cellWidth", 100));
+  Object.keys(sizes).forEach(key =>
+    store.dispatch(setProperty(key, sizes[key]))
+  );
 };
 export const applyConfigurationToStore = (
   store,
-  configuration,
+  newConfiguration,
   functions,
   data
 ) => {
   store.dispatch(loadingConfig(true));
+  // data
   if (!utils.isNullOrUndefined(data)) {
-    setData(store, data);
+    setData(store, data, undefined, true);
   }
-  const object = configuration.object || "dataset";
+  const configuration = { ...store.getState(), ...newConfiguration };
   //  global configuration
-  store.dispatch(setProperty("object", object));
-  const measureHeadersAxis =
-    (configuration.configuration || {}).measureHeadersAxis ||
-    configuration.measureHeadersAxis ||
-    "columns";
-  store.dispatch(setProperty("measureHeadersAxis", measureHeadersAxis));
-  const totalsFirst =
-    (configuration.configuration || {}).totalsFirst ||
-    configuration.totalsFirst ||
-    false;
-  store.dispatch(setProperty("totalsFirst", totalsFirst));
-  store.dispatch(setProperty("edition", configuration.edition || {}));
-  store.dispatch(
-    setConfigurationProperty(configuration, "features", {
-      dimensions: "enabled",
-      measures: "enabled",
-      resize: "enabled",
-      expandCollapse: "enabled",
-      totals: "enabled",
-      filters: "enabled",
-      sorting: "enabled",
-      configuration: "enabled"
-    })
+  Object.keys(configuration.configuration).forEach(key =>
+    store.dispatch(setProperty(key, configuration.configuration[key]))
   );
-  let activeMeasures = configuration.activeMeasures,
-    columns = configuration.columns,
-    rows = configuration.rows;
-  if (configuration.axis) {
-    activeMeasures = configuration.axis.measures || activeMeasures;
-    columns = configuration.axis.columns || columns;
-    rows = configuration.axis.rows || rows;
-  }
-  store.dispatch(setDimensions(configuration, functions, object));
-  store.dispatch(setMeasures(configuration, functions, object));
-  const dimensionIdsPositioned = [];
-  rows.forEach((dimensionId, index) => {
-    store.dispatch(moveDimension(dimensionId, "dimensions", "rows", index));
-    dimensionIdsPositioned.push(dimensionId);
-  });
-  columns.forEach((dimensionId, index) => {
-    store.dispatch(moveDimension(dimensionId, "dimensions", "columns", index));
-    dimensionIdsPositioned.push(dimensionId);
-  });
-  configuration.dimensions
-    .filter(dimension => !dimensionIdsPositioned.includes(dimension.id))
-    .forEach((dimension, index) => {
-      store.dispatch(
-        moveDimension(dimension.id, "dimensions", "dimensions", index)
-      );
-    });
-  if (activeMeasures) {
-    activeMeasures.forEach(measureId => {
-      store.dispatch(moveMeasure(measureId));
-    });
-  }
+  const axis = configuration.axis || {
+    rows: configuration.dimensions.map(d => d.id),
+    columns: [],
+    measures: configuration.measure.map(m => m.id),
+    measuresAxis: "columns"
+  };
+  store.dispatch(setDimensions(configuration, functions, configuration.object));
+  store.dispatch(setMeasures(configuration, functions, configuration.object));
+  const positionedDimensions = axis.rows
+    .concat(axis.columns)
+    .reduce((acc, dimensionId) => {
+      acc[dimensionId] = true;
+      return acc;
+    }, {});
+  axis.dimensions = configuration.dimensions
+    .filter(dimension => !positionedDimensions[dimension.id])
+    .map(dimension => dimension.id);
+  store.dispatch(setAxis(axis));
   if (configuration.collapses) {
     store.dispatch(
       setCollapses({
@@ -184,14 +148,6 @@ export const applyConfigurationToStore = (
       store.dispatch(toggleSubTotal(dimensionId))
     );
   }
-  if (configuration.configuration) {
-    if (configuration.configuration.zoom) {
-      store.dispatch(
-        setConfigurationProperty(configuration.configuration, "zoom", 1)
-      );
-    }
-  }
-  store.dispatch(setProperty("callbacks", configuration.callbacks || {}));
   store.dispatch(loadingConfig(false));
 };
 export function dimensionFactory(dimensionConfiguration, functions, object) {
@@ -200,48 +156,85 @@ export function dimensionFactory(dimensionConfiguration, functions, object) {
     caption,
     keyAccessor,
     labelAccessor,
+    localLabelAccessor,
     sort,
     format,
+    localFormat,
     subTotal,
     attributeParents,
     isLocal
   } = dimensionConfiguration;
-  const _sort = sort || {};
+  const sort_ = sort || {};
+
   const keyAccessor_ = keyAccessor || `row.${id}`,
-    labelAccessor_ = labelAccessor || keyAccessor,
-    keyAccessors_ = _sort.keyAccessor || labelAccessor || keyAccessor;
-  const kAccessor = functions.getAccessorFunction(
+    labelAccessor_ = labelAccessor || keyAccessor;
+  let orderFunction,
+    keyAccessorFunction,
+    sortKeyAccessor_ =
+      sort_.keyAccessor || localLabelAccessor || labelAccessor_;
+  // if the key is multiple
+  if (Array.isArray(keyAccessor_)) {
+    const keys = keyAccessor_.map(key => key.replace("row.", ""));
+    keyAccessorFunction = ({ row }) =>
+      keys.reduce((acc, key) => `${acc}||${row[key]}`, "");
+  } else {
+    keyAccessorFunction = functions.getAccessorFunction(
       object,
       "accessors",
-      keyAccessor
-    ),
-    lAccessor = functions.getAccessorFunction(
-      object,
-      "accessors",
-      labelAccessor_
-    ),
-    sAccessor = functions.getAccessorFunction(
-      object,
-      "accessors",
-      keyAccessors_
+      keyAccessor_
     );
+  }
+  if (
+    Array.isArray(sort_.localKeyAccessor || sortKeyAccessor_) &&
+    !(sort_.localOrderFunctionAccessor || sort_.orderFunctionAccessor)
+  ) {
+    const keys = (sort_.localKeyAccessor || sortKeyAccessor_)
+      .map(key => key.replace("row.", ""));
+    orderFunction = (a, b) => {
+      return keys.reduce((acc, key) => {
+        return acc !== 0 ? acc : (a[key] > b[key]) - (b[key] > a[key]);
+      }, 0);
+    };
+  } else if (sort_.localOrderFunctionAccessor || sort_.orderFunctionAccessor) {
+    orderFunction = functions.getAccessorFunction(
+      object,
+      "sorts",
+      sort_.localOrderFunctionAccessor || sort_.orderFunctionAccessor
+    );
+  }
 
   const dimSort = {
-    direction: _sort.direction || "asc",
-    custom: functions.getAccessorFunction(object, "sorts", _sort.custom),
-    custom_: _sort.custom,
-    keyAccessor: sAccessor,
-    keyAccessor_: keyAccessors_
+    direction: sort_.direction || "asc",
+    orderFunction,
+    keyAccessorFunction: functions.getAccessorFunction(
+      object,
+      "accessors",
+      sort_.localKeyAccessor || sortKeyAccessor_
+    ),
+    keyAccessor: sortKeyAccessor_,
+    localKeyAccessor: sort_.localKeyAccessor,
+    orderFunctionAccessor: sort_.orderFunctionAccessor,
+    localOrderFunctionAccessor: sort_.localOrderFunctionAccessor
   };
   return {
     id,
     caption: id === MEASURE_ID ? "Measures" : caption || id,
-    keyAccessor: kAccessor,
-    keyAccessor_,
-    labelAccessor: lAccessor,
-    labelAccessor_,
-    format: functions.getAccessorFunction(object, "formats", format),
-    format_: format,
+    keyAccessorFunction,
+    keyAccessor: keyAccessor_,
+    labelAccessorFunction: functions.getAccessorFunction(
+      object,
+      "accessors",
+      localLabelAccessor || labelAccessor_
+    ),
+    labelAccessor: labelAccessor_,
+    localLabelAccessor,
+    formatFunction: functions.getAccessorFunction(
+      object,
+      "formats",
+      localFormat || format
+    ),
+    format,
+    localFormat,
     sort: dimSort,
     subTotal,
     attributeParents: attributeParents || [],
@@ -255,6 +248,7 @@ export function measureFactory(measureConfiguration, functions, object) {
     caption,
     valueAccessor,
     format,
+    localFormat,
     aggregation,
     aggregationCaption,
     isLocal
@@ -262,20 +256,25 @@ export function measureFactory(measureConfiguration, functions, object) {
   return {
     id,
     caption: caption || id,
-    valueAccessor: functions.getAccessorFunction(
+    valueAccessorFunction: functions.getAccessorFunction(
       object,
       "accessors",
       valueAccessor
     ),
-    valueAccessor_: valueAccessor,
-    format: functions.getAccessorFunction(object, "formats", format || id),
-    format_: format || id,
-    aggregation: functions.getAccessorFunction(
+    valueAccessor,
+    formatFunction: functions.getAccessorFunction(
+      object,
+      "formats",
+      localFormat || format || id
+    ),
+    format: format || id,
+    localFormat,
+    aggregationFunction: functions.getAccessorFunction(
       object,
       "aggregations",
       aggregation
     ),
-    aggregation_: aggregation,
+    aggregation,
     aggregationCaption,
     isLocal
   };

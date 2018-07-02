@@ -86,7 +86,7 @@ export const rowVisibleDimensionsSelector = createSelector(
     rowDimensionsSelector,
     state => state.collapses.dimensions,
     state => state.subtotals,
-    state => state.configuration.measureHeadersAxis === "rows"
+    state => state.axis.measuresAxis === "rows"
   ],
   (dimensions, collapses, subTotals, hasMeasures) =>
     getVisibleDimensions(
@@ -103,7 +103,7 @@ export const columnVisibleDimensionsSelector = createSelector(
     columnDimensionsSelector,
     state => state.collapses.dimensions,
     state => state.subtotals,
-    state => state.configuration.measureHeadersAxis === "columns"
+    state => state.axis.measuresAxis === "columns"
   ],
   (dimensions, collapses, subTotals, hasMeasures) =>
     getVisibleDimensions(

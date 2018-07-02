@@ -10,6 +10,7 @@ const newAxis = (e, type, axis, caller) => {
 			keyAccessor: e[axis].accessor || "row." + e[axis].id,
 			format: e[axis].format,
 			index_: table.getDataLength(),
+			sort: {},
 			isLocal: true
 		};
 	} else if (type === "measures") {
