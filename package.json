@@ -21,7 +21,7 @@
     "react-dnd-html5-backend": "^2.6.0",
     "react-redux": "^5.0.7",
     "reselect": "^3.0.1",
-    "zebulon-controls": "file:../controls/zebulon-controls-1.2.8.tgz",
+    "zebulon-controls": "file:../controls/zebulon-controls-1.2.9.tgz",
     "zebulon-table": "file:../table/zebulon-table-1.1.11.tgz"
   },
   "scripts": {
@@ -41,10 +41,11 @@
     ]
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "cross-env": "^5.1.5",
     "gh-pages": "^1.2.0",
     "postcss-cli": "^5.0.1",
     "react-resizable": "^1.7.5",
-    "react-scripts": "^1.1.4"
+    "react-scripts": "^1.1.5"
   }
 }
