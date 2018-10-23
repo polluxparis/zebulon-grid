@@ -1,6 +1,6 @@
 {
   "name": "zebulon-grid",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "homepage": "http://polluxparis.github.io/zebulon-grid",
   "license": "MIT",
   "description": "Pivot grid written in React",
