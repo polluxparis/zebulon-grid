@@ -99,7 +99,7 @@ class PivotGrid extends Component {
     }
   }
   componentDidMount() {
-    this.props.getRef(this);
+    this.props.getComponent(this);
   }
 
   componentWillReceiveProps(nextProps) {

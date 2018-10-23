@@ -10,6 +10,7 @@ import { utils, accessors } from "zebulon-controls";
 import reducer from "./reducers";
 import * as aggregations from "./utils/aggregation";
 import { configurationMenus } from "./utils/configurationMenus";
+import { EventHandler } from "zebulon-controls";
 import "./index.css";
 import {
   defaultMenuFunctions,
@@ -108,9 +109,10 @@ class ZebulonGrid extends Component {
     }
     if (this.props.display !== display) {
       this.setState({ display });
-    } else if (this.props.keyEvent !== keyEvent) {
-      this.handleKeyEvent(keyEvent);
     }
+    // else if (this.props.keyEvent !== keyEvent) {
+    //   this.handleKeyEvent(keyEvent);
+    // }
   }
   componentWillMount() {
     const {
@@ -134,26 +136,29 @@ class ZebulonGrid extends Component {
     );
   }
   componentDidMount() {
-    if (!this.props.keyEvent === undefined) {
-      document.addEventListener("copy", this.handleCopy);
-      document.addEventListener("paste", this.handlePaste);
-      document.addEventListener("keydown", this.handleKeyDown);
+    if (this.props.getComponent) {
+      this.props.getComponent(this);
     }
+    // if (!this.props.keyEvent === undefined) {
+    //   document.addEventListener("copy", this.handleCopy);
+    //   document.addEventListener("paste", this.handlePaste);
+    //   document.addEventListener("keydown", this.handleKeyDown);
+    // }
   }
-  componentWillUnmount() {
-    if (!this.props.keyEvent === undefined) {
-      document.removeEventListener("copy", this.handleCopy);
-      document.removeEventListener("paste", this.handlePaste);
-      document.removeEventListener("keydown", this.handleKeyDown);
-    }
-  }
-  shouldComponentUpdate() {
-    if (this.updateKey) {
-      this.updateKey = false;
-      return false;
-    }
-    return true;
-  }
+  // componentWillUnmount() {
+  //   if (!this.props.keyEvent === undefined) {
+  //     document.removeEventListener("copy", this.handleCopy);
+  //     document.removeEventListener("paste", this.handlePaste);
+  //     document.removeEventListener("keydown", this.handleKeyDown);
+  //   }
+  // }
+  // shouldComponentUpdate() {
+  //   // if (this.updateKey) {
+  //   //   this.updateKey = false;
+  //   //   return false;
+  //   // }
+  //   return true;
+  // }
   handleKeyEvent = e => {
     if (this.display && this.display.handleKeyEvent) {
       return this.display.handleKeyEvent(e);
@@ -167,38 +172,38 @@ class ZebulonGrid extends Component {
       return;
     }
     if (!this.display) return;
-    else if (e.type === "copy") this.handleCopy(e);
-    else if (e.type === "paste") this.handlepaste(e);
-    else if (e.type === "keydown") this.handleKeyDown(e);
-    this.updateKey = true;
+    else if (e.type === "copy") this.display.handleCopy(e);
+    else if (e.type === "paste") this.display.handlepaste(e);
+    else if (e.type === "keydown") this.display.handleKeyDown(e);
+    // this.updateKey = true;
   };
-  handleKeyDown = e => {
-    if (
-      !e.defaultPrevented &&
-      this.display.handleKeyDown &&
-      (this.props.isActive === undefined || this.props.isActive)
-    ) {
-      this.display.handleKeyDown(e);
-    }
-  };
-  handleCopy = e => {
-    if (
-      !e.defaultPrevented &&
-      this.display.handleCopy &&
-      (this.props.isActive === undefined || this.props.isActive)
-    ) {
-      this.display.handleCopy(e);
-    }
-  };
-  handlePaste = e => {
-    if (
-      !e.defaultPrevented &&
-      this.display.handlePaste &&
-      (this.props.isActive === undefined || this.props.isActive)
-    ) {
-      this.display.handlePaste(e);
-    }
-  };
+  // handleKeyDown = e => {
+  //   if (
+  //     !e.defaultPrevented &&
+  //     this.display.handleKeyDown &&
+  //     (this.props.isActive === undefined || this.props.isActive)
+  //   ) {
+  //     this.display.handleKeyDown(e);
+  //   }
+  // };
+  // handleCopy = e => {
+  //   if (
+  //     !e.defaultPrevented &&
+  //     this.display.handleCopy &&
+  //     (this.props.isActive === undefined || this.props.isActive)
+  //   ) {
+  //     this.display.handleCopy(e);
+  //   }
+  // };
+  // handlePaste = e => {
+  //   if (
+  //     !e.defaultPrevented &&
+  //     this.display.handlePaste &&
+  //     (this.props.isActive === undefined || this.props.isActive)
+  //   ) {
+  //     this.display.handlePaste(e);
+  //   }
+  // };
   buildObject = (item, excludes) => {
     if (Array.isArray(item)) {
       return item.map(item => this.buildObject(item, excludes));
@@ -264,19 +269,24 @@ class ZebulonGrid extends Component {
     applyConfigurationToStore(this.store, configuration, functions);
     return true;
   };
+  onClick = () => {
+    if (this.props.onActivation) {
+      this.props.onActivation();
+    }
+  };
   render() {
     // pivot grid
     let div = (
-      <div>
+      <EventHandler component={this}>
         <Provider store={this.store}>
           <PivotGrid
             id={this.props.id}
             menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
             selectedCell={this.props.selectedCell}
-            getRef={ref => (this.display = ref)}
+            getComponent={ref => (this.display = ref)}
           />
         </Provider>
-      </div>
+      </EventHandler>
     );
 
     if (
@@ -288,7 +298,7 @@ class ZebulonGrid extends Component {
       this.data = data.data;
       // configuration
       div = (
-        <div>
+        <EventHandler component={this}>
           <Provider store={this.store}>
             <ZebulonTableAndConfiguration
               id={this.props.id}
@@ -313,7 +323,7 @@ class ZebulonGrid extends Component {
               }}
             />
           </Provider>
-        </div>
+        </EventHandler>
       );
     }
     // configuration

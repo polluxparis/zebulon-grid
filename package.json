@@ -21,8 +21,7 @@
     "react-dnd-html5-backend": "^2.6.0",
     "react-redux": "^5.0.7",
     "reselect": "^3.0.1",
-    "zebulon-controls": "file:../controls/zebulon-controls-1.2.9.tgz",
-    "zebulon-table": "file:../table/zebulon-table-1.1.11.tgz"
+    "zebulon-table": "^1.1.17"
   },
   "scripts": {
     "start": "react-scripts start",
