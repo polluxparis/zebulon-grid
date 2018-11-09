@@ -143,7 +143,7 @@ export default class DataCell extends PureComponent {
               width: ".8em",
               marginTop: "0.1em",
               marginRight: "0.1em",
-              position: "absolute",
+              // position: "absolute", toto
               zIndex: 3
             }}
             onClick={this.handleComments}
@@ -153,8 +153,8 @@ export default class DataCell extends PureComponent {
             className={className}
             style={{
               height: "-webkit-fill-available",
-              width: "-webkit-fill-available",
-              position: "absolute"
+              width: "-webkit-fill-available"
+              // position: "absolute" toto
             }}
             autoFocus={true}
             tabIndex="0"
@@ -190,7 +190,7 @@ export default class DataCell extends PureComponent {
         menu="grid-menu"
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
         // gridId={gridId}
-        component={gridId}
+        component={`pivot-grid-${gridId}`}
         draggable={false}
         collect={() =>
           collectMenu({

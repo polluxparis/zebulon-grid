@@ -126,7 +126,7 @@ class Header extends Component {
         <ContextualMenuClient
           menu="measure-menu"
           id={`measure-menu-${header.id}`}
-          component={gridId}
+          component={`pivot-grid-${gridId}`}
           collect={() =>
             collectMenu({
               axis,

@@ -129,7 +129,7 @@ class DimensionHeader extends PureComponent {
       <ContextualMenuClient
         menu="dimension-menu"
         id={`dimensions-menu-${dimension.id}`}
-        component={gridId}
+        component={`pivot-grid-${gridId}`}
         collect={() =>
           collectMenu({
             dimension,

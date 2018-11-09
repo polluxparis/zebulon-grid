@@ -6,7 +6,7 @@
   user-select: none;
   cursor: default;
   border: solid lightgrey thin;
-  padding: 0.2em;
+  padding-left: 0.2em;
   font-size: inherit;
 }
 .zebulon-grid-data-cell-changed {
@@ -64,10 +64,14 @@
 .zebulon-grid-header {
   background-color: #eef8fb;
 }
-
 .zebulon-grid-header-inner {
+  padding-left: 2px;
+  text-align: left;
 }
-
+.zebulon-grid-header-inner-center {
+  padding: unset;
+  text-align: center;
+}
 .zebulon-grid-dimension-header {
   background-color: #fafad2;
 }
@@ -83,10 +87,10 @@
 .zebulon-grid-dimension-filtered-header {
   font-weight: bold;
 }
-.zebulon-grid-dimension-header-inner {
+/*.zebulon-grid-dimension-header-inner {
   margin: 0.2em;
-  margin-left: "0.5em";
-}
+  margin-left: 0.5em;
+}*/
 .zebulon-grid-data-cell {
   text-align: right;
 }
@@ -152,10 +156,10 @@
   color: black;
 }
 /*------------------------------------*/
-.react-resizable {
+/*.react-resizable {
   position: relative;
-}
-.react-resizable-handle {
+}*/
+/*.react-resizable-handle {
   position: absolute;
   width: 12px;
   height: 12px;
@@ -167,4 +171,4 @@
   background-origin: content-box;
   box-sizing: border-box;
   cursor: se-resize;
-}
+}*/

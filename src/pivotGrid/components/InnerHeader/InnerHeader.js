@@ -3,6 +3,7 @@ import { DragSource, DropTarget } from "react-dnd";
 // import { isNullOrUndefined } from "../../utils/generic";
 import { MEASURE_ID, TOTAL_ID, toAxis, AxisType } from "../../constants";
 import { icons } from "zebulon-controls";
+import classNames from "classnames";
 console.log("icons", icons);
 
 // -------------------------------
@@ -122,16 +123,6 @@ const innerHeader = ({
     );
   } else {
     collapsedIcon = null;
-    // collapsedIcon = (
-    //   <div
-    //     style={{
-    //       height: "1em",
-    //       width: "1em",
-    //       marginTop: "0.1em",
-    //       marginRight: "0.1em"
-    //     }}
-    //   />
-    // );
   }
   const style = { width: "-webkit-fill-available" };
   if (collapseOffset || collapsedIcon) {
@@ -149,8 +140,12 @@ const innerHeader = ({
       {caption}
     </div>
   );
+  const className = classNames({
+    "zebulon-grid-header-inner": !(measureId || !handleClick),
+    "zebulon-grid-header-inner-center": measureId || !handleClick
+  });
   header = (
-    <div className="zebulon-grid-header-inner" style={computedStyle}>
+    <div className={className} style={computedStyle}>
       {collapsedIcon}
       {header}
     </div>

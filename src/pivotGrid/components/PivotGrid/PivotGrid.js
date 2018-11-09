@@ -221,7 +221,9 @@ class PivotGrid extends Component {
     } = this.props;
     const { rows, columns } = headers;
     let grid;
-    if (this.props.status.loading || this.props.status.loadingConfig) {
+    if (this.props.status.none) {
+      grid = <div>...</div>;
+    } else if (this.props.status.loading || this.props.status.loadingConfig) {
       grid = <div>Loading data...</div>;
     } else if (this.props.status.error) {
       if (this.props.status.error.message === "No rows retrieved") {
@@ -262,7 +264,7 @@ class PivotGrid extends Component {
             position: "relative"
             // cursor: serverloading ? "progress" : "default"
           }}
-          id={gridId}
+          id={`pivot-grid-${gridId}`}
           onWheel={e => this.dataCells.onWheel(e)}
         >
           <DragLayer gridId={gridId} />
@@ -301,7 +303,7 @@ class PivotGrid extends Component {
                 isPushing={this.isPushing}
                 setToolTip={toolTip => this.setState({ toolTip })}
                 style={{
-                  // position: "absolute",
+                  position: "absolute",
                   top: rows.crossSize,
                   left: columns.crossSize
                 }}
@@ -311,7 +313,7 @@ class PivotGrid extends Component {
             <ContextualMenu
               key="contextual-menu"
               getMenu={getMenu}
-              component={gridId}
+              component={`pivot-grid-${gridId}`}
               ref={ref => (this.contextualMenu = ref)}
             />
             <div
@@ -330,7 +332,27 @@ class PivotGrid extends Component {
     return grid;
   }
 }
-
+/*
+              <DataCells
+                drilldown={drilldown}
+                menuFunctions={this.props.menuFunctions}
+                rows={rows}
+                columns={columns}
+                gridId={gridId}
+                height={height - rows.crossSize}
+                width={width - columns.crossSize}
+                scrollbarsWidth={scrollbarsWidth}
+                onScroll={this.onScroll}
+                isPushing={this.isPushing}
+                setToolTip={toolTip => this.setState({ toolTip })}
+                style={{
+                  // position: "absolute",
+                  top: rows.crossSize,
+                  left: columns.crossSize
+                }}
+                getRef={ref => (this.dataCells = ref)}
+              />
+            */
 const gridSpec = {
   drop(props, monitor, component) {
     const handle = monitor.getItem();

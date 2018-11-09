@@ -81,7 +81,7 @@ export const getDimensionValuesSelector = createSelector(
       const row = data[i];
       const key = dimension.keyAccessorFunction({ row });
       if (utils.isUndefined(values[key])) {
-        const label = dimension.format({
+        const label = dimension.formatFunction({
           value: dimension.labelAccessorFunction({ row })
         });
         const sortKey = dimension.sort.keyAccessorFunction({ row });
