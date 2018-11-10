@@ -16,12 +16,11 @@
   "main": "lib/index.js",
   "dependencies": {
     "classnames": "^2.2.5",
-    "react": "^16.3.2",
     "react-dnd": "^2.6.0",
     "react-dnd-html5-backend": "^2.6.0",
     "react-redux": "^5.0.7",
     "reselect": "^3.0.1",
-    "zebulon-table": "^1.1.23"
+    "zebulon-table": "^1.2.26"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,7 +39,8 @@
     ]
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
     "cross-env": "^5.1.5",
     "gh-pages": "^1.2.0",
     "postcss-cli": "^5.0.1",
