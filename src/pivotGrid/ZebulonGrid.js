@@ -271,7 +271,7 @@ class ZebulonGrid extends Component {
   };
   onClick = () => {
     if (this.props.onActivation) {
-      this.props.onActivation();
+      this.props.onActivation(this.props.id);
     }
   };
   render() {

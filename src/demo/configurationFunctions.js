@@ -20,7 +20,7 @@ export const configurationFunctions = {
       quantity: ({ value }) => {
         if (Number.isFinite(value)) {
           return (
-            <div style={{ color: "black", textAlign: "right" }}>
+            <div style={{ color: "black", textAlign: "right", height: "100%" }}>
               {Number(value).toFixed(0)}
             </div>
           );

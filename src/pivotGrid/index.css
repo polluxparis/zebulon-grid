@@ -7,6 +7,7 @@
   cursor: default;
   border: solid lightgrey thin;
   padding-left: 0.2em;
+  padding-top: 0.2em;
   font-size: inherit;
 }
 .zebulon-grid-data-cell-changed {
@@ -93,6 +94,7 @@
 }*/
 .zebulon-grid-data-cell {
   text-align: right;
+  height: 100%;
 }
 .zebulon-grid-data-cell-uneven {
   background-color: rgb(230, 230, 230);
@@ -117,7 +119,7 @@
 }
 /*-----------------------------------------------*/
 /*------------------------------------*/
-.zebulon-scrollbar-bar {
+/*.zebulon-scrollbar-bar {
   background-color: lightgrey;
   border: solid 0.03em grey;
   border-radius: 0.25rem;
@@ -126,7 +128,7 @@
   background-color: grey;
   border: solid 0.03em grey;
   border-radius: 0.25rem;
-}
+}*/
 
 /*.zebulon-tool-tip {
   padding: 5px;
