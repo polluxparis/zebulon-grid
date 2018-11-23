@@ -34,7 +34,8 @@ class DimensionHeader extends PureComponent {
       toggleSortOrder,
       expandCollapseAll,
       toggleSubTotal,
-      getExpandCollapseKeys
+      getExpandCollapseKeys,
+      componentId
     } = this.props;
 
     const ids = {};
@@ -130,6 +131,7 @@ class DimensionHeader extends PureComponent {
         menu="dimension-menu"
         id={`dimensions-menu-${dimension.id}`}
         component={`pivot-grid-${gridId}`}
+        componentId={componentId}
         collect={() =>
           collectMenu({
             dimension,

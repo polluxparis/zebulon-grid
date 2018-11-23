@@ -46,7 +46,8 @@ class Headers extends PureComponent {
       measures,
       features,
       status,
-      zoom
+      zoom,
+      componentId
     } = this.props;
     const positionStyle = {
       position: "absolute",
@@ -81,6 +82,7 @@ class Headers extends PureComponent {
     }
     return (
       <Header
+        componentId={componentId}
         key={`header-${header.key}`}
         header={header}
         axis={axisType}

@@ -271,15 +271,20 @@ class ZebulonGrid extends Component {
   };
   onClick = () => {
     if (this.props.onActivation) {
-      this.props.onActivation(this.props.id);
+      this.props.onActivation(
+        this.props.componentId || `zebulon-grid-${this.props.id}`
+      );
     }
   };
   render() {
+    const componentId =
+      this.props.componentId || `zebulon-grid-${this.props.id}`;
     // pivot grid
     let div = (
-      <EventHandler component={this}>
+      <EventHandler component={this} id={componentId} componentId={componentId}>
         <Provider store={this.store}>
           <PivotGrid
+            componentId={componentId}
             id={this.props.id}
             menuFunctions={this.props.menuFunctions || defaultMenuFunctions}
             selectedCell={this.props.selectedCell}
@@ -298,7 +303,11 @@ class ZebulonGrid extends Component {
       this.data = data.data;
       // configuration
       div = (
-        <EventHandler component={this}>
+        <EventHandler
+          component={this}
+          id={componentId}
+          componentId={componentId}
+        >
           <Provider store={this.store}>
             <ZebulonTableAndConfiguration
               id={this.props.id}

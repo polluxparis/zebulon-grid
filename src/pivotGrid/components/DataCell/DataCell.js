@@ -98,7 +98,7 @@ export default class DataCell extends PureComponent {
       isEven,
       editable,
       edited,
-      highlighted
+      highlighted,componentId
       // handleOnChange,
       // handleComments
     } = this.props;
@@ -191,6 +191,7 @@ export default class DataCell extends PureComponent {
         id={`grid-menu-${rowIndex} - ${columnIndex}`}
         // gridId={gridId}
         component={`pivot-grid-${gridId}`}
+        componentId={componentId}
         draggable={false}
         collect={() =>
           collectMenu({

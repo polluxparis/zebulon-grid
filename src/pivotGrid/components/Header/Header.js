@@ -38,7 +38,8 @@ class Header extends Component {
       isDropTarget,
       isDragSource,
       features,
-      zoom
+      zoom,
+      componentId
     } = this.props;
     let style = positionStyle;
     const rightKey = axis === AxisType.COLUMNS ? header.key : dimensionId;
@@ -127,6 +128,7 @@ class Header extends Component {
           menu="measure-menu"
           id={`measure-menu-${header.id}`}
           component={`pivot-grid-${gridId}`}
+          componentId={componentId}
           collect={() =>
             collectMenu({
               axis,

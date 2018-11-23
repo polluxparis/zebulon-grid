@@ -51,7 +51,8 @@ class DimensionHeaders extends Component {
       crossPositions,
       height,
       width,
-      features
+      features,
+      componentId
     } = this.props;
     const headers = [];
 
@@ -81,6 +82,7 @@ class DimensionHeaders extends Component {
         }
         headers.push(
           <DimensionHeader
+            componentId={componentId}
             key={`dimension-header-${dimension.id}`}
             positions={positions}
             dimension={dimension}

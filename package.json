@@ -20,7 +20,7 @@
     "react-dnd-html5-backend": "^2.6.0",
     "react-redux": "^5.0.7",
     "reselect": "^3.0.1",
-    "zebulon-table": "^1.2.42"
+    "zebulon-table": "^1.2.46"
   },
   "scripts": {
     "start": "react-scripts start",

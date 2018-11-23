@@ -108,7 +108,11 @@ class PivotGrid extends Component {
     if (
       this.contextualMenu &&
       this.contextualMenu.state.menu &&
-      this.contextualMenu.state.menu.visible
+      this.contextualMenu.state.menu.visible &&
+      (nextProps.selectedRange !== this.props.selectedRange ||
+        nextProps.height !== this.props.height ||
+        nextProps.width !== this.props.width ||
+        this.props.status !== nextProps.status)
     ) {
       this.closeOpenedWindows();
     }
@@ -217,7 +221,8 @@ class PivotGrid extends Component {
       zoomValue,
       headers,
       gridId,
-      status
+      status,
+      componentId
     } = this.props;
     const { rows, columns } = headers;
     let grid;
@@ -252,6 +257,7 @@ class PivotGrid extends Component {
           columns.size
         )
       };
+      console.log("componentId", componentId);
       // const ConnectedMenu = connectMenu(`context-menu-${gridId}`)(ContextMenu);
       grid = connectDropTarget(
         // Width has to be set in order to render correctly in a resizable box
@@ -273,8 +279,9 @@ class PivotGrid extends Component {
             style={{ fontSize: `${zoomValue * 100}%` }}
           >
             <div style={{ display: "flex" }}>
-              <DimensionHeaders gridId={gridId} />
+              <DimensionHeaders gridId={gridId} componentId={componentId} />
               <ColumnHeaders
+                componentId={componentId}
                 gridId={gridId}
                 rows={null}
                 columns={columns}
@@ -284,6 +291,7 @@ class PivotGrid extends Component {
             </div>
             <div style={{ display: "flex" }}>
               <RowHeaders
+                componentId={componentId}
                 gridId={gridId}
                 rows={rows}
                 columns={null}
@@ -291,6 +299,7 @@ class PivotGrid extends Component {
                 width={columns.crossSize}
               />
               <DataCells
+                componentId={componentId}
                 drilldown={drilldown}
                 menuFunctions={this.props.menuFunctions}
                 rows={rows}
@@ -312,8 +321,9 @@ class PivotGrid extends Component {
             </div>
             <ContextualMenu
               key="contextual-menu"
+              componentId={componentId}
               getMenu={getMenu}
-              component={`pivot-grid-${gridId}`}
+              // component={`pivot-grid-${gridId}`}
               ref={ref => (this.contextualMenu = ref)}
             />
             <div

@@ -459,7 +459,8 @@ export class DataCells extends ScrollableGrid {
       measures,
       selectedRange,
       gridId,
-      isPushing
+      isPushing,
+      componentId
     } = this.props;
     const key = `${rowHeader.key}${AXIS_SEPARATOR}${columnHeader.key}`;
     const style = {
@@ -530,6 +531,7 @@ export class DataCells extends ScrollableGrid {
     const highlighted = false;
     return (
       <DataCell
+        componentId={componentId}
         headersKey={key}
         key={key}
         valueHasChanged={valueHasChanged}
