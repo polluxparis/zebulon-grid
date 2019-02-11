@@ -14,6 +14,7 @@ export {
 	GridWithoutStoreAndDndContext,
 	GridWithoutStore,
 	reducer,
-	actions,
-	applyConfigToStore
+	actions
+	// ,
+	// applyConfigToStore
 };

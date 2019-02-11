@@ -14,14 +14,15 @@ export const filteredIndexes = (dimensions, filters, loading) => {
       const dimension = dimensions[filter.dimensionId];
       let dimensionIndexes = [];
       if (!dimension.axis) {
-        dimensionIndexes = Object.values(
-          dimension.values
-        ).reduce((indexes, value) => {
-          if (filter.values[value.id] !== undefined) {
-            indexes = indexes.concat(value.rowIndexes);
-          }
-          return indexes;
-        }, []);
+        dimensionIndexes = Object.values(dimension.values).reduce(
+          (indexes, value) => {
+            if (filter.values[value.id] !== undefined) {
+              indexes = indexes.concat(value.rowIndexes);
+            }
+            return indexes;
+          },
+          []
+        );
       }
       return dimensionIndexes.sort((a, b) => a - b);
     });
